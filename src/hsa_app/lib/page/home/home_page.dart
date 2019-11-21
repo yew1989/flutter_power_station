@@ -1,15 +1,7 @@
 import 'package:badges/badges.dart';
-import 'package:event_taxi/event_taxi.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:hsa_app/api/api.dart';
-import 'package:hsa_app/event/app_event.dart';
-import 'package:hsa_app/model/station.dart';
 import 'package:hsa_app/page/framework/wave_ball.dart';
-import 'package:hsa_app/page/home/logic/home_logic.dart';
 import 'package:hsa_app/page/home/view/home_banner.dart';
-import 'package:hsa_app/page/home/view/home_search_bar.dart';
-import 'package:hsa_app/page/home/view/home_station_widget.dart';
 import 'package:hsa_app/page/station/station_page.dart';
 import 'package:hsa_app/util/public_tool.dart';
 import 'package:hsa_app/widget/background_gradient.dart';

@@ -16,8 +16,9 @@ class _WebViewPageState extends State<WebViewPage> {
   WebViewController webViewController;
   
   // 从js中解析数据
-  
   void parseFromJS(String js,BuildContext context) {
+    // H5 发送 点击导航栏返回按键事件
+    // JSBridge.postMessage('navBack');
     if(js.compareTo('navBack') == 0) {
       // 返回页面
       Navigator.of(context).pop();

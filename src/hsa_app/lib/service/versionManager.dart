@@ -94,7 +94,7 @@ class VersionManager {
     }
   }
 
-  
+  // 非强制更新
   static showUpdateDialog(BuildContext context,String title,String content,Function onTapAction,Function onTapCancel) {
     showCupertinoDialog<int>(
         context: context,
@@ -125,6 +125,7 @@ class VersionManager {
     });
   }
 
+  // 强制更新
   static showForceUpdateDialog(BuildContext context,String title,String content,Function onTapAction) {
     showCupertinoDialog<int>(
         context: context,

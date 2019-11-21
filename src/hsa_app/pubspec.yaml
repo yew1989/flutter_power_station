@@ -28,10 +28,6 @@ dependencies:
   bmprogresshud: ^0.0.5
   flutter_spinkit: ^4.0.0
   ovprogresshud: ^0.2.5
-  # flutter_lottie: ^0.2.0
-  # flotter: ^0.2.1
-  # lottie_flutter: ^0.2.0
-  # flotter: ^0.2.1
   event_taxi: ^0.1.5
   wave: ^0.0.8
   badges: ^1.1.0
