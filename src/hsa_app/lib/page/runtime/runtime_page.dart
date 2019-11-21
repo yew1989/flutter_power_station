@@ -1,23 +1,20 @@
 import 'package:flutter/material.dart';
-import 'package:hsa_app/api/api.dart';
 import 'package:hsa_app/config/config.dart';
-import 'package:hsa_app/model/runtimedata.dart';
 import 'package:hsa_app/model/terminal.dart';
 import 'package:hsa_app/page/debug/widget_page.dart';
 import 'package:hsa_app/page/framework/webview_page.dart';
-import 'package:hsa_app/page/more/more_page.dart';
+import 'package:hsa_app/theme/theme_gradient_background.dart';
 import 'package:hsa_app/util/public_tool.dart';
 import 'package:hsa_app/util/share.dart';
 
-class TerminalPage extends StatefulWidget {
+class RuntimePage extends StatefulWidget {
   final String title;
-  final Terminal terminal;
-  TerminalPage(this.title, this.terminal);
+  RuntimePage(this.title);
   @override
-  _StationPageState createState() => _StationPageState();
+  _RuntimePageState createState() => _RuntimePageState();
 }
 
-class _StationPageState extends State<TerminalPage> {
+class _RuntimePageState extends State<RuntimePage> {
 
   // 计算宽度
   double barMaxWidth = 0;
@@ -47,14 +44,10 @@ class _StationPageState extends State<TerminalPage> {
   static const double kFootHeight = 70;
   static const double kControlBoardHeight = 126;
 
-  // 运行时数据
-  RunTimeData runTimeData;
-
   @override
   void initState() {
     super.initState();
-    // toggleAnimationAll();
-    requestForRunTimeData();
+    toggleAnimationAll();
   }
 
   // 动画触发器
@@ -75,14 +68,6 @@ class _StationPageState extends State<TerminalPage> {
     });
   }
 
-  // 获取运行时数据
-  void requestForRunTimeData() async {
-    var data = await API.runtimeData(widget.terminal.terminalAddress);
-    if( data == null)return;
-    setState(() {
-      this.runTimeData = data;
-    });
-  }
 
   void toggleAnimationExcitationCurrent() {
     Future.delayed(Duration(milliseconds: 1200), () {
@@ -211,9 +196,9 @@ class _StationPageState extends State<TerminalPage> {
   Widget dashBoard(String url) {
     return Container(
         height: 200,
-        color: Colors.black,
+        color: Colors.transparent,
         child: Container(
-          color: Colors.black,
+          color: Colors.transparent,
         ));
   }
 
@@ -385,7 +370,7 @@ class _StationPageState extends State<TerminalPage> {
                             flex: 1,
                             child: GestureDetector(
                               onTap: (){
-                                pushToPage(context, MorePage(data: this.runTimeData));
+                                // pushToPage(context, MorePage(data: this.runTimeData));
                               },
                               child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
@@ -527,8 +512,8 @@ class _StationPageState extends State<TerminalPage> {
       );
 
   void onTapHistory() async {
-    var historyUrl = await buildHistoryUrl(widget.terminal);
-    pushToPage(context, WebViewPage('历史', historyUrl, noNavBar: true));
+    // var historyUrl = await buildHistoryUrl(widget.terminal);
+    // pushToPage(context, WebViewPage('历史', historyUrl, noNavBar: true));
   }
 
   String buildDashBoardUrl(Terminal terminals) {
@@ -551,38 +536,40 @@ class _StationPageState extends State<TerminalPage> {
         host + pageItemHistory.route ?? AppConfig.getInstance().deadLink;
     var titleHistory = pageItemHistory.title ?? '';
 
-    var dashBoardUrl = buildDashBoardUrl(widget.terminal);
-
-    return Scaffold(
-      backgroundColor: Colors.black,
-      appBar: AppBar(
-        elevation: 0,
+    // var dashBoardUrl = buildDashBoardUrl(widget.terminal);
+    var dashBoardUrl = '';
+    return ThemeGradientBackground(
+      child: Scaffold(
         backgroundColor: Colors.transparent,
-        centerTitle: true,
-        title: Text(widget.title),
-        actions: <Widget>[
-          GestureDetector(
-              onTap: () {
-                onTapHistory();
-              },
-              child: Center(
-                  child: Text('历史曲线',
-                      style: TextStyle(color: Colors.white, fontSize: 16)))),
-          SizedBox(width: 20),
-        ],
-      ),
-      body: Container(
-        color: Colors.black,
-        child: Column(children: <Widget>[
-          terminalBriefHeader(),
-          dashBoard(dashBoardUrl),
-          terminalBriefFooter(),
-          Expanded(child: eventList()),
-          // 淡阴影
-          LightDarkShawdow(),
-          operationBoard(titleHistory, urlHistory),
-          SizedBox(height: 10),
-        ]),
+        appBar: AppBar(
+          elevation: 0,
+          backgroundColor: Colors.transparent,
+          centerTitle: true,
+          title: Text(widget.title,style: TextStyle(color: Colors.white,fontWeight: FontWeight.normal,fontSize: 16)),
+          actions: <Widget>[
+            GestureDetector(
+                onTap: () {
+                  onTapHistory();
+                },
+                child: Center(
+                    child: Text('历史曲线',
+                        style: TextStyle(color: Colors.white, fontSize: 16)))),
+            SizedBox(width: 20),
+          ],
+        ),
+        body: Container(
+          color: Colors.transparent,
+          child: Column(children: <Widget>[
+            terminalBriefHeader(),
+            dashBoard(dashBoardUrl),
+            terminalBriefFooter(),
+            Expanded(child: eventList()),
+            // 淡阴影
+            LightDarkShawdow(),
+            operationBoard(titleHistory, urlHistory),
+            SizedBox(height: 10),
+          ]),
+        ),
       ),
     );
   }

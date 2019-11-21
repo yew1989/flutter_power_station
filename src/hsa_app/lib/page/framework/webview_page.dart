@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:hsa_app/theme/theme_gradient_background.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 class WebViewPage extends StatefulWidget {
@@ -37,6 +38,7 @@ class _WebViewPageState extends State<WebViewPage> {
   // 网页完全加载标识
   var isFinish = false;
 
+  // 隐藏 loading
   void hideLoading() async{
     Future.delayed(Duration(milliseconds: 1000),(){
      setState(() {
@@ -47,66 +49,77 @@ class _WebViewPageState extends State<WebViewPage> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        appBar: widget.noNavBar == true
-            ? null
-            : AppBar(
-                title: Text(widget.title ?? ''),
-                backgroundColor: Colors.transparent,
-                elevation: 0,
-                centerTitle: true,
-              ),
-        body: Center(
-          child: Container(
-            color: Colors.black,
-            child: Stack(
-              children: <Widget>[
-                AnimatedOpacity(
-                  duration: Duration(milliseconds: 500),
-                  opacity: isFinish ? 1 : 0,
-                  child: WebView(
-                    onWebViewCreated: (wbc) {
-                      webViewController = wbc;
-                      webViewController.clearCache();
-                    },
-                    onPageFinished: (url) {
-                      debugPrint('WEBVIEW:' + url);
-                      hideLoading();
-                    },
-                    initialUrl: widget.url ?? '',
-                    javascriptMode: JavascriptMode.unrestricted,
-                    javascriptChannels: [
-                      JavascriptChannel(
-                        name: 'JSBridge',
-                        onMessageReceived: (JavascriptMessage message) {
-                          var msg = message.message;
-                          parseFromJS(msg,context);
+    return Stack(
+      children: [
+        // 渐变色背景
+        ThemeGradientBackground(),
+        // 实际 webview位置
+        SafeArea(
+          child: Scaffold(
+            backgroundColor: Colors.transparent,
+            appBar: widget.noNavBar == true
+                ? null
+                : AppBar(
+                    title: Text(widget.title ?? ''),
+                    backgroundColor: Colors.transparent,
+                    elevation: 0,
+                    centerTitle: true,
+                  ),
+            body: Center(
+              child: Container(
+                color: Colors.transparent,
+                child: Stack(
+                  children: <Widget>[
+                    AnimatedOpacity(
+                      duration: Duration(milliseconds: 500),
+                      opacity: isFinish ? 1 : 0,
+                      child: WebView(
+                        onWebViewCreated: (wbc) {
+                          webViewController = wbc;
+                          webViewController.clearCache();
                         },
+                        onPageFinished: (url) {
+                          debugPrint('WEBVIEW:' + url);
+                          hideLoading();
+                        },
+                        initialUrl: widget.url ?? '',
+                        javascriptMode: JavascriptMode.unrestricted,
+                        javascriptChannels: [
+                          JavascriptChannel(
+                            name: 'JSBridge',
+                            onMessageReceived: (JavascriptMessage message) {
+                              var msg = message.message;
+                              parseFromJS(msg,context);
+                            },
+                          ),
+                        ].toSet(),
                       ),
-                    ].toSet(),
-                  ),
-                ),
-                AnimatedOpacity(
-                  duration: Duration(milliseconds: 500),
-                  opacity: isFinish ? 0 : 1,
-                  child: Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        CircularProgressIndicator(),
-                        SizedBox(height: 20),
-                        Text('加载中',style: TextStyle(color: Theme.of(context).primaryColor,fontSize: 16)),
-                        Text('请稍后',style: TextStyle(color: Theme.of(context).primaryColor,fontSize: 12)),
-                      ],
                     ),
-                  ),
+                    AnimatedOpacity(
+                      duration: Duration(milliseconds: 500),
+                      opacity: isFinish ? 0 : 1,
+                      child: Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            CircularProgressIndicator(
+                              backgroundColor: Colors.transparent,
+                              valueColor: AlwaysStoppedAnimation(Colors.white),
+                            ),
+                            SizedBox(height: 20),
+                            Text('加载中',style: TextStyle(color: Colors.white70,fontSize: 16)),
+                            Text('请稍后',style: TextStyle(color: Colors.white38,fontSize: 12)),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
-              ],
+              ),
             ),
           ),
         ),
-      ),
-    );
+        ]
+      );
   }
 }

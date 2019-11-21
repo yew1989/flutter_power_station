@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:hsa_app/api/api.dart';
 import 'package:hsa_app/config/config.dart';
 import 'package:hsa_app/model/terminal.dart';
-import 'package:hsa_app/page/terminal/terminal_page.dart';
+import 'package:hsa_app/page/runtime/runtime_page.dart';
 import 'package:hsa_app/page/framework/webview_page.dart';
 import 'package:hsa_app/theme/theme_gradient_background.dart';
 import 'package:hsa_app/util/date_tool.dart';
@@ -272,72 +272,77 @@ class _StationPageState extends State<StationPage> {
         children: <Widget>[
           
           // 内容
-          Center(
-            child: Container(
-              padding: EdgeInsets.symmetric(horizontal: 8),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: <Widget>[
+          GestureDetector(
+            onTap: (){
+              pushToPage(context, RuntimePage('1#实时数据'));
+            },
+            child: Center(
+              child: Container(
+                padding: EdgeInsets.symmetric(horizontal: 8),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: <Widget>[
 
-                  // 堆叠视图
-                  SizedBox(
-                    height: 50,
-                    width: 50,
-                    child: Stack(
-                      children:[
-                      
-                      // 水轮机图标
-                      Center(
-                        child: SizedBox(height: 34,width: 34,
-                          child: Image.asset('images/station/GL_unit_on_icon.png'),
-                        ),
-                      ),
-
-                      // 右上角标志
-                      Positioned(
-                        right: 2,top: 0,
-                        child: Container(
-                          height: 16,width: 16,
-                          decoration: BoxDecoration(
-                            border: Border.all(color: Colors.white,width: 1.5),
-                            borderRadius: BorderRadius.circular(8),),
-                          child: Center(
-                            child: Text(name,style: TextStyle(color: Colors.white,fontSize: 12)),
+                    // 堆叠视图
+                    SizedBox(
+                      height: 50,
+                      width: 50,
+                      child: Stack(
+                        children:[
+                        
+                        // 水轮机图标
+                        Center(
+                          child: SizedBox(height: 34,width: 34,
+                            child: Image.asset('images/station/GL_unit_on_icon.png'),
                           ),
                         ),
+
+                        // 右上角标志
+                        Positioned(
+                          right: 2,top: 0,
+                          child: Container(
+                            height: 16,width: 16,
+                            decoration: BoxDecoration(
+                              border: Border.all(color: Colors.white,width: 1.5),
+                              borderRadius: BorderRadius.circular(8),),
+                            child: Center(
+                              child: Text(name,style: TextStyle(color: Colors.white,fontSize: 12)),
+                            ),
+                          ),
+                        ),
+                        ]
                       ),
-                      ]
                     ),
-                  ),
 
 
-                  // 文字
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      SizedBox(height: 8),
-                      Text('450kW',
-                      style: TextStyle(color: Colors.white,fontFamily: 'ArialNarrow',fontSize: 20)),
-                      SizedBox(height: 4),
-                      Text('2019.09.03 11:26',
-                      style: TextStyle(color: Colors.white54,fontFamily: 'ArialNarrow',fontSize: 15)),
-                    ],
-                  ),
+                    // 文字
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        SizedBox(height: 8),
+                        Text('450kW',
+                        style: TextStyle(color: Colors.white,fontFamily: 'ArialNarrow',fontSize: 20)),
+                        SizedBox(height: 4),
+                        Text('2019.09.03 11:26',
+                        style: TextStyle(color: Colors.white54,fontFamily: 'ArialNarrow',fontSize: 15)),
+                      ],
+                    ),
 
-                  // 告警铃
-                  Badge(
-                    badgeContent: Text('8',style: TextStyle(color: Colors.white)),
-                    position: BadgePosition.topRight(top: -12,right: -4),
-                    badgeColor: Colors.red,
-                    toAnimate: false,
-                    child: 
-                  SizedBox(height: 24,width: 24,child: Image.asset('images/station/GL_Alarm_icon.png'))),
+                    // 告警铃
+                    Badge(
+                      badgeContent: Text('8',style: TextStyle(color: Colors.white)),
+                      position: BadgePosition.topRight(top: -12,right: -4),
+                      badgeColor: Colors.red,
+                      toAnimate: false,
+                      child: 
+                    SizedBox(height: 24,width: 24,child: Image.asset('images/station/GL_Alarm_icon.png'))),
 
-                  // 当前功率
-                  Text('423',style: TextStyle(color: Colors.white,fontFamily: 'ArialNarrow',fontSize: 28)),
-                ],
+                    // 当前功率
+                    Text('423',style: TextStyle(color: Colors.white,fontFamily: 'ArialNarrow',fontSize: 28)),
+                  ],
+                ),
               ),
             ),
           ),
@@ -375,112 +380,6 @@ class _StationPageState extends State<StationPage> {
     );
   }
 
-  // 设备Tile列表
-  Widget terminalTile(int idx) {
-
-    Terminal terminal = terminals[idx];
-    
-    var number = idx + 1;
-    var isHaveAlert = number == 3;
-    var visualPower = terminal.waterTurbineRatedActivePower.toString() + 'kW';
-    var dateString = DateTool.dnetDateToDart(terminal.lastSwitchNetTime);
-    var isOnline = terminal.isConnected;
-
-    return ListTile(
-      contentPadding: EdgeInsets.symmetric(vertical: 0,horizontal: 10),
-      onTap: () {
-        pushToPage(context, TerminalPage('${terminal.waterTurbineAliasName}实时数据',terminal));
-      },
-      title: Container(
-        color: Color.fromRGBO(27, 25, 35, 1),
-        height: 80,
-        child: Stack(
-          children:[ 
-            
-          // 渐变层
-          SizedBox(
-            width: MediaQuery.of(context).size.width * 0.8,
-            height: double.infinity,
-            child: Container(
-              decoration: BoxDecoration(
-                gradient: const LinearGradient(
-                  colors: [
-                  Color.fromRGBO(27, 25, 35, 1), 
-                  Color.fromRGBO(18, 80, 128, 1)]),
-              ),
-              // color: Colors.redAccent,
-            ),
-          ),
-            
-            Center(
-              child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: <Widget>[
-              // 左边距
-              SizedBox(width: 10),
-              // 风机图标
-              Expanded(
-                flex: 1,
-                child: Center(
-                  child: Badge(
-                    badgeContent: Text('$number'),
-                    badgeColor: isOnline ? Color.fromRGBO(61, 58, 153, 1) : Color(0xFF8F8F8F),
-                    child: Icon(Icons.face,size: 50),
-                  ),
-                ),
-              ),
-
-              // 文字区
-              Expanded(
-                  flex: 4,
-                  child: Center(
-                    child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Text(isOnline ? visualPower : '断开连接'),
-                      Text(dateString,style: TextStyle(color: Color(0xFF8F8F8F), fontSize: 11),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              
-              // 提示栏 
-              Expanded(
-                  flex: 2,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Center(
-                        child: Badge(
-                          showBadge: !isHaveAlert,
-                          badgeContent: Text('8'),
-                          child: !isHaveAlert ? Icon(
-                            Icons.add_alert,
-                            size: 50,
-                          ) : Text(''),
-                        ),
-                      ),
-                    ],
-                  )),
-              // 
-              Expanded(flex: 1, child: Center(child: Text('--',style: TextStyle(
-                fontSize: 16,fontWeight: FontWeight.w600
-              )))),
-            ],
-          )),
-          
-
-          
-          ]
-        ),
-      ),
-    );
-  }
-
   void onTapPushToHistory() async{
     var url = await buildHistoryUrl(terminals);
     debugPrint(url);
@@ -505,7 +404,7 @@ class _StationPageState extends State<StationPage> {
             elevation: 0,
             centerTitle: true,
             // title: Text(widget.title),
-            title: Text('登云水电站',style: TextStyle(color: Colors.white,fontWeight: FontWeight.normal,fontSize: 16),),
+            title: Text('登云水电站',style: TextStyle(color: Colors.white,fontWeight: FontWeight.normal,fontSize: 16)),
             actions: <Widget>[
               GestureDetector(
                 onTap: (){
