@@ -4,6 +4,7 @@ import 'package:hsa_app/config/config.dart';
 import 'package:hsa_app/page/login/login_page.dart';
 import 'package:hsa_app/page/framework/root_page.dart';
 import 'package:hsa_app/service/versionManager.dart';
+import 'package:hsa_app/theme/theme_gradient_background.dart';
 import 'package:hsa_app/util/public_tool.dart';
 import 'package:hsa_app/util/share.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -48,25 +49,6 @@ class _WelcomePageState extends State<WelcomePage> with TickerProviderStateMixin
       debugPrint('📱设备宽:' + MediaQuery.of(context).size.width.toString());
       debugPrint('📱设备高:' + MediaQuery.of(context).size.height.toString());
     });
-  }
-
-  Widget groupCircleLoading() {
-    var innerColor   = Colors.white;
-    var outerColor   = Colors.grey;
-
-    return  Center(
-      child: Container(
-        height: 600,
-        width: 600,
-        child: Stack(
-          children: <Widget>[
-            Center(child: SpinKitPulse(color: outerColor,size: 600,controller: AnimationController(vsync: this, duration: const Duration(milliseconds: 5000)))),
-            Center(child: SpinKitPulse(color: innerColor,size: 250,controller: AnimationController(vsync: this, duration: const Duration(milliseconds: 5000)))),
-            Center(child: SizedBox(height: 100,width: 100,child: CircleAvatar(radius: 36.0,backgroundImage:AssetImage('assets/img/login_icon.png')))),
-          ],
-        ),
-      ),
-    );
   }
 
   // APP 环境自检
@@ -125,28 +107,24 @@ class _WelcomePageState extends State<WelcomePage> with TickerProviderStateMixin
 
   @override
   Widget build(BuildContext context) {
-    var space = '          ';
-    return Scaffold(
-      body: Container(
-        color: Colors.black,
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: <Widget>[
-              CircularProgressIndicator(),
-              // groupCircleLoading(),
-              SizedBox(height: 20),
-             Text('请稍后',style: TextStyle(color: Theme.of(context).primaryColor,fontSize: 18)),
-              SizedBox(height: 10),
-
-              Text(loadingText,style: TextStyle(color: Theme.of(context).textSelectionColor,fontSize: 14)),
-              // Align(alignment:Alignment.centerLeft,child: Text(space + '智能电站1号',style: TextStyle(color: Colors.white,fontSize: 26))),
-              SizedBox(height: 10),
-              // Align(alignment:Alignment.centerRight,child: Text('发电从未如此简单' + space ,style: TextStyle(color: Colors.white,fontSize: 26))),
-            ],
+    return ThemeGradientBackground(
+      child: Scaffold(
+        backgroundColor: Colors.transparent,
+        body: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: <Widget>[
+                CircularProgressIndicator(
+                  backgroundColor: Colors.transparent,
+                  valueColor: AlwaysStoppedAnimation(Colors.white),
+                  ),
+                  SizedBox(height: 20),
+                  Text('启动中',style: TextStyle(color: Colors.white70,fontSize: 16)),
+                  Text('请稍后',style: TextStyle(color: Colors.white38,fontSize: 12)),
+              ],
+            ),
           ),
-        ),
       ),
     );
   }

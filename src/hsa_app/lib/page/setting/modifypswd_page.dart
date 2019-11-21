@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:hsa_app/api/api.dart';
+import 'package:hsa_app/theme/theme_gradient_background.dart';
 import 'package:hsa_app/util/public_tool.dart';
+import 'package:native_color/native_color.dart';
 
 class ModifyPswdPage extends StatefulWidget {
   @override
@@ -26,18 +28,24 @@ class _ModifyPswdPageState extends State<ModifyPswdPage> {
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
-              Expanded(flex: 1, child: Text(leftText)),
+              Expanded(flex: 1, child: 
+              Text(
+                leftText,
+                style: TextStyle(color: Colors.white,fontSize: 16),
+                ),
+              ),
               Expanded(
                 flex: 4,
                 child: Container(
                   height: 40,
                   child: TextFormField(
-                    style: TextStyle(fontSize: 14),
+                    style: TextStyle(fontSize: 16,color: Colors.white),
                     keyboardType: TextInputType.text,
                     autofocus: false,
                     obscureText: true,
                     controller: controller,
                     decoration: InputDecoration(
+                      hintStyle: TextStyle(fontSize: 16,color: Colors.white54),
                       hintText: '$rightHint',
                       border: InputBorder.none,
                       //  labelStyle: TextStyle(color: Colors.redAccent),
@@ -58,6 +66,23 @@ class _ModifyPswdPageState extends State<ModifyPswdPage> {
         ),
       ]);
     }
+
+    Widget modifyPasword() {
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 50),
+      height: 54,
+      width: double.infinity,
+      child: FlatButton(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(8))),
+          splashColor: Colors.white,color: HexColor('6699ff'),
+          child: Text('修改密码', style: TextStyle(color: Colors.white, fontSize: 16)),
+          onPressed: (){
+            onTapSave();
+          },
+        ),
+    );
+  }
 
     Widget buttonTile() {
       return Container(
@@ -80,22 +105,26 @@ class _ModifyPswdPageState extends State<ModifyPswdPage> {
       );
     }
 
-    return Scaffold(
-      appBar: AppBar(
-        centerTitle: true,
-        title: Text('修改密码'),
+    return ThemeGradientBackground(
+      child: Scaffold(
         backgroundColor: Colors.transparent,
-        elevation: 0,
-      ),
-      body: Container(
-        child: ListView(
-          children: <Widget>[
-            pwswdTile('旧密码', '点击输入旧密码', oldController),
-            pwswdTile('新密码', '点击输入新密码', newController),
-            pwswdTile('确认密码', '点击重复输入新密码', againController),
-            SizedBox(height: 60),
-            buttonTile(),
-          ],
+        appBar: AppBar(
+          centerTitle: true,
+          title: Text('修改密码'),
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+        ),
+        body: Container(
+          child: ListView(
+            children: <Widget>[
+              pwswdTile('旧密码', '点击输入旧密码', oldController),
+              pwswdTile('新密码', '点击输入新密码', newController),
+              pwswdTile('确认密码', '点击重复输入新密码', againController),
+              SizedBox(height: 60),
+              modifyPasword(),
+              // buttonTile(),
+            ],
+          ),
         ),
       ),
     );
