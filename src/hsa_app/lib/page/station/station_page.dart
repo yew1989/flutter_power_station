@@ -5,10 +5,10 @@ import 'package:hsa_app/config/config.dart';
 import 'package:hsa_app/model/terminal.dart';
 import 'package:hsa_app/page/terminal/terminal_page.dart';
 import 'package:hsa_app/page/framework/webview_page.dart';
+import 'package:hsa_app/theme/theme_gradient_background.dart';
 import 'package:hsa_app/util/date_tool.dart';
 import 'package:hsa_app/util/public_tool.dart';
 import 'package:hsa_app/util/share.dart';
-import 'package:hsa_app/widget/background_gradient.dart';
 import 'package:native_color/native_color.dart';
 import 'package:wave/config.dart';
 import 'package:wave/wave.dart';
@@ -489,11 +489,11 @@ class _StationPageState extends State<StationPage> {
 
   @override
   Widget build(BuildContext context) {
-    return BackgroudGradient(
+    return ThemeGradientBackgroud(
       child: Stack(
         children:[
           
-          // 天气背景
+          // 天气背景 TODO 外层包裹
           Image.asset('images/station/GL_sun_icon.png'),
           Image.asset('images/station/GL_rain_icon.png'),
           Image.asset('images/station/GL_cloudy_icon.png'),

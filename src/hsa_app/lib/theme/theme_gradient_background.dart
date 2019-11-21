@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:native_color/native_color.dart';
 
-// 渐变色背景
-class BackgroudGradient extends StatefulWidget {
+// 统一渐变色背景
+class ThemeGradientBackgroud extends StatefulWidget {
   final Widget child;
-  const BackgroudGradient({Key key, this.child}) : super(key: key);
+  const ThemeGradientBackgroud({Key key, this.child}) : super(key: key);
   @override
-  _BackgroudGradientState createState() => _BackgroudGradientState();
+  _ThemeGradientBackgroudState createState() => _ThemeGradientBackgroudState();
 }
 
-class _BackgroudGradientState extends State<BackgroudGradient> {
+class _ThemeGradientBackgroudState extends State<ThemeGradientBackgroud> {
   @override
   Widget build(BuildContext context) {
     return Container(

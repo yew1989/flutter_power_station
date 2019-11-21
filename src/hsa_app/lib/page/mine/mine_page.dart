@@ -4,11 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:hsa_app/config/config.dart';
 import 'package:hsa_app/page/login/login_page.dart';
 import 'package:hsa_app/page/setting/modifypswd_page.dart';
-import 'package:hsa_app/page/setting/setting_page.dart';
 import 'package:hsa_app/page/framework/webview_page.dart';
+import 'package:hsa_app/theme/theme_gradient_background.dart';
 import 'package:hsa_app/util/public_tool.dart';
 import 'package:hsa_app/util/share.dart';
-import 'package:hsa_app/widget/background_gradient.dart';
 import 'package:native_color/native_color.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -167,7 +166,7 @@ class _MinePageState extends State<MinePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: BackgroudGradient(
+      body: ThemeGradientBackgroud(
         child: Stack(
           children: [ 
           ListView(

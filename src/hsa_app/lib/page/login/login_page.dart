@@ -14,7 +14,6 @@ class LoginPage extends StatefulWidget {
 
 class LoginPageState extends State<LoginPage> {
 
-  BuildContext _context;
   TextEditingController usrCtrl = TextEditingController();
   TextEditingController pwdCtrl = TextEditingController();
   bool checkBoxValue = true;
@@ -35,7 +34,7 @@ class LoginPageState extends State<LoginPage> {
     });
   }
 
-  void login() async {
+  void login(BuildContext context) async {
 
     Progresshud.showWithStatus('正在登录...');
     var token = await API.getLoginToken(usrCtrl.text, pwdCtrl.text);
@@ -56,7 +55,7 @@ class LoginPageState extends State<LoginPage> {
       var route = CupertinoPageRoute(
          builder: (_) => RootPage(),
           );
-         Navigator.of(_context,rootNavigator: true).pushAndRemoveUntil(route, (route) => route == null);
+         Navigator.of(context,rootNavigator: true).pushAndRemoveUntil(route, (route) => route == null);
       return;
     }
     debugPrint('❌:登录失败');
@@ -66,14 +65,9 @@ class LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
-    _context = context;
 
     return Scaffold(
-      // floatingActionButton: FloatingActionButton(
-      //   onPressed: (){
-      //   },
-      // ),
-      body: BackgroudGradient(
+      body: ThemeGradientBackground(
         child: Stack(
           children:[
 
@@ -298,7 +292,7 @@ class LoginPageState extends State<LoginPage> {
                                 return;
                               }
                               // 登录
-                              login();
+                              login(context);
                             },
                           ),
                         ),
