@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:hsa_app/components/runtime_progress_bar.dart';
 import 'package:hsa_app/config/config.dart';
 import 'package:hsa_app/model/terminal.dart';
-import 'package:hsa_app/page/debug/widget_page.dart';
 import 'package:hsa_app/page/framework/webview_page.dart';
 import 'package:hsa_app/theme/theme_gradient_background.dart';
 import 'package:hsa_app/util/public_tool.dart';
@@ -39,7 +39,7 @@ class _RuntimePageState extends State<RuntimePage> {
   double powerFactorPercentRed = 0;
   bool showPowerFactorText = false;
 
-  static const double kHeaderHeight = 120;
+  static const double kHeaderHeight = 44;
   static const double kDashBoardHeight = 200;
   static const double kFootHeight = 70;
   static const double kControlBoardHeight = 126;
@@ -130,21 +130,22 @@ class _RuntimePageState extends State<RuntimePage> {
       color: Colors.transparent,
       height: kHeaderHeight,
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
+          
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
-              DeviceParamBar(
+              RuntimeProgressBar(
                   barMaxWidth: barMaxWidth,
                   leftText: '电压',
                   valueText: '400V',
                   redLinePercent: voltPercentRed,
                   readValuePercent: voltPercent,
                   showLabel: showVoltText),
-              DeviceParamBar(
+              RuntimeProgressBar(
                   barMaxWidth: barMaxWidth,
                   leftText: '励磁电流',
                   valueText: '3.22A',
@@ -157,14 +158,14 @@ class _RuntimePageState extends State<RuntimePage> {
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
-              DeviceParamBar(
+              RuntimeProgressBar(
                   barMaxWidth: barMaxWidth,
                   leftText: '电流',
                   valueText: '140A',
                   redLinePercent: currentPercentRed,
                   readValuePercent: currentPercent,
                   showLabel: showCurrentText),
-              DeviceParamBar(
+              RuntimeProgressBar(
                   barMaxWidth: barMaxWidth,
                   leftText: '功率因数',
                   valueText: '0.76',
@@ -560,6 +561,7 @@ class _RuntimePageState extends State<RuntimePage> {
         body: Container(
           color: Colors.transparent,
           child: Column(children: <Widget>[
+            SizedBox(height: 16),
             terminalBriefHeader(),
             dashBoard(dashBoardUrl),
             terminalBriefFooter(),
