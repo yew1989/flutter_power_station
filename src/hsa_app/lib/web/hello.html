@@ -1,0 +1,133 @@
+<!--
+ * @Description: In User Settings Edit
+ * @Author: your name
+ * @Date: 2019-08-21 11:23:59
+ * @LastEditTime: 2019-08-27 14:05:36
+ * @LastEditors: Please set LastEditors
+ -->
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<title>JS桥测试</title>
+</head>
+
+<body>
+
+    <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    
+	<div id="app">
+
+		<button @click="pushPage">新建窗口</button>
+		<p></p>
+
+		<button @click="popPage">关闭窗口</button>
+		<p></p>
+
+		<button @click="flashOn">打开闪光灯</button>
+		<p></p>
+
+		<button @click="flashOff">关闭闪光灯</button>
+		<p></p>
+
+		<button @click="vibrationOn">马达振动</button>
+		<p></p>
+
+		<button @click="dialPhone">拨打电话</button>
+		<p></p>
+
+		<button @click="scanQRCode">扫二维码</button>
+		<p></p>
+
+		<button @click="echartPie">饼图数据</button>
+		<p></p>
+
+		<button @click="echartLineThousand">水位总功数据(千)</button>
+		<p></p>
+
+		<button @click="echartLineTenThousand">水位总功数据(万)</button>
+		<p></p>
+
+		<button @click="loginGetToken">登录</button>
+        <p></p>
+        
+        <button @click="testHttp">GET</button>
+		<p></p>
+
+        {{ message }}
+		<p></p>
+	</div>
+
+
+</body>
+
+</html>
+
+<script>
+	var app = new Vue({
+      el: '#app',
+      data: {
+        message: 'Hello Vue!'
+      },
+      mounted:function(){
+        window['callJS'] = (message) => {
+          this.callJS(message);
+        }
+       },
+      methods:{
+        callJS: function (message) {
+          this.message = message;
+        },
+        pushPage:function(){
+            JSBridge.postMessage('{"func":"navigator","action":"push","title":"SomeTitle","url":"http://emberwei.gitee.io/js_bridge_test_page/"}');
+        },
+        popPage:function(){
+            JSBridge.postMessage('{"func":"navigator","action":"pop","":""}');
+        },
+        flashOn:function(){
+            JSBridge.postMessage('{"func":"flash","action":"on"}');
+        },
+        flashOff:function(){
+            JSBridge.postMessage('{"func":"flash","action":"off"}');
+        },
+        vibrationOn:function(){
+            JSBridge.postMessage('{"func":"vibration","action":"on"}');
+        },
+        dialPhone:function(){
+            JSBridge.postMessage('{"func":"launcher","action":"dial","phone":"18046012345"}');
+        },
+        scanQRCode:function(){
+            JSBridge.postMessage('{"func":"qrcode","action":"scan"}');
+        },
+        echartPie:function(){
+            JSBridge.postMessage('{"func":"echart","action":"pieDemo"}');
+        },
+        echartLineThousand:function() {
+            JSBridge.postMessage('{"func":"echart","action":"linePowerWater","limit":"1000"}');
+        },
+        echartLineTenThousand:function(){
+            JSBridge.postMessage('{"func":"echart","action":"linePowerWater","limit":"10000"}');
+        },
+        loginGetToken:function(){
+            JSBridge.postMessage('{"func":"login","action":"getToken","accountName":"ld_show","accountPwd":"49ba59abbe56e057"}');
+        },
+        testHttp:function(){
+
+            
+            var instance = axios.create({
+                baseURL: 'http://192.168.16.120:18081'
+            });
+            instance.defaults.headers.common['Authorization'] = 'EEFB001799103B18EB8E96C0F8D8FC89BE3E54B19B75FE5307BD59EB3318121B349732A6F96B63423F71A7EAE047DBF08B80969009D3F6B27AAAAC91F11E9224F47DE866411DE5DD7831D849178BC36A2989B9F0';
+            //instance.defaults.headers.common['Cookie'] = '.ASPXAUTH=BEBD572B6A7303290C7341F5013E93DCCFBB71761A6439AB06926C65A085D352D6867B9D1506973373ED4046299925B26D97AAB88BF27286243E68CB76D0F35FB5A5D718114CD751FD9C901348E279EA7BCD0E33';
+            instance.get('/CustomerHydropowerStation/TreeNodeJSON', {
+                timeout: 5000
+            });
+            
+            
+        },
+      }
+    })
+</script>

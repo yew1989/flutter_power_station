@@ -1,0 +1,53 @@
+{
+	"AppPageRoute": {
+		"verison":"2",
+		"host": "http://192.168.16.116:8080/#/",
+		"devHost": "http://192.168.16.116:8080/#/",
+		"prdHost": "http://192.168.16.116:8080/#/",
+		"testHost": "http://192.168.16.116:8080/#/",
+		"page": {
+			"banner": {
+				"title": "广告栏",
+				"desc": "广告栏,高度固定240px,嵌入于首页展现",
+				"isFullScreen":false,
+				"route": "banner"
+			},
+			"credits": {
+				"title": "查看积分",
+				"desc": "积分页面,入口在我的页面,整页展现",
+				"isFullScreen":true,
+				"route": "credits"
+			},
+			"clockin": {
+				"title": "打卡",
+				"desc": "打卡页面,入口在我的页面,整页展现",
+				"isFullScreen":true,
+				"route": "clockin"
+			},
+			"about": {
+				"title": "关于",
+				"desc": "关于页面,入口在我的>设置,整页展现",
+				"isFullScreen":true,
+				"route": "about"
+			},
+			"mypowerchart": {
+				"title": "功率表",
+				"desc": "功率表页面,高度固定270px,嵌入于设备详情页",
+				"isFullScreen":false,
+				"route": "mypowerchart"
+			},
+			"history": {
+				"title": "历史",
+				"desc": "历史页面,功能包含告警类型,告警列表,水位和有功图表,整页展现,入口在设备详情页",
+				"isFullScreen":true,
+				"route": "history"
+			},
+			"video": {
+				"title": "视频",
+				"desc": "生态下泄水位监控视频页面,入口在电站详情页",
+				"isFullScreen":true,
+				"route": "video"
+			}
+		}
+	}
+}

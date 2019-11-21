@@ -1,0 +1,145 @@
+{
+    "Address": "00080011",
+    "VoltageAndCurrent": {
+        "FreezeTime": "2019-08-22T09:42:22",
+        "GV": 419.6,
+        "AV": 421.0,
+        "BV": 418.7,
+        "CV": 419.4,
+        "AA": 696.0,
+        "BA": 720.8,
+        "CA": 723.8,
+        "GVHz": 50.03,
+        "VHz": 50.03
+    },
+    "Power": {
+        "FreezeTime": "2019-08-22T09:42:22",
+        "TPf": 0.9802,
+        "Tkvar": 102.4,
+        "TkW": 507.0,
+        "AkW": 165.4,
+        "BkW": 170.7,
+        "CkW": 170.6,
+        "TkVA": 516.9,
+        "Akvar": 33.2,
+        "Bkvar": 31.6,
+        "Ckvar": 37.6
+    },
+    "WorkSupportData": {
+        "FreezeTime": "2019-08-22T09:42:22",
+        "GateOpening": 0.43,
+        "GateOpenings": [
+            0.43
+        ],
+        "RelativeMaxWaterStage": 5.0,
+        "WaterStageAlarmValue": 2.0,
+        "WaterStage": 2.0,
+        "AltitudeWaterStage": 0,
+        "CoolingWaterStage": null,
+        "RPM": 750.4,
+        "ExcitationCurrentA": 2.5,
+        "GateHLimit": false,
+        "GateLLimit": false,
+        "Temperatures": [
+            {
+                "m_Item1": "测量点1",
+                "m_Item2": "53.5",
+                "m_Item3": false
+            },
+            {
+                "m_Item1": "测量点2",
+                "m_Item2": "29.1",
+                "m_Item3": false
+            },
+            {
+                "m_Item1": "测量点3",
+                "m_Item2": "45.5",
+                "m_Item3": false
+            }
+        ],
+        "WaterPressures": null,
+        "RecentAlarmEventRecord": [
+            {
+                "ID": 2106426,
+                "TerminalAddress": "00080011",
+                "FreezeTime": "2019-08-18T17:30:01",
+                "ERCFlag": 44,
+                "NeedToEnsure": false,
+                "EnsureUserRealName": "",
+                "ERCTitle": "调速器非自动模式",
+                "Version": 0
+            },
+            {
+                "ID": 2105533,
+                "TerminalAddress": "00080011",
+                "FreezeTime": "2019-08-18T15:51:57",
+                "ERCFlag": 55,
+                "NeedToEnsure": false,
+                "EnsureUserRealName": "江乃润(力得)",
+                "ERCTitle": "电网三相不平衡",
+                "Version": 0
+            },
+            {
+                "ID": 2105002,
+                "TerminalAddress": "00080011",
+                "FreezeTime": "2019-08-18T15:50:18",
+                "ERCFlag": 13,
+                "NeedToEnsure": false,
+                "EnsureUserRealName": "",
+                "ERCTitle": "过压保护",
+                "Version": 0
+            }
+        ]
+    },
+    "TerminalInfo": {
+        "CustomerNo": "0008",
+        "StationNo": "001",
+        "TerminalAddress": "00080011",
+        "IsConnected": true,
+        "IsNetworkLink": false,
+        "IsRemoteControl": false,
+        "LastSwitchNetTime": "2019-08-22T08:32:38.69",
+        "Disabled": false,
+        "PeriodicElectricityPrices": [
+            0.0000,
+            0.0000,
+            0.0000,
+            0.0000
+        ],
+        "DayGeneratedEnergys": [
+            4886,
+            0,
+            0,
+            4886,
+            0
+        ],
+        "MonthGeneratedEnergys": [
+            286910,
+            0,
+            0,
+            286910,
+            0
+        ],
+        "AccumulatedGeneratedEnergys": [
+            2557437,
+            0,
+            0,
+            2557437,
+            0
+        ],
+        "CircuitBreakerClosing": true,
+        "WorkModel": "从机",
+        "ControlModel": "自动",
+        "IntelligentControlScheme": "功率均衡调节方案",
+        "WaterTurbineEquippedCapacitor": 1000,
+        "WaterTurbineRatedActivePower": 800,
+        "WaterTurbineRatedRPM": 0.0,
+        "WaterTurbineRatedA": 0.0,
+        "WaterTurbineRatedV": 0.0,
+        "WaterTurbineExcitationCurrentA": 0.0,
+        "WaterTurbineAliasName": "1#机组",
+        "WaterTurbineGovernorPressure": null,
+        "WaterTurbineStartStopState": "并网运行",
+        "TerminalType": "控制柜终端"
+    }
+}
