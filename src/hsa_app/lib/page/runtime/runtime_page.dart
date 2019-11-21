@@ -356,7 +356,7 @@ class _RuntimePageState extends State<RuntimePage> {
     return SafeArea(
       child: Container(
         height: 127,
-        margin: EdgeInsets.symmetric(horizontal: 10),
+        margin: EdgeInsets.only(left: 10,right: 10,bottom: 10),
         child:Stack(
           children: <Widget>[
 
