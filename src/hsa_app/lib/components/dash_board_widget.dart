@@ -163,7 +163,7 @@ class _DashBoardWidgetState extends State<DashBoardWidget> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
                 Text('1000',style: TextStyle(color: Colors.white,fontSize: 34,fontFamily: 'ArialNarrow')),
-                SizedBox(height: 2,width: 52,child: Image.asset('images/runtime/Time_line1.png'),),
+                SizedBox(height: 2,width: 50,child: Image.asset('images/runtime/Time_line1.png')),
                 SizedBox(height: 2),
                 Text('900kW',style: TextStyle(color: Colors.white38,fontSize: 15,fontFamily: 'ArialNarrow')),
               ],

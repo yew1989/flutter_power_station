@@ -196,10 +196,96 @@ class _RuntimePageState extends State<RuntimePage> {
 
   // 仪表盘
   Widget dashBoard() {
+
     return Container(
         height: 202,
-        color: Colors.transparent,
-        child: DashBoardWidget());
+        color: Colors.white10,
+        child: Stack(
+          children: [
+            
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: <Widget>[
+                // 左侧大区
+                Expanded(
+                  flex: 1,child: Container(
+                  color: Colors.transparent,
+                  child: Stack(
+                    children: <Widget>[
+                      // 左侧文字
+                      Positioned(
+                        right: 126,top: 10,
+                        child: Container(
+                          width: 50,
+                          height: 50,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: <Widget>[
+                              Text('50',style: TextStyle(color: Colors.white,fontFamily: 'ArialNarrow',fontSize: 24)),
+                              SizedBox(height: 2,width: 52,child: Image.asset('images/runtime/Time_line1.png')),
+                              Text('频率:Hz',style: TextStyle(color: Colors.white30,fontSize: 11)),
+                            ],
+                          ),
+                        ),
+                      ),
+                      // 左侧一根引出线
+                      Positioned(
+                        right: 62,top: 37,
+                        child: Container(
+                          height: 24,
+                          width: 66,
+                          child: Image.asset('images/runtime/Time_light_line1.png'),
+                        ),
+                      ),
+                    ],
+                  ),
+                )),
+
+                // 右侧大区
+                Expanded(
+                  flex: 1,child: Container(
+                  color: Colors.transparent,
+                  child: Stack(
+                    children: <Widget>[
+                      // 左侧文字
+                      Positioned(
+                        left: 113,top: 10,
+                        child: Container(
+                          width: 50,
+                          height: 50,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: <Widget>[
+                              Text('80',style: TextStyle(color: Colors.white,fontFamily: 'ArialNarrow',fontSize: 24)),
+                              SizedBox(height: 2,width: 52,child: Image.asset('images/runtime/Time_line1.png')),
+                              Text('开度:%',style: TextStyle(color: Colors.white30,fontSize: 11)),
+                            ],
+                          ),
+                        ),
+                      ),
+
+                     // 右侧一根引出线
+                      Positioned(
+                        left: 84,top: 37,
+                        child: Container(
+                          height: 20,
+                          width: 35,
+                          child: Image.asset('images/runtime/Time_light_line2.png'),
+                        ),
+                      ),
+                    ],
+                  ),
+                )),
+              ],
+            ),
+
+            DashBoardWidget(),
+        ],
+        ),
+      );
   }
 
   //  设备概要尾

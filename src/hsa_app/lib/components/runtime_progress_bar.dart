@@ -19,12 +19,10 @@ class RuntimeProgressBar extends StatelessWidget {
   final bool showLabel;
   final String leftText;
   final String valueText;
-
-  bool isRed = false;
-
+  
   @override
   Widget build(BuildContext context) {
-    isRed = redLinePercent > readValuePercent;
+    var isRed = redLinePercent > readValuePercent;
     return Center(
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
