@@ -166,7 +166,7 @@ class _MinePageState extends State<MinePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: ThemeGradientBackgroud(
+      body: ThemeGradientBackground(
         child: Stack(
           children: [ 
           ListView(

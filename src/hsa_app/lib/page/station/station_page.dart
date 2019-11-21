@@ -489,7 +489,7 @@ class _StationPageState extends State<StationPage> {
 
   @override
   Widget build(BuildContext context) {
-    return ThemeGradientBackgroud(
+    return ThemeGradientBackground(
       child: Stack(
         children:[
           

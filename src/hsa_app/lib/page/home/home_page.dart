@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:hsa_app/page/framework/wave_ball.dart';
 import 'package:hsa_app/page/home/view/home_banner.dart';
 import 'package:hsa_app/page/station/station_page.dart';
+import 'package:hsa_app/theme/theme_gradient_background.dart';
 import 'package:hsa_app/util/public_tool.dart';
-import 'package:hsa_app/widget/background_gradient.dart';
 
 class HomePage extends StatefulWidget {
   @override

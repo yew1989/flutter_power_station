@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:hsa_app/api/api.dart';
 import 'package:hsa_app/page/framework/root_page.dart';
+import 'package:hsa_app/theme/theme_gradient_background.dart';
 import 'package:hsa_app/util/share.dart';
-import 'package:hsa_app/widget/background_gradient.dart';
 import 'package:ovprogresshud/progresshud.dart';
 import 'package:native_color/native_color.dart';
 
