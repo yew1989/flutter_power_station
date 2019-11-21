@@ -561,20 +561,89 @@ class _RuntimePageState extends State<RuntimePage> {
         body: Container(
           color: Colors.transparent,
           child: Column(children: <Widget>[
-            SizedBox(height: 16),
+            SizedBox(height: 12),
             terminalBriefHeader(),
+            SqureMasterWidget(),
             dashBoard(dashBoardUrl),
             terminalBriefFooter(),
             Expanded(child: eventList()),
             // 淡阴影
-            LightDarkShawdow(),
-            operationBoard(titleHistory, urlHistory),
-            SizedBox(height: 10),
+            // LightDarkShawdow(),
+            // operationBoard(titleHistory, urlHistory),
+            // SizedBox(height: 10),
           ]),
         ),
       ),
     );
   }
+}
+
+
+
+class SqureMasterWidget extends StatelessWidget {
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.only(top: 10,bottom: 10),
+      child: Stack(
+        children: [
+
+
+          // 中位文字
+          Center(
+          child: SizedBox(
+          height: 50,
+          width: 50,
+            child: Stack(
+              children: 
+              [
+                Container(
+                decoration: BoxDecoration(
+                  color: Colors.white24,
+                  border: Border.all(color: Colors.transparent),
+                  borderRadius: BorderRadius.all(Radius.circular(8))),
+              child: Center(
+                child:Transform.translate(
+                  offset: Offset(0, 6),
+                  child: Text('2#',style: TextStyle(color: Colors.white,fontFamily: 'ArialNarrow',fontSize: 30),
+                    ),
+                ),
+                  ),
+                ),
+            
+            // 角标志
+            Positioned(
+              left: 0,top: 0,
+              child: Center(
+                child: SizedBox(
+                height: 29,
+                width: 29,
+                child: Image.asset('images/runtime/Time_host_icon.png'),
+                ),
+              ),
+              ),
+
+            // 文字
+            Positioned(
+              left: 4,top: 0,
+              child: Center(
+                child: Text('主',style: TextStyle(color: Colors.white,fontSize: 12)),
+              ),
+              ),
+
+              ]
+            ),
+            ),
+          ),
+
+
+
+        ]
+      ),
+    );
+  }
+  
 }
 
 class LightDarkShawdow extends StatelessWidget {
