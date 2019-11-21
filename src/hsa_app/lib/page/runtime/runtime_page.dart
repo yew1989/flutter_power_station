@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hsa_app/components/dash_board_widget.dart';
 import 'package:hsa_app/components/runtime_progress_bar.dart';
 import 'package:hsa_app/config/config.dart';
 import 'package:hsa_app/model/terminal.dart';
@@ -194,13 +195,11 @@ class _RuntimePageState extends State<RuntimePage> {
   }
 
   // 仪表盘
-  Widget dashBoard(String url) {
+  Widget dashBoard() {
     return Container(
-        height: 200,
+        height: 202,
         color: Colors.transparent,
-        child: Container(
-          color: Colors.transparent,
-        ));
+        child: DashBoardWidget());
   }
 
   //  设备概要尾
@@ -517,14 +516,6 @@ class _RuntimePageState extends State<RuntimePage> {
     // pushToPage(context, WebViewPage('历史', historyUrl, noNavBar: true));
   }
 
-  String buildDashBoardUrl(Terminal terminals) {
-    var host = AppConfig.getInstance().webHost;
-    var pageItemDashBoard = AppConfig.getInstance().pageBundle.mypowerchart;
-    var urlDashBoard =
-        host + pageItemDashBoard.route ?? AppConfig.getInstance().deadLink;
-    var auth = ShareManager.instance.token;
-    return urlDashBoard + '?auth=' + auth + '&address=' + terminals.terminalAddress;
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -564,7 +555,7 @@ class _RuntimePageState extends State<RuntimePage> {
             SizedBox(height: 12),
             terminalBriefHeader(),
             SqureMasterWidget(),
-            dashBoard(dashBoardUrl),
+            dashBoard(),
             terminalBriefFooter(),
             Expanded(child: eventList()),
             // 淡阴影
