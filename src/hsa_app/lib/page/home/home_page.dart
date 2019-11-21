@@ -1,5 +1,6 @@
 import 'package:badges/badges.dart';
 import 'package:flutter/material.dart';
+import 'package:hsa_app/components/shawdow_widget.dart';
 import 'package:hsa_app/page/framework/wave_ball.dart';
 import 'package:hsa_app/page/home/view/home_banner.dart';
 import 'package:hsa_app/page/station/station_page.dart';
@@ -271,6 +272,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
                   children: <Widget>[
                     tabbarWidget(),
                     tabViewWidget(),
+                    TabBarLineShawdow(),
                   ],
                 ),
               ),

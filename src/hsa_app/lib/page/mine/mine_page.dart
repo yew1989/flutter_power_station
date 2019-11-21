@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:hsa_app/components/shawdow_widget.dart';
 import 'package:hsa_app/config/config.dart';
 import 'package:hsa_app/page/login/login_page.dart';
 import 'package:hsa_app/page/setting/modifypswd_page.dart';
@@ -185,6 +186,13 @@ class _MinePageState extends State<MinePage> {
             left: 0,
             right: 0,
             child: Padding(padding: EdgeInsets.symmetric(horizontal: 50),child: loginOutButton())),
+          
+          Positioned(
+            bottom: 2,
+            left: 0,
+            right: 0,
+            child: TabBarLineShawdow(),
+          )
           ]
         ),
       ),

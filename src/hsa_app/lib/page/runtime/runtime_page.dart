@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hsa_app/components/dash_board_widget.dart';
 import 'package:hsa_app/components/runtime_progress_bar.dart';
+import 'package:hsa_app/components/shawdow_widget.dart';
 import 'package:hsa_app/config/config.dart';
 import 'package:hsa_app/model/terminal.dart';
 import 'package:hsa_app/page/framework/webview_page.dart';
@@ -886,7 +887,7 @@ class _RuntimePageState extends State<RuntimePage> {
             terminalBriefFooter(),
             SizedBox(height: 8),
             Expanded(child: eventList()),
-            LightDarkShawdow(),// 淡阴影
+            RunTimeLightDarkShawdow(),// 淡阴影
             operationBoard(),
           ]),
         ),
@@ -961,29 +962,4 @@ class SqureMasterWidget extends StatelessWidget {
     );
   }
   
-}
-
-class LightDarkShawdow extends StatelessWidget {
-  const LightDarkShawdow({
-    Key key,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      height: 10,
-      child: Container(
-        decoration: BoxDecoration(
-          boxShadow: [
-            BoxShadow(
-              color: HexColor('4077B3'),
-              offset: Offset(20.0, 10.0),
-              blurRadius: 50.0,
-              spreadRadius: 30,
-            )
-          ],
-        ),
-      ),
-    );
-  }
 }
