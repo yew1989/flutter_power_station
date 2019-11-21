@@ -360,7 +360,7 @@ class _RuntimePageState extends State<RuntimePage> {
         child:Stack(
           children: <Widget>[
 
-              // 分成上下两个区
+              // 背景 分成上下两个区
               Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
@@ -513,6 +513,102 @@ class _RuntimePageState extends State<RuntimePage> {
                     ],
                   ),
                 ),
+              ),
+
+              // 操作按钮
+              Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  // 上半区
+                  Expanded(flex: 1,
+                  child: Container(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: <Widget>[
+                        // 自动
+                        Expanded(
+                          flex: 1,child:Container(
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: <Widget>[
+                              Text('自          动',style: TextStyle(color: Colors.white,fontSize: 15)),
+                              SizedBox(height: 14,width: 14,
+                                child: Image.asset('images/runtime/Time_list_icon.png'),
+                              )
+                            ],
+                          ),
+                         ),
+                        ),
+                        SizedBox(width: 127),
+                        // 调功率
+                        Expanded(
+                          flex: 1,child:Container(
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: <Widget>[
+                            SizedBox(height: 22,width: 22,
+                                child: Image.asset('images/runtime/Time_Apower_icon.png'),
+                              ),
+                            SizedBox(width: 4),
+                            Text('调功',style: TextStyle(color: Colors.white,fontSize: 15)),
+
+                            ],
+                          ),
+                         ),
+                        ),
+                      ],
+                    ),
+                  )),
+                  // 分割线
+                  SizedBox(height: 3),
+                  // 下半区
+                  Expanded(flex: 1,
+                  child: Container(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: <Widget>[
+                        // 自动
+                        Expanded(
+                          flex: 1,child:Container(
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: <Widget>[
+                              Text('设备控制',style: TextStyle(color: Colors.white,fontSize: 15)),
+                              SizedBox(height: 14,width: 14,
+                                child: Image.asset('images/runtime/Time_list_icon.png'),
+                              )
+                            ],
+                          ),
+                         ),
+                        ),
+                        SizedBox(width: 127),
+                        // 调功率
+                        Expanded(
+                          flex: 1,child:Container(
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: <Widget>[
+                            SizedBox(height: 22,width: 22,
+                                child: Image.asset('images/runtime/Time_set_icon.png'),
+                              ),
+                            SizedBox(width: 4),
+                            Text('更多',style: TextStyle(color: Colors.white,fontSize: 15)),
+
+                            ],
+                          ),
+                         ),
+                        ),
+                      ],
+                    ),
+                  )),
+                ],
               ),
           ],
         ) ,
@@ -682,10 +778,11 @@ class _RuntimePageState extends State<RuntimePage> {
         ),
       );
 
-  Widget eventTile(int idx) => Container(
+  Widget eventTile(int idx) {
+    return Container(
         padding: EdgeInsets.symmetric(horizontal: 16),
-        height: 36,
-        child: Column(
+        height: 44,
+        child: Stack(
           children: <Widget>[
             Container(
               color: Colors.transparent,
@@ -694,33 +791,46 @@ class _RuntimePageState extends State<RuntimePage> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
-                  Center(
-                      child: Text(
-                    '• ERC31--超速保护',
-                    style: TextStyle(
-                        fontSize: 16,
-                        color: Colors.white,
-                        fontWeight: FontWeight.normal),
-                  )),
+                  Row(
+                   mainAxisAlignment: MainAxisAlignment.center,
+                   crossAxisAlignment: CrossAxisAlignment.center,
+                    children:[
+                     SizedBox(height: 8,width: 8,child: Image.asset('images/runtime/Time_err_list_btn.png')),
+                     SizedBox(width: 4),
+                     Center(
+                        child: Text(
+                      'ERC31--超速保护',
+                      style: TextStyle(
+                          fontSize: 14,
+                          color: Colors.white,
+                          fontFamily: 'ArialNarrow',
+                          fontWeight: FontWeight.normal),
+                      )),
+                    ]
+                  ),
                   Center(
                       child: Text(
                     '2019-08-23 09:37:30',
                     style: TextStyle(
-                      fontSize: 12,
-                      color: Colors.grey,
+                      fontSize: 14,
+                      fontFamily: 'ArialNarrow',
+                      color: Colors.white54,
                     ),
                   )),
                 ],
               )),
             ),
-            SizedBox(height: 4),
-            Divider(
-              height: 1,
-              color: Colors.grey[700],
+            Positioned(
+              left: 0,right: 0,bottom: 0,
+              child: Divider(
+                height: 1,
+                color: Colors.white38,
+              ),
             )
           ],
         ),
       );
+  }
 
   void onTapHistory() async {
     // var historyUrl = await buildHistoryUrl(widget.terminal);
@@ -771,7 +881,6 @@ class _RuntimePageState extends State<RuntimePage> {
             SizedBox(height: 8),
             Expanded(child: eventList()),
             LightDarkShawdow(),// 淡阴影
-            // operationBoard(titleHistory, urlHistory),
             operationBoard(),
           ]),
         ),
