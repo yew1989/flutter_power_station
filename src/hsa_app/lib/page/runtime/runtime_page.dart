@@ -7,6 +7,7 @@ import 'package:hsa_app/page/framework/webview_page.dart';
 import 'package:hsa_app/theme/theme_gradient_background.dart';
 import 'package:hsa_app/util/public_tool.dart';
 import 'package:hsa_app/util/share.dart';
+import 'package:native_color/native_color.dart';
 
 class RuntimePage extends StatefulWidget {
   final String title;
@@ -199,10 +200,9 @@ class _RuntimePageState extends State<RuntimePage> {
 
     return Container(
         height: 202,
-        color: Colors.white10,
         child: Stack(
           children: [
-            
+            // 分成左右两个大区
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
@@ -281,7 +281,7 @@ class _RuntimePageState extends State<RuntimePage> {
                 )),
               ],
             ),
-
+            // 中央仪表盘
             DashBoardWidget(),
         ],
         ),
@@ -289,8 +289,9 @@ class _RuntimePageState extends State<RuntimePage> {
   }
 
   //  设备概要尾
-  Widget terminalBriefFooter() => Container(
-        height: kFootHeight,
+  Widget terminalBriefFooter() { 
+    return Container(
+        padding: EdgeInsets.symmetric(vertical: 6),
         child: Center(
             child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -303,18 +304,22 @@ class _RuntimePageState extends State<RuntimePage> {
         )),
         color: Colors.transparent,
       );
+  }
 
   Widget terminalBriefFooterItem(String upString, String downString) =>
       Container(
-        height: kFootHeight,
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
-            Text(upString, style: TextStyle(color: Colors.white, fontSize: 20)),
-            SizedBox(height: 6),
+            Text(upString, 
+            style: TextStyle(color: Colors.white, fontSize: 22,fontFamily: 'ArialNarrow')),
             Text(downString,
-                style: TextStyle(color: Colors.grey, fontSize: 16)),
+            style: TextStyle(
+              color: Colors.grey, 
+              fontSize: 15,
+              fontFamily: 'ArialNarrow'
+              )),
           ],
         ),
       );
@@ -347,11 +352,178 @@ class _RuntimePageState extends State<RuntimePage> {
             }), 
       ));
 
-  Widget operationBoard(String historyTitle, String historyUrl) => SafeArea(
+  Widget operationBoard() {
+    return SafeArea(
+      child: Container(
+        height: 127,
+        margin: EdgeInsets.symmetric(horizontal: 10),
+        child:Stack(
+          children: <Widget>[
+
+              // 分成上下两个区
+              Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  
+                  // 上方大区
+                  Expanded(
+                    flex: 1,child: Container(
+                    child: Row(
+                      children: <Widget>[
+                        
+                        // 左上角
+                        Expanded(flex: 1,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: <Widget>[
+
+                            SizedBox(width: 10,
+                              child:Image.asset('images/board/board_top_left1.png'),
+                            ),
+
+                            Expanded(
+                                child:Image.asset('images/board/board_center.png',
+                                  repeat: ImageRepeat.repeatX,
+                                ),
+                            ),
+
+                            SizedBox(width: 27,
+                              child:Image.asset('images/board/board_top_left2.png'),
+                            ),
+                          ],
+                        ),
+                      ),
+                        SizedBox(width: 80),
+
+                        // 右上角
+                        Expanded(flex: 1,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: <Widget>[
+
+                            SizedBox(width: 27,
+                              child:Image.asset('images/board/board_top_right2.png'),
+                            ),
+
+                            Expanded(
+                                child:Image.asset('images/board/board_center.png',
+                                  repeat: ImageRepeat.repeatX,
+                                ),
+                            ),
+
+                            SizedBox(width: 10,
+                              child:Image.asset('images/board/board_top_right1.png'),
+                            ),
+                          ],
+                        ),
+                       ),
+                      ],
+                    ),
+                  )),
+                  SizedBox(height: 3),
+                  // 下方大区
+                  Expanded(
+                    flex: 1,child: Container(
+                    child: Row(
+                      children: <Widget>[
+                        
+                        // 左上角
+                        Expanded(flex: 1,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: <Widget>[
+
+                            SizedBox(width: 10,
+                              child:Image.asset('images/board/board_bottom_left1.png'),
+                            ),
+
+                            Expanded(
+                                child:Image.asset('images/board/board_center.png',
+                                  repeat: ImageRepeat.repeatX,
+                                ),
+                            ),
+
+                            SizedBox(width: 27,
+                              child:Image.asset('images/board/board_bottom_left2.png'),
+                            ),
+                          ],
+                        ),
+                      ),
+                        SizedBox(width: 80),
+
+                        // 右上角
+                        Expanded(flex: 1,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: <Widget>[
+
+                            SizedBox(width: 27,
+                              child:Image.asset('images/board/board_bottom_right2.png'),
+                            ),
+
+                            Expanded(
+                                child:Image.asset('images/board/board_center.png',
+                                  repeat: ImageRepeat.repeatX,
+                                ),
+                            ),
+
+                            SizedBox(width: 10,
+                              child:Image.asset('images/board/board_bottom_right1.png'),
+                            ),
+                          ],
+                        ),
+                       ),
+                      ],
+                    ),
+                  )),
+                ],
+              ),
+
+              // 中央按钮
+              Center(
+                child: Container(
+                  height: 127,
+                  width: 127,
+                  child: Stack(
+                    children: <Widget>[
+
+                      // 中央按钮
+                      Center(
+                        child: Container(
+                          height: double.infinity,
+                          width: double.infinity,
+                          decoration: BoxDecoration(
+                            image: DecorationImage(
+                              image: AssetImage('images/runtime/Time_power_btn.png')
+                            ),
+                          ),
+                          child:  Center(
+                              child: SizedBox(
+                                height: 68,
+                                width: 68,
+                                child: Image.asset('images/runtime/Time_power_icon_on.png'))
+                            ),
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+              ),
+          ],
+        ) ,
+      ),
+    );
+  }
+
+  Widget operationBoardOld(String historyTitle, String historyUrl) => SafeArea(
         child: Container(
-  
-          margin: EdgeInsets.symmetric(horizontal: 12),
-          height: kControlBoardHeight,
+          margin: EdgeInsets.symmetric(horizontal: 10),
+          height: 127,
           width: double.infinity,
           color: Colors.transparent,
           child: Stack(
@@ -361,9 +533,9 @@ class _RuntimePageState extends State<RuntimePage> {
                 children: <Widget>[
                   // 第一行
                   Container(
-                    height: 60,
+                    height: 62,
                     decoration: BoxDecoration(
-                      color: Color.fromRGBO(27, 25, 34, 1),
+                      color: Colors.black38,
                       borderRadius: BorderRadius.all(Radius.circular(8)),
                     ),
                     child: Container(
@@ -381,7 +553,7 @@ class _RuntimePageState extends State<RuntimePage> {
                                 Text(
                                   '自      动',
                                   style: TextStyle(
-                                      color: Colors.white, fontSize: 20),
+                                      color: Colors.white, fontSize: 16),
                                 ),
                                 Icon(Icons.arrow_drop_down,
                                     color: Colors.white, size: 30),
@@ -403,7 +575,7 @@ class _RuntimePageState extends State<RuntimePage> {
                                 Text(
                                   '  调功',
                                   style: TextStyle(
-                                      color: Colors.white, fontSize: 20),
+                                      color: Colors.white, fontSize: 16),
                                 ),
                               ],
                             ),
@@ -414,13 +586,13 @@ class _RuntimePageState extends State<RuntimePage> {
                   ),
 
                   // 中间间隔
-                  SizedBox(height: 6),
+                  SizedBox(height: 3),
 
                   // 第二行
                   Container(
-                    height: 60,
+                    height: 62,
                     decoration: BoxDecoration(
-                      color: Color.fromRGBO(27, 25, 34, 1),
+                      color: Colors.black38,
                       borderRadius: BorderRadius.all(Radius.circular(8)),
                     ),
                     child: Container(
@@ -438,7 +610,7 @@ class _RuntimePageState extends State<RuntimePage> {
                                 Text(
                                   '设备控制',
                                   style: TextStyle(
-                                      color: Colors.white, fontSize: 20),
+                                      color: Colors.white, fontSize: 16),
                                 ),
                                 Icon(Icons.arrow_drop_down,
                                     color: Colors.white, size: 30),
@@ -463,7 +635,7 @@ class _RuntimePageState extends State<RuntimePage> {
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: <Widget>[
                                   Icon(Icons.settings,color: Colors.white, size: 22),
-                                  Text('  更多',style: TextStyle(color: Colors.white, fontSize: 20)),
+                                  Text('  更多',style: TextStyle(color: Colors.white, fontSize: 16)),
                                 ],
                               ),
                             ),
@@ -478,74 +650,27 @@ class _RuntimePageState extends State<RuntimePage> {
               // 中央按钮
               Center(
                 child: Container(
-                  height: kControlBoardHeight,
-                  width: kControlBoardHeight,
+                  height: 127,
+                  width: 127,
                   decoration: BoxDecoration(
-                    color: Color.fromRGBO(27, 25, 34, 1),
+                    color: Colors.black26,
                     border: Border.all(
-                        color: Colors.black,
-                        width: 4,
+                        color: HexColor('4077B3'),
+                        width: 3,
                         style: BorderStyle.solid),
                     borderRadius: BorderRadius.all(Radius.circular(36)),
                   ),
                   child: Stack(
                     children: <Widget>[
-                      Row(
-                        children: <Widget>[
-                          Expanded(
-                              flex: 1,
-                              child: Container(
-                                  child: Column(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceAround,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: <Widget>[
-                                  Text('空',
-                                      style: TextStyle(
-                                          color: Colors.white, fontSize: 20)),
-                                  Text('转',
-                                      style: TextStyle(
-                                          color: Colors.white, fontSize: 20)),
-                                ],
-                              ))),
-                          SizedBox(
-                            width: 4,
-                            child: Container(
-                              color: Colors.black,
-                            ),
-                          ),
-                          Expanded(
-                              flex: 1,
-                              child: Container(
-                                  child: Column(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceAround,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: <Widget>[
-                                  Text('空',
-                                      style: TextStyle(
-                                          color: Colors.white, fontSize: 20)),
-                                  Text('载',
-                                      style: TextStyle(
-                                          color: Colors.white, fontSize: 20)),
-                                ],
-                              ))),
-                        ],
-                      ),
                       Center(
-                        child: SizedBox(
-                          height: 50,
-                          width: 50,
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.all(Radius.circular(30)),
-                            child: Container(
-                              height: double.infinity,
-                              width: double.infinity,
-                              color: Colors.white,
-                              child: Icon(Icons.power_settings_new,
-                                  color: Colors.blueAccent, size: 30),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.all(Radius.circular(30)),
+                          child:  Center(
+                              child: SizedBox(
+                                height: 68,
+                                width: 68,
+                                child: Image.asset('images/runtime/Time_power_icon_on.png'))
                             ),
-                          ),
                         ),
                       )
                     ],
@@ -643,11 +768,11 @@ class _RuntimePageState extends State<RuntimePage> {
             SqureMasterWidget(),
             dashBoard(),
             terminalBriefFooter(),
+            SizedBox(height: 8),
             Expanded(child: eventList()),
-            // 淡阴影
-            // LightDarkShawdow(),
+            LightDarkShawdow(),// 淡阴影
             // operationBoard(titleHistory, urlHistory),
-            // SizedBox(height: 10),
+            operationBoard(),
           ]),
         ),
       ),
@@ -736,10 +861,10 @@ class LightDarkShawdow extends StatelessWidget {
         decoration: BoxDecoration(
           boxShadow: [
             BoxShadow(
-              color: Colors.black,
+              color: HexColor('4077B3'),
               offset: Offset(20.0, 10.0),
               blurRadius: 50.0,
-              spreadRadius: 40,
+              spreadRadius: 30,
             )
           ],
         ),

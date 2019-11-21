@@ -58,6 +58,7 @@ flutter:
     - images/mine/
     - images/runtime/
     - images/station/
+    - images/board/
 
   fonts:
     - family: ArialNarrow
