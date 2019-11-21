@@ -402,8 +402,7 @@ class _StationPageState extends State<StationPage> {
             backgroundColor: Colors.transparent,
             elevation: 0,
             centerTitle: true,
-            // title: Text(widget.title),
-            title: Text('登云水电站',style: TextStyle(color: Colors.white,fontWeight: FontWeight.normal,fontSize: 16)),
+            title: Text('登云水电站',style: TextStyle(color: Colors.white,fontWeight: FontWeight.normal,fontSize: 20)),
             actions: <Widget>[
               GestureDetector(
                 onTap: (){

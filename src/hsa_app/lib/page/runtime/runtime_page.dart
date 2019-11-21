@@ -4,6 +4,7 @@ import 'package:hsa_app/components/runtime_progress_bar.dart';
 import 'package:hsa_app/config/config.dart';
 import 'package:hsa_app/model/terminal.dart';
 import 'package:hsa_app/page/framework/webview_page.dart';
+import 'package:hsa_app/page/more/more_page.dart';
 import 'package:hsa_app/theme/theme_gradient_background.dart';
 import 'package:hsa_app/util/public_tool.dart';
 import 'package:hsa_app/util/share.dart';
@@ -572,7 +573,7 @@ class _RuntimePageState extends State<RuntimePage> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: <Widget>[
-                        // 自动
+                        // 设备控制
                         Expanded(
                           flex: 1,child:Container(
                           child: Row(
@@ -588,22 +589,27 @@ class _RuntimePageState extends State<RuntimePage> {
                          ),
                         ),
                         SizedBox(width: 127),
-                        // 调功率
+                        // 更多
                         Expanded(
-                          flex: 1,child:Container(
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: <Widget>[
-                            SizedBox(height: 22,width: 22,
-                                child: Image.asset('images/runtime/Time_set_icon.png'),
-                              ),
-                            SizedBox(width: 4),
-                            Text('更多',style: TextStyle(color: Colors.white,fontSize: 15)),
+                          flex: 1,child:GestureDetector(
+                            onTap: (){
+                              pushToPage(context, MorePage());
+                            },
+                            child: Container(
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: <Widget>[
+                              SizedBox(height: 22,width: 22,
+                                  child: Image.asset('images/runtime/Time_set_icon.png'),
+                                ),
+                              SizedBox(width: 4),
+                              Text('更多',style: TextStyle(color: Colors.white,fontSize: 15)),
 
-                            ],
-                          ),
+                              ],
+                            ),
                          ),
+                          ),
                         ),
                       ],
                     ),
@@ -858,7 +864,7 @@ class _RuntimePageState extends State<RuntimePage> {
           elevation: 0,
           backgroundColor: Colors.transparent,
           centerTitle: true,
-          title: Text(widget.title,style: TextStyle(color: Colors.white,fontWeight: FontWeight.normal,fontSize: 16)),
+          title: Text(widget.title,style: TextStyle(color: Colors.white,fontWeight: FontWeight.normal,fontSize: 20)),
           actions: <Widget>[
             GestureDetector(
                 onTap: () {
