@@ -6,8 +6,6 @@ import 'dart:math';
 class DashPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
-    debugPrint('绘制前测量:' + size.toString());
-
     Paint paintFix = Paint();
     paintFix
       ..color = Colors.white24

@@ -8,7 +8,6 @@ import 'package:wave/wave.dart';
 class DrawWavePainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
-    debugPrint('绘制前测量:' + size.toString());
   }
 
   @override

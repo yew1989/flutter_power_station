@@ -6,7 +6,6 @@ class DrawCirCelPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    debugPrint('绘制前测量:' + size.toString());
 
     // solid模糊 ,先来一个发光圆环
     Paint _paint = Paint();

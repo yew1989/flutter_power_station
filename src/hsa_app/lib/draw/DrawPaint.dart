@@ -8,8 +8,6 @@ class DrawXXXPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
 
-    debugPrint('绘制前测量:' + size.toString());
-
     // 直线
     Paint _paint = Paint()
     ..color = Colors.blueAccent
