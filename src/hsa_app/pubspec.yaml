@@ -47,9 +47,6 @@ flutter:
 
   assets:
     - assets/
-    - assets/img/
-    - assets/lottie/
-    - assets/avatars/
     - images/
     - images/common/
     - images/history/

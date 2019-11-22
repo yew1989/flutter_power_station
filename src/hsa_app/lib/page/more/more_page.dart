@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:hsa_app/model/runtimedata.dart';
 import 'package:hsa_app/theme/theme_gradient_background.dart';
-
 
 class MorePage extends StatefulWidget {
   @override

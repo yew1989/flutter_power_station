@@ -1,6 +1,6 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
-import 'package:hsa_app/page/framework/circle_indicator.dart';
+import 'package:hsa_app/components/circle_indicator.dart';
 import 'package:native_color/native_color.dart';
 import 'package:wave/config.dart';
 import 'package:wave/wave.dart';
