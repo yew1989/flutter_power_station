@@ -47,7 +47,7 @@ class _HomeBannerState extends State<HomeBanner> {
         return GestureDetector(
           child: Image.network(img,fit: BoxFit.fill),
           onTap: () {
-            pushToPage(context, WebViewPage('', link));
+            pushToPage(context, WebViewPage('智能电站', link));
           },
         );
       },
