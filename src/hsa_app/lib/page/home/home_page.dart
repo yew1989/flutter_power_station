@@ -1,7 +1,7 @@
 import 'package:badges/badges.dart';
 import 'package:flutter/material.dart';
 import 'package:hsa_app/components/shawdow_widget.dart';
-import 'package:hsa_app/page/framework/wave_ball.dart';
+import 'package:hsa_app/components/wave_ball.dart';
 import 'package:hsa_app/page/home/view/home_banner.dart';
 import 'package:hsa_app/page/station/station_page.dart';
 import 'package:hsa_app/theme/theme_gradient_background.dart';
@@ -13,9 +13,6 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin {
-
-  int currentIndex = 0; //选中下标
-
   @override
   void initState() {
     super.initState();
@@ -26,21 +23,17 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
     super.dispose();
   }
 
-  void onTapBarItem(int index) {
-    debugPrint('编号:' + '$index');
-  }
-
-  Widget tabbarWidget() {
+  Widget tabBarHeader() {
     return Center(
       child: TabBar(
         indicator: const BoxDecoration(),
         indicatorSize: TabBarIndicatorSize.label,
-        labelColor: Colors.white, //选中的颜色
-        labelStyle: TextStyle(color: Colors.white, fontSize: 15.5), //选中的样式
-        unselectedLabelColor: Colors.grey, //未选中的颜色
-        unselectedLabelStyle:TextStyle(color: Colors.grey, fontSize: 15), //未选中的样式
-        indicatorColor: Colors.transparent, //下划线颜色
-        isScrollable: true, //是否可滑动
+        labelColor: Colors.white, 
+        labelStyle: TextStyle(color: Colors.white, fontSize: 15.5), 
+        unselectedLabelColor: Colors.grey,
+        unselectedLabelStyle:TextStyle(color: Colors.grey, fontSize: 15), 
+        indicatorColor: Colors.transparent,
+        isScrollable: true,
         tabs: <Widget>[
           SizedBox(height: 40, child: Center(child: Text('特别关注'))),
           SizedBox(height: 40, child: Center(child: Text('全部电站'))),
@@ -54,7 +47,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
     );
   }
 
-  Widget tabViewWidget() {
+  Widget tabBarBody() {
     return Expanded(
       child: Container(
         child: TabBarView(
@@ -103,7 +96,6 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
 
   Widget stationList() {
     return Container(
-      // color: Colors.white10,
       child: ListView.builder(
         itemCount: 10,
         itemBuilder: (_, int i) => stationTile(),
@@ -118,7 +110,6 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
-          // Text('123456'),
           Row(
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -270,8 +261,8 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
-                    tabbarWidget(),
-                    tabViewWidget(),
+                    tabBarHeader(),
+                    tabBarBody(),
                     TabBarLineShawdow(),
                   ],
                 ),

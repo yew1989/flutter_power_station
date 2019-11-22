@@ -3,7 +3,6 @@ import 'package:hsa_app/components/dash_board_widget.dart';
 import 'package:hsa_app/components/runtime_progress_bar.dart';
 import 'package:hsa_app/components/shawdow_widget.dart';
 import 'package:hsa_app/config/config.dart';
-import 'package:hsa_app/model/terminal.dart';
 import 'package:hsa_app/page/framework/webview_page.dart';
 import 'package:hsa_app/page/more/more_page.dart';
 import 'package:hsa_app/theme/theme_gradient_background.dart';
@@ -181,20 +180,6 @@ class _RuntimePageState extends State<RuntimePage> {
         ],
       ),
     );
-  }
-
-  /// dashboard URL
-  Future<String> buildHistoryUrl(Terminal terminals) async {
-    var host = AppConfig.getInstance().webHost;
-    var pageItemHistory = AppConfig.getInstance().pageBundle.history;
-    var urlHistory =
-        host + pageItemHistory.route ?? AppConfig.getInstance().deadLink;
-    var auth = await ShareManager.instance.loadToken();
-    return urlHistory +
-        '?auth=' +
-        auth +
-        '&address=' +
-        terminals.terminalAddress;
   }
 
   // 仪表盘
@@ -839,25 +824,9 @@ class _RuntimePageState extends State<RuntimePage> {
       );
   }
 
-  void onTapHistory() async {
-    // var historyUrl = await buildHistoryUrl(widget.terminal);
-    // pushToPage(context, WebViewPage('历史', historyUrl, noNavBar: true));
-  }
-
 
   @override
   Widget build(BuildContext context) {
-    var host = AppConfig.getInstance().webHost;
-    var pageItemPower = AppConfig.getInstance().pageBundle.mypowerchart;
-    var urlPower =  host + pageItemPower.route ?? AppConfig.getInstance().deadLink;
-
-    var pageItemHistory = AppConfig.getInstance().pageBundle.history;
-    var urlHistory =
-        host + pageItemHistory.route ?? AppConfig.getInstance().deadLink;
-    var titleHistory = pageItemHistory.title ?? '';
-
-    // var dashBoardUrl = buildDashBoardUrl(widget.terminal);
-    var dashBoardUrl = '';
     return ThemeGradientBackground(
       child: Scaffold(
         backgroundColor: Colors.transparent,
@@ -869,7 +838,7 @@ class _RuntimePageState extends State<RuntimePage> {
           actions: <Widget>[
             GestureDetector(
                 onTap: () {
-                  onTapHistory();
+                  
                 },
                 child: Center(
                     child: Text('历史曲线',

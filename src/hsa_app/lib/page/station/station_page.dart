@@ -2,7 +2,6 @@ import 'package:badges/badges.dart';
 import 'package:flutter/material.dart';
 import 'package:hsa_app/api/api.dart';
 import 'package:hsa_app/config/config.dart';
-import 'package:hsa_app/model/terminal.dart';
 import 'package:hsa_app/page/runtime/runtime_page.dart';
 import 'package:hsa_app/page/framework/webview_page.dart';
 import 'package:hsa_app/theme/theme_gradient_background.dart';
@@ -25,36 +24,10 @@ class StationPage extends StatefulWidget {
 
 class _StationPageState extends State<StationPage> {
 
-  List<Terminal> terminals =[];
-
-  Future<String> buildHistoryUrl(List<Terminal> terminals) async {
-
-    var host = AppConfig.getInstance().webHost;
-    var pageItemHistory = AppConfig.getInstance().pageBundle.history;
-    var urlHistory = host + pageItemHistory.route ?? AppConfig.getInstance().deadLink;
-    var auth = await ShareManager.instance.loadToken();
-    List<String> temp = [];
-    for (var terminal in terminals) {
-      temp.add(terminal.terminalAddress);
-    }
-    var terminalsString = temp.join(',');
-    return urlHistory + '?auth=' + auth + '&address=' + terminalsString;
-  }
-
   @override
   void initState() {
     super.initState();
-    // requestForTerminals(widget.customId,widget.stationId);
   }
-
-  // 获取用户设备
-  void requestForTerminals (String customId,String stationId) async {
-    var terminals = await API.getTerminalsWithCustomIdAndStationId(customId, stationId);
-    setState(() {
-      this.terminals = terminals;
-    });
-  }
-
 
   // 大水池
   Widget waterPool() {
@@ -379,11 +352,7 @@ class _StationPageState extends State<StationPage> {
     );
   }
 
-  void onTapPushToHistory() async{
-    var url = await buildHistoryUrl(terminals);
-    debugPrint(url);
-    pushToPage(context, WebViewPage('历史', url,noNavBar: true,));
-  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -406,7 +375,7 @@ class _StationPageState extends State<StationPage> {
             actions: <Widget>[
               GestureDetector(
                 onTap: (){
-                  onTapPushToHistory();
+                  // onTapPushToHistory();
                 },
                 // 此处跳转到历史曲线
                 child: Center(child: Text('历史曲线',style:TextStyle(color: Colors.white,fontSize: 16)))),
