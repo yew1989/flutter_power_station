@@ -41,7 +41,7 @@ class _HomeBannerState extends State<HomeBanner> {
       width: 54,
       length: widget.items?.length ?? 0,
       getwidget: (index) {
-        final item = widget.items[index];
+        final item = widget.items[index % widget.items.length];
         final img = item.img;
         final link = item.link;
         return GestureDetector(

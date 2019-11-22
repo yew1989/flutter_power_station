@@ -66,7 +66,7 @@ class HttpHelper {
 
     // 检测网络
     var isReachable = await isReachablity();
-    if (isReachable) {
+    if (isReachable == false) {
       if (onFail != null) {
         onFail('网络异常,请检查网络');
         return;
@@ -117,15 +117,8 @@ class HttpHelper {
         onFail(msg);
         return;
       }
-      // 内部有效的业务数据 {} 或 []
-      var data = map['data'];
-      if (data == null) {
-        onFail('请求错误');
-        return;
-      }
       var msg = map['msg'] ?? '请求成功';
-      // 成功返回 data 重要业务信息
-      onSucc(data, msg);
+      onSucc(response.data, msg);
     } catch (e) {
       handleDioError(e);
       onFail('请求错误');
@@ -141,7 +134,7 @@ class HttpHelper {
 
     // 检测网络
     var isReachable = await isReachablity();
-    if (isReachable) {
+    if (isReachable == false) {
       if (onFail != null) {
         onFail('网络异常,请检查网络');
         return;
@@ -192,15 +185,8 @@ class HttpHelper {
         onFail(msg);
         return;
       }
-      // 内部有效的业务数据 {} 或 []
-      var data = map['data'];
-      if (data == null) {
-        onFail('请求错误');
-        return;
-      }
       var msg = map['msg'] ?? '请求成功';
-      // 成功返回 data 重要业务信息
-      onSucc(data, msg);
+      onSucc(response.data, msg);
     } catch (e) {
       handleDioError(e);
       onFail('请求错误');
