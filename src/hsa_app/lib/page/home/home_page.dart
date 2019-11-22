@@ -16,8 +16,13 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin {
 
+  // 广告条
   List<BannerItem> banners = [];
-  
+  // 省份列表
+  List<String> provinces = [];
+  // UI分节列表
+  List<String> sections = ['特别关注','全部电站']; 
+
   // 获取广告条
   void requestBanner() {
 
@@ -30,10 +35,25 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
     });
   }
 
+  // 省份列表
+  void requestProvinces() {
+    
+    API.provinces((List<String> provinces){
+      setState(() {
+        this.provinces = provinces;
+        this.sections.addAll(provinces.map((name)=>name+'省').toList());
+      });
+    }, (String msg){
+
+    });
+  }
+
+
   @override
   void initState() {
     super.initState();
     requestBanner();
+    requestProvinces();
   }
 
   @override
@@ -52,15 +72,10 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
         unselectedLabelStyle:TextStyle(color: Colors.grey, fontSize: 15), 
         indicatorColor: Colors.transparent,
         isScrollable: true,
-        tabs: <Widget>[
-          SizedBox(height: 40, child: Center(child: Text('特别关注'))),
-          SizedBox(height: 40, child: Center(child: Text('全部电站'))),
-          SizedBox(height: 40, child: Center(child: Text('福建省'))),
-          SizedBox(height: 40, child: Center(child: Text('浙江省'))),
-          SizedBox(height: 40, child: Center(child: Text('江西省'))),
-          SizedBox(height: 40, child: Center(child: Text('广东省'))),
-          SizedBox(height: 40, child: Center(child: Text('广西省'))),
-        ],
+        tabs: this.sections.map(
+          (name){
+            return SizedBox(height: 40, child: Center(child: Text(name)));
+        }).toList(),
       ),
     );
   }
@@ -70,43 +85,13 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
       child: Container(
         child: TabBarView(
           physics: BouncingScrollPhysics(),
-          children: <Widget>[
-            Container(
+          children: this.sections.map((name){
+            return Container(
               height: double.infinity,
               width: double.infinity,
               child: stationList(),
-            ),
-            Container(
-              height: double.infinity,
-              width: double.infinity,
-              child: stationList(),
-            ),
-            Container(
-              height: double.infinity,
-              width: double.infinity,
-              child: stationList(),
-            ),
-            Container(
-              height: double.infinity,
-              width: double.infinity,
-              child: stationList(),
-            ),
-            Container(
-              height: double.infinity,
-              width: double.infinity,
-              child: stationList(),
-            ),
-            Container(
-              height: double.infinity,
-              width: double.infinity,
-              child: stationList(),
-            ),
-            Container(
-              height: double.infinity,
-              width: double.infinity,
-              child: stationList(),
-            ),
-          ],
+            );
+          }).toList(),
         ),
       ),
     );
@@ -274,7 +259,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
             Expanded(
               child: DefaultTabController(
                 initialIndex: 0,
-                length: 7,
+                length: this.sections?.length ?? 0,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.center,

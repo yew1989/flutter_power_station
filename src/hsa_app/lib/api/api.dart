@@ -6,6 +6,7 @@ import 'package:event_taxi/event_taxi.dart';
 import 'package:flutter/material.dart';
 import 'package:hsa_app/event/app_event.dart';
 import 'package:hsa_app/model/pageConfig.dart';
+import 'package:hsa_app/model/province.dart';
 import 'package:hsa_app/model/version.dart';
 import 'package:hsa_app/util/encrypt.dart';
 import 'package:hsa_app/util/share.dart';
@@ -16,6 +17,7 @@ typedef HttpSuccCallback = void Function(dynamic data, String msg);
 typedef HttpFailCallback = void Function(String msg);
 
 typedef BannerResponseCallBack = void Function(List<BannerItem> banners);
+typedef ProvinceResponseCallBack = void Function(List<String> provinces);
 
 class HttpResult {
   String msg;
@@ -222,6 +224,8 @@ class API {
 
   // 广告栏
   static final bannerListPath = 'app/GetBannerList';
+  // 省份列表
+  static final provinceListPath = 'app/GetProvinceList';
 
   // 广告栏
   static void banners(BannerResponseCallBack onSucc,HttpFailCallback onFail) {
@@ -235,6 +239,20 @@ class API {
       }, 
       onFail);
   }
+
+  // 省份列表
+  static void provinces(ProvinceResponseCallBack onSucc,HttpFailCallback onFail) {
+    HttpHelper.getHttp(
+      provinceListPath, null, 
+      (dynamic data,String msg) {
+        var map  = data as Map<String,dynamic>;
+        var resp = ProviceResponse.fromJson(map);
+        if(onSucc != null) onSucc(resp.data.province);
+      }, 
+      onFail);
+  }
+
+  // 
 
   // 获取设备运行参数
   // static Future<RunTimeData> runtimeData(String addressId) async {
