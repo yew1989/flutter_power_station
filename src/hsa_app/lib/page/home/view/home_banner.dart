@@ -1,22 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_banner_swiper/flutter_banner_swiper.dart';
+import 'package:hsa_app/model/banner_item.dart';
+import 'package:hsa_app/page/framework/webview_page.dart';
+import 'package:hsa_app/util/public_tool.dart';
 
 class HomeBanner extends StatefulWidget {
+  final List<BannerItem> items;
+  HomeBanner(this.items);
   @override
   _HomeBannerState createState() => _HomeBannerState();
 }
 
 class _HomeBannerState extends State<HomeBanner> {
-  
-  // 广告栏
-  List<String> bannerList = [
-    // 'http://www.fjlead.com/temp/picFim1.jpg',
-    // 'http://www.fjlead.com/temp/picFim3.jpg',
-    // 'http://www.fjlead.com/temp/picFim1.jpg',
-    // 'http://www.fjlead.com/temp/picFim3.jpg',
-    // 'http://www.fjlead.com/temp/picFim2.jpg',
-    '','','','','',
-  ];
+
+  // // 广告栏
+  // List<String> bannerList = [
+  //   // 'http://www.fjlead.com/temp/picFim1.jpg',
+  //   // 'http://www.fjlead.com/temp/picFim3.jpg',
+  //   // 'http://www.fjlead.com/temp/picFim1.jpg',
+  //   // 'http://www.fjlead.com/temp/picFim3.jpg',
+  //   // 'http://www.fjlead.com/temp/picFim2.jpg',
+  //   '','','','','',
+  // ];
 
   @override
   Widget build(BuildContext context) {
@@ -34,10 +39,16 @@ class _HomeBannerState extends State<HomeBanner> {
       spaceMode: false,
       height: 108,
       width: 54,
-      length: bannerList.length,
+      length: widget.items?.length ?? 0,
       getwidget: (index) {
+        final item = widget.items[index];
+        final img = item.img;
+        final link = item.link;
         return GestureDetector(
-          child: Image.network(bannerList[index % bannerList.length],fit: BoxFit.fill),onTap: () {},
+          child: Image.network(img,fit: BoxFit.fill),
+          onTap: () {
+            pushToPage(context, WebViewPage('', link));
+          },
         );
       },
     );

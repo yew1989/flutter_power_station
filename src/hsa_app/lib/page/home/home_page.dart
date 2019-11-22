@@ -1,7 +1,9 @@
 import 'package:badges/badges.dart';
 import 'package:flutter/material.dart';
+import 'package:hsa_app/api/api.dart';
 import 'package:hsa_app/components/shawdow_widget.dart';
 import 'package:hsa_app/components/wave_ball.dart';
+import 'package:hsa_app/model/banner_item.dart';
 import 'package:hsa_app/page/home/view/home_banner.dart';
 import 'package:hsa_app/page/station/station_page.dart';
 import 'package:hsa_app/theme/theme_gradient_background.dart';
@@ -13,9 +15,25 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin {
+
+  List<BannerItem> banners = [];
+  
+  // 获取广告条
+  void requestBanner() {
+
+    API.banners((List<BannerItem> banners) {
+      setState(() {
+        this.banners = banners;
+      });
+    }, (String msg){
+
+    });
+  }
+
   @override
   void initState() {
     super.initState();
+    requestBanner();
   }
 
   @override
@@ -250,7 +268,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
           children: <Widget>[
             SizedBox(
               height: 235,
-              child: HomeBanner(),
+              child: HomeBanner(this.banners),
             ),
             SizedBox(height: 1, child: Container(color: Colors.white24)),
             Expanded(
