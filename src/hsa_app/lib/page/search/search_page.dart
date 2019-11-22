@@ -2,7 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:hsa_app/model/station.dart';
-import 'package:hsa_app/page/home/view/home_station_tile_nostar.dart';
 
 class SearchPage extends StatefulWidget {
   final List<Station> rawStations;
@@ -159,7 +158,7 @@ class _SearchPageState extends State<SearchPage> {
               Expanded(
                 child: ListView.builder(
                   itemCount: currentStations?.length ?? 0,
-                  itemBuilder: (ctx,i) => HomeStationTileNoStar(data:currentStations[i]),
+                  // itemBuilder: (ctx,i) => HomeStationTileNoStar(data:currentStations[i]),
                 ),
               )
 

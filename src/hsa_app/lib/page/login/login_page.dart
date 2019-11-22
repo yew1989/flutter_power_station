@@ -66,11 +66,11 @@ class LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
 
-    return Scaffold(
-      body: ThemeGradientBackground(
-        child: Stack(
+    return ThemeGradientBackground(
+      child: Scaffold(
+        backgroundColor: Colors.transparent,
+        body: Stack(
           children:[
-
           // 背景
           Positioned(
             top: 60,
