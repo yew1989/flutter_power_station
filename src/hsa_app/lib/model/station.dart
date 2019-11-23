@@ -1,5 +1,5 @@
 class StationsResponse {
-  
+
   int code;
   int http;
   String msg;
@@ -102,14 +102,14 @@ class Stations {
 }
 
 class StationItem {
-  int max;
-  int current;
+  num max;
+  num current;
 
   StationItem({this.max, this.current});
 
   StationItem.fromJson(Map<String, dynamic> json) {
-    max = json['max'];
-    current = json['current'];
+    max = json['max'] ?? 0.0;
+    current = json['current'] ?? 0.0;
   }
 
   Map<String, dynamic> toJson() {
