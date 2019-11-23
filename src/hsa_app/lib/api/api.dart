@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:hsa_app/event/app_event.dart';
 import 'package:hsa_app/model/pageConfig.dart';
 import 'package:hsa_app/model/province.dart';
+import 'package:hsa_app/model/station.dart';
 import 'package:hsa_app/model/version.dart';
 import 'package:hsa_app/util/encrypt.dart';
 import 'package:hsa_app/util/share.dart';
@@ -16,8 +17,12 @@ import 'package:hsa_app/model/banner_item.dart';
 typedef HttpSuccCallback = void Function(dynamic data, String msg);
 typedef HttpFailCallback = void Function(String msg);
 
+// 获取广告栏列表
 typedef BannerResponseCallBack = void Function(List<BannerItem> banners);
+// 获取省份列表
 typedef ProvinceResponseCallBack = void Function(List<String> provinces);
+// 获取电站数量
+typedef StationCountResponseCallBack = void Function(int count);
 
 class HttpResult {
   String msg;
@@ -226,6 +231,8 @@ class API {
   static final bannerListPath = 'app/GetBannerList';
   // 省份列表
   static final provinceListPath = 'app/GetProvinceList';
+  // 电站列表
+  static final stationListPath = 'app/GetStationList';
 
   // 广告栏
   static void banners(BannerResponseCallBack onSucc,HttpFailCallback onFail) {
@@ -242,12 +249,29 @@ class API {
 
   // 省份列表
   static void provinces(ProvinceResponseCallBack onSucc,HttpFailCallback onFail) {
+
     HttpHelper.getHttp(
       provinceListPath, null, 
       (dynamic data,String msg) {
         var map  = data as Map<String,dynamic>;
         var resp = ProviceResponse.fromJson(map);
         if(onSucc != null) onSucc(resp.data.province);
+      }, 
+      onFail);
+  }
+
+  // 获取电站数量
+  static void stationsCount(StationCountResponseCallBack onSucc,HttpFailCallback onFail) {
+
+    HttpHelper.getHttp(
+      stationListPath, {
+      'page':'1',
+      'rows':'1',
+    },
+    (dynamic data,String msg) {
+        var map  = data as Map<String,dynamic>;
+        var resp = StationsResponse.fromJson(map);
+        if(onSucc != null) onSucc(resp.data?.total ?? 0);
       }, 
       onFail);
   }

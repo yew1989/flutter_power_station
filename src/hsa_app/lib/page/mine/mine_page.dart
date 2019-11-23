@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:hsa_app/api/api.dart';
 import 'package:hsa_app/components/shawdow_widget.dart';
 import 'package:hsa_app/config/config.dart';
 import 'package:hsa_app/page/login/login_page.dart';
@@ -21,14 +22,29 @@ class _MinePageState extends State<MinePage> {
 
   String userName = '';
 
+  int stationCount = 0;
+
   @override
   void initState() {
     super.initState();
     updateUserName();
+    requestStationCount();
+  }
+
+  void requestStationCount() {
+    
+    API.stationsCount((int count) {
+      setState(() {
+        this.stationCount = count;
+      });
+    },(String msg){
+
+    });
   }
 
   // 我的页面头部
   Widget avatorView() {
+    var downString = stationCount.toString() + ' 座智能电站';
     return Container(
       height: 198,
       width: double.infinity,
@@ -54,7 +70,7 @@ class _MinePageState extends State<MinePage> {
               children: <Widget>[
                 Text(userName, style: TextStyle(color: Colors.white, fontSize: 21)),
                 SizedBox(height: 4),
-                Text('100座智能电站', style: TextStyle(color: Colors.white, fontSize: 13)),
+                Text(downString, style: TextStyle(color: Colors.white, fontSize: 13)),
               ],
             ),
           ],
