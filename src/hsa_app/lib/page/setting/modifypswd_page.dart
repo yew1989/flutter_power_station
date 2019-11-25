@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hsa_app/api/api.dart';
 import 'package:hsa_app/theme/theme_gradient_background.dart';
-import 'package:hsa_app/util/public_tool.dart';
+import 'package:hsa_app/components/public_tool.dart';
 import 'package:native_color/native_color.dart';
 
 class ModifyPswdPage extends StatefulWidget {

@@ -5,7 +5,7 @@ import 'package:hsa_app/page/login/login_page.dart';
 import 'package:hsa_app/page/framework/root_page.dart';
 import 'package:hsa_app/service/versionManager.dart';
 import 'package:hsa_app/theme/theme_gradient_background.dart';
-import 'package:hsa_app/util/public_tool.dart';
+import 'package:hsa_app/components/public_tool.dart';
 import 'package:hsa_app/util/share.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 

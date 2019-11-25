@@ -49,20 +49,35 @@ class HttpHelper {
     return false;
   }
 
-    // 处理 DioError
-  static void handleDioError(dynamic e) {
-    debugPrint('HttpError ❌ : '+ e.toString());
+  // 处理 DioError
+  static void handleDioError(dynamic e,HttpFailCallback onFail) {
+
+    // DIO 错误
     if (e is DioError) {
+
       DioError dioError = e;
-      var code = dioError.response.statusCode;
+      var code = dioError.response?.statusCode;
       debugPrint('DioError ❌ : '+ dioError.toString());
+
+      // 请求错误
+      if(code == null) {
+        if(onFail == null) onFail('请求错误');
+        return;
+      }
       // 401 Authorization 过期
       if (code == 401) {
         debugPrint('🔑 Authorization 过期错误');
+        if(onFail == null) onFail('请求错误');
         EventTaxiImpl.singleton().fire(TokenExpireEvent());
-      } else {
-        
-      }
+        return;
+      } 
+      if(onFail == null) onFail('请求错误');
+      return;
+    }
+    // DIO 错误
+    else {
+        if(onFail == null) onFail('请求错误');
+        return;
     }
   }
 
@@ -129,7 +144,7 @@ class HttpHelper {
       var msg = map['msg'] ?? '请求成功';
       onSucc(response.data, msg);
     } catch (e) {
-      handleDioError(e);
+      handleDioError(e,(String msg) => onFail(msg));
       onFail('请求错误');
     }
   }
@@ -197,7 +212,7 @@ class HttpHelper {
       var msg = map['msg'] ?? '请求成功';
       onSucc(response.data, msg);
     } catch (e) {
-      handleDioError(e);
+      handleDioError(e,(String msg) => onFail(msg));
       onFail('请求错误');
     }
   }

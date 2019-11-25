@@ -4,7 +4,7 @@ import 'package:hsa_app/event/app_event.dart';
 import 'package:hsa_app/page/home/home_page.dart';
 import 'package:hsa_app/page/login/login_page.dart';
 import 'package:hsa_app/page/mine/mine_page.dart';
-import 'package:hsa_app/util/public_tool.dart';
+import 'package:hsa_app/components/public_tool.dart';
 
 class RootPage extends StatefulWidget {
   @override

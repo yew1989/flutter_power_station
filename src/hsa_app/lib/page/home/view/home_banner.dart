@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_banner_swiper/flutter_banner_swiper.dart';
 import 'package:hsa_app/model/banner_item.dart';
 import 'package:hsa_app/page/framework/webview_page.dart';
-import 'package:hsa_app/util/public_tool.dart';
+import 'package:hsa_app/components/public_tool.dart';
 
 class HomeBanner extends StatefulWidget {
   final List<BannerItem> items;

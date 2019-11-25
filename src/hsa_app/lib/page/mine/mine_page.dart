@@ -8,7 +8,7 @@ import 'package:hsa_app/page/login/login_page.dart';
 import 'package:hsa_app/page/setting/modifypswd_page.dart';
 import 'package:hsa_app/page/framework/webview_page.dart';
 import 'package:hsa_app/theme/theme_gradient_background.dart';
-import 'package:hsa_app/util/public_tool.dart';
+import 'package:hsa_app/components/public_tool.dart';
 import 'package:hsa_app/util/share.dart';
 import 'package:native_color/native_color.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -58,8 +58,7 @@ class _MinePageState extends State<MinePage> {
             SizedBox(
               height: 100, width: 100,
               child: CircleAvatar(
-                radius: 50,
-                backgroundImage: AssetImage('images/mine/My_protarit_icon.png'),
+                radius: 50, backgroundImage: AssetImage('images/mine/My_protarit_icon.png'),
               ),
             ),
             SizedBox(width: 16),
@@ -186,23 +185,26 @@ class _MinePageState extends State<MinePage> {
       body: ThemeGradientBackground(
         child: Stack(
           children: [ 
+          // 选项列表
           ListView(
-          primary: false,
-          children: <Widget>[
-            avatorView(),
-            itemTile('修改密码', 'images/mine/My_Change_pwd_icon.png', () => onTapChangePswd(context)),
-            itemTile('关于智能电站', 'images/mine/My_about_icon.png', () =>  onTapAbout(context)),
-            itemTile('SOS', 'images/mine/My_sos_icon.png', () =>  onTapSOSCall(context)),
-            // 分割线
-          SizedBox(height: 0.3,child: Container(color:Colors.white24)),
+            primary: false,
+            children: <Widget>[
+              avatorView(),
+              itemTile('修改密码', 'images/mine/My_Change_pwd_icon.png', () => onTapChangePswd(context)),
+              itemTile('关于智能电站', 'images/mine/My_about_icon.png', () =>  onTapAbout(context)),
+              itemTile('SOS', 'images/mine/My_sos_icon.png', () =>  onTapSOSCall(context)),
+              // 分割线
+              SizedBox(height: 0.3,child: Container(color:Colors.white24)),
             ],
           ),
+          // 注销按钮
           Positioned(
             bottom: 56,
             left: 0,
             right: 0,
-            child: Padding(padding: EdgeInsets.symmetric(horizontal: 50),child: loginOutButton())),
-          
+            child: Padding(padding: EdgeInsets.symmetric(horizontal: 50),child: loginOutButton())
+          ),
+          // 标签栏阴影
           Positioned(
             bottom: 2,
             left: 0,

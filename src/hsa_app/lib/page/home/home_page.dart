@@ -7,7 +7,7 @@ import 'package:hsa_app/model/banner_item.dart';
 import 'package:hsa_app/page/home/view/home_banner.dart';
 import 'package:hsa_app/page/station/station_page.dart';
 import 'package:hsa_app/theme/theme_gradient_background.dart';
-import 'package:hsa_app/util/public_tool.dart';
+import 'package:hsa_app/components/public_tool.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -31,7 +31,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
         this.banners = banners;
       });
     }, (String msg){
-
+      debugPrint(msg);
     });
   }
 
@@ -44,7 +44,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
         this.sections.addAll(provinces.map((name)=>name+'省').toList());
       });
     }, (String msg){
-
+      debugPrint(msg);
     });
   }
 

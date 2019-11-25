@@ -2,12 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:hsa_app/components/dash_board_widget.dart';
 import 'package:hsa_app/components/runtime_progress_bar.dart';
 import 'package:hsa_app/components/shawdow_widget.dart';
-import 'package:hsa_app/config/config.dart';
 import 'package:hsa_app/page/framework/webview_page.dart';
 import 'package:hsa_app/page/more/more_page.dart';
 import 'package:hsa_app/theme/theme_gradient_background.dart';
-import 'package:hsa_app/util/public_tool.dart';
-import 'package:hsa_app/util/share.dart';
+import 'package:hsa_app/components/public_tool.dart';
 import 'package:native_color/native_color.dart';
 
 class RuntimePage extends StatefulWidget {
