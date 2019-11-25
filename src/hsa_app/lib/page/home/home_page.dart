@@ -85,6 +85,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
     // 页码
     page:page,
     rows:pageRowsMax,
+    province:province,
     );
   }
 
@@ -123,6 +124,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
     super.initState();
     requestBanner();
     requestProvinces();
+    reqeustStationListLoadFirst(1,1,'福建',false);
   }
 
   @override
@@ -149,9 +151,9 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
     );
   }
 
+  // 标签页身体
   Widget tabBarBody() {
     return Expanded(
-      child: Container(
         child: TabBarView(
           physics: BouncingScrollPhysics(),
           children: this.sections.map((name){
@@ -161,16 +163,16 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
               child: stationList(),
             );
           }).toList(),
-        ),
       ),
     );
   }
 
   // 电站列表
   Widget stationList() {
-    return SmartRefresher(
-      enablePullDown: true,
-      enablePullUp: true,
+    return Container(
+    // return SmartRefresher(
+      // enablePullDown: true,
+      // enablePullUp: true,
       // onRefresh: _onRefresh,
       // onLoading: _onLoading,
       child: ListView.builder(
@@ -307,10 +309,10 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
                       stationTileTop(),
                       stationTileBody(),
                     ],
-                  )),
+                ),
+              ),
             ),
           ),
-
           // 底部分割线
           SizedBox(height: 1, child: Container(color: Colors.white24)),
         ],
@@ -326,10 +328,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
-            SizedBox(
-              height: 235,
-              child: HomeBanner(this.banners),
-            ),
+            SizedBox(height: 235,child: HomeBanner(this.banners)),
             SizedBox(height: 1, child: Container(color: Colors.white24)),
             Expanded(
               child: DefaultTabController(
