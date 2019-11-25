@@ -4,7 +4,7 @@ import 'package:hsa_app/config/config.dart';
 import 'package:hsa_app/page/runtime/runtime_page.dart';
 import 'package:hsa_app/page/framework/webview_page.dart';
 import 'package:hsa_app/theme/theme_gradient_background.dart';
-import 'package:hsa_app/util/public_tool.dart';
+import 'package:hsa_app/components/public_tool.dart';
 import 'package:native_color/native_color.dart';
 import 'package:wave/config.dart';
 import 'package:wave/wave.dart';

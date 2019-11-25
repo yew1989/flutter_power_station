@@ -32,6 +32,8 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
       });
     }, (String msg){
       debugPrint(msg);
+      // showErrorHud(context, msg);
+      progressShowError(msg);
     });
   }
 
@@ -45,6 +47,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
       });
     }, (String msg){
       debugPrint(msg);
+      progressShowError(msg);
     });
   }
 
@@ -54,6 +57,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
     super.initState();
     requestBanner();
     requestProvinces();
+    // ProgressHud.of(context).showLoading();
   }
 
   @override

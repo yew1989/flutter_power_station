@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:bmprogresshud/bmprogresshud.dart';
 import 'package:ovprogresshud/progresshud.dart';
 
 showAlertViewDouble(BuildContext context, String title, String content,Function ontap) {
@@ -55,7 +54,7 @@ showAlertViewSingle(BuildContext context, String title, String content,Function 
   });
 }
 
-// Route Manager
+  // Route Manager
   pushToPage(BuildContext context,Widget page) {
       var route = CupertinoPageRoute(builder: (_) => page);
       Navigator.of(context,rootNavigator: true).push(route);
@@ -66,7 +65,7 @@ showAlertViewSingle(BuildContext context, String title, String content,Function 
      Navigator.of(context,rootNavigator: true).pushAndRemoveUntil(route, (route) => route == null);
   }
 
-// Toast
+  // Toast
   showToast(String msg) {
     if (msg == null) return;
     if (msg.length == 0) return;
@@ -78,42 +77,35 @@ showAlertViewSingle(BuildContext context, String title, String content,Function 
     );
   }
 
-// Hud
+  // 进度条 loading
+  void progressShowLoading(String msg) {
+    if( msg == null ) return;
+    Progresshud.showWithStatus(msg);
+  }
 
-showSuccessHud(BuildContext context,String msg) {
-  if(msg == null)return;
-  if(msg.length == null)return;
-  ProgressHud.of(context).showAndDismiss(ProgressHudType.success, msg);
-}
+  // 进度条 success
+  void progressShowSuccess(String msg) {
+    Progresshud.dismiss();
+    if( msg == null ) return;
+    Progresshud.showSuccessWithStatus(msg);
+  }
 
-showErrorHud(BuildContext context,String msg) {
-  if(msg == null)return;
-  if(msg.length == null)return;
-  ProgressHud.of(context).showAndDismiss(ProgressHudType.error, msg);
-}
+  // 进度条 Info
+  void progressShowInfo(String msg) {
+    Progresshud.dismiss();
+    if( msg == null ) return;
+    Progresshud.showWithStatus(msg);
+  }
 
-showLoadingHud(BuildContext context) {
-  var hud = ProgressHud.of(context);
-  hud.show(ProgressHudType.progress, "loading");
-}
+  // 进度条 fail
+  void progressShowError(String msg) {
+    Progresshud.dismiss();
+    if( msg == null ) return;
+    Progresshud.showErrorWithStatus(msg);
+  }
 
-dismissLoadingHud(BuildContext context) {
-
-}
-
-showProgressHudPeriodic(BuildContext context) {
-  var hud = ProgressHud.of(context);
-  hud.show(ProgressHudType.progress, "loading");
-
-  double current = 0;
-  Timer.periodic(Duration(milliseconds: 1000.0 ~/ 60), (timer) {
-    current += 1;
-    var progress = current / 100;
-    hud.updateProgress(progress, "loading $current%");
-    if (progress == 1) {
-      hud.showAndDismiss(ProgressHudType.success, "load success");
-      timer.cancel();
-    }
-  });
-}
+  //进度条 dismiss
+  void progressDismiss(String msg) {
+    Progresshud.dismiss();
+  }
   
