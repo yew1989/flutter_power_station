@@ -56,8 +56,7 @@ class _MinePageState extends State<MinePage> {
           children: <Widget>[
             // 圆环
             SizedBox(
-              height: 100,
-              width: 100,
+              height: 100, width: 100,
               child: CircleAvatar(
                 radius: 50,
                 backgroundImage: AssetImage('images/mine/My_protarit_icon.png'),
@@ -106,23 +105,24 @@ class _MinePageState extends State<MinePage> {
     onTapSoScall('18046053193');
   }
 
+  // 登录界面
   Widget loginOutButton() {
     return SizedBox(
       height: 54,
       width: double.infinity,
       child: FlatButton(
-        shape: RoundedRectangleBorder(
+          shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.all(Radius.circular(8))),
           splashColor: Colors.white,color: HexColor('6699ff'),
           child: Text('退出登录', style: TextStyle(color: Colors.white, fontSize: 16)),
           onPressed: () {
-              showAlertViewDouble(context, '提示', '是否退出登录', () {
+          showAlertViewDouble(context, '提示', '是否退出登录', () {
       // ShareManager().clearAll();
       var route = CupertinoPageRoute(
         builder: (_) => LoginPage(),
       );
       Navigator.of(context, rootNavigator: true).pushAndRemoveUntil(route, (route) => route == null);
-    });
+      });
           },
         ),
     );

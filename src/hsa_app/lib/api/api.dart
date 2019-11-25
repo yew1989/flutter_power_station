@@ -23,6 +23,8 @@ typedef BannerResponseCallBack = void Function(List<BannerItem> banners);
 typedef ProvinceResponseCallBack = void Function(List<String> provinces);
 // 获取电站数量
 typedef StationCountResponseCallBack = void Function(int count);
+// 获取电站列表
+typedef StationsListResponseCallBack = void Function(List<Stations> stations,int total);
 
 class HttpResult {
   String msg;
@@ -261,7 +263,9 @@ class API {
   }
 
   // 获取电站数量
-  static void stationsCount(StationCountResponseCallBack onSucc,HttpFailCallback onFail) {
+  static void stationsCount(
+    StationCountResponseCallBack onSucc,
+    HttpFailCallback onFail) {
 
     HttpHelper.getHttp(
       stationListPath, {
@@ -276,7 +280,51 @@ class API {
       onFail);
   }
 
-  // 
+  // 获取电站列表
+  static void stationsList(
+    StationsListResponseCallBack onSucc,
+    HttpFailCallback onFail,
+    {int page,int rows,String province,String keyword,bool isfocus}) {
+
+    // 参数
+    Map<String,String> param = {};
+    // 页码
+    if( page != null ) {
+      if(page == 0) {
+        param['page'] = '1';
+      } else {
+        param['page'] = page.toString();
+      }
+    }
+    // 行数
+    if( rows != null ) {
+      if(rows == 0) {
+        param['rows'] = '1';
+      } else {
+        param['rows'] = rows.toString();
+      }
+    }
+    // 省份
+    if( province != null ) {
+      param['province'] = province;
+    }
+    // 关键词
+    if( keyword != null ) {
+      param['keyword'] = keyword;
+    }
+    // 关注
+    if ( isfocus == true ) {
+      param['isfocus'] = 'true';
+    }
+
+    HttpHelper.getHttp(stationListPath, param,(dynamic data,String msg) {
+        var map  = data as Map<String,dynamic>;
+        var resp = StationsResponse.fromJson(map);
+        if(onSucc != null) onSucc(resp.data.stations,resp.data.total ?? 0);
+      }, onFail);
+    
+  }
+
 
   // 获取设备运行参数
   // static Future<RunTimeData> runtimeData(String addressId) async {
