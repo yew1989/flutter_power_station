@@ -18,7 +18,7 @@ class HomeStationList extends StatefulWidget {
 
 class _HomeStationListState extends State<HomeStationList> {
   
-  int pageRowsMax = 10;
+  int pageRowsMax = 20;
   List<Stations> stations = [];
   RefreshController refreshController = RefreshController(initialRefresh: false);
   int currentPage = 1;
@@ -39,12 +39,13 @@ class _HomeStationListState extends State<HomeStationList> {
     }, (String msg){
       refreshController.refreshCompleted();
       debugPrint(msg);
-      progressShowError(msg);
+      // progressShowError(msg);
     },
     // 页码
     page:currentPage,
     rows:pageRowsMax,
     province:provinceName,
+    isfocus: this.type == 1 ? true : false,
     );
   }
 
@@ -67,12 +68,13 @@ class _HomeStationListState extends State<HomeStationList> {
     }, (String msg){
       refreshController.loadComplete();
       debugPrint(msg);
-      progressShowError(msg);
+      // progressShowError(msg);
     },
     // 页码
     page:currentPage,
     rows:pageRowsMax,
     province:provinceName,
+    isfocus: this.type == 1 ? true : false,
     );
   }
 
@@ -181,25 +183,61 @@ class _HomeStationListState extends State<HomeStationList> {
               Text(station.name,style: TextStyle(color: Colors.white, fontSize: 16)),
             ],
           ),
+
           // 星星
-          SizedBox(
-            height: 24,width: 24,
-            child: CircleAvatar(
-                radius: 12,
-                backgroundColor: Colors.transparent,
-                backgroundImage: station.isFocus
-                ? AssetImage('images/home/Home_keep_btn.png')
-                : AssetImage('images/home/Home_keep_no_btn.png'),
+          GestureDetector(
+            child: SizedBox(
+              height: 24,width: 24,
+              child: CircleAvatar(
+                  radius: 12,
+                  backgroundColor: Colors.transparent,
+                  backgroundImage: station.isFocus
+                  ? AssetImage('images/home/Home_keep_btn.png')
+                  : AssetImage('images/home/Home_keep_no_btn.png'),
+              ),
             ),
+            onTap:() => requestFocus(station),
           ),
         ],
       ),
     );
   }
 
+
+  // 请求关注
+  void requestFocus(Stations station) async {
+
+    API.focusStation(station.id.toString(), !station.isFocus, (String msg){
+      debugPrint('关注✅' + msg);
+      setState(() {
+        station.isFocus = !station.isFocus;
+      });
+    }, (String msg){
+      debugPrint('关注❌' + msg);
+      setState(() {
+        station.isFocus = !station.isFocus;
+      });
+    });
+  }
+
+
+  // 展示 EventCount
+  String buildEventCount(int eventCount) {
+    if(eventCount == null) return '';
+    if(eventCount == 0) return '';
+    if(eventCount > 99) return '99+';
+    return eventCount.toString();
+  }
+
   Widget stationTileBody(Stations station) {
+    // 水位标签
     var waterStr = station?.water?.current.toString() ?? '0.0';
     waterStr += 'm';
+    // 告警标签
+    var eventCount = station?.eventCount ?? 0;
+    var eventStr = buildEventCount(eventCount);
+    // 离线在线状态
+    var isOnline = station?.status == 'online' ? true : false;
 
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 30),
@@ -230,10 +268,12 @@ class _HomeStationListState extends State<HomeStationList> {
               Row(
                 children: [
                 SizedBox(height: 24,width: 24,
-                  child: Image.asset('images/home/Home_online_icon.png'),
+                  child: isOnline 
+                  ? Image.asset('images/home/Home_online_icon.png')
+                  : Image.asset('images/home/Home_offline_icon.png'),
                 ),
                 SizedBox(width: 8),
-                Text('在线',style: TextStyle(color: Colors.white,fontSize: 15)),
+                Text(isOnline ? '在线' : '离线',style: TextStyle(color: Colors.white,fontSize: 15)),
                 ]
               ),
 
@@ -246,11 +286,12 @@ class _HomeStationListState extends State<HomeStationList> {
                 Badge(
                   position: BadgePosition.topRight(top: -8,right: -8),
                   badgeColor: Colors.red,
-                  badgeContent: Text('1',style: TextStyle(color: Colors.white),),
+                  badgeContent: Text(eventStr,style: TextStyle(color: Colors.white,fontSize:  12)),
                   toAnimate: false,
                   child: SizedBox(height: 24,width: 24,
                     child: Image.asset('images/home/Home_Aalarm_icon.png'),
                   ),
+                  showBadge: eventCount != 0,
                 ),
                 SizedBox(width: 8),
                 Text('报警',style: TextStyle(color: Colors.white,fontSize: 15)),

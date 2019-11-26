@@ -17,6 +17,9 @@ import 'package:hsa_app/model/banner_item.dart';
 typedef HttpSuccCallback = void Function(dynamic data, String msg);
 typedef HttpFailCallback = void Function(String msg);
 
+typedef HttpSuccMsgCallback = void Function(String msg);
+
+
 // 获取广告栏列表
 typedef BannerResponseCallBack = void Function(List<BannerItem> banners);
 // 获取省份列表
@@ -37,7 +40,7 @@ class HttpHelper {
   static final isProxyModeOpen = true;
   static final proxyIP = 'PROXY 192.168.31.74:8888';
   // 超时时间
-  static final receiveTimeout = 20;
+  static final kTimeOutSeconds = 20;
   // 检测网络
   static Future<bool> isReachablity() async {
     var connectivityResult = await (Connectivity().checkConnectivity());
@@ -117,7 +120,8 @@ class HttpHelper {
         options: Options(
           headers: {'Authorization': ShareManager.instance.token},
           contentType: Headers.formUrlEncodedContentType,
-          receiveTimeout: HttpHelper.receiveTimeout,
+          receiveTimeout: HttpHelper.kTimeOutSeconds,
+          sendTimeout: HttpHelper.kTimeOutSeconds,
         ),
         queryParameters: param,
       );
@@ -185,9 +189,11 @@ class HttpHelper {
         options: Options(
           headers: {'Authorization': ShareManager.instance.token},
           contentType: Headers.formUrlEncodedContentType,
-          receiveTimeout: HttpHelper.receiveTimeout,
+          receiveTimeout: HttpHelper.kTimeOutSeconds,
+          sendTimeout: HttpHelper.kTimeOutSeconds,
         ),
-        data: param,
+        queryParameters: param,
+        // data: param,
       );
       if (response == null) {
         onFail('网络异常,请检查网络');
@@ -250,6 +256,28 @@ class API {
   static final provinceListPath = 'app/GetProvinceList';
   // 电站列表
   static final stationListPath = 'app/GetStationList';
+  
+  // 关注,取消关注电站
+  static final focusStationPath = 'app/FocusStation';
+
+  // 关注电站 / 取消关注电站
+  static void focusStation(String stationId,bool isFocus,HttpSuccMsgCallback onSucc,HttpFailCallback onFail) {
+    
+    // 参数
+    Map<String,String> param = {};
+    if(stationId != null && stationId.length > 0 ) {
+      param['id'] = stationId;
+    }
+    if(isFocus != null) {
+      param['isfocus'] = isFocus.toString();
+    }
+    HttpHelper.postHttp(focusStationPath, param,(dynamic data,String msg) {
+        var map  = data as Map<String,dynamic>;
+        var msg = map['msg'] ?? '';
+        if(onSucc != null) onSucc(msg);
+      }, 
+      onFail);
+  }
 
   // 广告栏
   static void banners(BannerResponseCallBack onSucc,HttpFailCallback onFail) {
@@ -321,7 +349,9 @@ class API {
     }
     // 省份
     if( province != null ) {
-      param['provincename'] = province;
+      if(province.length > 0) {
+        param['provincename'] = province;
+      }
     }
     // 关键词
     if( keyword != null ) {
