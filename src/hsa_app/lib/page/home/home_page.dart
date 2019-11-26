@@ -143,7 +143,6 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
     );
   }
 
-
   // // 电站列表
   // Widget stationList(String name) {
   //   return SmartRefresher(

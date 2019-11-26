@@ -110,8 +110,8 @@ class _HomeStationListState extends State<HomeStationList> {
     return SmartRefresher(
       enablePullDown: true,
       enablePullUp: true,
-      onLoading: loadFirst,
-      onRefresh: loadNext,
+      onLoading: loadNext,
+      onRefresh: loadFirst,
       controller: refreshController,
       child: ListView.builder(
         itemCount: stations?.length ?? 0,
@@ -145,7 +145,7 @@ class _HomeStationListState extends State<HomeStationList> {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: <Widget>[
                       stationTileTop(station),
-                      stationTileBody(),
+                      stationTileBody(station),
                     ],
                 ),
               ),
@@ -165,13 +165,13 @@ class _HomeStationListState extends State<HomeStationList> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
+          // 行
           Row(
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
               SizedBox(
-                height: 24,
-                width: 24,
+                height: 24,width: 24,
                 child: CircleAvatar(
                   radius: 12,
                   backgroundImage:AssetImage('images/home/Home_protrait_icon.png'),
@@ -181,13 +181,15 @@ class _HomeStationListState extends State<HomeStationList> {
               Text(station.name,style: TextStyle(color: Colors.white, fontSize: 16)),
             ],
           ),
+          // 星星
           SizedBox(
-            height: 24,
-            width: 24,
+            height: 24,width: 24,
             child: CircleAvatar(
                 radius: 12,
                 backgroundColor: Colors.transparent,
-                backgroundImage: AssetImage('images/home/Home_keep_btn.png'),
+                backgroundImage: station.isFocus
+                ? AssetImage('images/home/Home_keep_btn.png')
+                : AssetImage('images/home/Home_keep_no_btn.png'),
             ),
           ),
         ],
@@ -195,7 +197,10 @@ class _HomeStationListState extends State<HomeStationList> {
     );
   }
 
-  Widget stationTileBody() {
+  Widget stationTileBody(Stations station) {
+    var waterStr = station?.water?.current.toString() ?? '0.0';
+    waterStr += 'm';
+
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 30),
       height: 156,
@@ -209,9 +214,9 @@ class _HomeStationListState extends State<HomeStationList> {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
-              WaveBall(),
+              WaveBall(station:station),
               SizedBox(height: 4),
-              Text('45.1m',style: TextStyle(color: Colors.white,fontFamily: 'ArialNarrow',fontSize: 16)),
+              Text(waterStr,style: TextStyle(color: Colors.white,fontFamily: 'ArialNarrow',fontSize: 16)),
             ],
           ),
 

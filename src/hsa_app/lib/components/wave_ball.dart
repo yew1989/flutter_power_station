@@ -1,19 +1,79 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:hsa_app/components/circle_indicator.dart';
+import 'package:hsa_app/model/station.dart';
 import 'package:native_color/native_color.dart';
 import 'package:wave/config.dart';
 import 'package:wave/wave.dart';
 
 
+class WaveValuePack {
+  
+  double wava1 = 0.0;
+  double wave2 = 0.0;
+  
+  WaveValuePack({this.wava1,this.wave2});
+
+  static double caculateWaveRatio(Stations station) {
+
+    var waterMax = station?.water?.max ?? 0.0;
+    var waterCurrent = station?.water?.current ?? 0.0;
+    if( waterMax == 0 ) return 0.0;
+    if( waterCurrent == 0 ) return 0.0; 
+    if( waterCurrent > waterMax) return 1;
+    var ratio =  waterCurrent / waterMax;
+    return ratio;
+
+  }
+
+  static WaveValuePack caculateUIWave(double waveRatio) {
+    
+    var waterPercent = 1 - waveRatio;
+    var wave1 = waterPercent + 0.01;
+    var wave2 = waterPercent + 0.02;
+    return WaveValuePack(wava1: wave1,wave2: wave2);
+
+  }
+}
+
+
+class PowerValuePack {
+  
+  double powerRatio;
+  PowerValuePack(this.powerRatio);
+
+  static double caculateWaveRatio(Stations station) {
+
+    var powerMax = station?.power?.max ?? 0.0;
+    var powerCurrent = station?.power?.current ?? 0.0;
+    if( powerMax == 0 ) return 0.0;
+    if( powerCurrent == 0 ) return 0.0; 
+    if( powerCurrent > powerMax) return 1;
+    var ratio =  powerCurrent / powerMax;
+    return ratio;
+
+  }
+}
+
+
 class WaveBall extends StatefulWidget {
+
+  final Stations station;
+  const WaveBall({Key key, this.station}) : super(key: key);
+
   @override
   _WaveBallState createState() => _WaveBallState();
 }
 
 class _WaveBallState extends State<WaveBall> {
+  
   @override
   Widget build(BuildContext context) {
+
+    var waterRatio = WaveValuePack.caculateWaveRatio(widget.station);
+    var wavePack = WaveValuePack.caculateUIWave(waterRatio);
+    var powerRatio = PowerValuePack.caculateWaveRatio(widget.station);
+
     return SizedBox(
       height: 120,
       width: 120,
@@ -30,7 +90,7 @@ class _WaveBallState extends State<WaveBall> {
                       [Color.fromRGBO(92,180,224, 1),Color.fromRGBO(92,180,224, 0.3)],
                     ],
                     durations: [35000,10000],
-                    heightPercentages: [0.38,0.4],
+                    heightPercentages: [wavePack.wava1,wavePack.wave2],
                     gradientBegin: Alignment.topCenter,
                     gradientEnd: Alignment.bottomCenter,
                   ),
@@ -72,7 +132,7 @@ class _WaveBallState extends State<WaveBall> {
                 radius: 60,
                 backgroundColor: Colors.transparent,
                 stokeWidth: 7,
-                value: 0.65,
+                value: powerRatio ?? 0.0,
                 totalAngle: 2*pi,
               ),
             ),
@@ -84,7 +144,7 @@ class _WaveBallState extends State<WaveBall> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
               Center(
-                  child: Text('1254',
+                  child: Text(widget.station?.power?.toString() ?? '0.0',
                       style: TextStyle(color: Colors.white, fontSize: 35,fontFamily: 'ArialNarrow'))),
               Center(
                   child: Text('kW',
