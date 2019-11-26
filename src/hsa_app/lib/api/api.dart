@@ -321,7 +321,7 @@ class API {
     }
     // 省份
     if( province != null ) {
-      param['province'] = province;
+      param['provincename'] = province;
     }
     // 关键词
     if( keyword != null ) {
