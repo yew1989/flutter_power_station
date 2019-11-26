@@ -144,7 +144,7 @@ class _WaveBallState extends State<WaveBall> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
               Center(
-                  child: Text(widget.station?.power?.toString() ?? '0.0',
+                  child: Text(widget.station?.power?.current?.toString() ?? '0.0',
                       style: TextStyle(color: Colors.white, fontSize: 35,fontFamily: 'ArialNarrow'))),
               Center(
                   child: Text('kW',
