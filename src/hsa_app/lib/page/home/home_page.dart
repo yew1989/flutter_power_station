@@ -19,9 +19,6 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin {
 
-  // 每页分页数
-  int pageRowsMax = 10;
-
   // 广告条
   List<BannerItem> banners = [
 
@@ -59,40 +56,9 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
       });
     }, (String msg){
       debugPrint(msg);
-      progressShowError(msg);
+      // progressShowError(msg);
     });
   }
-
-  // 按省获取电站列表 加载首页
-  void reqeustStationListLoadFirst(int section, int page, String province,bool isFocus) {
-    
-    API.stationsList((List<Stations> stations,int total){
-      setState(() {
-
-      });
-    }, (String msg){
-      debugPrint(msg);
-      progressShowError(msg);
-    },
-    // 页码
-    page:page,
-    rows:pageRowsMax,
-    province:province,
-    );
-  }
-
-  // // 按省获取电站列表 加载更多
-  // void reqeustStationListLoadNext() {
-
-  //   API.stationsList((List<Stations> stations,int total){
-  //     setState(() {
-
-  //     });
-  //   }, (String msg){
-  //     debugPrint(msg);
-  //     progressShowError(msg);
-  //   });
-  // }
 
 
   @override
@@ -100,7 +66,6 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
     super.initState();
     requestBanner();
     requestProvinces();
-    // reqeustStationListLoadFirst(1,1,'福建',false);
   }
 
   @override
