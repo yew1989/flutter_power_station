@@ -307,7 +307,7 @@ class _HomeStationListState extends State<HomeStationList> {
                 Badge(
                   position: BadgePosition.topRight(top: -8,right: -8),
                   badgeColor: Colors.red,
-                  badgeContent: Text(eventStr,style: TextStyle(color: Colors.white,fontSize:  12)),
+                  badgeContent: Text(eventStr,style: TextStyle(color: Colors.white,fontSize:12)),
                   toAnimate: false,
                   child: SizedBox(height: 24,width: 24,
                     child: Image.asset('images/home/Home_Aalarm_icon.png'),

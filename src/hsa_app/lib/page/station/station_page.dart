@@ -127,7 +127,8 @@ class _StationPageState extends State<StationPage> {
 
   // 大水池
   Widget waterPool(StationInfo stationInfo) {
-    var width = MediaQuery.of(context).size.width - 46;
+    // var width = MediaQuery.of(context).size.width - 46;
+    var width = MediaQuery.of(context).size.width;
     return  Container(
       height: 266,
       color: Colors.transparent,
@@ -140,6 +141,7 @@ class _StationPageState extends State<StationPage> {
           profitWidget(stationInfo),
 
           // 左侧水库图片
+          /*
           Positioned(
             left: 0,bottom: 12,
             child: SizedBox(
@@ -199,6 +201,7 @@ class _StationPageState extends State<StationPage> {
               width: 33,
               child: Image.asset('images/station/GL_Water_Line2.png')),
           ),
+          
 
           // 尾水文本
           Positioned(
@@ -206,6 +209,8 @@ class _StationPageState extends State<StationPage> {
             child: Text('尾水',style: TextStyle(color: Colors.white,fontSize: 13),
             ),
           ),
+          */
+          
           
           // 当前功率 / 总功率
           Positioned(
@@ -288,15 +293,61 @@ class _StationPageState extends State<StationPage> {
         child: ListView.builder(
           shrinkWrap: true,
           physics: NeverScrollableScrollPhysics(),
-          itemCount: 5,
-          itemBuilder: (_, index) => deviceTile(index),
+          itemCount: stationInfo?.devices?.length ?? 0,
+          itemBuilder: (context, index) => deviceTile(context,index,stationInfo?.devices[index]),
         ),
     );
   }
 
-  Widget deviceTile(int index){
-    var name = (index + 1).toString();
+  // 右上角标
+  Widget badgeRight(bool isMaster,bool isOnline,String text) {
+    return  isMaster ? Container(
+        height: 16,width: 16,
+        decoration: BoxDecoration(
+          color: HexColor('009EE4'),
+          border: Border.all(color: HexColor('009EE4'),width: 1.5),
+          borderRadius: BorderRadius.circular(8)),
+          child: Center(child: Text(text,style: TextStyle(color: Colors.white,fontSize: 12))))
+      : Container(
+        height: 16,width: 16,
+        decoration: BoxDecoration(
+          border: Border.all(color: isOnline ? Colors.white : Colors.white60,width: 1.5),
+          borderRadius: BorderRadius.circular(8)),
+          child: Center(child: Text(text,style: TextStyle(color: isOnline ? Colors.white : Colors.white60,fontSize: 12))),
+     );
+  }
 
+  Widget fanWidget(bool isMaster) {
+    return Center(
+      child: SizedBox(height: 34,width: 34,
+      child: isMaster ? Image.asset('images/station/GL_unit_on_icon.png') 
+        : Image.asset('images/station/GL_unit_off_icon.png')
+      ),
+    );
+  }
+
+    // 展示 EventCount
+  String buildEventCount(int eventCount) {
+    if(eventCount == null) return '';
+    if(eventCount == 0) return '';
+    if(eventCount > 99) return '99+';
+    return eventCount.toString();
+  }
+
+  Widget deviceTile(BuildContext context,int index,Devices device){
+    
+    var badgeName = (index + 1).toString();
+    var isMaster = device?.isMaster ?? false;
+    var isOnline = device?.status == 'online' ? true : false;
+    var currentPower = device?.power?.current ?? 0.0;
+    var currentPowerStr = currentPower.toString() + 'kW';
+    var timeStamp = device?.updateTime ?? '';
+    timeStamp += isOnline ? '         ' : ' 离线';
+    var maxPower = device?.power?.max ?? 0;
+    var maxPowerStr = maxPower.toString();
+    var eventCount = device?.eventCount ?? 0;
+    var eventStr = buildEventCount(eventCount);
+    
     return Container(
       height: 76,
       child: Stack(
@@ -316,36 +367,18 @@ class _StationPageState extends State<StationPage> {
                   children: <Widget>[
 
                     // 堆叠视图
-                    SizedBox(
-                      height: 50,
-                      width: 50,
+                    SizedBox(height: 50,width: 50,
                       child: Stack(
                         children:[
-                        
                         // 水轮机图标
-                        Center(
-                          child: SizedBox(height: 34,width: 34,
-                            child: Image.asset('images/station/GL_unit_on_icon.png'),
-                          ),
-                        ),
-
-                        // 右上角标志
-                        Positioned(
-                          right: 2,top: 0,
-                          child: Container(
-                            height: 16,width: 16,
-                            decoration: BoxDecoration(
-                              border: Border.all(color: Colors.white,width: 1.5),
-                              borderRadius: BorderRadius.circular(8),),
-                            child: Center(
-                              child: Text(name,style: TextStyle(color: Colors.white,fontSize: 12)),
-                            ),
-                          ),
+                        fanWidget(isOnline),
+                        // 角标
+                        Positioned(right: 2,top: 0,
+                          child: badgeRight(isMaster,isOnline,badgeName)
                         ),
                         ]
                       ),
                     ),
-
 
                     // 文字
                     Column(
@@ -353,25 +386,23 @@ class _StationPageState extends State<StationPage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
                         SizedBox(height: 8),
-                        Text('450kW',
-                        style: TextStyle(color: Colors.white,fontFamily: 'ArialNarrow',fontSize: 20)),
+                        Text(currentPowerStr,style: TextStyle(color: isOnline ? Colors.white : Colors.white60,
+                        fontFamily: 'ArialNarrow',fontSize: 20)),
                         SizedBox(height: 4),
-                        Text('2019.09.03 11:26',
-                        style: TextStyle(color: Colors.white54,fontFamily: 'ArialNarrow',fontSize: 15)),
+                        Text(timeStamp,style: TextStyle(color: Colors.white54,fontFamily: 'ArialNarrow',fontSize: 15)),
                       ],
                     ),
 
                     // 告警铃
-                    Badge(
-                      badgeContent: Text('8',style: TextStyle(color: Colors.white)),
+                    eventCount != 0 ? Badge(
+                      badgeContent: Center(child: Text(eventStr,style: TextStyle(color: Colors.white,fontSize: 12))),
                       position: BadgePosition.topRight(top: -12,right: -4),
-                      badgeColor: Colors.red,
-                      toAnimate: false,
-                      child: 
-                    SizedBox(height: 24,width: 24,child: Image.asset('images/station/GL_Alarm_icon.png'))),
+                      badgeColor: Colors.red,toAnimate: false,
+                      child:  SizedBox(height: 24,width: 24,child: Image.asset('images/station/GL_Alarm_icon.png')))
+                    : SizedBox(height: 24,width: 24),
 
                     // 当前功率
-                    Text('423',style: TextStyle(color: Colors.white,fontFamily: 'ArialNarrow',fontSize: 28)),
+                    Text(maxPowerStr,style: TextStyle(color: isOnline ? Colors.white : Colors.white60,fontFamily: 'ArialNarrow',fontSize: 28)),
                   ],
                 ),
               ),
@@ -421,8 +452,8 @@ class _StationPageState extends State<StationPage> {
           
           // 天气背景 TODO 外层包裹
           Image.asset('images/station/GL_sun_icon.png'),
-          Image.asset('images/station/GL_rain_icon.png'),
-          Image.asset('images/station/GL_cloudy_icon.png'),
+          // Image.asset('images/station/GL_rain_icon.png'),
+          // Image.asset('images/station/GL_cloudy_icon.png'),
 
           Scaffold(
           backgroundColor: Colors.transparent,
