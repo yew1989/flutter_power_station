@@ -5,6 +5,7 @@ import 'package:dio/dio.dart';
 import 'package:event_taxi/event_taxi.dart';
 import 'package:flutter/material.dart';
 import 'package:hsa_app/event/app_event.dart';
+import 'package:hsa_app/event/event_bird.dart';
 import 'package:hsa_app/model/pageConfig.dart';
 import 'package:hsa_app/model/province.dart';
 import 'package:hsa_app/model/station.dart';
@@ -71,7 +72,7 @@ class HttpHelper {
       if (code == 401) {
         debugPrint('🔑 Authorization 过期错误');
         if(onFail == null) onFail('请求错误');
-        EventTaxiImpl.singleton().fire(TokenExpireEvent());
+        EventBird().emit(AppEvent.tokenExpiration);
         return;
       } 
       if(onFail == null) onFail('请求错误');
@@ -355,7 +356,9 @@ class API {
     }
     // 关键词
     if( keyword != null ) {
-      param['keyword'] = keyword;
+      if(keyword.length > 0) {
+        param['keyword'] = keyword;
+      }
     }
     // 关注
     if ( isfocus == true ) {
@@ -368,104 +371,6 @@ class API {
         if(onSucc != null) onSucc(resp.data.stations,resp.data.total ?? 0);
       }, onFail);
     
-  }
-
-
-  // 获取设备运行参数
-  // static Future<RunTimeData> runtimeData(String addressId) async {
-
-  //   if(addressId == null)return null;
-  //   if(addressId.length ==0) return null;
-
-  //   try {
-  //     final path = host + runtimeDataPath + '/' + addressId;
-  //     Response response = await Dio().post(path,
-  //       options: Options(
-  //         headers: {
-  //           'Authorization':ShareManager.instance.token
-  //         }
-  //       )
-  //     );
-  //     if(response.statusCode != 200) {
-  //       return null;
-  //     }
-  //     if(response.data is! Map) {
-  //       return null;
-  //     }
-  //     var map  = response.data as Map<String,dynamic>;
-  //     var data = RunTimeData.fromJson(map);
-  //     return data;
-  //     } catch (e) {
-  //       handleError(e);
-  //       debugPrint('错误❌:' + e.toString());
-  //     }
-  //     return null;
-  // }
-
-  // 上传文件
-  static Future<bool> uploadFileJson(String uploadJsonString) async {
-    if (uploadJsonString == null) return false;
-    if (uploadJsonString.length == 0) return false;
-
-    var dio = Dio();
-    // (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate = (HttpClient client) {
-    // client.findProxy = (_) => "PROXY 192.168.31.74:8888";
-    // client.badCertificateCallback =  (X509Certificate cert, String host, int port) => true;
-    // };
-    try {
-      final path = host + uploadFilePath;
-      Response response = await dio.post(
-        path,
-        options: Options(
-          headers: {
-            'Authorization': ShareManager.instance.token,
-          },
-          contentType: Headers.formUrlEncodedContentType,
-        ),
-        data: {'': uploadJsonString ?? ''},
-      );
-      if (response.statusCode != 200) {
-        return false;
-      }
-      if (response.data is! Map) {
-        return false;
-      }
-      Map<String, dynamic> map = response.data;
-      if (map['code'] == 0) return true;
-      return false;
-    } catch (e) {
-      // handleError(e);
-      EventTaxiImpl.singleton().fire(TokenExpireEvent());
-      return false;
-    }
-  }
-
-  // 下载文件
-  static Future<String> downloadFileJson() async {
-    try {
-      final path = host + downloadFilePath;
-      Response response = await Dio().get(
-        path,
-        options: Options(
-          headers: {
-            'Authorization': ShareManager.instance.token,
-          },
-          responseType: ResponseType.plain,
-        ),
-      );
-      if (response.statusCode != 200) {
-        return null;
-      }
-      if (response.data is! String) {
-        return null;
-      }
-      String jsonString = response.data;
-      return jsonString;
-    } catch (e) {
-      debugPrint(e.toString());
-      // handleError(e);
-    }
-    return null;
   }
 
   // 更改登录密码
@@ -532,77 +437,6 @@ class API {
     }
   }
 
-  // 获取所有电站列表 From TreeNodeJson 含有链接数据
-  // static Future<List<Station>> getStationsFromTreeNode() async {
-
-  //   Progresshud.showWithStatus('正在加载...');
-
-  //   try {
-  //     final path = host + treeNodePath;
-  //     Response response = await Dio().get(path,
-  //       options: Options(
-  //         headers: {
-  //           'Authorization':ShareManager.instance.token
-  //         }
-  //       )
-  //     );
-  //     if(response.statusCode != 200) {
-  //       Progresshud.dismiss();
-  //       Progresshud.showErrorWithStatus('请求失败');
-  //       return null;
-  //     }
-  //     if(response.data is! List){
-  //       Progresshud.dismiss();
-  //       Progresshud.showErrorWithStatus('请求失败');
-  //       return null;
-  //     }
-  //     List<Station> stations = [];
-  //     var list = response.data as List;
-  //     for (var item in list) {
-  //       Station station = Station.fromJson(item);
-  //       stations.add(station);
-  //     }
-  //     Progresshud.dismiss();
-  //     return stations;
-  //     } catch (e) {
-  //       handleError(e);
-  //     }
-  //     return null;
-  // }
-
-  // 获取所有电站列表
-  // static Future<List<StationOld>> getAllStations() async {
-
-  //   try {
-  //     final path = host + customStationInfoPath;
-  //     Response response = await Dio().get(path,
-  //       options: Options(
-  //         headers: {
-  //           'Authorization':ShareManager.instance.token
-  //         }
-  //       )
-  //     );
-  //     if(response.statusCode != 200) {
-  //       return null;
-  //     }
-  //     if(response.data is! List){
-  //       return null;
-  //     }
-  //     List<StationOld> stations = [];
-  //     var list = response.data as List;
-  //     for (var item in list) {
-  //       StationOld station = StationOld.fromJson(item);
-  //       stations.add(station);
-  //     }
-  //     return stations;
-  //     } catch (e) {
-  //       handleError(e);
-  //     }
-  //     return null;
-  // }
-
-
-
   // Touch 外部环境
   static Future<String> touchNetWork() async {
     try {
@@ -617,29 +451,7 @@ class API {
       return null;
     }
   }
-
-  // Touch Url
-  static Future<String> touchNetWorkWithUrl(String url) async {
-    try {
-      Response response = await Dio().get(
-        url,
-        options: Options(
-          headers: {
-            'Authorization': ShareManager.instance.token,
-          },
-          contentType: Headers.formUrlEncodedContentType,
-        ),
-      );
-      if (response.statusCode != 200) {
-        return null;
-      }
-      return '';
-    } catch (e) {
-      print(e);
-      return null;
-    }
-  }
-
+  
   // 获取远端版本信息接口(文件)
   static Future<Version> getAppVersionRemote() async {
     try {

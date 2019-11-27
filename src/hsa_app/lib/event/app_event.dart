@@ -1,6 +1,8 @@
-import 'package:event_taxi/event_taxi.dart';
+import 'package:flutter/material.dart';
 
-// Token 过期 401
-class TokenExpireEvent implements Event {
-
+class AppEvent {
+  // Token过期
+  static final String  tokenExpiration = 'EventTokenExpiration';
+  // 搜索
+  static final String  searchKeyWord   = 'EventSearchKeyWord';
 }

@@ -1,16 +1,11 @@
-import 'package:badges/badges.dart';
 import 'package:flutter/material.dart';
 import 'package:hsa_app/api/api.dart';
 import 'package:hsa_app/components/shawdow_widget.dart';
-import 'package:hsa_app/components/wave_ball.dart';
 import 'package:hsa_app/model/banner_item.dart';
-import 'package:hsa_app/model/station.dart';
 import 'package:hsa_app/page/home/home_station_list.dart';
 import 'package:hsa_app/page/home/view/home_banner.dart';
-import 'package:hsa_app/page/station/station_page.dart';
 import 'package:hsa_app/theme/theme_gradient_background.dart';
 import 'package:hsa_app/components/public_tool.dart';
-import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class HomePage extends StatefulWidget {
   @override

@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:hsa_app/api/api.dart';
 import 'package:hsa_app/components/public_tool.dart';
 import 'package:hsa_app/components/wave_ball.dart';
+import 'package:hsa_app/event/app_event.dart';
+import 'package:hsa_app/event/event_bird.dart';
 import 'package:hsa_app/model/station.dart';
 import 'package:hsa_app/page/station/station_page.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
@@ -10,7 +12,9 @@ import 'package:pull_to_refresh/pull_to_refresh.dart';
 class HomeStationList extends StatefulWidget {
 
   final String homeParam;
-  const HomeStationList({Key key, this.homeParam}) : super(key: key);
+  final bool isFromSearch;
+
+  const HomeStationList({Key key, this.homeParam,this.isFromSearch}) : super(key: key);
   @override
   _HomeStationListState createState() => _HomeStationListState();
 
@@ -22,9 +26,10 @@ class _HomeStationListState extends State<HomeStationList> {
   List<Stations> stations = [];
   RefreshController refreshController = RefreshController(initialRefresh: false);
   int currentPage = 1;
-
-  int type = 0; // 0 全部电站, 1 关注电站 , 2 省份电站
+  // 0 全部电站, 1 关注电站 , 2 省份电站
+  int type = 0; 
   String provinceName = '';
+  String keyWord = '';
 
   // 按省获取电站列表 加载首页
   void loadFirst() async {
@@ -45,6 +50,7 @@ class _HomeStationListState extends State<HomeStationList> {
     page:currentPage,
     rows:pageRowsMax,
     province:provinceName,
+    keyword: keyWord,
     isfocus: this.type == 1 ? true : false,
     );
   }
@@ -74,6 +80,7 @@ class _HomeStationListState extends State<HomeStationList> {
     page:currentPage,
     rows:pageRowsMax,
     province:provinceName,
+    keyword: keyWord,
     isfocus: this.type == 1 ? true : false,
     );
   }
@@ -98,17 +105,31 @@ class _HomeStationListState extends State<HomeStationList> {
   @override
   void initState() {
     super.initState();
+    initPage();
+    if(this.widget.isFromSearch == true) {
+      EventBird().on(AppEvent.searchKeyWord, (text){
+          this.keyWord = text;
+          initPage();
+      });
+    }
+  }
+
+  void initPage() {
     caculateType(widget.homeParam);
     loadFirst();
   }
 
   @override
   void dispose() {
+    if(this.widget.isFromSearch == true) {
+      EventBird().off(AppEvent.searchKeyWord);
+    }
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+
     return SmartRefresher(
       enablePullDown: true,
       enablePullUp: true,

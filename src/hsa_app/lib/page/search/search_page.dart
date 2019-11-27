@@ -1,172 +1,79 @@
-// import 'package:flutter/cupertino.dart';
-// import 'package:flutter/material.dart';
-// import 'package:flutter/rendering.dart';
-// import 'package:hsa_app/model/station.dart';
+import 'package:event_taxi/event_taxi.dart';
+import 'package:flutter/material.dart';
+import 'package:hsa_app/app/app.dart';
+import 'package:hsa_app/event/app_event.dart';
+import 'package:hsa_app/event/event_bird.dart';
+import 'package:hsa_app/page/home/home_station_list.dart';
+import 'package:hsa_app/theme/theme_gradient_background.dart';
 
-// class SearchPage extends StatefulWidget {
-//   final List<Station> rawStations;
+class SearchPage extends StatefulWidget {
+  @override
+  _SearchPageState createState() => _SearchPageState();
+}
 
-//   SearchPage({Key key, this.rawStations}) : super(key: key);
+class _SearchPageState extends State<SearchPage> {
 
-//   @override
-//   _SearchPageState createState() => _SearchPageState();
-// }
+  var homeListWidget = HomeStationList(homeParam:'全部电站',isFromSearch: true);
 
-// class _SearchPageState extends State<SearchPage> {
+  Widget seachingBar() {
 
-//   TextEditingController searchCtrl = TextEditingController();
-//   List<Station> currentStations = [];
+     return SizedBox(height: 70,width: double.infinity,
+     child: Container(
+       margin: EdgeInsets.symmetric(vertical: 10,horizontal: 20),
+       decoration: BoxDecoration(
+         border: Border.all(color: Colors.white38),
+         borderRadius: BorderRadius.all(Radius.circular(35)),
+       ),
+       child: TextField(
+         autofocus: true,
+         cursorColor: Colors.white,
+         style: TextStyle(color: Colors.white,fontSize: 16),
+         decoration: InputDecoration(
+           icon: SizedBox(width: 12),
+           border:InputBorder.none,
+           hintText: '请输入电站中文名或拼音首字母',
+           labelStyle: TextStyle(color: Colors.white,fontSize: 16),
+           hintStyle: TextStyle(color: Colors.white30,fontSize: 16),
+         ),
+         onChanged:(String text){
+           EventBird().emit(AppEvent.searchKeyWord,text);
+         },
+       ),
+     )
+    );
+  }
 
-//   @override
-//   void initState() {
-//     currentStations = widget.rawStations;
-//     super.initState();
-//   }
+  @override
+  void initState() {
+    super.initState();
+  }
 
-//   void onChangedSearchField(String word) {
-//     currentStations = filtPinYinWordOrChinese(word, widget.rawStations);
-//     setState(() {
-      
-//     });
-//   }
-
-//   // 筛选中文
-//   List<Station> filtChineseWord(String chinese,List<Station> rawStations) {
-//     chinese = chinese ?? '';
-//     List<Station> temp = [];
-//     for(int i = 0 ; i < rawStations.length ; i ++) {
-//       var everyStaion = rawStations[i];
-//       var name = everyStaion.stationName;
-//       if(name.contains(chinese)) {
-//         temp.add(everyStaion);
-//       }
-//     }
-//     return temp;
-//   }
-
-//   // 筛选拼音
-//   List<Station> filtPinYinWord(String pinyin,List<Station> rawStations) {
-//     pinyin = pinyin ?? '';
-//     List<Station> temp = [];
-//     for(int i = 0 ; i < rawStations.length ; i ++) {
-//       var everyStaion = rawStations[i];
-//       var name = everyStaion.stationNamePinYin;
-//       if(name.contains(pinyin)) {
-//         temp.add(everyStaion);
-//       }
-//     }
-//     return temp;
-//   }
-
-//   // 同时筛选拼音和中文
-//     List<Station> filtPinYinWordOrChinese(String word,List<Station> rawStations) {
-//     word = word ?? '';
-//     List<Station> temp = [];
-//     for(int i = 0 ; i < rawStations.length ; i ++) {
-//       var everyStaion = rawStations[i];
-//       var pinyin = everyStaion.stationNamePinYin;
-//       var name = everyStaion.stationName;
-//       if(name.contains(word)) {
-//         temp.add(everyStaion);
-//       }
-//       else if(pinyin.contains(word)) {
-//         temp.add(everyStaion);
-//       }
-//     }
-//     return temp;
-//   }
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       body: SafeArea(
-//         child: Container(
-//           child: Column(
-//             children: <Widget>[
-//               Container(
-//                 child: Row(
-//                   children: <Widget>[
-//                     SizedBox(width: 12),
-//                     //搜索框
-//                     Expanded(
-//                       flex: 6,
-//                       child: Padding(
-//                         padding: const EdgeInsets.all(8.0),
-//                         child: Container(
-//                           height: 40,
-//                           decoration: BoxDecoration(
-//                             color: Colors.black,
-//                             border: Border.all(
-//                               color: Colors.grey,
-//                               width: 1,
-//                             ),
-//                             borderRadius: BorderRadius.circular(20),
-//                           ),
-//                           child: SizedBox(
-//                             child: Row(
-//                               children: <Widget>[
-//                                 SizedBox(
-//                                   width: 10,
-//                                 ),
-//                                 Expanded(
-//                                   child: CupertinoTextField(
-//                                     decoration: BoxDecoration(
-//                                       border: null,
-//                                     ),
-//                                     controller: searchCtrl,
-//                                     autofocus: true,
-//                                     prefix: Icon(
-//                                       Icons.search,
-//                                       color: Colors.grey,
-//                                     ),
-//                                     placeholder: '请输入电站名或拼音',
-//                                     clearButtonMode: OverlayVisibilityMode.editing,
-//                                     keyboardType: TextInputType.text,
-//                                     onChanged: (changeText){
-//                                       onChangedSearchField(changeText);
-//                                     },
-//                                     onEditingComplete: () {
-//                                       FocusScope.of(context).requestFocus(FocusNode());
-//                                       onChangedSearchField(searchCtrl.text);
-//                                     },
-//                                   ),
-//                                 ),
-//                                 SizedBox(
-//                                   width: 10,
-//                                 ),
-//                               ],
-//                             ),
-//                           ),
-//                         ),
-//                       ),
-//                     ),
-//                     Expanded(
-//                       flex: 1,
-//                       child: GestureDetector(
-//                         child: Text('取消',style: TextStyle(fontSize: 16, color: Colors.greenAccent[700]),
-//                         ),
-//                         onTap: () {
-//                           Navigator.of(context).pop();
-//                         },
-//                       ),
-//                     )
-//                   ],
-//                 ),
-//               ),
+  @override
+  void dispose() {
+    super.dispose();
+  }
 
 
-//               Expanded(
-//                 child: ListView.builder(
-//                   itemCount: currentStations?.length ?? 0,
-//                   // itemBuilder: (ctx,i) => HomeStationTileNoStar(data:currentStations[i]),
-//                 ),
-//               )
-
-//             ],
-//           ),
-//         ),
-//       ),
-//     );
-//   }
-
-// }
+  @override
+  Widget build(BuildContext context) {
+    return ThemeGradientBackground(
+      child: Scaffold( 
+        backgroundColor: Colors.transparent,
+        appBar: AppBar(
+          centerTitle: true,
+          elevation: 0,
+          backgroundColor: Colors.transparent,
+          title: Text('搜索电站',style: TextStyle(color: Colors.white,fontWeight: FontWeight.normal,fontSize: 20)),
+        ),
+        body: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            seachingBar(),
+            Expanded(child: homeListWidget),
+          ],
+        ),
+      ),
+    );
+  }
+}

@@ -5,6 +5,7 @@ import 'package:hsa_app/api/api.dart';
 import 'package:hsa_app/components/shawdow_widget.dart';
 import 'package:hsa_app/config/config.dart';
 import 'package:hsa_app/page/login/login_page.dart';
+import 'package:hsa_app/page/search/search_page.dart';
 import 'package:hsa_app/page/setting/modifypswd_page.dart';
 import 'package:hsa_app/page/framework/webview_page.dart';
 import 'package:hsa_app/theme/theme_gradient_background.dart';
@@ -178,6 +179,11 @@ class _MinePageState extends State<MinePage> {
     );
   }
 
+  // 搜索电站
+  void onTapSearchStations(BuildContext context) {
+    pushToPage(context, SearchPage());
+  }
+
   // 界面构建
   @override
   Widget build(BuildContext context) {
@@ -193,6 +199,7 @@ class _MinePageState extends State<MinePage> {
               itemTile('修改密码', 'images/mine/My_Change_pwd_icon.png', () => onTapChangePswd(context)),
               itemTile('关于智能电站', 'images/mine/My_about_icon.png', () =>  onTapAbout(context)),
               itemTile('SOS', 'images/mine/My_sos_icon.png', () =>  onTapSOSCall(context)),
+              itemTile('搜索电站', 'images/history/History_selt_btn.png', () =>  onTapSearchStations(context)),
               // 分割线
               SizedBox(height: 0.3,child: Container(color:Colors.white24)),
             ],

@@ -1,6 +1,6 @@
-import 'package:event_taxi/event_taxi.dart';
 import 'package:flutter/material.dart';
 import 'package:hsa_app/event/app_event.dart';
+import 'package:hsa_app/event/event_bird.dart';
 import 'package:hsa_app/page/home/home_page.dart';
 import 'package:hsa_app/page/login/login_page.dart';
 import 'package:hsa_app/page/mine/mine_page.dart';
@@ -16,9 +16,7 @@ class _RootPageState extends State<RootPage> with SingleTickerProviderStateMixin
   List<Widget> pages = new List();
 
   void addEventListener() {
-    var bus = EventTaxiImpl.singleton();
-    bus.registerTo<TokenExpireEvent>().listen((_){
-      // showErrorHud(context,'会话过期,请重新登录');
+    EventBird().on(AppEvent.tokenExpiration, (_){
       showToast('会话过期,请重新登录');
       Future.delayed(Duration(seconds:1),(){
         pushToPageAndKill(context, LoginPage());
@@ -37,6 +35,7 @@ class _RootPageState extends State<RootPage> with SingleTickerProviderStateMixin
 
   @override
   void dispose() {
+    EventBird().off(AppEvent.tokenExpiration);
     super.dispose();
   }
 
