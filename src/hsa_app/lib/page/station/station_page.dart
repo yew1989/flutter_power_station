@@ -57,6 +57,18 @@ class _StationPageState extends State<StationPage> {
 
   }
 
+  static double caculatePowerRatio(Devices devices) {
+
+    var powerMax = devices?.power?.max ?? 0.0;
+    var powerCurrent = devices?.power?.current ?? 0.0;
+    if( powerMax == 0 ) return 0.0;
+    if( powerCurrent == 0 ) return 0.0; 
+    if( powerCurrent > powerMax) return 1;
+    var ratio =  powerCurrent / powerMax;
+    return ratio;
+
+  }
+
   static double caculateUIWave(double waveRatio) {
     if(waveRatio > 1)  {
       waveRatio = 1;
@@ -334,6 +346,41 @@ class _StationPageState extends State<StationPage> {
     return eventCount.toString();
   }
 
+  Widget gradientPowerLine(Devices device,bool isOnline) {
+
+      var maxWidth = MediaQuery.of(context).size.width - 20;
+      var ratio = caculatePowerRatio(device);
+      ratio = (1 - ratio);
+      var right = maxWidth * ratio;
+
+      // 渐变条
+      return  isOnline ? Positioned(
+          left: 0,right: right,bottom: 1,
+          child: Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [HexColor('4778f7'),HexColor('66f7f9')]
+              ),
+            ),
+            height:2,
+    )) : Container();
+  }
+
+  Widget gradientPowerLineTag(Devices device,bool isOnline) {
+
+      var maxWidth = MediaQuery.of(context).size.width - 20;
+      var ratio = caculatePowerRatio(device);
+      ratio = (1 - ratio);
+      var right = maxWidth * ratio;
+      // 渐变条指示器
+      return isOnline ? Positioned(
+          right: right,bottom: 0,
+            child: SizedBox(width: 30,height: 18, child: Image.asset('images/station/GL_BLight.png'),
+            ),
+      ) : Container();
+  }
+
+
   Widget deviceTile(BuildContext context,int index,Devices device){
     
     var badgeName = (index + 1).toString();
@@ -409,31 +456,10 @@ class _StationPageState extends State<StationPage> {
             ),
           ),
 
-          // 渐变条指示器
-          Positioned(
-          right: 80,bottom: 0,
-            child: SizedBox(
-              width: 30,
-              height: 18,
-              child: Image.asset('images/station/GL_BLight.png'),
-            ),
-          ),
 
-          // 渐变条
-          Positioned(
-          left: 0,right: 80,bottom: 1,child: 
-          Container(
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                colors: 
-                [
-                  HexColor('4778f7'),
-                  HexColor('66f7f9'),
-                ]
-              )
-            ),
-            height:2,
-          )),
+          gradientPowerLineTag(device,isOnline),
+
+          gradientPowerLine(device,isOnline),
 
           // 分割线
           Positioned(left: 0,right: 0,bottom: 0,child: Container(height:1,color: Colors.white10)),
