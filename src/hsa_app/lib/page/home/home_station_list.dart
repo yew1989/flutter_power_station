@@ -158,7 +158,7 @@ class _HomeStationListState extends State<HomeStationList> {
 
           GestureDetector(
             onTap: (){
-              pushToPage(context, StationPage('','',''));
+              pushToPage(context, StationPage(station.name,station.id.toString()));
             },
             child: Container(
               child: SizedBox(
@@ -229,12 +229,12 @@ class _HomeStationListState extends State<HomeStationList> {
   void requestFocus(Stations station) async {
 
     API.focusStation(station.id.toString(), !station.isFocus, (String msg){
-      debugPrint('关注✅' + msg);
+      // debugPrint('关注✅' + msg);
       setState(() {
         station.isFocus = !station.isFocus;
       });
     }, (String msg){
-      debugPrint('关注❌' + msg);
+      // debugPrint('关注❌' + msg);
       setState(() {
         station.isFocus = !station.isFocus;
       });

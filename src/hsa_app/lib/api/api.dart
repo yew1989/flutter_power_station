@@ -9,6 +9,7 @@ import 'package:hsa_app/event/event_bird.dart';
 import 'package:hsa_app/model/pageConfig.dart';
 import 'package:hsa_app/model/province.dart';
 import 'package:hsa_app/model/station.dart';
+import 'package:hsa_app/model/station_info.dart';
 import 'package:hsa_app/model/version.dart';
 import 'package:hsa_app/util/encrypt.dart';
 import 'package:hsa_app/util/share.dart';
@@ -29,6 +30,8 @@ typedef ProvinceResponseCallBack = void Function(List<String> provinces);
 typedef StationCountResponseCallBack = void Function(int count);
 // 获取电站列表
 typedef StationsListResponseCallBack = void Function(List<Stations> stations,int total);
+// 获取电站详情
+typedef StationInfoResponeseCallBack = void Function(StationInfo stationInfo);
 
 class HttpResult {
   String msg;
@@ -260,6 +263,25 @@ class API {
   
   // 关注,取消关注电站
   static final focusStationPath = 'app/FocusStation';
+
+  // 电站详情
+  static final stationInfoPath  = 'app/GetStationInfo';
+
+
+  // 电站详情
+  static void stationInfo(String statinId,StationInfoResponeseCallBack onSucc,HttpFailCallback onFail) {
+   
+    HttpHelper.getHttp(
+      stationInfoPath, {
+        'id': statinId ?? '',
+      }, 
+      (dynamic data,String msg) {
+        var map  = data as Map<String,dynamic>;
+        var resp = StationInfoResponse.fromJson(map);
+        if(onSucc != null) onSucc(resp.data.station);
+      }, 
+      onFail);
+  }
 
   // 关注电站 / 取消关注电站
   static void focusStation(String stationId,bool isFocus,HttpSuccMsgCallback onSucc,HttpFailCallback onFail) {

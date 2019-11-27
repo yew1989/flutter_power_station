@@ -1,6 +1,8 @@
 import 'package:badges/badges.dart';
 import 'package:flutter/material.dart';
+import 'package:hsa_app/api/api.dart';
 import 'package:hsa_app/config/config.dart';
+import 'package:hsa_app/model/station_info.dart';
 import 'package:hsa_app/page/runtime/runtime_page.dart';
 import 'package:hsa_app/page/framework/webview_page.dart';
 import 'package:hsa_app/theme/theme_gradient_background.dart';
@@ -12,23 +14,82 @@ import 'package:wave/wave.dart';
 class StationPage extends StatefulWidget {
 
   final String title;
-  final String customId;
   final String stationId;
  
-  StationPage(this.title, this.customId, this.stationId);
+  StationPage(this.title, this.stationId);
   @override
   _StationPageState createState() => _StationPageState();
 }
 
 class _StationPageState extends State<StationPage> {
 
+  StationInfo stationInfo = StationInfo();
+
   @override
   void initState() {
     super.initState();
+    reqeustStationInfo(widget.stationId);
+  }
+
+  // 请求电站概要
+  void reqeustStationInfo(String stationId) {
+
+    API.stationInfo(stationId,(StationInfo station){
+      if(station == null) return;
+      setState(() {
+        this.stationInfo =  station;
+      });
+    },(String msg){
+      debugPrint(msg);
+    });
+
+  }
+
+  static double caculateWaveRatio(StationInfo station) {
+
+    var waterMax = station?.water?.max ?? 0.0;
+    var waterCurrent = station?.water?.current ?? 0.0;
+    if( waterMax == 0 ) return 0.0;
+    if( waterCurrent == 0 ) return 0.0; 
+    if( waterCurrent > waterMax) return 1;
+    var ratio =  waterCurrent / waterMax;
+    return ratio;
+
+  }
+
+  static double caculateUIWave(double waveRatio) {
+    if(waveRatio > 1)  {
+      waveRatio = 1;
+    }
+    var wave = 0.75 - (waveRatio / 2);
+    return wave;
+  }
+
+
+  // 波浪高度
+  Widget waveWidget(StationInfo stationInfo,double width) { 
+     var waveRatio = caculateWaveRatio(stationInfo);
+     var wave = caculateUIWave(waveRatio);
+      // 波浪效果
+     return Center(
+       child: WaveWidget(
+         waveFrequency: 3.6,
+         config: CustomConfig(
+           gradients: [[Color.fromRGBO(3,169,244, 1),Color.fromRGBO(3,169,244, 0.3)]],
+           durations: [10000],
+           heightPercentages: [wave],
+           gradientBegin: Alignment.topCenter,
+           gradientEnd: Alignment.bottomCenter
+           ),
+           waveAmplitude: 0,
+           backgroundColor: Colors.transparent,
+           size: Size(width, double.infinity),
+          ),
+      );
   }
 
   // 大水池
-  Widget waterPool() {
+  Widget waterPool(StationInfo stationInfo) {
     var width = MediaQuery.of(context).size.width - 46;
     return  Container(
       height: 266,
@@ -36,33 +97,16 @@ class _StationPageState extends State<StationPage> {
       child: Stack(
         children: <Widget>[
           
-          // 波浪效果
-          Center(
-            child: WaveWidget(
-                    waveFrequency: 3.6,
-                    config: CustomConfig(
-                      gradients: [
-                        [Color.fromRGBO(3,169,244, 1),Color.fromRGBO(3,169,244, 0.3)],
-                        // [Color.fromRGBO(92,180,224, 1),Color.fromRGBO(92,180,224, 0.3)],
-                      ],
-                      durations: [10000],
-                      heightPercentages: [0.50],
-                      gradientBegin: Alignment.topCenter,
-                      gradientEnd: Alignment.bottomCenter,
-                    ),
-                    waveAmplitude: 0,
-                    backgroundColor: Colors.transparent,
-                    size: Size(width, double.infinity),
-              ),
-          ),
+          // 波浪球
+          waveWidget(stationInfo,width),
             
           // 富文本收益值
           Center(
             child: RichText(
               text: TextSpan(
                 children: [
-                  TextSpan(text:'425.1',style: TextStyle(color: Colors.white,fontFamily: 'ArialNarrow',fontSize: 50)),
-                  TextSpan(text:'元',style: TextStyle(color: Colors.white,fontSize: 13)),
+                  TextSpan(text:stationInfo.profit.toString(),style: TextStyle(color: Colors.white,fontFamily: 'ArialNarrow',fontSize: 50)),
+                  TextSpan(text:' 元',style: TextStyle(color: Colors.white,fontSize: 13)),
                 ]
               ),
             ),
@@ -369,7 +413,7 @@ class _StationPageState extends State<StationPage> {
             backgroundColor: Colors.transparent,
             elevation: 0,
             centerTitle: true,
-            title: Text('登云水电站',style: TextStyle(color: Colors.white,fontWeight: FontWeight.normal,fontSize: 20)),
+            title: Text(widget.title ?? '',style: TextStyle(color: Colors.white,fontWeight: FontWeight.normal,fontSize: 20)),
             actions: <Widget>[
               GestureDetector(
                 onTap: (){
@@ -383,7 +427,7 @@ class _StationPageState extends State<StationPage> {
           body: Container(
             child: ListView(
               children: <Widget>[
-                waterPool(),
+                waterPool(stationInfo),
                 terminalListHeader(),
                 terminalList(),
               ],

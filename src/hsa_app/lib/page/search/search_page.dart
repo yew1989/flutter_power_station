@@ -13,8 +13,6 @@ class SearchPage extends StatefulWidget {
 
 class _SearchPageState extends State<SearchPage> {
 
-  var homeListWidget = HomeStationList(homeParam:'全部电站',isFromSearch: true);
-
   Widget seachingBar() {
 
      return SizedBox(height: 70,width: double.infinity,
@@ -36,7 +34,7 @@ class _SearchPageState extends State<SearchPage> {
            hintStyle: TextStyle(color: Colors.white30,fontSize: 16),
          ),
          onChanged:(String text){
-           EventBird().emit(AppEvent.searchKeyWord,text);
+          EventBird().emit(AppEvent.searchKeyWord,text);
          },
        ),
      )
@@ -70,7 +68,7 @@ class _SearchPageState extends State<SearchPage> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
             seachingBar(),
-            Expanded(child: homeListWidget),
+            Expanded(child: HomeStationList(homeParam:'全部电站',isFromSearch: true)),
           ],
         ),
       ),
