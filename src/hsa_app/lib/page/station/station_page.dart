@@ -7,6 +7,7 @@ import 'package:hsa_app/page/runtime/runtime_page.dart';
 import 'package:hsa_app/page/framework/webview_page.dart';
 import 'package:hsa_app/theme/theme_gradient_background.dart';
 import 'package:hsa_app/components/public_tool.dart';
+import 'package:hsa_app/util/share.dart';
 import 'package:native_color/native_color.dart';
 import 'package:wave/config.dart';
 import 'package:wave/wave.dart';
@@ -403,7 +404,7 @@ class _StationPageState extends State<StationPage> {
           // 内容
           GestureDetector(
             onTap: (){
-              pushToPage(context, RuntimePage('1#实时数据'));
+              pushToPage(context, RuntimePage(device?.name ?? '',device.address));
             },
             child: Center(
               child: Container(
@@ -468,13 +469,23 @@ class _StationPageState extends State<StationPage> {
     );
   }
 
+  // 生成历史访问 URL
   void onTapPushToHistory() async {
+
+    var host = AppConfig.getInstance().webHost;
+    var pageItemHistory = AppConfig.getInstance().pageBundle.history;
+    var urlHistory = host + pageItemHistory.route ?? AppConfig.getInstance().deadLink;
+    var auth = await ShareManager.instance.loadToken();
+
     var deviceIdList = stationInfo.devices.map((device){
       return device?.address ?? '';
     }).toList();
-    var history = deviceIdList.join(',');
-    debugPrint('设备:' + history);
+    var terminalsString = deviceIdList.join(',');
+    var lastUrl =  urlHistory + '?auth=' + auth + '&address=' + terminalsString;
+    debugPrint('历史曲线Url:' + lastUrl);
+    pushToPage(context, WebViewPage('', lastUrl,noNavBar:true));
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -496,7 +507,7 @@ class _StationPageState extends State<StationPage> {
             title: Text(widget.title ?? '',style: TextStyle(color: Colors.white,fontWeight: FontWeight.normal,fontSize: 20)),
             actions: <Widget>[
               GestureDetector(
-                onTap: (){
+                onTap: stationInfo.devices == null ? null : (){
                   onTapPushToHistory();
                 },
                 child: Center(child: Text('历史曲线',style:TextStyle(color: Colors.white,fontSize: 16)))),

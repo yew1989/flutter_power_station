@@ -2,15 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:hsa_app/components/dash_board_widget.dart';
 import 'package:hsa_app/components/runtime_progress_bar.dart';
 import 'package:hsa_app/components/shawdow_widget.dart';
+import 'package:hsa_app/config/config.dart';
 import 'package:hsa_app/page/framework/webview_page.dart';
 import 'package:hsa_app/page/more/more_page.dart';
 import 'package:hsa_app/theme/theme_gradient_background.dart';
 import 'package:hsa_app/components/public_tool.dart';
+import 'package:hsa_app/util/share.dart';
 import 'package:native_color/native_color.dart';
 
 class RuntimePage extends StatefulWidget {
   final String title;
-  RuntimePage(this.title);
+  final String address;
+  RuntimePage(this.title,this.address);
   @override
   _RuntimePageState createState() => _RuntimePageState();
 }
@@ -178,6 +181,18 @@ class _RuntimePageState extends State<RuntimePage> {
         ],
       ),
     );
+  }
+
+  void onTapPushToHistory(String address) async {
+
+    var host = AppConfig.getInstance().webHost;
+    var pageItemHistory = AppConfig.getInstance().pageBundle.history;
+    var urlHistory = host + pageItemHistory.route ?? AppConfig.getInstance().deadLink;
+    var auth = await ShareManager.instance.loadToken();
+    var terminalsString = address;
+    var lastUrl =  urlHistory + '?auth=' + auth + '&address=' + terminalsString;
+    debugPrint('历史曲线Url:' + lastUrl);
+    pushToPage(context, WebViewPage('', lastUrl,noNavBar:true));
   }
 
   // 仪表盘
@@ -836,7 +851,7 @@ class _RuntimePageState extends State<RuntimePage> {
           actions: <Widget>[
             GestureDetector(
                 onTap: () {
-                  
+                  onTapPushToHistory(widget.address);
                 },
                 child: Center(
                     child: Text('历史曲线',
