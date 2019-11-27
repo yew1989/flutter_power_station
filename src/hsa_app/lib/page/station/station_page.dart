@@ -88,6 +88,43 @@ class _StationPageState extends State<StationPage> {
       );
   }
 
+  // 富文本收益值
+  Widget profitWidget(StationInfo stationInfo) { 
+    var profit = stationInfo?.profit ?? 0.0;
+    return Center(
+      child: RichText(
+        text: TextSpan(
+          children: 
+          [
+            TextSpan(text:profit.toString(),style: TextStyle(color: Colors.white,fontFamily: 'ArialNarrow',fontSize: 50)),
+            TextSpan(text:' 元',style: TextStyle(color: Colors.white,fontSize: 13)),
+          ]
+        ),
+      ),
+    );
+  }
+
+  // 当前功率 / 总功率组件
+  Widget powerWidget(StationInfo stationInfo) {
+
+   var current = stationInfo?.power?.current ?? 0.0;
+   var max = stationInfo?.power?.max ?? 0.0;
+
+   return Center(
+     child: RichText(
+       text: TextSpan(
+         children: 
+            [
+              TextSpan(text:current.toString(),style: TextStyle(color: Colors.white,fontFamily: 'ArialNarrow',fontSize: 25)),
+              TextSpan(text:'/',style: TextStyle(color: Colors.white,fontFamily: 'ArialNarrow',fontSize: 18)),
+              TextSpan(text:max.toString(),style: TextStyle(color: Colors.white,fontFamily: 'ArialNarrow',fontSize: 18)),
+              TextSpan(text:'kW',style: TextStyle(color: Colors.white,fontFamily: 'ArialNarrow',fontSize: 16)),
+            ]
+          ),
+        ),
+    );
+  }
+
   // 大水池
   Widget waterPool(StationInfo stationInfo) {
     var width = MediaQuery.of(context).size.width - 46;
@@ -99,18 +136,8 @@ class _StationPageState extends State<StationPage> {
           
           // 波浪球
           waveWidget(stationInfo,width),
-            
           // 富文本收益值
-          Center(
-            child: RichText(
-              text: TextSpan(
-                children: [
-                  TextSpan(text:stationInfo.profit.toString(),style: TextStyle(color: Colors.white,fontFamily: 'ArialNarrow',fontSize: 50)),
-                  TextSpan(text:' 元',style: TextStyle(color: Colors.white,fontSize: 13)),
-                ]
-              ),
-            ),
-          ),
+          profitWidget(stationInfo),
 
           // 左侧水库图片
           Positioned(
@@ -183,17 +210,7 @@ class _StationPageState extends State<StationPage> {
           // 当前功率 / 总功率
           Positioned(
             right: 50,bottom: 15,
-            child: Center(
-            child: RichText(
-              text: TextSpan(
-                children: [
-                  TextSpan(text:'4325.1',style: TextStyle(color: Colors.white,fontFamily: 'ArialNarrow',fontSize: 25)),
-                  TextSpan(text:'/4200',style: TextStyle(color: Colors.white,fontFamily: 'ArialNarrow',fontSize: 18)),
-                  TextSpan(text:'kW',style: TextStyle(color: Colors.white,fontFamily: 'ArialNarrow',fontSize: 16)),
-                ]
-              ),
-            ),
-          ),
+            child: powerWidget(stationInfo)
           ),
 
           // 底部分割线
