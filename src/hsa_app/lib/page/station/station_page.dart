@@ -456,7 +456,7 @@ class _StationPageState extends State<StationPage> {
             ),
           ),
 
-
+          // 
           gradientPowerLineTag(device,isOnline),
 
           gradientPowerLine(device,isOnline),
@@ -468,7 +468,13 @@ class _StationPageState extends State<StationPage> {
     );
   }
 
-
+  void onTapPushToHistory() async {
+    var deviceIdList = stationInfo.devices.map((device){
+      return device?.address ?? '';
+    }).toList();
+    var history = deviceIdList.join(',');
+    debugPrint('设备:' + history);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -491,9 +497,8 @@ class _StationPageState extends State<StationPage> {
             actions: <Widget>[
               GestureDetector(
                 onTap: (){
-                  // onTapPushToHistory();
+                  onTapPushToHistory();
                 },
-                // 此处跳转到历史曲线
                 child: Center(child: Text('历史曲线',style:TextStyle(color: Colors.white,fontSize: 16)))),
               SizedBox(width: 20),
             ],
