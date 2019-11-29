@@ -58,6 +58,7 @@ flutter:
     - images/station/
     - images/board/
     - images/about/
+    - images/welcome/
 
   fonts:
     - family: ArialNarrow

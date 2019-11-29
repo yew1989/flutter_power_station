@@ -54,7 +54,7 @@ class _AboutPageState extends State<AboutPage> {
                     Text(desc3,style: TextStyle(color: Colors.white54,fontSize: 13)),
                     ],
                   ),
-                  Positioned(bottom: 4,left: 0,right: 0,child: Center(
+                  Positioned(bottom: 8,left: 0,right: 0,child: Center(
                     child: Text('Copyright @ fjlead 2019-2020',style: TextStyle(color: Colors.white70,fontSize: 10)))),
                 ],
 

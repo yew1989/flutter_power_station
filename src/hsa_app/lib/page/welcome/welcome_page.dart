@@ -17,11 +17,6 @@ class _WelcomePageState extends State<WelcomePage> with TickerProviderStateMixin
 
   String loadingText = '配置信息获取中 ...';
 
-  // 设置代理
-  void dioInitProxy() {
-    
-  }
-
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     super.didChangeAppLifecycleState(state);
@@ -38,8 +33,6 @@ class _WelcomePageState extends State<WelcomePage> with TickerProviderStateMixin
     AppConfig.initConfig();
     appCheck();
     mesureDeviceBoundSize();
-    // debugPrint('初始化WelCome');
-    // dioInitProxy();
   }
 
   // 测量设备宽高
@@ -109,21 +102,49 @@ class _WelcomePageState extends State<WelcomePage> with TickerProviderStateMixin
     return ThemeGradientBackground(
       child: Scaffold(
         backgroundColor: Colors.transparent,
-        body: Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
+        body: SafeArea(
+          child: Container(
+            height: double.infinity,
+            width: double.infinity,
+            child: Stack(
               children: <Widget>[
-                CircularProgressIndicator(
-                  backgroundColor: Colors.transparent,
-                  valueColor: AlwaysStoppedAnimation(Colors.white),
+                // 中央
+                Center(
+                  child: SizedBox(
+                    width: double.infinity,
+                    child: AspectRatio(
+                      aspectRatio: 1125 / 664,
+                      child: Image.asset('images/welcome/Start_water.png')),
                   ),
-                  SizedBox(height: 20),
-                  Text('启动中',style: TextStyle(color: Colors.white70,fontSize: 16)),
-                  Text('请稍后',style: TextStyle(color: Colors.white38,fontSize: 12)),
+                ),
+
+                // 发电从未如此简单
+               Positioned(bottom: 90,left: 0,right: 0,
+                child: SizedBox(
+                    height: 28,
+                    child: AspectRatio(
+                      aspectRatio: 366 / 84,
+                      child: Image.asset('images/welcome/Start_slogan.png')))),
+
+                // 显示版本
+                Positioned(bottom: 54,left: 0,right: 0,
+                child: Center(child: Text('V1.0.0',
+                style: TextStyle(color: Colors.white70,fontSize: 10)))),
+
+                // 构建版本
+                Positioned(bottom: 40,left: 0,right: 0,
+                child: Center(child: Text('Build 20191220',
+                style: TextStyle(color: Colors.white70,fontSize: 10)))),
+
+                // 版权信息
+                Positioned(bottom: 8,left: 0,right: 0,
+                child: Center(child: Text('Copyright @ fjlead 2019-2020',
+                style: TextStyle(color: Colors.white70,fontSize: 10)))),
+
               ],
             ),
           ),
+        ),
       ),
     );
   }
