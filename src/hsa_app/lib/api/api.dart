@@ -2,10 +2,10 @@ import 'dart:io';
 import 'package:connectivity/connectivity.dart';
 import 'package:dio/adapter.dart';
 import 'package:dio/dio.dart';
-import 'package:event_taxi/event_taxi.dart';
 import 'package:flutter/material.dart';
 import 'package:hsa_app/event/app_event.dart';
 import 'package:hsa_app/event/event_bird.dart';
+import 'package:hsa_app/model/caiyun.dart';
 import 'package:hsa_app/model/pageConfig.dart';
 import 'package:hsa_app/model/province.dart';
 import 'package:hsa_app/model/station.dart';
@@ -32,6 +32,8 @@ typedef StationCountResponseCallBack = void Function(int count);
 typedef StationsListResponseCallBack = void Function(List<Stations> stations,int total);
 // 获取电站详情
 typedef StationInfoResponeseCallBack = void Function(StationInfo stationInfo);
+// 获取天气类型 0 晴 1 阴 2 雨
+typedef WeatherTypeResponseCallBack = void Function(int type);
 
 class HttpResult {
   String msg;
@@ -41,7 +43,7 @@ class HttpResult {
 class HttpHelper {
 
   // 开启代理模式,可抓包
-  static final isProxyModeOpen = false;
+  static final isProxyModeOpen = true;
   static final proxyIP = 'PROXY 192.168.31.74:8888';
   // 超时时间
   static final kTimeOutSeconds = 20;
@@ -93,7 +95,7 @@ class HttpHelper {
       String path, 
       Map<String, dynamic> param, 
       HttpSuccCallback onSucc,
-      HttpFailCallback onFail ) async {
+      HttpFailCallback onFail) async {
 
     // 检测网络
     var isReachable = await isReachablity();
@@ -118,7 +120,7 @@ class HttpHelper {
 
     // 尝试请求
     try {
-      final url = API.host + path;
+      var url = API.host + path;
       Response response = await dio.get(
         url,
         options: Options(
@@ -227,6 +229,69 @@ class HttpHelper {
     }
   }
 
+
+    // GET 请求统一封装
+  static void getHttpCommon(
+      String path, 
+      Map<String, dynamic> param, 
+      HttpSuccCallback onSucc,
+      HttpFailCallback onFail) async {
+
+    // 检测网络
+    var isReachable = await isReachablity();
+    if (isReachable == false) {
+      if (onFail != null) {
+        onFail('网络异常,请检查网络');
+        return;
+      }
+    }
+
+    var dio = Dio();
+
+    // 代理控制
+    if (isProxyModeOpen == true) {
+      (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
+          (HttpClient client) {
+        client.findProxy = (_) => proxyIP;
+        client.badCertificateCallback =
+            (X509Certificate cert, String host, int port) => true;
+      };
+    }
+
+    // 尝试请求
+    try {
+      var url = path ?? '';
+      Response response = await dio.get(
+        url,
+        options: Options(
+          headers: {'Authorization': ShareManager.instance.token},
+          contentType: Headers.formUrlEncodedContentType,
+          receiveTimeout: HttpHelper.kTimeOutSeconds,
+          sendTimeout: HttpHelper.kTimeOutSeconds,
+        ),
+        queryParameters: param,
+      );
+      if (response == null) {
+        onFail('网络异常,请检查网络');
+        return;
+      }
+      if (response.statusCode != 200) {
+        onFail('请求错误 ( ' + response.statusCode.toString() + ' )');
+        return;
+      }
+      if (response.data is! Map) {
+        onFail('请求错误');
+        return;
+      }
+      // 初步解析数据包
+      onSucc(response.data, '请求成功');
+    } catch (e) {
+      handleDioError(e,(String msg) => onFail(msg));
+      onFail('请求错误');
+    }
+  }
+
+
 }
 
 class API {
@@ -267,6 +332,56 @@ class API {
   // 电站详情
   static final stationInfoPath  = 'app/GetStationInfo';
 
+  // 彩云天气 url
+  static final caiyunWeatherPath = 'https://api.caiyunapp.com/v2/iAKlQ99dfiDclxut/';
+
+  // 彩云天气
+  static void weatherCaiyun(Geo geo,WeatherTypeResponseCallBack onSucc,HttpFailCallback onFail) {
+
+    var longitude = geo?.longitude ?? 0.0;
+    var latitude  = geo?.latitude ?? 0.0;
+    if(longitude == 0){
+      onSucc(0);
+      return;
+    } 
+    if(latitude == 0) {
+      onSucc(0);
+      return;
+    }
+
+    var totalPath = caiyunWeatherPath + longitude.toString() + ',' + latitude.toString() + '/realtime.json';
+    
+    HttpHelper.getHttpCommon(totalPath, null, (dynamic data,String msg) {
+        var map  = data as Map<String,dynamic>;
+        var resp = CaiyuWeatherResponse.fromJson(map);
+        if(onSucc != null){
+          var status = resp.status;
+          if(status != 'ok') {
+            onSucc(0);
+            return;
+          }
+          // 获取天气情况
+          var sky = resp?.result?.skycon ?? '';
+          // 晴天
+          if(sky == 'CLEAR_DAY' || sky == 'CLEAR_NIGHT' || sky == '') {
+            onSucc(0);
+            return;
+          }
+          // 多云或阴
+          else if (sky == 'PARTLY_CLOUDY_DAY' || sky == 'PARTLY_CLOUDY_NIGHT' || sky == 'CLOUDY') {
+            onSucc(1);
+            return;
+          }
+          // 雨天
+          else if (sky == 'WIND' || sky == 'HAZE' || sky == 'RAIN' || sky == 'SNOW') {
+            onSucc(2);
+            return;
+          }
+        }
+    },
+    onFail);
+
+  }
 
   // 电站详情
   static void stationInfo(String statinId,StationInfoResponeseCallBack onSucc,HttpFailCallback onFail) {

@@ -25,27 +25,73 @@ class StationPage extends StatefulWidget {
 class _StationPageState extends State<StationPage> {
 
   StationInfo stationInfo = StationInfo();
+  int weatherType = 0;
+  String weatherString = '晴';
 
   @override
   void initState() {
     super.initState();
     reqeustStationInfo(widget.stationId);
+    
+  }
+
+  Widget wetherImageWidget(int type) {
+    if( type == 0 ) {
+      return Image.asset('images/station/GL_sun_icon.png');
+    }
+    if( type == 1 ) {
+      return Image.asset('images/station/GL_cloudy_icon.png');
+    }
+    if( type == 2 ) {
+      return Image.asset('images/station/GL_rain_icon.png');
+    }
+    return Image.asset('images/station/GL_sun_icon.png');
+  }
+
+  // 彩云天气
+  void requestWeatherCaiyun(Geo geo,WeatherTypeResponseCallBack onSucc,HttpFailCallback onFail) {
+    API.weatherCaiyun(geo, onSucc, onFail);
   }
 
   // 请求电站概要
   void reqeustStationInfo(String stationId) {
 
     API.stationInfo(stationId,(StationInfo station){
+      
       if(station == null) return;
+
+      // 彩云天气接口
+      requestWeatherCaiyun(station.geo,(int type){
+        setState(() {
+          if(type == 0) {
+            this.weatherString = '晴';
+          }
+          else if(type == 1) {
+            this.weatherString = '多云';
+          }
+          else if(type == 2) {
+            this.weatherString = '雨';
+          }
+          this.weatherType = type;
+        });
+      },(String msg){
+        setState(() {
+          this.weatherString = '晴';
+          this.weatherType = 0;
+        });
+      });
+      
       setState(() {
         this.stationInfo =  station;
       });
+
     },(String msg){
       debugPrint(msg);
     });
 
   }
 
+  // 计算 水波纹比率
   static double caculateWaveRatio(StationInfo station) {
 
     var waterMax = station?.water?.max ?? 0.0;
@@ -58,6 +104,7 @@ class _StationPageState extends State<StationPage> {
 
   }
 
+  // 计算 功率比率
   static double caculatePowerRatio(Devices devices) {
 
     var powerMax = devices?.power?.max ?? 0.0;
@@ -70,19 +117,23 @@ class _StationPageState extends State<StationPage> {
 
   }
 
+  // UI Wave 
   static double caculateUIWave(double waveRatio) {
+
     if(waveRatio > 1)  {
       waveRatio = 1;
     }
     var wave = 0.75 - (waveRatio / 2);
     return wave;
+
   }
 
 
   // 波浪高度
   Widget waveWidget(StationInfo stationInfo,double width) { 
+     // wave 波浪
      var waveRatio = caculateWaveRatio(stationInfo);
-     var wave = caculateUIWave(waveRatio);
+     var wave      = caculateUIWave(waveRatio);
       // 波浪效果
      return Center(
        child: WaveWidget(
@@ -271,7 +322,7 @@ class _StationPageState extends State<StationPage> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
                 Text('机组信息',style: TextStyle(color: Colors.white,fontSize: 15)),
-                Text('天气:晴',style: TextStyle(color: Colors.white,fontSize: 15)),
+                Text('天气:' + weatherString ,style: TextStyle(color: Colors.white,fontSize: 15)),
                 SizedBox(
                   height: 22,
                   width: 22,
@@ -457,11 +508,10 @@ class _StationPageState extends State<StationPage> {
             ),
           ),
 
-          // 
+          // 功率 Tag
           gradientPowerLineTag(device,isOnline),
-
+          // 功率 渐进线
           gradientPowerLine(device,isOnline),
-
           // 分割线
           Positioned(left: 0,right: 0,bottom: 0,child: Container(height:1,color: Colors.white10)),
         ],
@@ -493,10 +543,8 @@ class _StationPageState extends State<StationPage> {
       child: Stack(
         children:[
           
-          // 天气背景 TODO 外层包裹
-          Image.asset('images/station/GL_sun_icon.png'),
-          // Image.asset('images/station/GL_rain_icon.png'),
-          // Image.asset('images/station/GL_cloudy_icon.png'),
+          // 天气图片
+          wetherImageWidget(weatherType),
 
           Scaffold(
           backgroundColor: Colors.transparent,

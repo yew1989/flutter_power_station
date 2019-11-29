@@ -3,11 +3,10 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:hsa_app/api/api.dart';
 import 'package:hsa_app/components/shawdow_widget.dart';
-import 'package:hsa_app/config/config.dart';
+import 'package:hsa_app/page/about/about_page.dart';
 import 'package:hsa_app/page/login/login_page.dart';
 import 'package:hsa_app/page/search/search_page.dart';
 import 'package:hsa_app/page/setting/modifypswd_page.dart';
-import 'package:hsa_app/page/framework/webview_page.dart';
 import 'package:hsa_app/theme/theme_gradient_background.dart';
 import 'package:hsa_app/components/public_tool.dart';
 import 'package:hsa_app/util/share.dart';
@@ -92,11 +91,7 @@ class _MinePageState extends State<MinePage> {
 
   // 关于
   void onTapAbout(BuildContext context) {
-    var host = AppConfig.getInstance().webHost;
-    var pageItem = AppConfig.getInstance().pageBundle.about;
-    var url = host + pageItem.route ?? AppConfig.getInstance().deadLink;
-    var title = pageItem.title ?? '';
-    pushToPage(context, WebViewPage(title, url));
+    pushToPage(context, AboutPage());
   }
 
 
