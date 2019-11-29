@@ -16,91 +16,43 @@ class _ModifyPswdPageState extends State<ModifyPswdPage> {
 
   @override
   Widget build(BuildContext context) {
-
-    Widget pwswdTile(
-        String leftText, String rightHint, TextEditingController controller) {
-      return Stack(children: [
-        Container(
-          padding: EdgeInsets.symmetric(vertical: 10, horizontal: 16),
-          color: Colors.transparent,
-          height: 60,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: <Widget>[
-              Expanded(flex: 1, child: 
-              Text(
-                leftText,
-                style: TextStyle(color: Colors.white,fontSize: 16),
-                ),
-              ),
-              Expanded(
-                flex: 4,
-                child: Container(
-                  height: 40,
-                  child: TextFormField(
-                    style: TextStyle(fontSize: 16,color: Colors.white),
-                    keyboardType: TextInputType.text,
-                    autofocus: false,
-                    obscureText: true,
-                    controller: controller,
-                    decoration: InputDecoration(
-                      hintStyle: TextStyle(fontSize: 16,color: Colors.white54),
-                      hintText: '$rightHint',
-                      border: InputBorder.none,
-                      //  labelStyle: TextStyle(color: Colors.redAccent),
-                      //  border: OutlineInputBorder(borderRadius: BorderRadius.circular(20.0))
-                    ),
-                  ),
-                ),
-              ),
-            ],
+    Widget pwswdTile(String rightHint, TextEditingController controller) {
+      return Container(
+        decoration: BoxDecoration(
+          border: Border.all(color: Colors.white30),
+          borderRadius: BorderRadius.circular(10)
+        ),
+        height: 54,
+        child: TextFormField(
+          style: TextStyle(fontSize: 16, color: Colors.white),
+          keyboardType: TextInputType.text,
+          autofocus: false,
+          obscureText: true,
+          controller: controller,
+          decoration: InputDecoration(
+            icon: SizedBox(width: 0),
+            hintStyle: TextStyle(fontSize: 16, color: Colors.white38),
+            hintText: '$rightHint',
+            border: InputBorder.none,
           ),
         ),
-        Positioned(
-          left: 16,
-          right: 16,
-          bottom: 0,
-          child: Divider(),
-          height: 1,
-        ),
-      ]);
+      );
     }
 
     Widget modifyPasword() {
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: 50),
-      height: 54,
-      width: double.infinity,
-      child: FlatButton(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(Radius.circular(8))),
-          splashColor: Colors.white,color: HexColor('6699ff'),
-          child: Text('修改密码', style: TextStyle(color: Colors.white, fontSize: 16)),
-          onPressed: (){
+      return Container(
+        height: 54,
+        width: double.infinity,
+        child: FlatButton(
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(8))),
+          splashColor: Colors.white,
+          color: HexColor('6699ff'),
+          child:
+              Text('确认提交', style: TextStyle(color: Colors.white, fontSize: 16)),
+          onPressed: () {
             onTapSave();
           },
-        ),
-    );
-  }
-
-    Widget buttonTile() {
-      return Container(
-        height: 60,
-        width: double.infinity,
-        child: Center(
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: FlatButton(
-              onPressed: () {
-                onTapSave();
-              },
-              child: Center(
-                  child: Text('修改密码',
-                      style: TextStyle(color: Colors.white, fontSize: 18))),
-              color: Theme.of(context).primaryColor,
-            ),
-          ),
         ),
       );
     }
@@ -110,19 +62,25 @@ class _ModifyPswdPageState extends State<ModifyPswdPage> {
         backgroundColor: Colors.transparent,
         appBar: AppBar(
           centerTitle: true,
-          title: Text('修改密码'),
+          title: Text(
+            '修改密码',
+            style: TextStyle(fontSize: 17),
+          ),
           backgroundColor: Colors.transparent,
           elevation: 0,
         ),
         body: Container(
+          padding: EdgeInsets.symmetric(horizontal: 20),
           child: ListView(
             children: <Widget>[
-              pwswdTile('旧密码', '点击输入旧密码', oldController),
-              pwswdTile('新密码', '点击输入新密码', newController),
-              pwswdTile('确认密码', '点击重复输入新密码', againController),
-              SizedBox(height: 60),
+              SizedBox(height: 20),
+              pwswdTile('请输入当前密码', oldController),
+              SizedBox(height: 20),
+              pwswdTile('请输入新密码', newController),
+              SizedBox(height: 20),
+              pwswdTile('确认新密码', againController),
+              SizedBox(height: 20),
               modifyPasword(),
-              // buttonTile(),
             ],
           ),
         ),
@@ -137,7 +95,7 @@ class _ModifyPswdPageState extends State<ModifyPswdPage> {
     var againText = againController.text ?? '';
 
     if (oldText.length == 0) {
-      showToast('请输入旧密码');
+      showToast('请输入当前密码');
       return;
     }
     if (newText.length == 0) {
@@ -169,24 +127,20 @@ class _ModifyPswdPageState extends State<ModifyPswdPage> {
       return;
     }
 
-
     httpModifyLoginPswd();
   }
 
   //  修改登录密码请求
   void httpModifyLoginPswd() async {
-    var oldWord = oldController.text; 
+    var oldWord = oldController.text;
     var newWord = againController.text;
-    var result = await API.modifyPswd(oldWord,newWord);
-    if(result.success) {
+    var result = await API.modifyPswd(oldWord, newWord);
+    if (result.success) {
       // showToast('密码修改成功');
-      Future.delayed(Duration(seconds:1),(){
-         Navigator.of(context).pop();
+      Future.delayed(Duration(seconds: 1), () {
+        Navigator.of(context).pop();
       });
       return;
     }
-    // showToast(result?.msg ?? '密码修改失败');
   }
-
-
 }
