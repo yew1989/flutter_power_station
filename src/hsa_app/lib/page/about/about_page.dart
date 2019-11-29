@@ -24,32 +24,41 @@ class _AboutPageState extends State<AboutPage> {
             centerTitle: true,
             title: Text('关于智能电站管家',style: TextStyle(color: Colors.white,fontWeight: FontWeight.normal,fontSize: 18)),
           ),
-          body: Container(
-            padding: EdgeInsets.symmetric(horizontal: 28),
-            child: ListView(
-              children: <Widget>[
-                SizedBox(height: 50),
-                Center(child: SizedBox(
-                  height: 82,
-                  width: 82,
-                  child: Image.asset('images/about/about_icon.png'))),
-                SizedBox(height: 14),
-                Center(child: Text('V1.0.0',style: TextStyle(color: Colors.white38,fontSize: 10))),
-                SizedBox(height: 4),
-                Center(child: Text('Build 20191220',style: TextStyle(color: Colors.white38,fontSize: 10))),
-                SizedBox(height: 50),
-                Text('【应用简介】',style: TextStyle(color: Colors.white,fontSize:13)),
-                SizedBox(height: 4),
-                Text('  '+appInfo,style: TextStyle(color: Colors.white54,fontSize: 13)),
-                SizedBox(height: 20),
-                Text('【功能介绍】',style: TextStyle(color: Colors.white,fontSize: 13)),
-                SizedBox(height: 4),
-                Text(desc1,style: TextStyle(color: Colors.white54,fontSize: 13)),
-                SizedBox(height: 20),
-                Text(desc2,style: TextStyle(color: Colors.white54,fontSize: 13)),
-                SizedBox(height: 20),
-                Text(desc3,style: TextStyle(color: Colors.white54,fontSize: 13)),
-              ],
+          body: SafeArea(
+            child: Container(
+              padding: EdgeInsets.symmetric(horizontal: 28),
+              child: Stack(
+                children: <Widget>[
+                  ListView(
+                  children: <Widget>[
+                    SizedBox(height: 50),
+                    Center(child: SizedBox(
+                      height: 82,
+                      width: 82,
+                      child: Image.asset('images/about/about_icon.png'))),
+                    SizedBox(height: 14),
+                    Center(child: Text('V1.0.0',style: TextStyle(color: Colors.white70,fontSize: 10))),
+                    SizedBox(height: 4),
+                    Center(child: Text('Build 20191220',style: TextStyle(color: Colors.white70,fontSize: 10))),
+                    SizedBox(height: 50),
+                    Text('【应用简介】',style: TextStyle(color: Colors.white,fontSize:13)),
+                    SizedBox(height: 4),
+                    Text('  '+appInfo,style: TextStyle(color: Colors.white54,fontSize: 13)),
+                    SizedBox(height: 20),
+                    Text('【功能介绍】',style: TextStyle(color: Colors.white,fontSize: 13)),
+                    SizedBox(height: 4),
+                    Text(desc1,style: TextStyle(color: Colors.white54,fontSize: 13)),
+                    SizedBox(height: 20),
+                    Text(desc2,style: TextStyle(color: Colors.white54,fontSize: 13)),
+                    SizedBox(height: 20),
+                    Text(desc3,style: TextStyle(color: Colors.white54,fontSize: 13)),
+                    ],
+                  ),
+                  Positioned(bottom: 4,left: 0,right: 0,child: Center(
+                    child: Text('Copyright @ fjlead 2019-2020',style: TextStyle(color: Colors.white70,fontSize: 10)))),
+                ],
+
+              ),
             ),
           ),
       ),

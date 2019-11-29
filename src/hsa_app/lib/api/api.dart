@@ -42,8 +42,9 @@ class HttpResult {
 
 class HttpHelper {
 
-  // 开启代理模式,可抓包
-  static final isProxyModeOpen = true;
+  // 开启代理模式,允许抓包
+  static final isProxyModeOpen = false;
+  // 代理地址
   static final proxyIP = 'PROXY 192.168.31.74:8888';
   // 超时时间
   static final kTimeOutSeconds = 20;
