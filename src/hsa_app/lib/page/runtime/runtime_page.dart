@@ -190,7 +190,8 @@ class _RuntimePageState extends State<RuntimePage> {
     var urlHistory = host + pageItemHistory.route ?? AppConfig.getInstance().deadLink;
     var auth = await ShareManager.instance.loadToken();
     var terminalsString = address;
-    var lastUrl =  urlHistory + '?auth=' + auth + '&address=' + terminalsString;
+    var titleString = widget?.title ?? '';
+    var lastUrl =  urlHistory + '?auth=' + auth + '&address=' + terminalsString + '&title=' + titleString;
     debugPrint('历史曲线Url:' + lastUrl);
     pushToPage(context, WebViewPage('', lastUrl,noNavBar:true));
   }

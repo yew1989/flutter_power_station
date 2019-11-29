@@ -531,7 +531,8 @@ class _StationPageState extends State<StationPage> {
       return device?.address ?? '';
     }).toList();
     var terminalsString = deviceIdList.join(',');
-    var lastUrl =  urlHistory + '?auth=' + auth + '&address=' + terminalsString;
+    var titleString = stationInfo?.name ?? '';
+    var lastUrl =  urlHistory + '?auth=' + auth + '&address=' + terminalsString + '&title=' + titleString;
     debugPrint('历史曲线Url:' + lastUrl);
     pushToPage(context, WebViewPage('', lastUrl,noNavBar:true));
   }
