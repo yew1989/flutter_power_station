@@ -532,7 +532,7 @@ class _StationPageState extends State<StationPage> {
     }).toList();
     var terminalsString = deviceIdList.join(',');
     var titleString = stationInfo?.name ?? '';
-    var lastUrl =  urlHistory + '?auth=' + auth + '&address=' + terminalsString + '&title=' + titleString;
+    var lastUrl =  urlHistory + '?auth=' + auth + '&address=' + terminalsString + '&title=' + Uri.encodeComponent(titleString);
     debugPrint('历史曲线Url:' + lastUrl);
     pushToPage(context, WebViewPage('', lastUrl,noNavBar:true));
   }

@@ -83,6 +83,7 @@ class _WebViewPageState extends State<WebViewPage> {
                           hideLoading();
                         },
                         initialUrl: widget.url ?? '',
+                        // initialUrl: 'http://www.baidu.com',
                         javascriptMode: JavascriptMode.unrestricted,
                         javascriptChannels: [
                           JavascriptChannel(

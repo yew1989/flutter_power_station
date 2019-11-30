@@ -191,7 +191,7 @@ class _RuntimePageState extends State<RuntimePage> {
     var auth = await ShareManager.instance.loadToken();
     var terminalsString = address;
     var titleString = widget?.title ?? '';
-    var lastUrl =  urlHistory + '?auth=' + auth + '&address=' + terminalsString + '&title=' + titleString;
+    var lastUrl =  urlHistory + '?auth=' + auth + '&address=' + terminalsString + '&title=' + Uri.encodeComponent(titleString);
     debugPrint('历史曲线Url:' + lastUrl);
     pushToPage(context, WebViewPage('', lastUrl,noNavBar:true));
   }
