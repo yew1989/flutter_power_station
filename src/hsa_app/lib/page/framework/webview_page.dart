@@ -49,6 +49,9 @@ class _WebViewPageState extends State<WebViewPage> {
 
   @override
   Widget build(BuildContext context) {
+
+    debugPrint('网页:'+widget.url);
+  
     return Stack(
       children: [
         // 渐变色背景
@@ -83,7 +86,6 @@ class _WebViewPageState extends State<WebViewPage> {
                           hideLoading();
                         },
                         initialUrl: widget.url ?? '',
-                        // initialUrl: 'http://www.baidu.com',
                         javascriptMode: JavascriptMode.unrestricted,
                         javascriptChannels: [
                           JavascriptChannel(

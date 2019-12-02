@@ -49,7 +49,7 @@ class _LivePageState extends State<LivePage> {
             child: Container(
               padding: EdgeInsets.symmetric(horizontal: 28),
               // child: buildIjkPlayer(),
-              child: WebViewPage('播放器', source),
+              child: WebViewPage('播放器', source,noNavBar: true),
           ),
         ),
       ),
