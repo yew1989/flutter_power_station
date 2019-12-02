@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:hsa_app/api/api.dart';
 import 'package:hsa_app/config/config.dart';
 import 'package:hsa_app/model/station_info.dart';
+import 'package:hsa_app/page/live/live_page.dart';
 import 'package:hsa_app/page/runtime/runtime_page.dart';
 import 'package:hsa_app/page/framework/webview_page.dart';
 import 'package:hsa_app/theme/theme_gradient_background.dart';
@@ -27,6 +28,7 @@ class _StationPageState extends State<StationPage> {
   StationInfo stationInfo = StationInfo();
   int weatherType = 0;
   String weatherString = '晴';
+  List<String> openLive = [];
 
   @override
   void initState() {
@@ -59,6 +61,7 @@ class _StationPageState extends State<StationPage> {
     API.stationInfo(stationId,(StationInfo station){
       
       if(station == null) return;
+      
 
       // 彩云天气接口
       requestWeatherCaiyun(station.geo,(int type){
@@ -81,8 +84,12 @@ class _StationPageState extends State<StationPage> {
         });
       });
       
+
       setState(() {
         this.stationInfo =  station;
+        if(station.openlive!= null) {
+          this.openLive = station.openlive;
+        }
       });
 
     },(String msg){
@@ -292,19 +299,6 @@ class _StationPageState extends State<StationPage> {
     );
   }
 
-  // 
-  void onTapVideo() {
-    var host = AppConfig.getInstance().webHost;
-    var pageItem = AppConfig.getInstance().pageBundle.video;
-    var url = host + pageItem.route ?? AppConfig.getInstance().deadLink;
-    var title = pageItem.title ?? '';
-    url = url +
-        '?videoUrl=' +
-        'http://hls01open.ys7.com/openlive/834678865c9943d78f773e9188eb6146.m3u8';
-    pushToPage(context, WebViewPage(title, url));
-  }
-
-
   // 机组信息
   Widget terminalListHeader() {
     return Container(
@@ -328,11 +322,18 @@ class _StationPageState extends State<StationPage> {
                   width: 22,
                   child: Image.asset('images/station/GL_Locationbtn.png'),
                 ),
+
                 SizedBox(
                   height: 32,
                   width: 32,
-                  child: Image.asset('images/station/GL_Video_btn.png'),
+                  child: openLive.length != 0 ? GestureDetector(
+                    child: Image.asset('images/station/GL_Video_btn.png'),
+                    onLongPress: (){
+                      pushToPage(context, LivePage(title: widget.title?? '',openLives: this.openLive));
+                    },
+                  ) :Container(),
                 ),
+                
               ],
             ),
           ),
