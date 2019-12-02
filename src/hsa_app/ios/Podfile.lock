@@ -2,6 +2,9 @@ PODS:
   - connectivity (0.0.1):
     - Flutter
     - Reachability
+  - flt_video_player (0.0.1):
+    - Flutter
+    - TXLiteAVSDK_Player
   - Flutter (1.0.0)
   - flutter_video (0.0.1):
     - Flutter
@@ -30,13 +33,17 @@ PODS:
     - Flutter
     - FMDB (~> 2.7.2)
   - SVProgressHUD (2.2.5)
+  - TXLiteAVSDK_Player (6.8.7969)
   - url_launcher (0.0.1):
+    - Flutter
+  - video_player (0.0.1):
     - Flutter
   - webview_flutter (0.0.1):
     - Flutter
 
 DEPENDENCIES:
   - connectivity (from `.symlinks/plugins/connectivity/ios`)
+  - flt_video_player (from `.symlinks/plugins/flt_video_player/ios`)
   - Flutter (from `.symlinks/flutter/ios`)
   - flutter_video (from `.symlinks/plugins/flutter_video/ios`)
   - fluttertoast (from `.symlinks/plugins/fluttertoast/ios`)
@@ -48,6 +55,7 @@ DEPENDENCIES:
   - shared_preferences (from `.symlinks/plugins/shared_preferences/ios`)
   - sqflite (from `.symlinks/plugins/sqflite/ios`)
   - url_launcher (from `.symlinks/plugins/url_launcher/ios`)
+  - video_player (from `.symlinks/plugins/video_player/ios`)
   - webview_flutter (from `.symlinks/plugins/webview_flutter/ios`)
 
 SPEC REPOS:
@@ -56,10 +64,13 @@ SPEC REPOS:
     - FMDB
     - Reachability
     - SVProgressHUD
+    - TXLiteAVSDK_Player
 
 EXTERNAL SOURCES:
   connectivity:
     :path: ".symlinks/plugins/connectivity/ios"
+  flt_video_player:
+    :path: ".symlinks/plugins/flt_video_player/ios"
   Flutter:
     :path: ".symlinks/flutter/ios"
   flutter_video:
@@ -82,11 +93,14 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/sqflite/ios"
   url_launcher:
     :path: ".symlinks/plugins/url_launcher/ios"
+  video_player:
+    :path: ".symlinks/plugins/video_player/ios"
   webview_flutter:
     :path: ".symlinks/plugins/webview_flutter/ios"
 
 SPEC CHECKSUMS:
   connectivity: 6e94255659cc86dcbef1d452ad3e0491bb1b3e75
+  flt_video_player: 5ac12f52274ca5f0446a8c735ab565e998d8c0a4
   Flutter: 0e3d915762c693b495b44d77113d4970485de6ec
   flutter_video: 7ed6666aff321c1a1f634079a6e444d5f5c942d1
   FlutterIJK: 68b00c1d11162b5016f3611853aa699e198bd1d2
@@ -101,7 +115,9 @@ SPEC CHECKSUMS:
   shared_preferences: 430726339841afefe5142b9c1f50cb6bd7793e01
   sqflite: 4001a31ff81d210346b500c55b17f4d6c7589dd0
   SVProgressHUD: 1428aafac632c1f86f62aa4243ec12008d7a51d6
+  TXLiteAVSDK_Player: a3799add98c6802e382972d98cc0e7bacb50984f
   url_launcher: a1c0cc845906122c4784c542523d8cacbded5626
+  video_player: 69c5f029fac4ffe4fc8a85ea7f7b793709661549
   webview_flutter: db3aba222b23e4dc432e0c5882834123dc50ff9f
 
 PODFILE CHECKSUM: 2bc4300d2c3adbef04ea6a8d6bf9b577dff1022c
