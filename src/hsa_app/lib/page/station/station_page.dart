@@ -317,6 +317,7 @@ class _StationPageState extends State<StationPage> {
               children: <Widget>[
                 Text('机组信息',style: TextStyle(color: Colors.white,fontSize: 15)),
                 Text('天气:' + weatherString ,style: TextStyle(color: Colors.white,fontSize: 15)),
+
                 SizedBox(
                   height: 22,
                   width: 22,
@@ -328,7 +329,7 @@ class _StationPageState extends State<StationPage> {
                   width: 32,
                   child: openLive.length != 0 ? GestureDetector(
                     child: Image.asset('images/station/GL_Video_btn.png'),
-                    onLongPress: (){
+                    onTap: (){
                       pushToPage(context, LivePage(title: widget.title?? '',openLives: this.openLive));
                     },
                   ) :Container(),

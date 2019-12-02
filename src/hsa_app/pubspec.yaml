@@ -36,7 +36,7 @@ dependencies:
   path_drawing: ^0.4.1
   connectivity: ^0.4.5+3
   pull_to_refresh: ^1.5.7
-  flutter_simple_video_player: ^0.0.9
+  flutter_video: ^0.1.14
 
 dev_dependencies:
   flutter_test:
