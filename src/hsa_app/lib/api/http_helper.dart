@@ -14,7 +14,7 @@ typedef HttpFailCallback = void Function(String msg);
 class HttpHelper {
 
   // 开启代理模式,允许抓包
-  static final isProxyModeOpen = false;
+  static final isProxyModeOpen = true;
   // 代理地址
   static final proxyIP = 'PROXY 192.168.31.74:8888';
   // 超时时间
@@ -293,7 +293,7 @@ class HttpHelper {
 
     // 尝试请求
     try {
-      final url = API.host + path;
+      var url = path ?? '';
       Response response = await dio.post(
         url,
         options: Options(

@@ -48,15 +48,15 @@ class RuntimeDataResponse {
 
 class VoltageAndCurrent {
   String freezeTime;
-  double gV;
-  double aV;
-  double bV;
-  double cV;
-  double aA;
-  double bA;
-  double cA;
-  double gVHz;
-  double vHz;
+  num gV;
+  num aV;
+  num bV;
+  num cV;
+  num aA;
+  num bA;
+  num cA;
+  num gVHz;
+  num vHz;
 
   VoltageAndCurrent(
       {this.freezeTime,
@@ -72,15 +72,15 @@ class VoltageAndCurrent {
 
   VoltageAndCurrent.fromJson(Map<String, dynamic> json) {
     freezeTime = json['FreezeTime'];
-    gV = json['GV'];
-    aV = json['AV'];
-    bV = json['BV'];
-    cV = json['CV'];
-    aA = json['AA'];
-    bA = json['BA'];
-    cA = json['CA'];
-    gVHz = json['GVHz'];
-    vHz = json['VHz'];
+    gV = json['GV'] ?? 0.0 ;
+    aV = json['AV'] ?? 0.0 ;
+    bV = json['BV'] ?? 0.0 ;
+    cV = json['CV'] ?? 0.0 ;
+    aA = json['AA'] ?? 0.0 ;
+    bA = json['BA'] ?? 0.0 ;
+    cA = json['CA'] ?? 0.0 ;
+    gVHz = json['GVHz'] ?? 0.0 ;
+    vHz = json['VHz'] ?? 0.0 ;
   }
 
   Map<String, dynamic> toJson() {
@@ -101,16 +101,16 @@ class VoltageAndCurrent {
 
 class RuntimeDataPower {
   String freezeTime;
-  double tPf;
-  double tkvar;
-  double tkW;
-  double akW;
-  double bkW;
-  double ckW;
-  double tkVA;
-  double akvar;
-  double bkvar;
-  double ckvar;
+  num tPf;
+  num tkvar;
+  num tkW;
+  num akW;
+  num bkW;
+  num ckW;
+  num tkVA;
+  num akvar;
+  num bkvar;
+  num ckvar;
 
   RuntimeDataPower(
       {this.freezeTime,
@@ -127,16 +127,16 @@ class RuntimeDataPower {
 
   RuntimeDataPower.fromJson(Map<String, dynamic> json) {
     freezeTime = json['FreezeTime'];
-    tPf = json['TPf'];
-    tkvar = json['Tkvar'];
-    tkW = json['TkW'];
-    akW = json['AkW'];
-    bkW = json['BkW'];
-    ckW = json['CkW'];
-    tkVA = json['TkVA'];
-    akvar = json['Akvar'];
-    bkvar = json['Bkvar'];
-    ckvar = json['Ckvar'];
+    tPf = json['TPf'] ?? 0.0 ;
+    tkvar = json['Tkvar'] ?? 0.0 ;
+    tkW = json['TkW'] ?? 0.0 ;
+    akW = json['AkW'] ?? 0.0 ;
+    bkW = json['BkW'] ?? 0.0 ;
+    ckW = json['CkW'] ?? 0.0 ;
+    tkVA = json['TkVA'] ?? 0.0 ;
+    akvar = json['Akvar'] ?? 0.0 ;
+    bkvar = json['Bkvar'] ?? 0.0 ;
+    ckvar = json['Ckvar'] ?? 0.0 ;
   }
 
   Map<String, dynamic> toJson() {
@@ -158,19 +158,19 @@ class RuntimeDataPower {
 
 class WorkSupportData {
   String freezeTime;
-  double gateOpening;
-  List<double> gateOpenings;
-  int relativeMaxWaterStage;
-  int waterStageAlarmValue;
-  double waterStage;
-  int altitudeWaterStage;
-  Null coolingWaterStage;
-  double rPM;
-  double excitationCurrentA;
+  num gateOpening;
+  List<num> gateOpenings;
+  num relativeMaxWaterStage;
+  num waterStageAlarmValue;
+  num waterStage;
+  num altitudeWaterStage;
+  num coolingWaterStage;
+  num rPM;
+  num excitationCurrentA;
   bool gateHLimit;
   bool gateLLimit;
   List<Temperatures> temperatures;
-  Null waterPressures;
+  num waterPressures;
   List<RecentAlarmEventRecord> recentAlarmEventRecord;
 
   WorkSupportData(
@@ -192,17 +192,17 @@ class WorkSupportData {
 
   WorkSupportData.fromJson(Map<String, dynamic> json) {
     freezeTime = json['FreezeTime'];
-    gateOpening = json['GateOpening'];
-    gateOpenings = json['GateOpenings'].cast<double>();
-    relativeMaxWaterStage = json['RelativeMaxWaterStage'];
-    waterStageAlarmValue = json['WaterStageAlarmValue'];
-    waterStage = json['WaterStage'];
-    altitudeWaterStage = json['AltitudeWaterStage'];
-    coolingWaterStage = json['CoolingWaterStage'];
-    rPM = json['RPM'];
-    excitationCurrentA = json['ExcitationCurrentA'];
-    gateHLimit = json['GateHLimit'];
-    gateLLimit = json['GateLLimit'];
+    gateOpening = json['GateOpening'] ?? 0.0;
+    gateOpenings = json['GateOpenings'].cast<num>();
+    relativeMaxWaterStage = json['RelativeMaxWaterStage'] ?? 0.0;
+    waterStageAlarmValue = json['WaterStageAlarmValue'] ?? 0.0;
+    waterStage = json['WaterStage'] ?? 0.0;
+    altitudeWaterStage = json['AltitudeWaterStage'] ?? 0.0;
+    coolingWaterStage = json['CoolingWaterStage'] ?? 0.0;
+    rPM = json['RPM'] ?? 0.0;
+    excitationCurrentA = json['ExcitationCurrentA'] ?? 0.0;
+    gateHLimit = json['GateHLimit'] ?? false;
+    gateLLimit = json['GateLLimit'] ?? false;
     if (json['Temperatures'] != null) {
       temperatures = List<Temperatures>();
       json['Temperatures'].forEach((v) {
@@ -252,9 +252,9 @@ class Temperatures {
   Temperatures({this.mItem1, this.mItem2, this.mItem3});
 
   Temperatures.fromJson(Map<String, dynamic> json) {
-    mItem1 = json['m_Item1'];
-    mItem2 = json['m_Item2'];
-    mItem3 = json['m_Item3'];
+    mItem1 = json['m_Item1'] ?? '';
+    mItem2 = json['m_Item2'] ?? '';
+    mItem3 = json['m_Item3'] ?? false;
   }
 
   Map<String, dynamic> toJson() {
@@ -320,22 +320,22 @@ class TerminalInfo {
   bool isRemoteControl;
   String lastSwitchNetTime;
   bool disabled;
-  List<int> periodicElectricityPrices;
-  List<int> dayGeneratedEnergys;
-  List<int> monthGeneratedEnergys;
-  List<int> accumulatedGeneratedEnergys;
+  List<num> periodicElectricityPrices;
+  List<num> dayGeneratedEnergys;
+  List<num> monthGeneratedEnergys;
+  List<num> accumulatedGeneratedEnergys;
   bool circuitBreakerClosing;
   String workModel;
   String controlModel;
   String intelligentControlScheme;
-  int waterTurbineEquippedCapacitor;
-  int waterTurbineRatedActivePower;
-  int waterTurbineRatedRPM;
-  int waterTurbineRatedA;
-  int waterTurbineRatedV;
-  int waterTurbineExcitationCurrentA;
+  num waterTurbineEquippedCapacitor;
+  num waterTurbineRatedActivePower;
+  num waterTurbineRatedRPM;
+  num waterTurbineRatedA;
+  num waterTurbineRatedV;
+  num waterTurbineExcitationCurrentA;
   String waterTurbineAliasName;
-  Null waterTurbineGovernorPressure;
+  num waterTurbineGovernorPressure;
   String waterTurbineStartStopState;
   String terminalType;
 
@@ -368,33 +368,32 @@ class TerminalInfo {
       this.terminalType});
 
   TerminalInfo.fromJson(Map<String, dynamic> json) {
-    customerNo = json['CustomerNo'];
-    stationNo = json['StationNo'];
-    terminalAddress = json['TerminalAddress'];
-    isConnected = json['IsConnected'];
-    isNetworkLink = json['IsNetworkLink'];
-    isRemoteControl = json['IsRemoteControl'];
-    lastSwitchNetTime = json['LastSwitchNetTime'];
-    disabled = json['Disabled'];
-    periodicElectricityPrices = json['PeriodicElectricityPrices'].cast<int>();
-    dayGeneratedEnergys = json['DayGeneratedEnergys'].cast<int>();
-    monthGeneratedEnergys = json['MonthGeneratedEnergys'].cast<int>();
-    accumulatedGeneratedEnergys =
-        json['AccumulatedGeneratedEnergys'].cast<int>();
-    circuitBreakerClosing = json['CircuitBreakerClosing'];
-    workModel = json['WorkModel'];
-    controlModel = json['ControlModel'];
-    intelligentControlScheme = json['IntelligentControlScheme'];
-    waterTurbineEquippedCapacitor = json['WaterTurbineEquippedCapacitor'];
-    waterTurbineRatedActivePower = json['WaterTurbineRatedActivePower'];
-    waterTurbineRatedRPM = json['WaterTurbineRatedRPM'];
-    waterTurbineRatedA = json['WaterTurbineRatedA'];
-    waterTurbineRatedV = json['WaterTurbineRatedV'];
-    waterTurbineExcitationCurrentA = json['WaterTurbineExcitationCurrentA'];
-    waterTurbineAliasName = json['WaterTurbineAliasName'];
-    waterTurbineGovernorPressure = json['WaterTurbineGovernorPressure'];
-    waterTurbineStartStopState = json['WaterTurbineStartStopState'];
-    terminalType = json['TerminalType'];
+    customerNo = json['CustomerNo'] ?? '';
+    stationNo = json['StationNo'] ?? '';
+    terminalAddress = json['TerminalAddress'] ??'';
+    isConnected = json['IsConnected'] ?? false;
+    isNetworkLink = json['IsNetworkLink'] ?? false;
+    isRemoteControl = json['IsRemoteControl'] ?? false;
+    lastSwitchNetTime = json['LastSwitchNetTime'] ?? '';
+    disabled = json['Disabled'] ?? false;
+    periodicElectricityPrices = json['PeriodicElectricityPrices'].cast<num>();
+    dayGeneratedEnergys = json['DayGeneratedEnergys'].cast<num>();
+    monthGeneratedEnergys = json['MonthGeneratedEnergys'].cast<num>();
+    accumulatedGeneratedEnergys = json['AccumulatedGeneratedEnergys'].cast<num>();
+    circuitBreakerClosing = json['CircuitBreakerClosing'] ?? false;
+    workModel = json['WorkModel'] ?? '';
+    controlModel = json['ControlModel'] ?? '';
+    intelligentControlScheme = json['IntelligentControlScheme'] ?? '';
+    waterTurbineEquippedCapacitor = json['WaterTurbineEquippedCapacitor'] ?? 0.0;
+    waterTurbineRatedActivePower = json['WaterTurbineRatedActivePower'] ?? 0.0;
+    waterTurbineRatedRPM = json['WaterTurbineRatedRPM'] ?? 0.0;
+    waterTurbineRatedA = json['WaterTurbineRatedA'] ?? 0.0;
+    waterTurbineRatedV = json['WaterTurbineRatedV'] ?? 0.0;
+    waterTurbineExcitationCurrentA = json['WaterTurbineExcitationCurrentA'] ?? 0.0;
+    waterTurbineAliasName = json['WaterTurbineAliasName'] ?? '';
+    waterTurbineGovernorPressure = json['WaterTurbineGovernorPressure'] ?? 0.0;
+    waterTurbineStartStopState = json['WaterTurbineStartStopState'] ?? '';
+    terminalType = json['TerminalType'] ?? '';
   }
 
   Map<String, dynamic> toJson() {

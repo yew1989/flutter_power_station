@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:hsa_app/api/api.dart';
 import 'package:hsa_app/components/dash_board_widget.dart';
 import 'package:hsa_app/components/runtime_progress_bar.dart';
 import 'package:hsa_app/components/shawdow_widget.dart';
 import 'package:hsa_app/config/config.dart';
+import 'package:hsa_app/model/runtime_data.dart';
 import 'package:hsa_app/page/framework/webview_page.dart';
 import 'package:hsa_app/page/more/more_page.dart';
 import 'package:hsa_app/theme/theme_gradient_background.dart';
@@ -48,10 +50,30 @@ class _RuntimePageState extends State<RuntimePage> {
   static const double kFootHeight = 70;
   static const double kControlBoardHeight = 126;
 
+  // 实时数据
+  RuntimeDataResponse runtimeData;
+
   @override
   void initState() {
     super.initState();
-    toggleAnimationAll();
+    requestRunTimeData();
+    // toggleAnimationAll();
+  }
+
+  // 请求实时数据
+  void requestRunTimeData() {
+
+    var addressId = widget.address ??'';
+    
+    API.runtimeData(addressId, (RuntimeDataResponse data){
+      
+      setState(() {
+        this.runtimeData = data;
+      });
+
+    }, (String msg){
+
+    });
   }
 
   // 动画触发器
