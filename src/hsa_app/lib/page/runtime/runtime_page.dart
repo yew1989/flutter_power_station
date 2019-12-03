@@ -658,168 +658,6 @@ class _RuntimePageState extends State<RuntimePage> {
     );
   }
 
-  Widget operationBoardOld(String historyTitle, String historyUrl) => SafeArea(
-        child: Container(
-          margin: EdgeInsets.symmetric(horizontal: 10),
-          height: 127,
-          width: double.infinity,
-          color: Colors.transparent,
-          child: Stack(
-            children: <Widget>[
-              // 列布局
-              Column(
-                children: <Widget>[
-                  // 第一行
-                  Container(
-                    height: 62,
-                    decoration: BoxDecoration(
-                      color: Colors.black38,
-                      borderRadius: BorderRadius.all(Radius.circular(8)),
-                    ),
-                    child: Container(
-                      padding: EdgeInsets.symmetric(horizontal: 4),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: <Widget>[
-                          Expanded(
-                            flex: 1,
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: <Widget>[
-                                Text(
-                                  '自      动',
-                                  style: TextStyle(
-                                      color: Colors.white, fontSize: 16),
-                                ),
-                                Icon(Icons.arrow_drop_down,
-                                    color: Colors.white, size: 30),
-                              ],
-                            ),
-                          ),
-                          Expanded(
-                            flex: 1,
-                            child: Container(),
-                          ),
-                          Expanded(
-                            flex: 1,
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: <Widget>[
-                                Icon(Icons.card_giftcard,
-                                    color: Colors.white, size: 22),
-                                Text(
-                                  '  调功',
-                                  style: TextStyle(
-                                      color: Colors.white, fontSize: 16),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-
-                  // 中间间隔
-                  SizedBox(height: 3),
-
-                  // 第二行
-                  Container(
-                    height: 62,
-                    decoration: BoxDecoration(
-                      color: Colors.black38,
-                      borderRadius: BorderRadius.all(Radius.circular(8)),
-                    ),
-                    child: Container(
-                      padding: EdgeInsets.symmetric(horizontal: 4),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: <Widget>[
-                          Expanded(
-                            flex: 1,
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: <Widget>[
-                                Text(
-                                  '设备控制',
-                                  style: TextStyle(
-                                      color: Colors.white, fontSize: 16),
-                                ),
-                                Icon(Icons.arrow_drop_down,
-                                    color: Colors.white, size: 30),
-                              ],
-                            ),
-                          ),
-
-                          Expanded(
-                            flex: 1,
-                            child: Container(),
-                          ),
-
-     
-                        Expanded(
-                            flex: 1,
-                            child: GestureDetector(
-                              onTap: (){
-                                // pushToPage(context, MorePage(data: this.runTimeData));
-                              },
-                              child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: <Widget>[
-                                  Icon(Icons.settings,color: Colors.white, size: 22),
-                                  Text('  更多',style: TextStyle(color: Colors.white, fontSize: 16)),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-
-              // 中央按钮
-              Center(
-                child: Container(
-                  height: 127,
-                  width: 127,
-                  decoration: BoxDecoration(
-                    color: Colors.black26,
-                    border: Border.all(
-                        color: HexColor('4077B3'),
-                        width: 3,
-                        style: BorderStyle.solid),
-                    borderRadius: BorderRadius.all(Radius.circular(36)),
-                  ),
-                  child: Stack(
-                    children: <Widget>[
-                      Center(
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.all(Radius.circular(30)),
-                          child:  Center(
-                              child: SizedBox(
-                                height: 68,
-                                width: 68,
-                                child: Image.asset('images/runtime/Time_power_icon_on.png'))
-                            ),
-                        ),
-                      )
-                    ],
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-      );
-
   Widget eventTile(int idx) {
     return Container(
         padding: EdgeInsets.symmetric(horizontal: 16),
@@ -901,7 +739,10 @@ class _RuntimePageState extends State<RuntimePage> {
           child: Column(children: <Widget>[
             SizedBox(height: 12),
             terminalBriefHeader(),
-            SqureMasterWidget(),
+            SqureMasterWidget(
+              isMaster: runtimeData?.dashboard?.isMaster ?? false,
+              aliasName: runtimeData?.dashboard?.aliasName ?? '',
+            ),
             dashBoardWidget(),
             terminalBriefFooter(),
             SizedBox(height: 8),
@@ -915,17 +756,24 @@ class _RuntimePageState extends State<RuntimePage> {
   }
 }
 
-
-
+// 方形主从机标志.别名
 class SqureMasterWidget extends StatelessWidget {
 
+  final bool isMaster;
+  final String aliasName;
+
+  const SqureMasterWidget({Key key, this.isMaster, this.aliasName}) : super(key: key);
+  
   @override
   Widget build(BuildContext context) {
+
+    final alias = this.aliasName ?? '';
+    final isMaster = this.isMaster ?? false;
+
     return Container(
       padding: EdgeInsets.only(top: 10,bottom: 10),
       child: Stack(
         children: [
-
 
           // 中位文字
           Center(
@@ -943,7 +791,7 @@ class SqureMasterWidget extends StatelessWidget {
               child: Center(
                 child:Transform.translate(
                   offset: Offset(0, 6),
-                  child: Text('2#',style: TextStyle(color: Colors.white,fontFamily: 'ArialNarrow',fontSize: 30),
+                  child: Text(alias,style: TextStyle(color: Colors.white,fontFamily: 'ArialNarrow',fontSize: 30),
                     ),
                 ),
                   ),
@@ -956,7 +804,8 @@ class SqureMasterWidget extends StatelessWidget {
                 child: SizedBox(
                 height: 29,
                 width: 29,
-                child: Image.asset('images/runtime/Time_host_icon.png'),
+                child: isMaster ? Image.asset('images/runtime/Time_host_icon.png') 
+                : Image.asset('images/runtime/Time_slave_icon.png'),
                 ),
               ),
               ),
@@ -965,7 +814,8 @@ class SqureMasterWidget extends StatelessWidget {
             Positioned(
               left: 4,top: 0,
               child: Center(
-                child: Text('主',style: TextStyle(color: Colors.white,fontSize: 12)),
+                child: isMaster ? Text('主',style: TextStyle(color: Colors.white,fontSize: 12)) :
+                Text('从',style: TextStyle(color: Colors.white,fontSize: 12)),
               ),
               ),
 

@@ -19,8 +19,13 @@ class DashPainter extends CustomPainter {
     var beyondPencent = 0.0;
 
     if(powerPencent > 1.0) {
-      beyondPencent = 1.0 - powerPencent;
+      beyondPencent = powerPencent - 1.0;
+      powerPencent = 1.0;
+      if(beyondPencent > 0.5) {
+        beyondPencent = 0.5;
+      }
     }
+
 
     // 固定圆环
     Paint paintFix = Paint();
