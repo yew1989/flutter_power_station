@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:hsa_app/api/api.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:dio/adapter.dart';
 import 'package:dio/dio.dart';
@@ -6,7 +7,6 @@ import 'package:flutter/material.dart';
 import 'package:hsa_app/event/app_event.dart';
 import 'package:hsa_app/event/event_bird.dart';
 import 'package:hsa_app/util/share.dart';
-import 'api.dart';
 
 typedef HttpSuccCallback = void Function(dynamic data, String msg);
 typedef HttpFailCallback = void Function(String msg);
@@ -67,7 +67,7 @@ class HttpHelper {
       String path, 
       Map<String, dynamic> param, 
       HttpSuccCallback onSucc,
-      HttpFailCallback onFail) async {
+      HttpFailCallback onFail) async { 
 
     // 检测网络
     var isReachable = await isReachablity();

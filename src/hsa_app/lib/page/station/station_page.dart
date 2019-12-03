@@ -459,7 +459,7 @@ class _StationPageState extends State<StationPage> {
           // 内容
           GestureDetector(
             onTap: (){
-              pushToPage(context, RuntimePage(device?.name ?? '',device.address));
+              pushToPage(context, RuntimePage(device?.name ?? '',device.address,badgeName + '#'));
             },
             child: Center(
               child: Container(

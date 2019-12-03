@@ -4,6 +4,7 @@ import 'package:hsa_app/components/dash_board_widget.dart';
 import 'package:hsa_app/components/runtime_progress_bar.dart';
 import 'package:hsa_app/components/shawdow_widget.dart';
 import 'package:hsa_app/config/config.dart';
+import 'package:hsa_app/model/runtime_adapter.dart';
 import 'package:hsa_app/model/runtime_data.dart';
 import 'package:hsa_app/page/framework/webview_page.dart';
 import 'package:hsa_app/page/more/more_page.dart';
@@ -15,7 +16,8 @@ import 'package:native_color/native_color.dart';
 class RuntimePage extends StatefulWidget {
   final String title;
   final String address;
-  RuntimePage(this.title,this.address);
+  final String alias;
+  RuntimePage(this.title,this.address, this.alias);
   @override
   _RuntimePageState createState() => _RuntimePageState();
 }
@@ -51,7 +53,7 @@ class _RuntimePageState extends State<RuntimePage> {
   static const double kControlBoardHeight = 126;
 
   // 实时数据
-  RuntimeDataResponse runtimeData;
+  RuntimeData runtimeData = RuntimeData();
 
   @override
   void initState() {
@@ -63,12 +65,12 @@ class _RuntimePageState extends State<RuntimePage> {
   // 请求实时数据
   void requestRunTimeData() {
 
-    var addressId = widget.address ??'';
-    
+    var addressId = widget.address ?? '';
+
     API.runtimeData(addressId, (RuntimeDataResponse data){
       
       setState(() {
-        this.runtimeData = data;
+        this.runtimeData = RuntimeDataAdapter.adapter(data,widget.alias);
       });
 
     }, (String msg){
@@ -125,33 +127,32 @@ class _RuntimePageState extends State<RuntimePage> {
     });
   }
 
-  void resetAndToggle() {
-    setState(() {
-      voltPercent = 0;
-      voltPercentRed = 0;
-      showVoltText = false;
-
-      excitationCurrentPercent = 0;
-      excitationCurrentPercentRed = 0;
-      showexcitationCurrentText = false;
-
-      currentPercent = 0;
-      currentPercentRed = 0;
-      showCurrentText = false;
-
-      powerFactorPercent = 0;
-      powerFactorPercentRed = 0;
-      showPowerFactorText = false;
-    });
-    toggleAnimationVolt();
-    toggleAnimationCurrent();
-    toggleAnimationExcitationCurrent();
-    toggleAnimationPowerFactor();
-  }
-
   //  设备概要头
   Widget terminalBriefHeader() {
+
+    // 半装
     barMaxWidth = MediaQuery.of(context).size.width / 3;
+
+    // 电压
+    var voltage       = runtimeData?.electrical?.voltage?.now ?? 0.0;
+    var voltageStr    = voltage.toString() + 'V';
+    var voltagePecent = runtimeData?.electrical?.voltage?.percent ?? 0.0;
+
+    // 电流
+    var current       = runtimeData?.electrical?.current?.now ?? 0.0;
+    var currentStr    = current.toString() + 'A';
+    var currentPecent = runtimeData?.electrical?.current?.percent ?? 0.0;
+
+    // 励磁电流
+    var excitation        = runtimeData?.electrical?.excitation?.now ?? 0.0;
+    var excitationStr     = excitation.toString() + 'A';
+    var excitationPecent  = runtimeData?.electrical?.excitation?.percent ?? 0.0;
+
+    // 功率因数
+    var powfactor         = runtimeData?.electrical?.powerFactor?.now ?? 0.0;
+    var powfactorStr      = powfactor.toStringAsFixed(2);
+    var powfactorPencent  = runtimeData?.electrical?.powerFactor?.percent ?? 0.0;
+
     return Container(
       color: Colors.transparent,
       height: kHeaderHeight,
@@ -167,17 +168,17 @@ class _RuntimePageState extends State<RuntimePage> {
               RuntimeProgressBar(
                   barMaxWidth: barMaxWidth,
                   leftText: '电压',
-                  valueText: '400V',
-                  redLinePercent: voltPercentRed,
-                  readValuePercent: voltPercent,
-                  showLabel: showVoltText),
+                  valueText:  voltageStr,
+                  redLinePercent: voltagePecent,
+                  readValuePercent: voltagePecent,
+                  showLabel: true),
               RuntimeProgressBar(
                   barMaxWidth: barMaxWidth,
                   leftText: '励磁电流',
-                  valueText: '3.22A',
-                  redLinePercent: excitationCurrentPercentRed,
-                  readValuePercent: excitationCurrentPercent,
-                  showLabel: showexcitationCurrentText),
+                  valueText: excitationStr,
+                  redLinePercent: excitationPecent,
+                  readValuePercent: excitationPecent,
+                  showLabel: true),
             ],
           ),
           Row(
@@ -187,17 +188,17 @@ class _RuntimePageState extends State<RuntimePage> {
               RuntimeProgressBar(
                   barMaxWidth: barMaxWidth,
                   leftText: '电流',
-                  valueText: '140A',
-                  redLinePercent: currentPercentRed,
-                  readValuePercent: currentPercent,
-                  showLabel: showCurrentText),
+                  valueText: currentStr,
+                  redLinePercent: currentPecent,
+                  readValuePercent: currentPecent,
+                  showLabel: true),
               RuntimeProgressBar(
                   barMaxWidth: barMaxWidth,
                   leftText: '功率因数',
-                  valueText: '0.76',
-                  redLinePercent: powerFactorPercentRed,
-                  readValuePercent: powerFactorPercent,
-                  showLabel: showPowerFactorText),
+                  valueText: powfactorStr,
+                  redLinePercent: powfactorPencent,
+                  readValuePercent: powfactorPencent,
+                  showLabel: true),
             ],
           ),
         ],
@@ -219,7 +220,16 @@ class _RuntimePageState extends State<RuntimePage> {
   }
 
   // 仪表盘
-  Widget dashBoard() {
+  Widget dashBoardWidget() {
+
+    // 频率
+    var freqNow = runtimeData?.dashboard?.freq?.now ?? 0.0;
+    var freqNowStr = freqNow.toStringAsFixed(2);
+
+    // 开度
+    var openNow = runtimeData?.dashboard?.open?.now ?? 0.0;
+    openNow *= 100;
+    var openNowStr = openNow.toStringAsFixed(0);
 
     return Container(
         height: 202,
@@ -246,7 +256,7 @@ class _RuntimePageState extends State<RuntimePage> {
                             mainAxisAlignment: MainAxisAlignment.center,
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: <Widget>[
-                              Text('50',style: TextStyle(color: Colors.white,fontFamily: 'ArialNarrow',fontSize: 24)),
+                              Text(freqNowStr,style: TextStyle(color: Colors.white,fontFamily: 'ArialNarrow',fontSize: 24)),
                               SizedBox(height: 2,width: 52,child: Image.asset('images/runtime/Time_line1.png')),
                               Text('频率:Hz',style: TextStyle(color: Colors.white30,fontSize: 11)),
                             ],
@@ -282,7 +292,7 @@ class _RuntimePageState extends State<RuntimePage> {
                             mainAxisAlignment: MainAxisAlignment.center,
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: <Widget>[
-                              Text('80',style: TextStyle(color: Colors.white,fontFamily: 'ArialNarrow',fontSize: 24)),
+                              Text(openNowStr,style: TextStyle(color: Colors.white,fontFamily: 'ArialNarrow',fontSize: 24)),
                               SizedBox(height: 2,width: 52,child: Image.asset('images/runtime/Time_line1.png')),
                               Text('开度:%',style: TextStyle(color: Colors.white30,fontSize: 11)),
                             ],
@@ -305,7 +315,7 @@ class _RuntimePageState extends State<RuntimePage> {
               ],
             ),
             // 中央仪表盘
-            DashBoardWidget(),
+            DashBoardWidget(dashBoardData: runtimeData.dashboard),
         ],
         ),
       );
@@ -320,33 +330,37 @@ class _RuntimePageState extends State<RuntimePage> {
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
-            terminalBriefFooterItem('54.5', '径向  '),
-            terminalBriefFooterItem('46.5', '推力:N'),
-            terminalBriefFooterItem('65.1', '水压:MPa'),
+            terminalBriefFooterItem(runtimeData?.other?.radial),
+            terminalBriefFooterItem(runtimeData?.other?.thrust),
+            terminalBriefFooterItem(runtimeData?.other?.pressure),
           ],
         )),
         color: Colors.transparent,
       );
   }
 
-  Widget terminalBriefFooterItem(String upString, String downString) =>
-      Container(
+  Widget terminalBriefFooterItem(OtherData otherData) {
+      return otherData != null ? Container(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
-            Text(upString, 
-            style: TextStyle(color: Colors.white, fontSize: 22,fontFamily: 'ArialNarrow')),
-            Text(downString,
+            
+            Text(otherData?.title ?? '', 
+            style: TextStyle(
+            color: Colors.white, 
+            fontSize: 22,
+            fontFamily: 'ArialNarrow')),
+            
+            Text(otherData?.subTitle ??'',
             style: TextStyle(
               color: Colors.grey, 
               fontSize: 15,
-              fontFamily: 'ArialNarrow'
-              )),
+              fontFamily: 'ArialNarrow')),
           ],
         ),
-      );
-
+      ) : Container();
+  }
   // 事件列表
   Widget eventList() {
     return Container(
@@ -888,7 +902,7 @@ class _RuntimePageState extends State<RuntimePage> {
             SizedBox(height: 12),
             terminalBriefHeader(),
             SqureMasterWidget(),
-            dashBoard(),
+            dashBoardWidget(),
             terminalBriefFooter(),
             SizedBox(height: 8),
             Expanded(child: eventList()),

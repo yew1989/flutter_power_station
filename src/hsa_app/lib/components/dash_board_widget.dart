@@ -1,11 +1,28 @@
 import 'package:flutter/material.dart';
+import 'package:hsa_app/model/runtime_adapter.dart';
 import 'package:native_color/native_color.dart';
 import 'package:path_drawing/path_drawing.dart';
 import 'dart:math';
 
 class DashPainter extends CustomPainter {
+
+  final DashBoardDataPack dashboardData;
+
+  DashPainter(this.dashboardData);
+
   @override
   void paint(Canvas canvas, Size size) {
+
+    var openPencent   = dashboardData?.open?.percent ?? 0.0;
+    var freqPencent   = dashboardData?.freq?.percent ?? 0.0;
+    var powerPencent  = dashboardData?.power?.percent ?? 0.0;
+    var beyondPencent = 0.0;
+
+    if(powerPencent > 1.0) {
+      beyondPencent = 1.0 - powerPencent;
+    }
+
+    // 固定圆环
     Paint paintFix = Paint();
     paintFix
       ..color = Colors.white24
@@ -13,22 +30,22 @@ class DashPainter extends CustomPainter {
       ..isAntiAlias = true
       ..strokeWidth = 0.5
       ..style = PaintingStyle.stroke;
-    Rect rectCirleFix = Rect.fromCircle(center: Offset(0, 0), radius: 94.0);
-    canvas.drawArc(rectCirleFix, -pi / 2, 2 * pi, false, paintFix);
+    canvas.drawArc(Rect.fromCircle(center: Offset(0, 0), radius: 94.0), -pi / 2, 2 * pi, false, paintFix);
 
-    Paint paintFreqBack = Paint();
-    paintFreqBack
+    // 开度背景 半圆
+    Paint paintOpenBack = Paint();
+    paintOpenBack
       ..color = Colors.white24
       ..strokeCap = StrokeCap.round
       ..isAntiAlias = true
       ..filterQuality = FilterQuality.high
       ..strokeWidth = 2
       ..style = PaintingStyle.stroke;
-    Rect rectCircleFreq = Rect.fromCircle(center: Offset(0, 0), radius: 100.0);
-    canvas.drawArc(rectCircleFreq, -pi / 2, 1 * pi, false, paintFreqBack);
+    canvas.drawArc(Rect.fromCircle(center: Offset(0, 0), radius: 100.0), -pi / 2, 1 * pi, false, paintOpenBack);
 
-    Paint paintFreqReal = Paint();
-    paintFreqReal
+    // 开度真实
+    Paint paintOpenReal = Paint();
+    paintOpenReal
       ..strokeCap = StrokeCap.round
       ..filterQuality = FilterQuality.high
       ..isAntiAlias = true
@@ -43,7 +60,7 @@ class DashPainter extends CustomPainter {
         ],
       ).createShader(Rect.fromCircle(center: Offset(0, 0), radius: 100.0));
     Rect rectCircleReal = Rect.fromCircle(center: Offset(0, 0), radius: 100.0);
-    canvas.drawArc(rectCircleReal, -pi / 2, 0.75 * pi, false, paintFreqReal);
+    canvas.drawArc(rectCircleReal, -pi / 2, openPencent * pi, false, paintOpenReal);
 
     // 真实频率背景
     Paint paintHzBg = Paint();
@@ -74,11 +91,11 @@ class DashPainter extends CustomPainter {
         ],
       ).createShader(Rect.fromCircle(center: Offset(0, 0), radius: 80.0));
     Rect rectPaintHzReal = Rect.fromCircle(center: Offset(0, 0), radius: 80.0);
-    canvas.drawArc(rectPaintHzReal, -pi, 1 * pi, false, paintHzReal);
+    canvas.drawArc(rectPaintHzReal, -pi, freqPencent * pi, false, paintHzReal);
 
-    // 转速
-    Paint paintHzPRM = Paint();
-    paintHzPRM
+    // 功率
+    Paint paintPowerBlue = Paint();
+    paintPowerBlue
       ..strokeCap = StrokeCap.butt
       ..filterQuality = FilterQuality.high
       ..isAntiAlias = true
@@ -93,17 +110,13 @@ class DashPainter extends CustomPainter {
         ],
       ).createShader(Rect.fromCircle(center: Offset(0, 0), radius: 50.0));
 
-    Path p = Path();
-    Rect rect2 = Rect.fromCircle(center: Offset(0, 0), radius: 54.0);
-    p.addArc(rect2, -pi, 1.5 * pi);
-    canvas.drawPath(
-      dashPath(
-      p,
-      dashArray: CircularIntervalList<double>(<double>[1.0, 2.5]),
-      ),paintHzPRM);
+    Path bluePath = Path();
+    bluePath.addArc(Rect.fromCircle(center: Offset(0, 0), radius: 54.0), -pi, (powerPencent*1.5) * pi);
+    canvas.drawPath(dashPath(bluePath,dashArray: CircularIntervalList<double>(<double>[1.0, 2.5])),paintPowerBlue);
 
-   Paint paintHzPRMRed = Paint();
-   paintHzPRMRed
+   if(beyondPencent > 0) {
+      Paint paintPowerRed = Paint();
+      paintPowerRed
       ..strokeCap = StrokeCap.butt
       ..filterQuality = FilterQuality.high
       ..isAntiAlias = true
@@ -118,14 +131,12 @@ class DashPainter extends CustomPainter {
         ],
       ).createShader(Rect.fromCircle(center: Offset(0, 0), radius: 50.0));
 
-    Path p2 = Path(); 
-    Rect rect3 = Rect.fromCircle(center: Offset(0, 0), radius: 54.0);
-    p2.addArc(rect3,pi/2,0.1* pi);
-    canvas.drawPath(
-      dashPath(
-      p2,
-      dashArray: CircularIntervalList<double>(<double>[1.0, 2.5]),
-      ),paintHzPRMRed);
+    Path redPath = Path(); 
+    redPath.addArc(Rect.fromCircle(center: Offset(0, 0), radius: 54.0),pi/2,beyondPencent * 1.0 * pi);
+    canvas.drawPath(dashPath(redPath,dashArray: CircularIntervalList<double>(<double>[1.0, 2.5]),),paintPowerRed);
+   }
+   
+
     
   }
 
@@ -136,6 +147,10 @@ class DashPainter extends CustomPainter {
 }
 
 class DashBoardWidget extends StatefulWidget {
+
+  final DashBoardDataPack dashBoardData;
+
+  const DashBoardWidget({Key key, this.dashBoardData}) : super(key: key);
   @override
   _DashBoardWidgetState createState() => _DashBoardWidgetState();
 }
@@ -143,6 +158,15 @@ class DashBoardWidget extends StatefulWidget {
 class _DashBoardWidgetState extends State<DashBoardWidget> {
   @override
   Widget build(BuildContext context) {
+    
+    // 功率 now
+    var powerNow = widget?.dashBoardData?.power?.now ?? 0.0;
+    var powerNowStr = powerNow.toStringAsFixed(0);
+
+    // 功率 max
+    var powerMax = widget?.dashBoardData?.power?.max ?? 0.0;
+    var powerMaxStr = powerMax.toStringAsFixed(0) + 'kW';
+
     return Container(
         color: Colors.transparent,
         width: double.infinity,
@@ -152,7 +176,7 @@ class _DashBoardWidgetState extends State<DashBoardWidget> {
         [
           Center(
             child: CustomPaint(
-              painter: DashPainter(),
+              painter: DashPainter(widget?.dashBoardData),
             ),
           ),
           Center(
@@ -160,10 +184,10 @@ class _DashBoardWidgetState extends State<DashBoardWidget> {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
-                Text('1000',style: TextStyle(color: Colors.white,fontSize: 34,fontFamily: 'ArialNarrow')),
+                Text(powerNowStr ??'',style: TextStyle(color: Colors.white,fontSize: 34,fontFamily: 'ArialNarrow')),
                 SizedBox(height: 2,width: 50,child: Image.asset('images/runtime/Time_line1.png')),
                 SizedBox(height: 2),
-                Text('900kW',style: TextStyle(color: Colors.white38,fontSize: 15,fontFamily: 'ArialNarrow')),
+                Text(powerMaxStr ??'',style: TextStyle(color: Colors.white38,fontSize: 15,fontFamily: 'ArialNarrow')),
               ],
             ),
           )
