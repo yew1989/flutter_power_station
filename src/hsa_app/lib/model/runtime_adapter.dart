@@ -1,9 +1,17 @@
 import 'package:hsa_app/model/runtime_data.dart';
 
+
+class EventTileData {
+  final String leftString;
+  final String rightString;
+  EventTileData(this.leftString, this.rightString);
+}
+
 class RuntimeData {
   ElectricalPack electrical;
   DashBoardDataPack dashboard;
   OtherDataPack other;
+  List<EventTileData> events;
 }
 
 
@@ -118,6 +126,20 @@ class RuntimeDataAdapter {
    runtimeData.other.thrust   = OtherData(title: thrustStr ,subTitle: '推力:N');
    runtimeData.other.pressure = OtherData(title: pressure.toString(),subTitle: '水压:MPa');
 
+
+   // 事件列表
+   runtimeData.events = List<EventTileData>();
+
+   var records = data?.workSupportData?.recentAlarmEventRecord;
+   if(records!=null) {
+     for (var record in records) {
+       var right = record?.freezeTime ?? '';
+       right = right.replaceAll('T', ' ');// 替换 C# 时间戳中的 T
+       var left  = 'ERC' + record?.eRCFlag.toString() + '--' +  record?.eRCTitle;
+       var event = EventTileData(left,right);
+       runtimeData.events.add(event);
+     }
+   }
 
    return runtimeData;
  }

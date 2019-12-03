@@ -27,26 +27,6 @@ class _RuntimePageState extends State<RuntimePage> {
   // 计算宽度
   double barMaxWidth = 0;
 
-  // 电压
-  double voltPercent = 0;
-  double voltPercentRed = 0;
-  bool showVoltText = false;
-
-  // 励磁电流
-  double excitationCurrentPercent = 0;
-  double excitationCurrentPercentRed = 0;
-  bool showexcitationCurrentText = false;
-
-  // 电流
-  double currentPercent = 0;
-  double currentPercentRed = 0;
-  bool showCurrentText = false;
-
-  // 功率因数
-  double powerFactorPercent = 0;
-  double powerFactorPercentRed = 0;
-  bool showPowerFactorText = false;
-
   static const double kHeaderHeight = 44;
   static const double kDashBoardHeight = 200;
   static const double kFootHeight = 70;
@@ -59,7 +39,6 @@ class _RuntimePageState extends State<RuntimePage> {
   void initState() {
     super.initState();
     requestRunTimeData();
-    // toggleAnimationAll();
   }
 
   // 请求实时数据
@@ -75,55 +54,6 @@ class _RuntimePageState extends State<RuntimePage> {
 
     }, (String msg){
 
-    });
-  }
-
-  // 动画触发器
-  void toggleAnimationAll() {
-    toggleAnimationVolt();
-    toggleAnimationExcitationCurrent();
-    toggleAnimationCurrent();
-    toggleAnimationPowerFactor();
-  }
-
-  void toggleAnimationVolt() {
-    Future.delayed(Duration(milliseconds: 1000), () {
-      setState(() {
-        voltPercent = 0.65;
-        voltPercentRed = 0.65;
-        showVoltText = true;
-      });
-    });
-  }
-
-
-  void toggleAnimationExcitationCurrent() {
-    Future.delayed(Duration(milliseconds: 1200), () {
-      setState(() {
-        excitationCurrentPercent = 0.40;
-        excitationCurrentPercentRed = 0.40;
-        showexcitationCurrentText = true;
-      });
-    });
-  }
-
-  void toggleAnimationCurrent() {
-    Future.delayed(Duration(milliseconds: 1400), () {
-      setState(() {
-        currentPercent = 0.75;
-        currentPercentRed = 0.85;
-        showCurrentText = true;
-      });
-    });
-  }
-
-  void toggleAnimationPowerFactor() {
-    Future.delayed(Duration(milliseconds: 1600), () {
-      setState(() {
-        powerFactorPercent = 0.76;
-        powerFactorPercentRed = 0.76;
-        showPowerFactorText = true;
-      });
     });
   }
 
@@ -365,10 +295,7 @@ class _RuntimePageState extends State<RuntimePage> {
   Widget eventList() {
     return Container(
       child: ListView.builder(
-        // primary: false,
-        // shrinkWrap: true,
-        // physics:NeverScrollableScrollPhysics(),
-        itemCount: 20,
+        itemCount: runtimeData?.events?.length ?? 0,
         itemBuilder: (_, idx) => eventTile(idx),
       ),
     );
@@ -658,7 +585,10 @@ class _RuntimePageState extends State<RuntimePage> {
     );
   }
 
-  Widget eventTile(int idx) {
+  Widget eventTile(int index) {
+
+    var event = runtimeData?.events[index];
+
     return Container(
         padding: EdgeInsets.symmetric(horizontal: 16),
         height: 44,
@@ -678,9 +608,8 @@ class _RuntimePageState extends State<RuntimePage> {
                      SizedBox(height: 8,width: 8,child: Image.asset('images/runtime/Time_err_list_btn.png')),
                      SizedBox(width: 4),
                      Center(
-                        child: Text(
-                      'ERC31--超速保护',
-                      style: TextStyle(
+                        child: Text(event?.leftString ?? '',
+                        style: TextStyle(
                           fontSize: 14,
                           color: Colors.white,
                           fontFamily: 'ArialNarrow',
@@ -689,9 +618,8 @@ class _RuntimePageState extends State<RuntimePage> {
                     ]
                   ),
                   Center(
-                      child: Text(
-                    '2019-08-23 09:37:30',
-                    style: TextStyle(
+                      child: Text(event?.rightString ?? '',
+                      style: TextStyle(
                       fontSize: 14,
                       fontFamily: 'ArialNarrow',
                       color: Colors.white54,
