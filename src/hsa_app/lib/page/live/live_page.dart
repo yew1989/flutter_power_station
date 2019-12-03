@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:hsa_app/components/spinkit_indicator.dart';
 import 'package:hsa_app/theme/theme_gradient_background.dart';
-// import 'package:video_player/video_player.dart';
 import 'package:flt_video_player/flt_video_player.dart';
 
 class LivePage extends StatefulWidget {
@@ -13,62 +13,125 @@ class LivePage extends StatefulWidget {
 
 class _LivePageState extends State<LivePage> {
 
-  VideoPlayerController _controller;
-  
+  bool isFirstLoadingFinished = false;
+  bool isLastLoadingFinished  = false;
+
+  VideoPlayerController firstVideoPlayerController;
+  VideoPlayerController lastVideoPlayerController;
+
+  void initVideoPlayers() {
+    var openLives = widget.openLives;
+    if (openLives.length == 1) {
+      var firstSrc = widget?.openLives?.first ?? '';
+      firstVideoPlayerController = VideoPlayerController.path(firstSrc)
+        ..initialize().then((_) {
+
+          Future.delayed(Duration(seconds:1),(){
+              setState(() {
+                isLastLoadingFinished = true;
+              });
+            });
+
+        });
+    } else if (openLives.length == 2) {
+      var firstSrc = widget?.openLives?.first ?? '';
+      var lastSrc = widget?.openLives?.last ?? '';
+      firstVideoPlayerController = VideoPlayerController.path(firstSrc)
+        ..initialize().then((_) {
+     
+            Future.delayed(Duration(seconds:1),(){
+              setState(() {
+                isFirstLoadingFinished = true;
+              });
+            });
+
+        });
+      lastVideoPlayerController = VideoPlayerController.path(lastSrc)
+        ..initialize().then((_) {
+
+            Future.delayed(Duration(seconds:1),(){
+              setState(() {
+                isLastLoadingFinished = true;
+              });
+            });
+
+        });
+    }
+  }
+
+  void disposeVideoPlayer() {
+    firstVideoPlayerController?.dispose();
+    lastVideoPlayerController?.dispose();
+  }
 
   @override
   void initState() {
     super.initState();
-    _controller = VideoPlayerController.path(
-        // 'http://hzhls01.ys7.com:7888/openlive/C55600574_1_2.m3u8?ticket=ME5aVFdrMHBTZXNkbEw1NFZxS0dMVXZiaTAwTlBoaXRKRWRyT3JaK3Z5cz0kMSQyMDE5MTIwMzE0MDYyNyQxNTc1MjY2NzU3MDA5JDE1NzUzNTMxODcwMDkkMSQxNTc1MjY2NzU3MDA5JDE1NzUzNTMxODcwMDkkMyRjNjYwZTJmZDIwZDQ0NThhYWNhY2YxMzhjY2MyYjMxZiQz&token=296349165ca6443082d799aa6aefa894'
-        // 'http://vfx.mtime.cn/Video/2019/03/21/mp4/190321153853126488.mp4'
-        // 'http://vfx.mtime.cn/Video/2019/03/18/mp4/190318231014076505.mp4'
-        'http://hls01open.ys7.com/openlive/24d9ed96df9545f6b9a914828c2d9fb0.m3u8'
-        )
-      ..initialize().then((_) {
-        setState(() {
-            debugPrint('初始化');
-        });
-      });
-
-    Future.delayed(Duration(seconds:1),(){
-      _controller.play();
-    });
+    initVideoPlayers();
   }
+
   @override
   void dispose() {
-    _controller?.dispose();
+    disposeVideoPlayer();
     super.dispose();
+  }
+
+  Widget buildUIListView(List<String> openLives) {
+    List<Widget> listView = [];
+    for (int i = 0; i < openLives.length; i++) {
+      var index = i + 1;
+      listView.add(SizedBox(
+          child: Container(
+              child: Text('直播$index : ',
+                  style: TextStyle(color: Colors.white, fontSize: 16)))));
+      if (i == 0) {
+        listView.add(Container(
+            padding: EdgeInsets.symmetric(vertical: 10),
+            child: AspectRatio(
+                aspectRatio: 4 / 3, child: 
+                isFirstLoadingFinished == false ?  SpinkitIndicator(title: '直播加载中...',subTitle: '请稍后')
+                : VideoPlayer(firstVideoPlayerController))));
+      } else if (i == 1) {
+        listView.add(Container(
+            padding: EdgeInsets.symmetric(vertical: 10),
+            child: AspectRatio(
+                aspectRatio: 4 / 3, 
+                child: 
+                isFirstLoadingFinished == false ? SpinkitIndicator(title: '直播加载中...',subTitle: '请稍后')
+                : VideoPlayer(lastVideoPlayerController))));
+      }
+    }
+    return listView.length != 0
+        ? ListView(
+            children: listView,
+          )
+        : Container();
   }
 
   @override
   Widget build(BuildContext context) {
-
-    var source = widget.openLives.first ?? '';
-    debugPrint(source);
-
     return ThemeGradientBackground(
-      child:Scaffold(
+      child: Scaffold(
+        backgroundColor: Colors.transparent,
+        appBar: AppBar(
           backgroundColor: Colors.transparent,
-          appBar: AppBar(
-            backgroundColor: Colors.transparent,
-            elevation: 0,
-            centerTitle: true,
-            title: Text(widget.title ?? '',style: TextStyle(color: Colors.white,fontWeight: FontWeight.normal,fontSize: 18),
-            ),
+          elevation: 0,
+          centerTitle: true,
+          title: Text(
+            widget.title ?? '',
+            style: TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.normal,
+                fontSize: 18),
           ),
-          body: SafeArea(
-            child: Container(
-              padding: EdgeInsets.symmetric(horizontal: 10,vertical: 10),
-              child:  AspectRatio(
-                  aspectRatio: 4/3,
-                  child: VideoPlayer(_controller),
-              ),
+        ),
+        body: SafeArea(
+          child: Container(
+            padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+            child: buildUIListView(widget.openLives),
           ),
         ),
       ),
     );
   }
-
-
 }
