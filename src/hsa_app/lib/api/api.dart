@@ -2,8 +2,10 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:hsa_app/api/http_helper.dart';
 import 'package:hsa_app/model/caiyun.dart';
+import 'package:hsa_app/model/more_data.dart';
 import 'package:hsa_app/model/pageConfig.dart';
 import 'package:hsa_app/model/province.dart';
+import 'package:hsa_app/model/runtime_data.dart';
 import 'package:hsa_app/model/station.dart';
 import 'package:hsa_app/model/station_info.dart';
 import 'package:hsa_app/model/version.dart';
@@ -27,7 +29,10 @@ typedef StationsListResponseCallBack = void Function(List<Stations> stations,int
 typedef StationInfoResponeseCallBack = void Function(StationInfo stationInfo);
 // 获取天气类型 0 晴 1 阴 2 雨
 typedef WeatherTypeResponseCallBack = void Function(int type);
-
+// 获取实时参数
+typedef RuntimeDataResponseCallBack = void Function(RuntimeDataResponse data);
+// 获取更多参数
+typedef MoreDataResponseCallBack = void Function(MoreDataResponse data);
 
 class API {
   // 内网主机地址
@@ -71,9 +76,36 @@ class API {
   // 实时运行参数
   static final runtimeDataPath = API.host + 'api/General/RuntimeData';
 
+  // 更多数据
+  static final moreDataPath = API.host + 'api/General/TerminalOverViewData';
 
-  // 
+  // 获取实时运行参数
+  static void runtimeData(String address,RuntimeDataResponseCallBack onSucc,HttpFailCallback onFail) {
 
+    var addressId = address??'';
+    var totalPath = runtimeDataPath + '/' + addressId;
+
+    HttpHelper.postHttpCommon(totalPath, null, (dynamic data,String msg){
+        var map  = data as Map<String,dynamic>;
+        var resp = RuntimeDataResponse.fromJson(map);
+        if(onSucc != null) onSucc(resp);
+    }, onFail);
+
+  }
+
+  // 获取更多参数
+  static void moreData(String address,MoreDataResponseCallBack onSucc,HttpFailCallback onFail) {
+    
+    var addressId = address??'';
+    var totalPath = moreDataPath + '/' + addressId;
+
+    HttpHelper.getHttpCommon(totalPath, null, (dynamic data,String msg){
+        var map  = data as Map<String,dynamic>;
+        var resp = MoreDataResponse.fromJson(map);
+        if(onSucc != null) onSucc(resp);
+    }, onFail);
+
+  }
 
   // 彩云天气
   static void weatherCaiyun(Geo geo,WeatherTypeResponseCallBack onSucc,HttpFailCallback onFail) {
