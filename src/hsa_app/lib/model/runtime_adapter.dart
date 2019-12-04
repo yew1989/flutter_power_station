@@ -1,6 +1,5 @@
 import 'package:hsa_app/model/runtime_data.dart';
 
-
 class EventTileData {
   final String leftString;
   final String rightString;
@@ -129,7 +128,7 @@ class RuntimeDataAdapter {
 
    // 事件列表
    runtimeData.events = List<EventTileData>();
-
+   // 记录
    var records = data?.workSupportData?.recentAlarmEventRecord;
    if(records!=null) {
      for (var record in records) {
