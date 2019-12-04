@@ -60,6 +60,7 @@ flutter:
     - images/board/
     - images/about/
     - images/welcome/
+    - images/banner/
 
   fonts:
     - family: ArialNarrow
