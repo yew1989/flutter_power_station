@@ -13,16 +13,6 @@ class HomeBanner extends StatefulWidget {
 
 class _HomeBannerState extends State<HomeBanner> {
 
-  // // 广告栏
-  // List<String> bannerList = [
-  //   // 'http://www.fjlead.com/temp/picFim1.jpg',
-  //   // 'http://www.fjlead.com/temp/picFim3.jpg',
-  //   // 'http://www.fjlead.com/temp/picFim1.jpg',
-  //   // 'http://www.fjlead.com/temp/picFim3.jpg',
-  //   // 'http://www.fjlead.com/temp/picFim2.jpg',
-  //   '','','','','',
-  // ];
-
   @override
   Widget build(BuildContext context) {
       return BannerSwiper(

@@ -111,7 +111,9 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
-            SizedBox(height: 235,child: HomeBanner(this.banners)),
+
+            AspectRatio(aspectRatio: 45/ 28,child: HomeBanner(this.banners)),
+
             SizedBox(height: 1, child: Container(color: Colors.white24)),
             Expanded(
               child: DefaultTabController(
