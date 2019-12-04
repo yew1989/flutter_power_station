@@ -555,7 +555,7 @@ class _RuntimePageState extends State<RuntimePage> {
                         Expanded(
                           flex: 1,child:GestureDetector(
                             onTap: (){
-                              pushToPage(context, MorePage());
+                              pushToPage(context, MorePage(addressId: widget.address));
                             },
                             child: Container(
                             child: Row(

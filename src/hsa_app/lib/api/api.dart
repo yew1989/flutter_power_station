@@ -32,7 +32,7 @@ typedef WeatherTypeResponseCallBack = void Function(int type);
 // 获取实时参数
 typedef RuntimeDataResponseCallBack = void Function(RuntimeDataResponse data);
 // 获取更多参数
-typedef MoreDataResponseCallBack = void Function(MoreDataResponse data);
+typedef MoreDataResponseCallBack = void Function(List<MoreItem> items);
 
 class API {
   // 内网主机地址
@@ -99,10 +99,13 @@ class API {
     var addressId = address??'';
     var totalPath = moreDataPath + '/' + addressId;
 
-    HttpHelper.getHttpCommon(totalPath, null, (dynamic data,String msg){
-        var map  = data as Map<String,dynamic>;
-        var resp = MoreDataResponse.fromJson(map);
-        if(onSucc != null) onSucc(resp);
+    HttpHelper.getHttpCommonRespList(totalPath, null, (dynamic data,String msg){
+        var list  = data as List;
+        var items = List<MoreItem>();
+        for(var str in list) {
+          items.add(MoreItem.fromJson(str));
+        }
+        if(onSucc != null) onSucc(items);
     }, onFail);
 
   }

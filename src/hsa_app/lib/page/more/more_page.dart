@@ -1,17 +1,39 @@
 import 'package:flutter/material.dart';
+import 'package:hsa_app/api/api.dart';
+import 'package:hsa_app/model/more_data.dart';
 import 'package:hsa_app/theme/theme_gradient_background.dart';
 
 class MorePage extends StatefulWidget {
+  final String addressId;
+  const MorePage({Key key, this.addressId}) : super(key: key);
   @override
   _MorePageState createState() => _MorePageState();
 }
 
 class _MorePageState extends State<MorePage> {
  
+  List<MoreItem> moreItems = [];
+
   @override
   void initState() {
     super.initState();
+    requestMoreData();
+  }
+
+  // 请求更多数据
+  void requestMoreData() {
     
+    var address = widget.addressId ?? '';
+
+    // 更多数据
+    API.moreData(address,(List<MoreItem> items){
+      setState(() {
+        this.moreItems = items;
+      });
+    }, (String msg){
+      debugPrint(msg);
+    });
+
   }
 
   @override
@@ -29,7 +51,7 @@ class _MorePageState extends State<MorePage> {
           child: Padding(
             padding: EdgeInsets.only(left:14.0,right: 14.0,bottom: 14.0),
               child: ListView.builder(
-                itemCount: 20,
+                itemCount: moreItems?.length ?? 0,
                 itemBuilder: (context,index) => moreTile(index),
               ),
           ),
@@ -38,7 +60,8 @@ class _MorePageState extends State<MorePage> {
     );
   }
 
-  Widget moreTile(int idnex){
+  Widget moreTile(int index){
+    var item = moreItems[index];
     return Container(
       height: 44,
       margin: EdgeInsets.only(left: 16,right: 16),
@@ -49,14 +72,14 @@ class _MorePageState extends State<MorePage> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
-              Text('控制选项',
+              Text(item.mItem1 ?? '',
                 style: TextStyle(
                   color: Colors.white,
                   fontFamily: 'ArialNarrow',
                   fontSize: 16,
                   ),
               ),
-              Text('888.8',
+              Text(item.mItem2 ?? '',
                 style: TextStyle(
                   color: Colors.white54,
                   fontFamily: 'ArialNarrow',
