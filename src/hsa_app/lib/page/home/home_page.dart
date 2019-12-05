@@ -18,10 +18,12 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
   List<BannerItem> banners = [
 
   ];
+  
   // 省份列表
   List<String> provinces = [
 
   ];
+
   // UI分节列表
   List<String> sections = [
     '特别关注',
