@@ -98,7 +98,7 @@ class DeviceControlDialog extends Dialog {
                             ),
                           ),
 
-                                                    // 分割线
+                          // 分割线
                           Container(
                             width: double.infinity,
                             margin: EdgeInsets.only(left: 12),
@@ -121,9 +121,7 @@ class DeviceControlDialog extends Dialog {
                               ),
                             ),
                           ),
-
                           
-
                           // 分割线
                           Container(
                             width: double.infinity,
