@@ -7,6 +7,7 @@ import 'package:hsa_app/config/config.dart';
 import 'package:hsa_app/model/runtime_adapter.dart';
 import 'package:hsa_app/model/runtime_data.dart';
 import 'package:hsa_app/page/dialog/password_dialog.dart';
+import 'package:hsa_app/page/dialog/power_control_dialog.dart';
 import 'package:hsa_app/page/framework/webview_page.dart';
 import 'package:hsa_app/page/more/more_page.dart';
 import 'package:hsa_app/page/runtime/runtime_event_tile.dart';
@@ -504,20 +505,29 @@ class _RuntimePageState extends State<RuntimePage> {
                         SizedBox(width: 127),
                         // 调功率
                         Expanded(
-                          flex: 1,child:Container(
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: <Widget>[
-                            SizedBox(height: 22,width: 22,
-                                child: Image.asset('images/runtime/Time_Apower_icon.png'),
-                              ),
-                            SizedBox(width: 4),
-                            Text('调功',style: TextStyle(color: Colors.white,fontSize: 15)),
+                          flex: 1,
+                          child:GestureDetector(
+                            onTap: (){
+                              showDialog(context: context,  barrierDismissible: false,
+                              builder: (BuildContext context) {
+                              return  PowerControlDialog();
+                              });
+                            },
+                            child: Container(
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: <Widget>[
+                              SizedBox(height: 22,width: 22,
+                                  child: Image.asset('images/runtime/Time_Apower_icon.png'),
+                                ),
+                              SizedBox(width: 4),
+                              Text('调功',style: TextStyle(color: Colors.white,fontSize: 15)),
 
-                            ],
-                          ),
+                              ],
+                            ),
                          ),
+                          ),
                         ),
                       ],
                     ),
@@ -584,14 +594,14 @@ class _RuntimePageState extends State<RuntimePage> {
   Widget build(BuildContext context) {
     return ThemeGradientBackground(
       child: Scaffold(
-        floatingActionButton: FloatingActionButton(
-          onPressed: (){
-            showDialog<Null>(context: context,  barrierDismissible: false,
-            builder: (BuildContext context) {
-              return  PasswordDialog( text: '正在获取详情...');
-            });
-          },
-        ),
+        // floatingActionButton: FloatingActionButton(
+        //   onPressed: (){
+        //     showDialog(context: context,  barrierDismissible: false,
+        //     builder: (BuildContext context) {
+        //       return  PasswordDialog( text: '正在获取详情...');
+        //     });
+        //   },
+        // ),
         backgroundColor: Colors.transparent,
         appBar: AppBar(
           elevation: 0,
