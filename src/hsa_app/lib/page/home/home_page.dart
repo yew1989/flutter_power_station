@@ -117,6 +117,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
             AspectRatio(aspectRatio: 45/ 28,child: HomeBanner(this.banners)),
 
             SizedBox(height: 1, child: Container(color: Colors.white24)),
+            
             Expanded(
               child: DefaultTabController(
                 initialIndex: 0,

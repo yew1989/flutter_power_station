@@ -6,17 +6,23 @@ import 'package:hsa_app/components/shawdow_widget.dart';
 import 'package:hsa_app/config/config.dart';
 import 'package:hsa_app/model/runtime_adapter.dart';
 import 'package:hsa_app/model/runtime_data.dart';
+import 'package:hsa_app/page/dialog/password_dialog.dart';
 import 'package:hsa_app/page/framework/webview_page.dart';
 import 'package:hsa_app/page/more/more_page.dart';
+import 'package:hsa_app/page/runtime/runtime_event_tile.dart';
+import 'package:hsa_app/page/runtime/runtime_squre_master_widget.dart';
 import 'package:hsa_app/theme/theme_gradient_background.dart';
 import 'package:hsa_app/components/public_tool.dart';
 import 'package:hsa_app/util/share.dart';
 
 class RuntimePage extends StatefulWidget {
+
   final String title;
   final String address;
   final String alias;
+  
   RuntimePage(this.title,this.address, this.alias);
+  
   @override
   _RuntimePageState createState() => _RuntimePageState();
 }
@@ -136,7 +142,6 @@ class _RuntimePageState extends State<RuntimePage> {
   }
 
   void onTapPushToHistory(String address) async {
-
     var host = AppConfig.getInstance().webHost;
     var pageItemHistory = AppConfig.getInstance().pageBundle.history;
     var urlHistory = host + pageItemHistory.route ?? AppConfig.getInstance().deadLink;
@@ -169,6 +174,7 @@ class _RuntimePageState extends State<RuntimePage> {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
+
                 // 左侧大区
                 Expanded(
                   flex: 1,child: Container(
@@ -199,11 +205,12 @@ class _RuntimePageState extends State<RuntimePage> {
                           height: 24,
                           width: 66,
                           child: Image.asset('images/runtime/Time_light_line1.png'),
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
-                )),
+                ),
 
                 // 右侧大区
                 Expanded(
@@ -295,25 +302,14 @@ class _RuntimePageState extends State<RuntimePage> {
     return Container(
       child: ListView.builder(
         itemCount: runtimeData?.events?.length ?? 0,
-        itemBuilder: (_, idx) => eventTile(idx),
+        itemBuilder: (_, index) {
+          var event = runtimeData?.events[index];
+          return RuntimeEventTile(event:event);
+        },
       ),
     );
   }
 
-  Widget innerButton(String title, {String url, String navTitle}) => Expanded(
-      flex: 1,
-      child: Padding(
-        padding: const EdgeInsets.all(4.0),
-        child: FlatButton(
-            color: Theme.of(context).primaryColor,
-            child: Text('$title', style: TextStyle(color: Colors.white)),
-            onPressed: () {
-              if (title == '历史') {
-                url = url + '?address=' + '00130071';
-                pushToPage(context, WebViewPage(navTitle, url));
-              }
-            }), 
-      ));
 
   Widget operationBoard() {
     return SafeArea(
@@ -584,66 +580,18 @@ class _RuntimePageState extends State<RuntimePage> {
     );
   }
 
-  Widget eventTile(int index) {
-
-    var event = runtimeData?.events[index];
-
-    return Container(
-        padding: EdgeInsets.symmetric(horizontal: 16),
-        height: 44,
-        child: Stack(
-          children: <Widget>[
-            Container(
-              color: Colors.transparent,
-              child: Center(
-                  child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: <Widget>[
-                  Row(
-                   mainAxisAlignment: MainAxisAlignment.center,
-                   crossAxisAlignment: CrossAxisAlignment.center,
-                    children:[
-                     SizedBox(height: 8,width: 8,child: Image.asset('images/runtime/Time_err_list_btn.png')),
-                     SizedBox(width: 4),
-                     Center(
-                        child: Text(event?.leftString ?? '',
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: Colors.white,
-                          fontFamily: 'ArialNarrow',
-                          fontWeight: FontWeight.normal),
-                      )),
-                    ]
-                  ),
-                  Center(
-                      child: Text(event?.rightString ?? '',
-                      style: TextStyle(
-                      fontSize: 14,
-                      fontFamily: 'ArialNarrow',
-                      color: Colors.white54,
-                    ),
-                  )),
-                ],
-              )),
-            ),
-            Positioned(
-              left: 0,right: 0,bottom: 0,
-              child: Divider(
-                height: 1,
-                color: Colors.white38,
-              ),
-            )
-          ],
-        ),
-      );
-  }
-
-
   @override
   Widget build(BuildContext context) {
     return ThemeGradientBackground(
       child: Scaffold(
+        floatingActionButton: FloatingActionButton(
+          onPressed: (){
+            showDialog<Null>(context: context,  barrierDismissible: false,
+            builder: (BuildContext context) {
+              return  PasswordDialog( text: '正在获取详情...');
+            });
+          },
+        ),
         backgroundColor: Colors.transparent,
         appBar: AppBar(
           elevation: 0,
@@ -666,7 +614,7 @@ class _RuntimePageState extends State<RuntimePage> {
           child: Column(children: <Widget>[
             SizedBox(height: 12),
             terminalBriefHeader(),
-            SqureMasterWidget(
+            RuntimeSqureMasterWidget(
               isMaster: runtimeData?.dashboard?.isMaster ?? false,
               aliasName: runtimeData?.dashboard?.aliasName ?? '',
             ),
@@ -683,77 +631,3 @@ class _RuntimePageState extends State<RuntimePage> {
   }
 }
 
-// 方形主从机标志.别名
-class SqureMasterWidget extends StatelessWidget {
-
-  final bool isMaster;
-  final String aliasName;
-
-  const SqureMasterWidget({Key key, this.isMaster, this.aliasName}) : super(key: key);
-  
-  @override
-  Widget build(BuildContext context) {
-
-    final alias = this.aliasName ?? '';
-    final isMaster = this.isMaster ?? false;
-
-    return Container(
-      padding: EdgeInsets.only(top: 10,bottom: 10),
-      child: Stack(
-        children: [
-
-          // 中位文字
-          Center(
-          child: SizedBox(
-          height: 50,
-          width: 50,
-            child: Stack(
-              children: 
-              [
-                Container(
-                decoration: BoxDecoration(
-                  color: Colors.white24,
-                  border: Border.all(color: Colors.transparent),
-                  borderRadius: BorderRadius.all(Radius.circular(8))),
-              child: Center(
-                child:Transform.translate(
-                  offset: Offset(0, 6),
-                  child: Text(alias,style: TextStyle(color: Colors.white,fontFamily: 'ArialNarrow',fontSize: 30),
-                    ),
-                ),
-                  ),
-                ),
-            
-            // 角标志
-            Positioned(
-              left: 0,top: 0,
-              child: Center(
-                child: SizedBox(
-                height: 29,
-                width: 29,
-                child: isMaster ? Image.asset('images/runtime/Time_host_icon.png') 
-                : Image.asset('images/runtime/Time_slave_icon.png')),
-              ),
-              ),
-
-            // 文字
-            Positioned(
-              left: 4,top: 0,
-              child: Center(
-                child: isMaster ? Text('主',style: TextStyle(color: Colors.white,fontSize: 12)) :
-                Text('从',style: TextStyle(color: Colors.white,fontSize: 12))),
-              ),
-              
-              ]
-            ),
-            ),
-          ),
-
-
-
-        ]
-      ),
-    );
-  }
-  
-}

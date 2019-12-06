@@ -39,7 +39,7 @@ class _LivePageState extends State<LivePage> {
       firstVideoPlayerController = VideoPlayerController.path(firstSrc)
         ..initialize().then((_) {
      
-            Future.delayed(Duration(seconds:1),(){
+            Future.delayed(Duration(seconds:3),(){
               setState(() {
                 isFirstLoadingFinished = true;
               });
@@ -49,7 +49,7 @@ class _LivePageState extends State<LivePage> {
       lastVideoPlayerController = VideoPlayerController.path(lastSrc)
         ..initialize().then((_) {
 
-            Future.delayed(Duration(seconds:1),(){
+            Future.delayed(Duration(seconds:3),(){
               setState(() {
                 isLastLoadingFinished = true;
               });
@@ -79,25 +79,24 @@ class _LivePageState extends State<LivePage> {
   Widget buildUIListView(List<String> openLives) {
     List<Widget> listView = [];
     for (int i = 0; i < openLives.length; i++) {
+      // 最多只支持两路
+      if(i == 2) break;
       var index = i + 1;
-      listView.add(SizedBox(
-          child: Container(
-              child: Text('直播$index : ',
-                  style: TextStyle(color: Colors.white, fontSize: 16)))));
+      listView.add(SizedBox(child: Container(child: Text('直播$index : ',
+      style: TextStyle(color: Colors.white, fontSize: 16)))));
       if (i == 0) {
         listView.add(Container(
             padding: EdgeInsets.symmetric(vertical: 10),
-            child: AspectRatio(
-                aspectRatio: 4 / 3, child: 
-                isFirstLoadingFinished == false ?  SpinkitIndicator(title: '直播加载中...',subTitle: '请稍后')
-                : VideoPlayer(firstVideoPlayerController))));
+            child: AspectRatio(aspectRatio: 4 / 3, 
+            child: isFirstLoadingFinished == false ?  
+            SpinkitIndicator(title: '直播加载中...',subTitle: '请稍后')
+            : VideoPlayer(firstVideoPlayerController))));
       } else if (i == 1) {
         listView.add(Container(
             padding: EdgeInsets.symmetric(vertical: 10),
-            child: AspectRatio(
-                aspectRatio: 4 / 3, 
-                child: 
-                isFirstLoadingFinished == false ? SpinkitIndicator(title: '直播加载中...',subTitle: '请稍后')
+            child: AspectRatio(aspectRatio: 4 / 3, 
+                child: isFirstLoadingFinished == false ? 
+                SpinkitIndicator(title: '直播加载中...',subTitle: '请稍后')
                 : VideoPlayer(lastVideoPlayerController))));
       }
     }

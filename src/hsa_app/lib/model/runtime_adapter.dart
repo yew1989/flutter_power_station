@@ -28,21 +28,30 @@ class RuntimeDataAdapter {
  static String getThrust(List<Temperatures> temperatures){
     for (var tempItem in temperatures) {
      if(tempItem.mItem1.compareTo('推力') == 0) {
-       return tempItem?.mItem2 ?? '';
+       return tempItem?.mItem2 ?? '0.0';
      }
    }
    return '0.0';
  }
 
-  // 获取径向温度
- static String getRadial(List<Temperatures> temperatures){
-    for (var tempItem in temperatures) {
-     if(tempItem.mItem1.compareTo('径向') == 0) {
-       return tempItem?.mItem2 ?? '';
-     }
-   }
-   return '0.0';
+  // 获取首项指标名称
+ static String getFirstItemName(List<Temperatures> temperatures){
+   if(temperatures == null) return '径向';
+   if(temperatures.length == 0) return '径向';
+   var firstItem = temperatures.first;
+   var name = firstItem?.mItem1 ?? '径向';
+   return name;
  }
+
+// 获取首项指标值
+ static String getFirstItemValue(List<Temperatures> temperatures){
+   if(temperatures == null) return '0.0';
+   if(temperatures.length == 0) return '0.0';
+   var firstItem = temperatures.first;
+   var name = firstItem?.mItem2 ?? '0.0';
+   return name;
+ }
+
 
 
  static RuntimeData adapter(RuntimeDataResponse data,String alias) {
@@ -114,14 +123,17 @@ class RuntimeDataAdapter {
    // 温度数组
    var temperatures  = data?.workSupportData?.temperatures ?? [];
    
-   // 径向
-   var radial = getRadial(temperatures);
+   // 首项
+   var radialName  = getFirstItemName(temperatures);
+   var radialValue = getFirstItemValue(temperatures);
    // 推力
    var thrustStr = getThrust(temperatures);
-   // 水压
-   var pressure = data?.workSupportData?.waterPressures?.toDouble() ?? 0.0;
 
-   runtimeData.other.radial   = OtherData(title: radial,subTitle: '径向  ');
+   // 水压
+   var waterPressures = data?.workSupportData?.waterPressures ?? [0.0];
+   var pressure = waterPressures?.first?.toDouble() ?? 0.0;
+
+   runtimeData.other.radial   = OtherData(title: radialValue,subTitle: radialName);
    runtimeData.other.thrust   = OtherData(title: thrustStr ,subTitle: '推力:N');
    runtimeData.other.pressure = OtherData(title: pressure.toString(),subTitle: '水压:MPa');
 

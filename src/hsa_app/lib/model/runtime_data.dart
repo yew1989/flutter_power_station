@@ -170,7 +170,7 @@ class WorkSupportData {
   bool gateHLimit;
   bool gateLLimit;
   List<Temperatures> temperatures;
-  num waterPressures;
+  List<num> waterPressures;
   List<RecentAlarmEventRecord> recentAlarmEventRecord;
 
   WorkSupportData(
@@ -209,7 +209,9 @@ class WorkSupportData {
         temperatures.add(Temperatures.fromJson(v));
       });
     }
-    waterPressures = json['WaterPressures'];
+    if(json['WaterPressures'] != null) {
+      waterPressures = json['WaterPressures'].cast<num>();
+    }
     if (json['RecentAlarmEventRecord'] != null) {
       recentAlarmEventRecord = List<RecentAlarmEventRecord>();
       json['RecentAlarmEventRecord'].forEach((v) {
@@ -232,10 +234,12 @@ class WorkSupportData {
     data['ExcitationCurrentA'] = this.excitationCurrentA;
     data['GateHLimit'] = this.gateHLimit;
     data['GateLLimit'] = this.gateLLimit;
+    data['WaterPressures'] = this.waterPressures;
+    
     if (this.temperatures != null) {
       data['Temperatures'] = this.temperatures.map((v) => v.toJson()).toList();
     }
-    data['WaterPressures'] = this.waterPressures;
+
     if (this.recentAlarmEventRecord != null) {
       data['RecentAlarmEventRecord'] =
           this.recentAlarmEventRecord.map((v) => v.toJson()).toList();
