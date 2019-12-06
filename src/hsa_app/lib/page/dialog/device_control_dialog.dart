@@ -1,19 +1,17 @@
 import 'package:flutter/material.dart';
 
-class PowerControlDialog extends Dialog {
+class DeviceControlDialog extends Dialog {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Material(
-        //透明类型
         type: MaterialType.transparency,
-        //保证控件居中效果
         child: Stack(
           children: <Widget>[
             Positioned(
               left: 0,
               right: 0,
-              bottom: 75,
+              bottom: 10,
               child: Container(
                 padding: EdgeInsets.symmetric(horizontal: 10),
                 child: SizedBox(
@@ -39,7 +37,8 @@ class PowerControlDialog extends Dialog {
                             child: SizedBox(
                               height: 43,
                               child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: <Widget>[
                                   Text('有功调控',
@@ -69,7 +68,8 @@ class PowerControlDialog extends Dialog {
                             child: SizedBox(
                               height: 43,
                               child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: <Widget>[
                                   Text('无功调控',
@@ -94,59 +94,71 @@ class PowerControlDialog extends Dialog {
 
                           // 底部扩展区
                           Expanded(
-                            child: Center(
                             child: Container(
                               child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: <Widget>[
-                                // 自动
-                                Expanded(
-                                  flex: 1,
-                                  child:Container(
-                                    child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                      crossAxisAlignment: CrossAxisAlignment.center,
-                                      children: <Widget>[
-                                        Text('自          动',
-                                        style: TextStyle(color: Colors.transparent,
-                                        fontSize: 15)),
-                                        SizedBox(height: 14,width: 14),
-                              ],
-                            ),
-                           ),
-                          ),
-                          SizedBox(width: 127),
-                          // 调功率
-                          Expanded(
-                            flex: 1,
-                            child:GestureDetector(
-                              onTap: (){
-                                Navigator.of(context).pop();
-                              },
-                              child: Container(
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: <Widget>[
-                                SizedBox(height: 22,width: 22,
-                                    child: Image.asset('images/runtime/Time_Apower_icon.png'),
+                                  // 设备控制
+                                  Expanded(
+                                    flex: 1,
+                                    child: GestureDetector(
+                                      onTap: () {
+                                        Navigator.of(context).pop();
+                                      },
+                                      child: Container(
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceEvenly,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.center,
+                                          children: <Widget>[
+                                            Text('设备控制',
+                                                style: TextStyle(
+                                                    color: Colors.white,
+                                                    fontSize: 15)),
+                                            SizedBox(
+                                              height: 14,
+                                              width: 14,
+                                              child: Image.asset(
+                                                  'images/runtime/Time_list_icon_down.png'),
+                                            )
+                                          ],
+                                        ),
+                                      ),
+                                    ),
                                   ),
-                                SizedBox(width: 4),
-                                Text('调功',style: TextStyle(color: Colors.white,fontSize: 15)),
-
+                                  SizedBox(width: 127),
+                                  // 更多
+                                  Expanded(
+                                    flex: 1,
+                                    child: GestureDetector(
+                                      child: Container(
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.center,
+                                          children: <Widget>[
+                                            SizedBox(
+                                              height: 22,
+                                              width: 22,
+                                            ),
+                                            SizedBox(width: 4),
+                                            Text('更多',
+                                                style: TextStyle(
+                                                    color: Colors.transparent,
+                                                    fontSize: 15)),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ),
                                 ],
                               ),
-                           ),
                             ),
                           ),
-                        ],
-                      ),
-                              ),
-                            ),
-                          )
-
-
                         ],
                       ),
                     ),
