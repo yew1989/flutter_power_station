@@ -16,7 +16,7 @@ class DeviceControlDialog extends Dialog {
                 padding: EdgeInsets.symmetric(horizontal: 10),
                 child: SizedBox(
                   width: double.infinity,
-                  height: 152,
+                  height: 235,
                   child: Container(
                     decoration: ShapeDecoration(
                       color: Color.fromRGBO(53, 117, 191, 1),
@@ -32,7 +32,7 @@ class DeviceControlDialog extends Dialog {
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: <Widget>[
 
-                          // 主阀
+                          // 主阀开
                           Container(
                             margin: EdgeInsets.symmetric(horizontal: 12),
                             child: SizedBox(
@@ -43,7 +43,32 @@ class DeviceControlDialog extends Dialog {
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: <Widget>[
                                   Text('主阀',style: TextStyle(color: Colors.white, fontSize: 16)),
-                                  SizedBox(height: 22,width: 22,child: Image.asset('images/runtime/Time_selected_icon.png')),
+                                  Text('开',style: TextStyle(color: Colors.white, fontSize: 16)),
+                                ],
+                              ),
+                            ),
+                          ),
+
+                          // 分割线
+                          Container(
+                            width: double.infinity,
+                            margin: EdgeInsets.only(left: 12),
+                            height: 1,
+                            color: Colors.white12,
+                          ),
+
+                          // 主阀关
+                          Container(
+                            margin: EdgeInsets.symmetric(horizontal: 12),
+                            child: SizedBox(
+                              height: 43,
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: <Widget>[
+                                  Text('主阀',style: TextStyle(color: Colors.white, fontSize: 16)),
+                                  Text('关',style: TextStyle(color: Colors.white, fontSize: 16)),
                                 ],
                               ),
                             ),
@@ -67,11 +92,37 @@ class DeviceControlDialog extends Dialog {
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: <Widget>[
                                   Text('旁通阀',style: TextStyle(color: Colors.white, fontSize: 16)),
-                                  SizedBox(height: 22,width: 22,child: Image.asset('images/runtime/Time_selected_icon.png')),
+                                  Text('开',style: TextStyle(color: Colors.white, fontSize: 16)),
                                 ],
                               ),
                             ),
                           ),
+
+                                                    // 分割线
+                          Container(
+                            width: double.infinity,
+                            margin: EdgeInsets.only(left: 12),
+                            height: 1,
+                            color: Colors.white12,
+                          ),
+
+                          // 旁通阀
+                          Container(
+                            margin: EdgeInsets.symmetric(horizontal: 12),
+                            child: SizedBox(
+                              height: 43,
+                              child: Row(
+                                mainAxisAlignment:MainAxisAlignment.spaceBetween,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: <Widget>[
+                                  Text('旁通阀',style: TextStyle(color: Colors.white, fontSize: 16)),
+                                  Text('关',style: TextStyle(color: Colors.white, fontSize: 16)),
+                                ],
+                              ),
+                            ),
+                          ),
+
+                          
 
                           // 分割线
                           Container(
