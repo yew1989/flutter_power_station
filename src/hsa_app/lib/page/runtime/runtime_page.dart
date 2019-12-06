@@ -6,6 +6,7 @@ import 'package:hsa_app/components/shawdow_widget.dart';
 import 'package:hsa_app/config/config.dart';
 import 'package:hsa_app/model/runtime_adapter.dart';
 import 'package:hsa_app/model/runtime_data.dart';
+import 'package:hsa_app/page/dialog/control_model_dialog.dart';
 import 'package:hsa_app/page/dialog/password_dialog.dart';
 import 'package:hsa_app/page/dialog/power_control_dialog.dart';
 import 'package:hsa_app/page/framework/webview_page.dart';
@@ -489,29 +490,32 @@ class _RuntimePageState extends State<RuntimePage> {
                       children: <Widget>[
                         // 自动
                         Expanded(
-                          flex: 1,child:Container(
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: <Widget>[
-                              Text('自          动',style: TextStyle(color: Colors.white,fontSize: 15)),
-                              SizedBox(height: 14,width: 14,
-                                child: Image.asset('images/runtime/Time_list_icon.png'),
-                              )
-                            ],
-                          ),
+                          flex: 1,child:GestureDetector(
+                            onTap: (){
+                              showDialog(context: context, barrierDismissible: false,
+                              builder: (_) => ControlModelDialog());
+                            },
+                            child: Container(
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: <Widget>[
+                                Text('自          动',style: TextStyle(color: Colors.white,fontSize: 15)),
+                                SizedBox(height: 14,width: 14,
+                                  child: Image.asset('images/runtime/Time_list_icon.png'),
+                                )
+                              ],
+                            ),
                          ),
+                          ),
                         ),
                         SizedBox(width: 127),
                         // 调功率
                         Expanded(
-                          flex: 1,
-                          child:GestureDetector(
+                          flex: 1,child:GestureDetector(
                             onTap: (){
-                              showDialog(context: context,  barrierDismissible: false,
-                              builder: (BuildContext context) {
-                              return  PowerControlDialog();
-                              });
+                              showDialog(context: context, barrierDismissible: false,
+                              builder: (_) => PowerControlDialog());
                             },
                             child: Container(
                             child: Row(
