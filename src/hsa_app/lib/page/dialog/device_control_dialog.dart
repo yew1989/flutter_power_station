@@ -31,7 +31,8 @@ class DeviceControlDialog extends Dialog {
                         mainAxisAlignment: MainAxisAlignment.start,
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: <Widget>[
-                          //  有功调控
+
+                          // 主阀
                           Container(
                             margin: EdgeInsets.symmetric(horizontal: 12),
                             child: SizedBox(
@@ -41,14 +42,8 @@ class DeviceControlDialog extends Dialog {
                                     MainAxisAlignment.spaceBetween,
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: <Widget>[
-                                  Text('有功调控',
-                                      style: TextStyle(
-                                          color: Colors.white, fontSize: 16)),
-                                  SizedBox(
-                                      height: 22,
-                                      width: 22,
-                                      child: Image.asset(
-                                          'images/runtime/Time_selected_icon.png')),
+                                  Text('主阀',style: TextStyle(color: Colors.white, fontSize: 16)),
+                                  SizedBox(height: 22,width: 22,child: Image.asset('images/runtime/Time_selected_icon.png')),
                                 ],
                               ),
                             ),
@@ -62,24 +57,17 @@ class DeviceControlDialog extends Dialog {
                             color: Colors.white12,
                           ),
 
-                          // 无功调控
+                          // 旁通阀
                           Container(
                             margin: EdgeInsets.symmetric(horizontal: 12),
                             child: SizedBox(
                               height: 43,
                               child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment:MainAxisAlignment.spaceBetween,
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: <Widget>[
-                                  Text('无功调控',
-                                      style: TextStyle(
-                                          color: Colors.white, fontSize: 16)),
-                                  SizedBox(
-                                      height: 22,
-                                      width: 22,
-                                      child: Image.asset(
-                                          'images/runtime/Time_selected_icon.png')),
+                                  Text('旁通阀',style: TextStyle(color: Colors.white, fontSize: 16)),
+                                  SizedBox(height: 22,width: 22,child: Image.asset('images/runtime/Time_selected_icon.png')),
                                 ],
                               ),
                             ),
