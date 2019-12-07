@@ -12,6 +12,16 @@ class PowerControlDialog extends Dialog {
     list = list.reversed.toList();
     return list;
   }
+
+  List<String> buildActivePowerFactorList() {
+    List<String> list = [];
+    for (var i = 0; i < 801; i++) {
+      list.add(i.toStringAsFixed(0));
+    }
+    list = list.reversed.toList();
+    return list;
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -73,7 +83,7 @@ class PowerControlDialog extends Dialog {
                               GestureDetector(
                                     onTap: (){
                                       Navigator.of(context).pop();
-                                      showDataPicker(context,'请选择',['1','2','3'],(String data){
+                                      showDataPicker(context,'请选择有功功率(kW)',buildActivePowerFactorList(),(String data){
 
                                       });
                                     },
