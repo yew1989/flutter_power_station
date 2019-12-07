@@ -160,7 +160,7 @@ Future<bool> getWebRoute() async {
   // 整体环境配置
   AppConfig.getInstance().pageConfig  = webConfig;
   // 环境 host
-  AppConfig.getInstance().webHost = webConfig.appPageRoute.devHost;
+  AppConfig.getInstance().webHost = webConfig.appPageRoute.testHost;
   // 环境 page bundle
   AppConfig.getInstance().pageBundle = webConfig.appPageRoute.page;
   return true;

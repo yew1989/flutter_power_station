@@ -38,6 +38,7 @@ dependencies:
   pull_to_refresh: ^1.5.7
   flt_video_player: ^0.0.4
   pin_code_text_field: ^1.2.1
+  flutter_cupertino_data_picker: ^0.8.6
 
 dev_dependencies:
   flutter_test:

@@ -5,9 +5,7 @@ class ControlModelDialog extends Dialog {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Material(
-        //透明类型
         type: MaterialType.transparency,
-        //保证控件居中效果
         child: Stack(
           children: <Widget>[
             Positioned(

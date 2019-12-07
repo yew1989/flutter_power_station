@@ -1,6 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:hsa_app/components/data_picker.dart';
 
 class PowerControlDialog extends Dialog {
+
+  List<String> buildPowerFactorList() {
+    List<String> list = [];
+    for (var i = 0; i < 101; i++) {
+      var k = i / 100;
+      list.add(k.toStringAsFixed(2));
+    }
+    list = list.reversed.toList();
+    return list;
+  }
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -38,18 +49,36 @@ class PowerControlDialog extends Dialog {
                             margin: EdgeInsets.symmetric(horizontal: 12),
                             child: SizedBox(
                               height: 43,
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                crossAxisAlignment: CrossAxisAlignment.center,
+                              child: Stack(
                                 children: <Widget>[
-                                  Text('有功调控',
-                                      style: TextStyle(
-                                          color: Colors.white, fontSize: 16)),
-                                  SizedBox(
-                                      height: 22,
-                                      width: 22,
-                                      child: Image.asset(
-                                          'images/runtime/Time_selected_icon.png')),
+
+                                  Center(
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: <Widget>[
+                                    Text('有功调控',
+                                        style: TextStyle(
+                                            color: Colors.white, fontSize: 16)),
+                                    SizedBox(
+                                        height: 22,
+                                        width: 22,
+                                        // child: Image.asset(
+                                        //     'images/runtime/Time_selected_icon.png'),
+                                        ),
+                                  ],
+                                ),
+                              ),
+
+                              GestureDetector(
+                                    onTap: (){
+                                      Navigator.of(context).pop();
+                                      showDataPicker(context,'请选择',['1','2','3'],(String data){
+
+                                      });
+                                    },
+                                  ),
+
                                 ],
                               ),
                             ),
@@ -66,22 +95,34 @@ class PowerControlDialog extends Dialog {
                           // 无功调控
                           Container(
                             margin: EdgeInsets.symmetric(horizontal: 12),
-                            child: SizedBox(
-                              height: 43,
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: <Widget>[
-                                  Text('无功调控',
-                                      style: TextStyle(
-                                          color: Colors.white, fontSize: 16)),
-                                  SizedBox(
-                                      height: 22,
-                                      width: 22,
-                                      child: Image.asset(
-                                          'images/runtime/Time_selected_icon.png')),
-                                ],
-                              ),
+                              child: SizedBox(
+                                height: 43,
+                                  child: Stack(
+                                    children: <Widget>[
+                                      Center(
+                                        child: Row(
+                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                          crossAxisAlignment: CrossAxisAlignment.center,
+                                          children: <Widget>[
+                                            Text('功率因数调控',
+                                        style: TextStyle(color: Colors.white, fontSize: 16)),
+                                        SizedBox(height: 22,width: 22,
+                                            // child: Image.asset('images/runtime/Time_selected_icon.png'),
+                                            ),
+                                       ],
+                                        ),
+                                      ),
+                                      GestureDetector(
+                                        onTap: (){
+                                          Navigator.of(context).pop();
+                                          showDataPicker(context,'请选择功率因数',buildPowerFactorList(),(String data){
+
+                                          });
+                                        },
+                                      ),
+
+                                    ],
+                                  ),
                             ),
                           ),
 
