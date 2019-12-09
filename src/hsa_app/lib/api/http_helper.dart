@@ -268,7 +268,8 @@ class HttpHelper {
       String path, 
       dynamic param, 
       HttpSuccCallback onSucc,
-      HttpFailCallback onFail ) async {
+      HttpFailCallback onFail,
+      ) async {
 
     // 检测网络
     var isReachable = await isReachablity();
@@ -303,7 +304,67 @@ class HttpHelper {
           sendTimeout: HttpHelper.kTimeOutSeconds,
         ),
         queryParameters: param,
-        // data: param,
+      );
+      if (response == null) {
+        onFail('网络异常,请检查网络');
+        return;
+      }
+      if (response.statusCode != 200) {
+        onFail('请求错误 ( ' + response.statusCode.toString() + ' )');
+        return;
+      }
+      if (response.data is! Map) {
+        onFail('请求错误');
+        return;
+      }
+      onSucc(response.data, '请求成功');
+    } catch (e) {
+      handleDioError(e,(String msg) => onFail(msg));
+      onFail('请求错误');
+    }
+  }
+
+  // POST 请求通用封装 String 
+  static void postHttpCommonString(
+      String path, 
+      String string, 
+      HttpSuccCallback onSucc,
+      HttpFailCallback onFail,
+      ) async {
+
+    // 检测网络
+    var isReachable = await isReachablity();
+    if (isReachable == false) {
+      if (onFail != null) {
+        onFail('网络异常,请检查网络');
+        return;
+      }
+    }
+
+    var dio = Dio();
+
+    // 代理控制
+    if (isProxyModeOpen == true) {
+      (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
+          (HttpClient client) {
+        client.findProxy = (_) => proxyIP;
+        client.badCertificateCallback =
+            (X509Certificate cert, String host, int port) => true;
+      };
+    }
+
+    // 尝试请求
+    try {
+      var url = path ?? '';
+      Response response = await dio.post(
+        url,
+        options: Options(
+          headers: {'Authorization': ShareManager.instance.token},
+          contentType: Headers.formUrlEncodedContentType,
+          receiveTimeout: HttpHelper.kTimeOutSeconds,
+          sendTimeout: HttpHelper.kTimeOutSeconds,
+        ),
+        data: {'':string},
       );
       if (response == null) {
         onFail('网络异常,请检查网络');

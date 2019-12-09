@@ -79,6 +79,30 @@ class API {
   // 更多数据
   static final moreDataPath = API.host + 'api/General/TerminalOverViewData';
 
+  // 操作密码检查
+  static final operationCheckPath = API.host + 'api/Account/CheckOperationTicket';
+
+
+  // 操作密码检查
+  static void checkOperationPswd(BuildContext context,String pswd,HttpSuccMsgCallback onSucc,HttpFailCallback onFail) async {
+
+    if(pswd == null) return;
+    if(pswd.length == 0) return;
+    var rsaPswd = await LDEncrypt.encryptedRSAWithOldAppKey(context, pswd);
+    
+    HttpHelper.postHttpCommonString(operationCheckPath, rsaPswd, (dynamic data,String msg){
+       var map  = data as Map<String,dynamic>;
+       var isSuccess = map['Success'] ?? false;
+       if(isSuccess == true){
+         if(onSucc != null) onSucc('操作密码正确');
+       }
+       else {
+         var msg = map['Msg']?? '操作密码错误';
+         if(onFail != null) onFail(msg);
+       }
+    }, onFail);
+  }
+
   // 获取实时运行参数
   static void runtimeData(String address,RuntimeDataResponseCallBack onSucc,HttpFailCallback onFail) {
 

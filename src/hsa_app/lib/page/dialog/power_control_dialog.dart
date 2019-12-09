@@ -62,7 +62,7 @@ class PowerControlDialog extends Dialog {
                               child: Stack(
                                 children: <Widget>[
 
-                                  Center(
+                                  Center( 
                                 child: Row(
                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   crossAxisAlignment: CrossAxisAlignment.center,

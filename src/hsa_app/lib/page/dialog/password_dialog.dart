@@ -1,12 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:pin_code_text_field/pin_code_text_field.dart';
 
+typedef PasswordDialogOnSuccCallback = void Function(String pswd);
+typedef PasswordDialogOnCancelCallBack = void Function();
+
 class PasswordDialog extends Dialog {
-  final String text;
 
-  PasswordDialog({Key key, @required this.text}) : super(key: key);
+  final PasswordDialogOnSuccCallback onSucc;
+  final PasswordDialogOnCancelCallBack onCancel;
 
-  TextEditingController controller = TextEditingController();
+  PasswordDialog(this.onSucc, {this.onCancel});
+
+  // TextEditingController controller = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -44,6 +49,7 @@ class PasswordDialog extends Dialog {
                         GestureDetector(
                           onTap: () {
                             Navigator.of(context).pop();
+                            if(onCancel != null) onCancel();
                           },
                           child: SizedBox(
                               height: 22,
@@ -64,7 +70,7 @@ class PasswordDialog extends Dialog {
                   // 密码输入框
                   PinCodeTextField(
                     autofocus: true,
-                    controller: controller,
+                    // controller: controller,
                     hideCharacter: true,
                     highlight: true,
                     highlightColor: Colors.black26,
@@ -78,6 +84,7 @@ class PasswordDialog extends Dialog {
                       print("DONE $text");
                       Future.delayed(Duration(milliseconds: 500),(){
                         Navigator.of(context).pop();
+                        onSucc(text);
                       });
                     },
                     wrapAlignment: WrapAlignment.center,

@@ -7,7 +7,20 @@ import 'package:convert/convert.dart';
 
 class LDEncrypt{
   
-  static const publicKeyPath = 'lib/key/public.pem';
+  // 老版本 APP 的公钥
+  static const oldAppPublicKeyPath = 'keys/oldapp.pem';
+  // 新版本 APP 的公钥
+  static const publicKeyPath = 'keys/public.pem';
+
+  // 老的 APP RSA 加密
+  static Future<String> encryptedRSAWithOldAppKey(BuildContext context,String plain) async {
+    final publicKeyFile = await DefaultAssetBundle.of(context).loadString(LDEncrypt.oldAppPublicKeyPath);
+    final parser = Encrypt.RSAKeyParser();
+    final RSAPublicKey publicKey = parser.parse(publicKeyFile);
+    final encrypter = Encrypt.Encrypter(Encrypt.RSA(publicKey: publicKey));
+    final encrypted = encrypter.encrypt(plain);
+    return encrypted.base64;
+  }
 
   static Future<String> encryptedRSA(BuildContext context,String plain) async {
     final publicKeyFile = await DefaultAssetBundle.of(context).loadString(LDEncrypt.publicKeyPath);

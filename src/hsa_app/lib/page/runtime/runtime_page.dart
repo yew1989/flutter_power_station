@@ -601,18 +601,31 @@ class _RuntimePageState extends State<RuntimePage> {
     );
   }
 
+  // 请求操作密码验证
+  void requestCheckOperationPassword(BuildContext context,String pswd) async {
+
+    // 检查操作密码
+    API.checkOperationPswd(context,pswd, (String succString){
+
+    }, (String failString){
+
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return ThemeGradientBackground(
       child: Scaffold(
-        // floatingActionButton: FloatingActionButton(
-        //   onPressed: (){
-        //     showDialog(context: context,  barrierDismissible: false,
-        //     builder: (BuildContext context) {
-        //       return  PasswordDialog( text: '正在获取详情...');
-        //     });
-        //   },
-        // ),
+        floatingActionButton: FloatingActionButton(
+          onPressed: (){
+            showDialog(context: context,  barrierDismissible: false,
+            builder: (BuildContext context) {
+              return  PasswordDialog((String pswd){
+                requestCheckOperationPassword(context,pswd);
+              });
+            });
+          },
+        ),
         backgroundColor: Colors.transparent,
         appBar: AppBar(
           elevation: 0,
