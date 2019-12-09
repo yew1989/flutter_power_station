@@ -37,6 +37,7 @@ typedef MoreDataResponseCallBack = void Function(List<MoreItem> items);
 class API {
   // 内网主机地址
   static final host = 'http://192.168.16.120:18081/';
+  
   // 穿透内网主机地址
   // static final host = 'http://18046053193.qicp.vip:20187/';
 
@@ -89,7 +90,7 @@ class API {
     if(pswd == null) return;
     if(pswd.length == 0) return;
     var rsaPswd = await LDEncrypt.encryptedRSAWithOldAppKey(context, pswd);
-    
+
     HttpHelper.postHttpCommonString(operationCheckPath, rsaPswd, (dynamic data,String msg){
        var map  = data as Map<String,dynamic>;
        var isSuccess = map['Success'] ?? false;

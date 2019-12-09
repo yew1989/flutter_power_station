@@ -14,13 +14,28 @@ class LDEncrypt{
 
   // 老的 APP RSA 加密
   static Future<String> encryptedRSAWithOldAppKey(BuildContext context,String plain) async {
+    var list = utf8.encode(plain);
     final publicKeyFile = await DefaultAssetBundle.of(context).loadString(LDEncrypt.oldAppPublicKeyPath);
     final parser = Encrypt.RSAKeyParser();
     final RSAPublicKey publicKey = parser.parse(publicKeyFile);
     final encrypter = Encrypt.Encrypter(Encrypt.RSA(publicKey: publicKey));
-    final encrypted = encrypter.encrypt(plain);
-    return encrypted.base64;
+    final encrypted = encrypter.encryptBytes(list);
+    return LDEncrypt.tohexString(encrypted.bytes);
   }
+
+  static String tohexString(List<int> bytes) {
+  final StringBuffer buffer = StringBuffer();
+  for (int part in bytes) {
+    if (part & 0xff != part) {
+      throw FormatException("$part is not a byte integer");
+    }
+    buffer.write('${part < 16 ? '0' : ''}${part.toRadixString(16)}');
+  }
+  return buffer.toString().toUpperCase();
+}
+
+
+   
 
   static Future<String> encryptedRSA(BuildContext context,String plain) async {
     final publicKeyFile = await DefaultAssetBundle.of(context).loadString(LDEncrypt.publicKeyPath);
