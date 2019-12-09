@@ -20,10 +20,10 @@ class LDEncrypt{
     final RSAPublicKey publicKey = parser.parse(publicKeyFile);
     final encrypter = Encrypt.Encrypter(Encrypt.RSA(publicKey: publicKey));
     final encrypted = encrypter.encryptBytes(list);
-    return LDEncrypt.tohexString(encrypted.bytes);
+    return LDEncrypt.byteToHexString(encrypted.bytes);
   }
 
-  static String tohexString(List<int> bytes) {
+  static String byteToHexString(List<int> bytes) {
   final StringBuffer buffer = StringBuffer();
   for (int part in bytes) {
     if (part & 0xff != part) {
@@ -35,7 +35,6 @@ class LDEncrypt{
 }
 
 
-   
 
   static Future<String> encryptedRSA(BuildContext context,String plain) async {
     final publicKeyFile = await DefaultAssetBundle.of(context).loadString(LDEncrypt.publicKeyPath);
