@@ -92,56 +92,56 @@ class API {
 
   // 远程开机
   static void remotePowerOn(String address,HttpSuccMsgCallback onSucc,HttpFailCallback onFail) {
-
+    API.remoteCommandBase(address, 'AFN05_F1', {'远程开停机':true}, onSucc, onFail);
   }
   // 远程关机
   static void remotePowerOff(String address,HttpSuccMsgCallback onSucc,HttpFailCallback onFail) {
-    
+    API.remoteCommandBase(address, 'AFN05_F1', {'远程开停机':false}, onSucc, onFail);
   }
   // 远程开主阀门
   static void remoteMainValveOn(String address,HttpSuccMsgCallback onSucc,HttpFailCallback onFail) {
-    
+    API.remoteCommandBase(address, 'AFN05_F2', {'远程主阀开关':true}, onSucc, onFail);
   }
   // 远程关主阀门
   static void remoteMainValveOff(String address,HttpSuccMsgCallback onSucc,HttpFailCallback onFail) {
-    
+    API.remoteCommandBase(address, 'AFN05_F2', {'远程主阀开关':false}, onSucc, onFail);
   }
   // 远程开旁通阀
   static void remoteSideValveOn(String address,HttpSuccMsgCallback onSucc,HttpFailCallback onFail) {
-    
+    API.remoteCommandBase(address, 'AFN05_F16', {'开关旁通阀':1}, onSucc, onFail);
   }
   // 远程关旁通阀
   static void remoteSideValveOff(String address,HttpSuccMsgCallback onSucc,HttpFailCallback onFail) {
-    
+    API.remoteCommandBase(address, 'AFN05_F16', {'开关旁通阀':0}, onSucc, onFail);
   }
   // 远程切换智能控制方案 - 打开远程控制
   static void remoteSwitchRemoteModeOn(String address,HttpSuccMsgCallback onSucc,HttpFailCallback onFail) {
-    
+    API.remoteCommandBase(address, 'AFN05_F13', {'智能控制方案标识':1}, onSucc, onFail);
   }
   // 远程切换智能控制方案 - 关闭远程控制
   static void remoteSwitchRemoteModeOff(String address,HttpSuccMsgCallback onSucc,HttpFailCallback onFail) {
-    
+    API.remoteCommandBase(address, 'AFN05_F13', {'智能控制方案标识':0}, onSucc, onFail);
   }
   // 远程控制垃圾清扫 - 开
   static void remoteClearRubbishOn(String address,HttpSuccMsgCallback onSucc,HttpFailCallback onFail) {
-    
+    API.remoteCommandBase(address, 'AFN05_F21', {'清理垃圾开启或关停':1}, onSucc, onFail);
   }
   // 远程控制垃圾清扫 - 关
   static void remoteClearRubbishOff(String address,HttpSuccMsgCallback onSucc,HttpFailCallback onFail) {
-    
+    API.remoteCommandBase(address, 'AFN05_F21', {'清理垃圾开启或关停':0}, onSucc, onFail);
   }
   // 远程设定目标有功功率
-  static void remoteSettingActivePower(String address,HttpSuccMsgCallback onSucc,HttpFailCallback onFail) {
-    
+  static void remoteSettingActivePower(String address,double power,HttpSuccMsgCallback onSucc,HttpFailCallback onFail) {
+    API.remoteCommandBase(address, 'AFN05_F3', {'目标有功功率':power ?? 0.0}, onSucc, onFail);
   }
 
   // 远程设定目标功率因数
-  static void remoteSettingPowerFactor(String address,HttpSuccMsgCallback onSucc,HttpFailCallback onFail) {
-    
+  static void remoteSettingPowerFactor(String address,double factor,HttpSuccMsgCallback onSucc,HttpFailCallback onFail) {
+    API.remoteCommandBase(address, 'AFN05_F4', {'目标功率因数':factor ?? 0.0}, onSucc, onFail);
   }
 
-  // 远程指令下发
-  static void remoteCommand(String address,String afnCmd,dynamic param,HttpSuccMsgCallback onSucc,HttpFailCallback onFail) {
+  // 远程指令下发 - 基础接口
+  static void remoteCommandBase(String address,String afnCmd,dynamic param,HttpSuccMsgCallback onSucc,HttpFailCallback onFail) {
 
     if(address == null) return;
     if(afnCmd == null) return;
