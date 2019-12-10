@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hsa_app/api/remote_task.dart';
 import 'package:hsa_app/theme/theme_gradient_background.dart';
 
 class AboutPage extends StatefulWidget {
@@ -13,10 +14,33 @@ class _AboutPageState extends State<AboutPage> {
   String desc2 = '2.远程控制:远程控制机组的开关机状态,远程控制旁通阀、主阀、清污机等智能设备;远程调控有功、无功。';
   String desc3 = '3.报警提醒:通过智能电站管家,第一时间将报警信息发送报给用户。';
 
+  RemoteControlTask remoteTask = RemoteControlTask();
+
+  void request() {
+
+      remoteTask.startTask(TaskName.powerOn, '00020042', null, (String succString) {
+        debugPrint(succString);
+      }, (String failString) {
+        debugPrint(failString);
+      }, (String loadingString) {
+        debugPrint(loadingString);
+      });
+  }
+
+  @override
+  void dispose() {
+    remoteTask.cancelTask();
+    super.dispose();
+  }
   @override
   Widget build(BuildContext context) {
     return ThemeGradientBackground(
       child:Scaffold(
+          floatingActionButton: FloatingActionButton(
+            onPressed: (){
+              request();
+            },
+          ),
           backgroundColor: Colors.transparent,
           appBar: AppBar(
             backgroundColor: Colors.transparent,

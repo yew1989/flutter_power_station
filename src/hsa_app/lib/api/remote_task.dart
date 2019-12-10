@@ -3,7 +3,7 @@ import 'package:hsa_app/api/api.dart';
 import 'package:hsa_app/api/http_helper.dart';
 import 'package:hsa_app/model/follow_command.dart';
 
-enum TaskName{
+enum TaskName {
   powerOn,
   powerOff,
   mainValveOn,
@@ -17,20 +17,25 @@ enum TaskName{
   setttingActivePower,
   settingPowerFactor,
 }
+
 class RemoteControlTask {
 
+    static const int retryCountMax = 10;
     Timer timer;
-    
+    int retryCnt = 0;
+
     // 开启新任务
     void startTask(TaskName task,String address,String param,
     HttpSuccMsgCallback onSucc,
     HttpFailCallback onFail,
     HttpSuccMsgCallback onLoading,
     ) {
-
-      timer?.cancel();
       
+      retryCnt = 0;
+      timer?.cancel();
+
       switch (task) {
+        // 开机
         case TaskName.powerOn:
         {
             // 下发指令
@@ -38,7 +43,13 @@ class RemoteControlTask {
 
                 // 一秒一个周期查询
                 timer = Timer.periodic(Duration(seconds: 1), (timer) {
-
+                    retryCnt ++;
+                    if(retryCnt > RemoteControlTask.retryCountMax) {
+                      retryCnt = 0;
+                      timer?.cancel();
+                      if(onFail != null) onFail('操作超时');
+                      return;
+                    }
                     // 跟踪指令
                     API.followCommand(cmdId, (FollowCommandResp resp){
                     
@@ -52,7 +63,6 @@ class RemoteControlTask {
                     // 当前状态 = 响应中 
                     if(resp.currentState == null || resp.currentState == 0 || 
                     resp.currentState == 1 || resp.currentState == 255) {
-                      // 不处理
                       if(onLoading != null) onLoading('等待响应中');
                     }
 
@@ -87,7 +97,10 @@ class RemoteControlTask {
 
                 });
 
-            }, onFail);
+            }, (String msg){
+              timer?.cancel();
+              if(onFail != null) onFail('操作失败');
+            });
         }    
           break;
         default:
@@ -95,16 +108,7 @@ class RemoteControlTask {
     }
 
     void cancelTask() {
-      _cancelTimer();
+      timer?.cancel();
     }
 
-    void _startTimer() {
-    timer = Timer.periodic(Duration(seconds: 1), (timer) {
-
-    });
-  }
-
-  void _cancelTimer() {
-    timer?.cancel();
-  }
 }

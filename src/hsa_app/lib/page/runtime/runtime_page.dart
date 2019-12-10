@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hsa_app/api/api.dart';
+import 'package:hsa_app/api/remote_task.dart';
 import 'package:hsa_app/components/dash_board_widget.dart';
 import 'package:hsa_app/components/runtime_progress_bar.dart';
 import 'package:hsa_app/components/shawdow_widget.dart';
@@ -42,6 +43,9 @@ class _RuntimePageState extends State<RuntimePage> {
 
   // 实时数据
   RuntimeData runtimeData = RuntimeData();
+
+  // 远程控制任务
+  RemoteControlTask remoteTask;
 
   @override
   void initState() {
@@ -606,9 +610,19 @@ class _RuntimePageState extends State<RuntimePage> {
 
     // 检查操作密码
     API.checkOperationPswd(context,pswd, (String succString){
+      debugPrint(succString);
+
+      // 开始任务
+      remoteTask.startTask(TaskName.powerOn, widget.address, null, (String succString) {
+
+      }, (String failString) {
+        
+      }, (String loadingString) {
+        
+      });
 
     }, (String failString){
-
+      debugPrint(failString);
     });
   }
 

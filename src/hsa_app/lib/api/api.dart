@@ -86,7 +86,7 @@ class API {
   static final operationCheckPath = API.host + 'api/Account/CheckOperationTicket';
 
   // 跟踪指令执行情况
-  static final followCommandPath = API.host + '/Api/Cmd';
+  static final followCommandPath = API.host + 'Api/Cmd';
   // 远程指令下发
   static final remoteCommandPath = API.host + 'Api/Cmd/Send';
 
@@ -145,7 +145,7 @@ class API {
 
     if(address == null) return;
     if(afnCmd == null) return;
-    var totalPath = remoteCommandPath + '/' + address + '/' + afnCmd;
+    var totalPath = remoteCommandPath + '/' + address + '/' + afnCmd + '/' + '0';
 
     HttpHelper.postHttpCommon(totalPath, param, (dynamic data,String msg){
       var map  = data as Map<String,dynamic>;
