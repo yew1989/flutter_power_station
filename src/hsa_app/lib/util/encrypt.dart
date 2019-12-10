@@ -23,14 +23,15 @@ class LDEncrypt{
     return LDEncrypt.byteToHexString(encrypted.bytes);
   }
 
+  // 转 hex文档
   static String byteToHexString(List<int> bytes) {
-  final StringBuffer buffer = StringBuffer();
-  for (int part in bytes) {
-    if (part & 0xff != part) {
-      throw FormatException("$part is not a byte integer");
-    }
+    final StringBuffer buffer = StringBuffer();
+    for (int part in bytes) {
+      if (part & 0xff != part) {
+        throw FormatException("$part is not a byte integer");
+      }
     buffer.write('${part < 16 ? '0' : ''}${part.toRadixString(16)}');
-  }
+    }
   return buffer.toString().toUpperCase();
 }
 
