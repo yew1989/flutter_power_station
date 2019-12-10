@@ -131,13 +131,13 @@ class API {
     API.remoteCommandBase(address, 'AFN05_F21', {'清理垃圾开启或关停':0}, onSucc, onFail);
   }
   // 远程设定目标有功功率
-  static void remoteSettingActivePower(String address,double power,HttpSuccMsgCallback onSucc,HttpFailCallback onFail) {
-    API.remoteCommandBase(address, 'AFN05_F3', {'目标有功功率':power ?? 0.0}, onSucc, onFail);
+  static void remoteSettingActivePower(String address,String power,HttpSuccMsgCallback onSucc,HttpFailCallback onFail) {
+    API.remoteCommandBase(address, 'AFN05_F3', {'目标有功功率':power}, onSucc, onFail);
   }
 
   // 远程设定目标功率因数
-  static void remoteSettingPowerFactor(String address,double factor,HttpSuccMsgCallback onSucc,HttpFailCallback onFail) {
-    API.remoteCommandBase(address, 'AFN05_F4', {'目标功率因数':factor ?? 0.0}, onSucc, onFail);
+  static void remoteSettingPowerFactor(String address,String factor,HttpSuccMsgCallback onSucc,HttpFailCallback onFail) {
+    API.remoteCommandBase(address, 'AFN05_F4', {'目标功率因数':factor}, onSucc, onFail);
   }
 
   // 远程指令下发 - 基础接口

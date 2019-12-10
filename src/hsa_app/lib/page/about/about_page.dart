@@ -16,16 +16,16 @@ class _AboutPageState extends State<AboutPage> {
 
   RemoteControlTask remoteTask = RemoteControlTask();
 
-  void request() {
+  // void request() {
 
-      remoteTask.startTask(TaskName.powerOn, '00020042', null, (String succString) {
-        debugPrint(succString);
-      }, (String failString) {
-        debugPrint(failString);
-      }, (String loadingString) {
-        debugPrint(loadingString);
-      });
-  }
+  //     remoteTask.startTask(TaskName.powerOn, '00020042', null, (String succString) {
+  //       debugPrint(succString);
+  //     }, (String failString) {
+  //       debugPrint(failString);
+  //     }, (String loadingString) {
+  //       debugPrint(loadingString);
+  //     });
+  // }
 
   @override
   void dispose() {
@@ -36,11 +36,11 @@ class _AboutPageState extends State<AboutPage> {
   Widget build(BuildContext context) {
     return ThemeGradientBackground(
       child:Scaffold(
-          floatingActionButton: FloatingActionButton(
-            onPressed: (){
-              request();
-            },
-          ),
+          // floatingActionButton: FloatingActionButton(
+          //   onPressed: (){
+          //     request();
+          //   },
+          // ),
           backgroundColor: Colors.transparent,
           appBar: AppBar(
             backgroundColor: Colors.transparent,

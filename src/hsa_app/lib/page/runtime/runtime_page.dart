@@ -45,7 +45,13 @@ class _RuntimePageState extends State<RuntimePage> {
   RuntimeData runtimeData = RuntimeData();
 
   // 远程控制任务
-  RemoteControlTask remoteTask;
+  RemoteControlTask remoteTask = RemoteControlTask();
+
+  @override
+  void dispose() {
+    remoteTask.cancelTask();
+    super.dispose();
+  }
 
   @override
   void initState() {
@@ -610,19 +616,20 @@ class _RuntimePageState extends State<RuntimePage> {
 
     // 检查操作密码
     API.checkOperationPswd(context,pswd, (String succString){
-      debugPrint(succString);
+
+      debugPrint('操作密码:'+ succString);
 
       // 开始任务
       remoteTask.startTask(TaskName.powerOn, widget.address, null, (String succString) {
-
+        debugPrint('远程控制任务:'+ succString);
       }, (String failString) {
-        
+        debugPrint('远程控制任务:'+ failString);
       }, (String loadingString) {
-        
+        debugPrint('远程控制任务:'+ loadingString);
       });
 
     }, (String failString){
-      debugPrint(failString);
+      debugPrint('操作密码:' + failString);
     });
   }
 
