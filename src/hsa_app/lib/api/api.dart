@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:hsa_app/api/http_helper.dart';
 import 'package:hsa_app/model/caiyun.dart';
+import 'package:hsa_app/model/follow_command.dart';
 import 'package:hsa_app/model/more_data.dart';
 import 'package:hsa_app/model/pageConfig.dart';
 import 'package:hsa_app/model/province.dart';
@@ -13,7 +14,6 @@ import 'package:hsa_app/util/encrypt.dart';
 import 'package:hsa_app/util/share.dart';
 import 'package:ovprogresshud/progresshud.dart';
 import 'package:hsa_app/model/banner_item.dart';
-
 
 typedef HttpSuccMsgCallback = void Function(String msg);
 
@@ -33,6 +33,8 @@ typedef WeatherTypeResponseCallBack = void Function(int type);
 typedef RuntimeDataResponseCallBack = void Function(RuntimeDataResponse data);
 // 获取更多参数
 typedef MoreDataResponseCallBack = void Function(List<MoreItem> items);
+// 跟踪指令
+typedef FollowCommandResponseCallBack = void Function(FollowCommandResp commandResp);
 
 class API {
   // 内网主机地址
@@ -83,6 +85,95 @@ class API {
   // 操作密码检查
   static final operationCheckPath = API.host + 'api/Account/CheckOperationTicket';
 
+  // 跟踪指令执行情况
+  static final followCommandPath = API.host + '/Api/Cmd';
+  // 远程指令下发
+  static final remoteCommandPath = API.host + 'Api/Cmd/Send';
+
+  // 远程开机
+  static void remotePowerOn(String address,HttpSuccMsgCallback onSucc,HttpFailCallback onFail) {
+
+  }
+  // 远程关机
+  static void remotePowerOff(String address,HttpSuccMsgCallback onSucc,HttpFailCallback onFail) {
+    
+  }
+  // 远程开主阀门
+  static void remoteMainValveOn(String address,HttpSuccMsgCallback onSucc,HttpFailCallback onFail) {
+    
+  }
+  // 远程关主阀门
+  static void remoteMainValveOff(String address,HttpSuccMsgCallback onSucc,HttpFailCallback onFail) {
+    
+  }
+  // 远程开旁通阀
+  static void remoteSideValveOn(String address,HttpSuccMsgCallback onSucc,HttpFailCallback onFail) {
+    
+  }
+  // 远程关旁通阀
+  static void remoteSideValveOff(String address,HttpSuccMsgCallback onSucc,HttpFailCallback onFail) {
+    
+  }
+  // 远程切换智能控制方案 - 打开远程控制
+  static void remoteSwitchRemoteModeOn(String address,HttpSuccMsgCallback onSucc,HttpFailCallback onFail) {
+    
+  }
+  // 远程切换智能控制方案 - 关闭远程控制
+  static void remoteSwitchRemoteModeOff(String address,HttpSuccMsgCallback onSucc,HttpFailCallback onFail) {
+    
+  }
+  // 远程控制垃圾清扫 - 开
+  static void remoteClearRubbishOn(String address,HttpSuccMsgCallback onSucc,HttpFailCallback onFail) {
+    
+  }
+  // 远程控制垃圾清扫 - 关
+  static void remoteClearRubbishOff(String address,HttpSuccMsgCallback onSucc,HttpFailCallback onFail) {
+    
+  }
+  // 远程设定目标有功功率
+  static void remoteSettingActivePower(String address,HttpSuccMsgCallback onSucc,HttpFailCallback onFail) {
+    
+  }
+
+  // 远程设定目标功率因数
+  static void remoteSettingPowerFactor(String address,HttpSuccMsgCallback onSucc,HttpFailCallback onFail) {
+    
+  }
+
+  // 远程指令下发
+  static void remoteCommand(String address,String afnCmd,dynamic param,HttpSuccMsgCallback onSucc,HttpFailCallback onFail) {
+
+    if(address == null) return;
+    if(afnCmd == null) return;
+    var totalPath = remoteCommandPath + '/' + address + '/' + afnCmd;
+
+    HttpHelper.postHttpCommon(totalPath, param, (dynamic data,String msg){
+      var map  = data as Map<String,dynamic>;
+      var resp = FollowCommandResp.fromJson(map);
+      var cmdId = resp?.cmdId ?? '';
+      if(cmdId.length ==0 ) {
+        if(onFail != null) onFail('远程指令下发失败');
+      }
+      else {
+        if(onSucc != null) onSucc(cmdId);
+      }
+    }, onFail);
+
+  }
+
+  // 跟踪指令执行情况
+  static void followCommand(String cmdId,FollowCommandResponseCallBack onSucc,HttpFailCallback onFail) {
+
+    if(cmdId == null) return;
+    
+    var totalPath = followCommandPath + '/' + cmdId;
+    
+    HttpHelper.getHttpCommon(totalPath, null, (dynamic data,String string) {
+      var map  = data as Map<String,dynamic>;
+      var resp = FollowCommandResp.fromJson(map);
+      if(onSucc != null) onSucc(resp);
+    }, onFail);
+  }
 
   // 操作密码检查
   static void checkOperationPswd(BuildContext context,String pswd,HttpSuccMsgCallback onSucc,HttpFailCallback onFail) async {
