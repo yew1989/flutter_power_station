@@ -1,0 +1,110 @@
+import 'dart:async';
+import 'package:hsa_app/api/api.dart';
+import 'package:hsa_app/api/http_helper.dart';
+import 'package:hsa_app/model/follow_command.dart';
+
+enum TaskName{
+  powerOn,
+  powerOff,
+  mainValveOn,
+  mainValveOff,
+  sideValveOn,
+  sideValveOff,
+  switchRemoteOn,
+  switchRemoteOff,
+  clearRubbishOn,
+  clearRubbishOff,
+  setttingActivePower,
+  settingPowerFactor,
+}
+class RemoteControlTask {
+
+    Timer timer;
+    
+    // 开启新任务
+    void startTask(TaskName task,String address,String param,
+    HttpSuccMsgCallback onSucc,
+    HttpFailCallback onFail,
+    HttpSuccMsgCallback onLoading,
+    ) {
+
+      timer?.cancel();
+      
+      switch (task) {
+        case TaskName.powerOn:
+        {
+            // 下发指令
+            API.remotePowerOn(address, (String cmdId) {
+
+                // 一秒一个周期查询
+                timer = Timer.periodic(Duration(seconds: 1), (timer) {
+
+                    // 跟踪指令
+                    API.followCommand(cmdId, (FollowCommandResp resp){
+                    
+                    // 响应标志
+                    if(resp.replyAFN != 0) {
+                      timer?.cancel();
+                      if(onFail != null) onFail('操作失败');
+                      return;
+                    }
+
+                    // 当前状态 = 响应中 
+                    if(resp.currentState == null || resp.currentState == 0 || 
+                    resp.currentState == 1 || resp.currentState == 255) {
+                      // 不处理
+                      if(onLoading != null) onLoading('等待响应中');
+                    }
+
+                    // 响应成功
+                    if(resp.currentState == 2) {
+                      if(resp.replyDataUnitList != null) {
+                        var firstElement = resp.replyDataUnitList.first;
+                        if(firstElement != null) {
+                          var fn = firstElement?.fn ?? 0;
+                          // 确认
+                          if(fn == 1) {
+                              timer?.cancel();
+                              if(onSucc != null) onFail('操作成功');
+                              return;
+                          }
+                          // 否认
+                          else {
+                              timer?.cancel();
+                              if(onFail != null) onFail('操作失败');
+                              return;
+                          }
+                        }
+                      }
+                    }
+
+
+                  }, (String msg){
+                      timer?.cancel();
+                      if(onFail != null) onFail('操作失败');
+                      return;
+                  });
+
+                });
+
+            }, onFail);
+        }    
+          break;
+        default:
+      }
+    }
+
+    void cancelTask() {
+      _cancelTimer();
+    }
+
+    void _startTimer() {
+    timer = Timer.periodic(Duration(seconds: 1), (timer) {
+
+    });
+  }
+
+  void _cancelTimer() {
+    timer?.cancel();
+  }
+}
