@@ -109,6 +109,24 @@ class _RuntimePageState extends State<RuntimePage> {
     });
   }
 
+  // 操作密码输入错误弹窗
+  void showOperationPasswordPopWindow() async {
+      progressDialog.update(
+        message: '操作密码输入不正确',
+        progress: 0.0,
+        maxProgress: 100.0,
+        progressWidget: Container(child: Icon(Icons.error_outline, color: Colors.redAccent, size: 46)),
+        progressTextStyle: TextStyle(
+            color: Colors.black, fontSize: 13.0, fontWeight: FontWeight.normal),
+        messageTextStyle: TextStyle(
+            color: Colors.black,
+            fontSize: 19.0,
+            fontWeight: FontWeight.normal));
+    progressDialog.show();
+    await Future.delayed(Duration(seconds: 1));
+    progressDialog.dismiss(); 
+  }
+
   @override
   void dispose() {
     remoteTask.cancelTask();
@@ -635,22 +653,17 @@ class _RuntimePageState extends State<RuntimePage> {
                             child: GestureDetector(
                               onTap: () {
                                 showDialog(
-                                    context: context,
-                                    barrierDismissible: false,
-                                    builder: (_) => PowerControlDialogWidget(
-                                          powerMax: runtimeData
-                                                  ?.dashboard?.power?.max
-                                                  ?.toInt() ??
-                                              0,
-                                          onConfirmActivePower:(String activePower) {
+                                  context: context,barrierDismissible: false,
+                                  builder: (_) => PowerControlDialogWidget(
+                                    powerMax: runtimeData?.dashboard?.power?.max?.toInt() ?? 0,
+                                    onConfirmActivePower:(String activePower) {
                                             debugPrint('有功功率:' + activePower);
                                             requestRemoteSettingActivePower(context,activePower);
-                                          },
-                                          onConfirmPowerFactor:
-                                              (String powerFactor) {
+                                      },
+                                      onConfirmPowerFactor:(String powerFactor) {
                                             debugPrint('功率因数:' + powerFactor);
-                                          },
-                                        ));
+                                            requestRemoteSettingPowerFactor(context,powerFactor);
+                                      }));
                               },
                               child: Container(
                                 child: Row(
@@ -755,64 +768,19 @@ class _RuntimePageState extends State<RuntimePage> {
     );
   }
 
-  // 调节有功功率
-  void requestRemoteSettingActivePower(BuildContext context, String pswd) async {
-    progressDialog.dismiss();
-    showDialog(context: context,barrierDismissible: false,builder: (BuildContext context) {
-          return PasswordDialog((String pswd) {
-            // 检查操作密码
-            API.checkOperationPswd(context, pswd, (String succString) {
-              debugPrint('操作密码:' + succString);
-              // 开始任务
-              remoteTask
-                  .startTask(TaskName.setttingActivePower, widget.address, null,
-                      (String succString) {
-                debugPrint('远程控制任务:' + succString);
-              }, (String failString) {
-                debugPrint('远程控制任务:' + failString);
-              }, (String loadingString) {
-                debugPrint('远程控制任务:' + loadingString);
-              });
-            }, (String failString) {
-              debugPrint('操作密码:' + failString);
-            });
-          });
-        });
-  }
-
-  // 调节功率因数
-  void requestRemoteSettingPowerFactor(
-      BuildContext context, String pswd) async {
-    // 检查操作密码
-    API.checkOperationPswd(context, pswd, (String succString) {
-      debugPrint('操作密码:' + succString);
-      // 开始任务
-      remoteTask.startTask(TaskName.setttingActivePower, widget.address, null,
-          (String succString) {
-        debugPrint('远程控制任务:' + succString);
-      }, (String failString) {
-        debugPrint('远程控制任务:' + failString);
-      }, (String loadingString) {
-        debugPrint('远程控制任务:' + loadingString);
-      });
-    }, (String failString) {
-      debugPrint('操作密码:' + failString);
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return ThemeGradientBackground(
       child: Scaffold(
-        // floatingActionButton: FloatingActionButton(
-        //   onPressed: () {
-        //     // progressDialog.show();
-        //     // Future.delayed(Duration(seconds:1),(){
-        //     //   // finishProgressDialog('操作成功',true);
-        //     //   finishProgressDialog('操作失败', false);
-        //     // });
-        //   },
-        // ),
+    //     floatingActionButton: FloatingActionButton(
+    //       onPressed: () {
+    // showDialog(context: context,barrierDismissible: false,builder: (BuildContext context){
+    //   return PasswordDialog((String pswd){
+        
+    //   });
+    // });
+    //       },
+    //     ),
         backgroundColor: Colors.transparent,
         appBar: AppBar(
           elevation: 0,
@@ -853,5 +821,58 @@ class _RuntimePageState extends State<RuntimePage> {
         ),
       ),
     );
+  }
+
+
+  // 调节有功功率
+  void requestRemoteSettingActivePower(BuildContext context,String activePower) async {
+    progressDialog.dismiss();
+    updateProgressDialog('正在操作中');
+    await Future.delayed(Duration(milliseconds: 600));
+    showDialog(context: context,barrierDismissible: false,builder: (BuildContext context) {
+          return PasswordDialog((String pswd) {
+            // 检查操作密码
+            API.checkOperationPswd(context, pswd, (String succString) {
+              debugPrint('操作密码 🔑 :' + succString);
+              // 开始任务
+              progressDialog.show();
+              remoteTask.startTask(TaskName.setttingActivePower, widget.address, activePower,(String succString) {
+                finishProgressDialog(succString, true);
+              }, (String failString) {
+                finishProgressDialog(failString, false);
+              }, (String loadingString) {
+                updateProgressDialog(loadingString);
+              });
+            }, (_) {
+              showOperationPasswordPopWindow();
+            });
+          });
+    });
+  }
+
+  // 调节功率因数 
+  void requestRemoteSettingPowerFactor(BuildContext context,String powerFactor) async {
+    progressDialog.dismiss();
+    updateProgressDialog('正在操作中');
+    await Future.delayed(Duration(milliseconds: 600));
+    showDialog(context: context,barrierDismissible: false,builder: (BuildContext context) {
+          return PasswordDialog((String pswd) {
+            // 检查操作密码
+            API.checkOperationPswd(context, pswd, (String succString) {
+              debugPrint('操作密码 🔑 :' + succString);
+              // 开始任务
+              progressDialog.show();
+              remoteTask.startTask(TaskName.settingPowerFactor, widget.address, powerFactor,(String succString) {
+                finishProgressDialog(succString, true);
+              }, (String failString) {
+                finishProgressDialog(failString, false);
+              }, (String loadingString) {
+                updateProgressDialog(loadingString);
+              });
+            }, (_) {
+              showOperationPasswordPopWindow();
+            });
+          });
+    });
   }
 }

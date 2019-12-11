@@ -239,7 +239,7 @@ class RemoteControlTask {
                 // 确认
                 if(fn == 1) {
                     timer?.cancel();
-                    if(onSucc != null) onFail('操作成功');
+                    if(onSucc != null) onSucc('操作成功');
                     return;
                 }
                 // 否认

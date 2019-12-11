@@ -81,7 +81,6 @@ class PasswordDialog extends Dialog {
                     maskCharacter: "●",
                     onTextChanged: (text) {},
                     onDone: (text) {
-                      print("DONE $text");
                       Future.delayed(Duration(milliseconds: 500),(){
                         Navigator.of(context).pop();
                         onSucc(text);
