@@ -2,6 +2,8 @@ PODS:
   - connectivity (0.0.1):
     - Flutter
     - Reachability
+  - device_info (0.0.1):
+    - Flutter
   - flt_video_player (0.0.1):
     - Flutter
     - TXLiteAVSDK_Player
@@ -33,6 +35,7 @@ PODS:
 
 DEPENDENCIES:
   - connectivity (from `.symlinks/plugins/connectivity/ios`)
+  - device_info (from `.symlinks/plugins/device_info/ios`)
   - flt_video_player (from `.symlinks/plugins/flt_video_player/ios`)
   - Flutter (from `.symlinks/flutter/ios`)
   - fluttertoast (from `.symlinks/plugins/fluttertoast/ios`)
@@ -54,6 +57,8 @@ SPEC REPOS:
 EXTERNAL SOURCES:
   connectivity:
     :path: ".symlinks/plugins/connectivity/ios"
+  device_info:
+    :path: ".symlinks/plugins/device_info/ios"
   flt_video_player:
     :path: ".symlinks/plugins/flt_video_player/ios"
   Flutter:
@@ -77,6 +82,7 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   connectivity: 6e94255659cc86dcbef1d452ad3e0491bb1b3e75
+  device_info: cbf09d2ec12aa7110e0b09fabe54b5bd6c8efe74
   flt_video_player: 5ac12f52274ca5f0446a8c735ab565e998d8c0a4
   Flutter: 0e3d915762c693b495b44d77113d4970485de6ec
   fluttertoast: b644586ef3b16f67fae9a1f8754cef6b2d6b634b

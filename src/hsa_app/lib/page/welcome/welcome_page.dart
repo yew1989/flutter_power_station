@@ -6,6 +6,7 @@ import 'package:hsa_app/page/framework/root_page.dart';
 import 'package:hsa_app/service/versionManager.dart';
 import 'package:hsa_app/theme/theme_gradient_background.dart';
 import 'package:hsa_app/components/public_tool.dart';
+import 'package:hsa_app/util/device_inspector.dart';
 import 'package:hsa_app/util/share.dart';
 
 class WelcomePage extends StatefulWidget {
@@ -32,16 +33,10 @@ class _WelcomePageState extends State<WelcomePage> with TickerProviderStateMixin
     API.touchNetWork();
     AppConfig.initConfig();
     appCheck();
-    mesureDeviceBoundSize();
+    DeviceInspector.inspectDevice(context);
   }
 
-  // 测量设备宽高
-  void mesureDeviceBoundSize() {
-    Future.delayed(Duration(seconds:1),(){
-      debugPrint('📱设备宽:' + MediaQuery.of(context).size.width.toString());
-      debugPrint('📱设备高:' + MediaQuery.of(context).size.height.toString());
-    });
-  }
+
 
   // APP 环境自检
   void appCheck() async {
