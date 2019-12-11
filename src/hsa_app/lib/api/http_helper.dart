@@ -14,11 +14,23 @@ typedef HttpFailCallback = void Function(String msg);
 class HttpHelper {
 
   // 开启代理模式,允许抓包
-  static final isProxyModeOpen = true;
+  static final isProxyModeOpen = false;
   // 代理地址
   static final proxyIP = 'PROXY 192.168.31.74:8888';
   // 超时时间
   static final kTimeOutSeconds = 20;
+
+  // 创建 DIO 对象
+  static Dio initDio() {
+    var dio = Dio();
+    var adapter = dio.httpClientAdapter as DefaultHttpClientAdapter;
+    adapter.onHttpClientCreate = (HttpClient client) {
+        client.findProxy = (_) => isProxyModeOpen ? proxyIP : 'DIRECT';
+        client.badCertificateCallback = (X509Certificate cert, String host, int port) => true;
+    };
+    return dio;
+  }
+
   // 检测网络
   static Future<bool> isReachablity() async {
     var connectivityResult = await (Connectivity().checkConnectivity());
@@ -78,17 +90,7 @@ class HttpHelper {
       }
     }
 
-    var dio = Dio();
-
-    // 代理控制
-    if (isProxyModeOpen == true) {
-      (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
-          (HttpClient client) {
-        client.findProxy = (_) => proxyIP;
-        client.badCertificateCallback =
-            (X509Certificate cert, String host, int port) => true;
-      };
-    }
+    var dio = HttpHelper.initDio();
 
     // 尝试请求
     try {
@@ -147,17 +149,7 @@ class HttpHelper {
       }
     }
 
-    var dio = Dio();
-
-    // 代理控制
-    if (isProxyModeOpen == true) {
-      (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
-          (HttpClient client) {
-        client.findProxy = (_) => proxyIP;
-        client.badCertificateCallback =
-            (X509Certificate cert, String host, int port) => true;
-      };
-    }
+    var dio = HttpHelper.initDio();
 
     // 尝试请求
     try {
@@ -218,17 +210,7 @@ class HttpHelper {
       }
     }
 
-    var dio = Dio();
-
-    // 代理控制
-    if (isProxyModeOpen == true) {
-      (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
-          (HttpClient client) {
-        client.findProxy = (_) => proxyIP;
-        client.badCertificateCallback =
-            (X509Certificate cert, String host, int port) => true;
-      };
-    }
+    var dio = HttpHelper.initDio();
 
     // 尝试请求
     try {
@@ -275,16 +257,7 @@ class HttpHelper {
       }
     }
 
-    var dio = Dio();
-
-    // 代理控制
-    if (isProxyModeOpen == true) {
-      (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
-          (HttpClient client) {
-        client.findProxy = (_) => proxyIP;
-        client.badCertificateCallback = (X509Certificate cert, String host, int port) => true;
-      };
-    }
+    var dio = HttpHelper.initDio();
 
     // 尝试请求
     try {
@@ -336,17 +309,7 @@ class HttpHelper {
       }
     }
 
-    var dio = Dio();
-
-    // 代理控制
-    if (isProxyModeOpen == true) {
-      (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
-          (HttpClient client) {
-        client.findProxy = (_) => proxyIP;
-        client.badCertificateCallback =
-            (X509Certificate cert, String host, int port) => true;
-      };
-    }
+    var dio = HttpHelper.initDio();
 
     // 尝试请求
     try {
@@ -397,17 +360,7 @@ class HttpHelper {
       }
     }
 
-    var dio = Dio();
-
-    // 代理控制
-    if (isProxyModeOpen == true) {
-      (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
-          (HttpClient client) {
-        client.findProxy = (_) => proxyIP;
-        client.badCertificateCallback =
-            (X509Certificate cert, String host, int port) => true;
-      };
-    }
+    var dio = HttpHelper.initDio();
 
     // 尝试请求
     try {
@@ -457,17 +410,7 @@ class HttpHelper {
       }
     }
 
-    var dio = Dio();
-
-    // 代理控制
-    if (isProxyModeOpen == true) {
-      (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
-          (HttpClient client) {
-        client.findProxy = (_) => proxyIP;
-        client.badCertificateCallback =
-            (X509Certificate cert, String host, int port) => true;
-      };
-    }
+    var dio = HttpHelper.initDio();
 
     // 尝试请求
     try {

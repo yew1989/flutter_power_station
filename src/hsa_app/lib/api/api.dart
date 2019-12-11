@@ -106,6 +106,14 @@ class API {
   static void remoteMainValveOff(String address,HttpSuccMsgCallback onSucc,HttpFailCallback onFail) {
     API.remoteCommandBase(address, 'AFN05_F2', {'远程主阀开关':false}, onSucc, onFail);
   }
+  // 远程设定目标有功功率
+  static void remoteSettingActivePower(String address,String power,HttpSuccMsgCallback onSucc,HttpFailCallback onFail) {
+    API.remoteCommandBase(address, 'AFN05_F3', {'目标有功功率':power}, onSucc, onFail);
+  }
+  // 远程设定目标功率因数
+  static void remoteSettingPowerFactor(String address,String factor,HttpSuccMsgCallback onSucc,HttpFailCallback onFail) {
+    API.remoteCommandBase(address, 'AFN05_F4', {'目标功率因数':factor}, onSucc, onFail);
+  }
   // 远程开旁通阀
   static void remoteSideValveOn(String address,HttpSuccMsgCallback onSucc,HttpFailCallback onFail) {
     API.remoteCommandBase(address, 'AFN05_F16', {'开关旁通阀':1}, onSucc, onFail);
@@ -129,15 +137,6 @@ class API {
   // 远程控制垃圾清扫 - 关
   static void remoteClearRubbishOff(String address,HttpSuccMsgCallback onSucc,HttpFailCallback onFail) {
     API.remoteCommandBase(address, 'AFN05_F21', {'清理垃圾开启或关停':0}, onSucc, onFail);
-  }
-  // 远程设定目标有功功率
-  static void remoteSettingActivePower(String address,String power,HttpSuccMsgCallback onSucc,HttpFailCallback onFail) {
-    API.remoteCommandBase(address, 'AFN05_F3', {'目标有功功率':power}, onSucc, onFail);
-  }
-
-  // 远程设定目标功率因数
-  static void remoteSettingPowerFactor(String address,String factor,HttpSuccMsgCallback onSucc,HttpFailCallback onFail) {
-    API.remoteCommandBase(address, 'AFN05_F4', {'目标功率因数':factor}, onSucc, onFail);
   }
 
   // 远程指令下发 - 基础接口
