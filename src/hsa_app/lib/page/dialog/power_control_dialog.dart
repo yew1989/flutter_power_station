@@ -1,7 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:hsa_app/components/data_picker.dart';
 
-class PowerControlDialog extends Dialog {
+
+typedef PowControlDialogOnConfirmActivePower = void Function(String activePower);
+typedef PowControlDialogOnConfirmPowerFactor = void Function(String powerFactor);
+
+class PowerControlDialogWidget extends StatefulWidget {
+  
+  final int powerMax;
+  final PowControlDialogOnConfirmActivePower onConfirmActivePower;
+  final PowControlDialogOnConfirmPowerFactor onConfirmPowerFactor;
+
+  const PowerControlDialogWidget({Key key, this.powerMax, this.onConfirmActivePower, this.onConfirmPowerFactor}) 
+  : super(key: key);
+
+  @override
+  _PowerControlDialogWidgetState createState() => _PowerControlDialogWidgetState();
+}
+
+class _PowerControlDialogWidgetState extends State<PowerControlDialogWidget> {
+  
+  List<String> powerFactorList = [];
+  List<String> activePowerList = [];
 
   List<String> buildPowerFactorList() {
     List<String> list = [];
@@ -13,14 +33,42 @@ class PowerControlDialog extends Dialog {
     return list;
   }
 
-  List<String> buildActivePowerFactorList() {
+  List<String> buildActivePowerList(int activePowerMax) {
     List<String> list = [];
-    for (var i = 0; i < 801; i++) {
+    for (var i = 0; i < activePowerMax + 1; i++) {
       list.add(i.toStringAsFixed(0));
     }
     list = list.reversed.toList();
     return list;
   }
+
+  @override
+  void initState() {
+    powerFactorList = buildPowerFactorList();
+    activePowerList = buildActivePowerList(widget.powerMax);
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return PowerControlDialog(
+      activePowerList: activePowerList,
+      powerFactorList: powerFactorList,
+      onConfirmActivePower: widget.onConfirmActivePower,
+      onConfirmPowerFactor: widget.onConfirmPowerFactor,
+    );
+  }
+}
+
+
+class PowerControlDialog extends Dialog {
+
+  final List<String> powerFactorList;
+  final List<String> activePowerList;
+  final PowControlDialogOnConfirmActivePower onConfirmActivePower;
+  final PowControlDialogOnConfirmPowerFactor onConfirmPowerFactor;
+
+  PowerControlDialog({this.activePowerList, this.powerFactorList, this.onConfirmActivePower, this.onConfirmPowerFactor});
 
   @override
   Widget build(BuildContext context) {
@@ -83,8 +131,8 @@ class PowerControlDialog extends Dialog {
                               GestureDetector(
                                     onTap: (){
                                       Navigator.of(context).pop();
-                                      showDataPicker(context,'请选择有功功率(kW)',buildActivePowerFactorList(),(String data){
-
+                                      showDataPicker(context,'请选择有功功率(kW)',activePowerList,(String data){
+                                         if(onConfirmActivePower != null) onConfirmActivePower(data);
                                       });
                                     },
                                   ),
@@ -125,8 +173,8 @@ class PowerControlDialog extends Dialog {
                                       GestureDetector(
                                         onTap: (){
                                           Navigator.of(context).pop();
-                                          showDataPicker(context,'请选择功率因数',buildPowerFactorList(),(String data){
-
+                                          showDataPicker(context,'请选择功率因数',powerFactorList,(String data){
+                                            if(onConfirmPowerFactor != null) onConfirmPowerFactor(data);
                                           });
                                         },
                                       ),

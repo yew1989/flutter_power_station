@@ -198,7 +198,38 @@ class RemoteControlTask {
           resp.currentState == 1 || resp.currentState == 255) {
             if(onLoading != null) onLoading('等待响应中');
           }
-      
+
+          // 发送失败,终端不在线
+          if(resp.currentState == -1) {
+            timer?.cancel();
+            if(onFail != null) onFail('发送失败,终端不在线');
+          }
+          // 无响应
+          if(resp.currentState == -2) {
+            timer?.cancel();
+            if(onFail != null) onFail('无响应');
+          }
+          // 发送内容不符合规约
+          if(resp.currentState == -3) {
+            timer?.cancel();
+            if(onFail != null) onFail('发送内容不符合规约');
+          }
+          // 任务过期
+          if(resp.currentState == -4) {
+            timer?.cancel();
+            if(onFail != null) onFail('任务过期');
+          }
+          // 数据库操作失败
+          if(resp.currentState == -5) {
+            timer?.cancel();
+            if(onFail != null) onFail('数据库操作失败');
+          }
+          // 无操作权限
+          if(resp.currentState == -6) {
+            timer?.cancel();
+            if(onFail != null) onFail('无操作权限');
+          }
+
           // 响应成功
           if(resp.currentState == 2) {
             if(resp.replyDataUnitList != null) {
