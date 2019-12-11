@@ -862,7 +862,9 @@ class _RuntimePageState extends State<RuntimePage> {
               debugPrint('操作密码 🔑 :' + succString);
               // 开始任务
               progressDialog.show();
-              remoteTask.startTask(TaskName.settingPowerFactor, widget.address, powerFactor,(String succString) {
+              var hundred = double.parse(powerFactor) * 100;
+              var hundredStr = hundred.toStringAsFixed(0);
+              remoteTask.startTask(TaskName.settingPowerFactor, widget.address, hundredStr,(String succString) {
                 finishProgressDialog(succString, true);
               }, (String failString) {
                 finishProgressDialog(failString, false);

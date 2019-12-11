@@ -58,7 +58,7 @@ class PasswordDialog extends Dialog {
                                   'images/runtime/Time_close_icon.png')),
                         ),
                         SizedBox(width: 10),
-                        Text('请输入执行密码',
+                        Text('请输入操作密码',
                             style:
                                 TextStyle(color: Colors.black, fontSize: 16)),
                       ],

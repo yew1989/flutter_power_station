@@ -147,7 +147,7 @@ class API {
     if(afnCmd == null) return;
     var totalPath = remoteCommandPath + '/' + address + '/' + afnCmd + '/' + '0';
 
-    HttpHelper.postHttpCommon(totalPath, param, (dynamic data,String msg){
+    HttpHelper.postHttpApplicationJson(totalPath, param, (dynamic data,String msg){
       var map  = data as Map<String,dynamic>;
       var resp = FollowCommandResp.fromJson(map);
       var cmdId = resp?.cmdId ?? '';
@@ -201,7 +201,7 @@ class API {
     var addressId = address??'';
     var totalPath = runtimeDataPath + '/' + addressId;
 
-    HttpHelper.postHttpCommon(totalPath, null, (dynamic data,String msg){
+    HttpHelper.postHttpForm(totalPath, null, (dynamic data,String msg){
         var map  = data as Map<String,dynamic>;
         var resp = RuntimeDataResponse.fromJson(map);
         if(onSucc != null) onSucc(resp);
