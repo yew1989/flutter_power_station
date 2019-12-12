@@ -197,7 +197,7 @@ class _HomeStationListState extends State<HomeStationList> {
                 height: 24,width: 24,
                 child: CircleAvatar(
                   radius: 12,
-                  backgroundImage:AssetImage('images/home/Home_protrait_icon.png'),
+                  backgroundImage:AssetImage('images/about/about_icon.png'),
                 ),
               ),
               SizedBox(width: 10),

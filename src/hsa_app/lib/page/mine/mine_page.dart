@@ -58,7 +58,7 @@ class _MinePageState extends State<MinePage> {
             SizedBox(
               height: 100, width: 100,
               child: CircleAvatar(
-                radius: 50, backgroundImage: AssetImage('images/mine/My_protarit_icon.png'),
+                radius: 50, backgroundImage: AssetImage('images/about/about_icon.png'),
               ),
             ),
             SizedBox(width: 16),

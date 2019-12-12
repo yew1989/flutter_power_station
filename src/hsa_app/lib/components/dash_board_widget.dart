@@ -169,7 +169,14 @@ class _DashBoardWidgetState extends State<DashBoardWidget> {
     
     // 功率 now
     var powerNow = widget?.dashBoardData?.power?.now ?? 0.0;
-    var powerNowStr = powerNow.toStringAsFixed(0);
+    var powerNowStr = '0';
+    // 展示优化
+    if(powerNow < 100) {
+       powerNowStr = powerNow.toStringAsFixed(1);
+    }
+    else {
+       powerNowStr = powerNow.toStringAsFixed(0);
+    }
 
     // 功率 max
     var powerMax = widget?.dashBoardData?.power?.max ?? 0.0;
