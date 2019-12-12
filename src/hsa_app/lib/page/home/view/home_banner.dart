@@ -32,12 +32,14 @@ class _HomeBannerState extends State<HomeBanner> {
       length: widget.items?.length ?? 0,
       getwidget: (index) {
         final item = widget.items[index % widget.items.length];
-        final img = item.img;
-        final link = item.link;
+        final img = item?.img ?? '';
+        final link = item?.link?? '';
         return GestureDetector(
           child: Image.network(img,fit: BoxFit.fill),
           onTap: () {
-            pushToPage(context, WebViewPage('智能电站', link));
+            if(link.length > 0) {
+              pushToPage(context, WebViewPage('智能电站', link));
+            }
           },
         );
       },

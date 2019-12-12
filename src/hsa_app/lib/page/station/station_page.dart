@@ -412,7 +412,9 @@ class _StationPageState extends State<StationPage> {
       // 超发
       if(ratio > 1.0) {
         isBeyond = true;
-        final beyond = ratio - 1.0;
+        var beyond = ratio - 1.0;
+        // 为了好看,超发部分放大 3 倍
+        beyond = beyond * 3;
         final rightRatio = 1.0 - beyond;
         right = maxWidth * (1.0 - rightRatio);
         left =  maxWidth - (maxWidth *  beyond);
@@ -460,7 +462,9 @@ class _StationPageState extends State<StationPage> {
       // 超发
       if(ratio > 1.0) {
         isBeyond = true;
-        final beyond = ratio - 1.0;
+        var beyond = ratio - 1.0;
+        // 为了好看,超发部分放大 3 倍
+        beyond = beyond * 3;
         final rightRatio = 1.0 - beyond;
         right = maxWidth * (1.0 - rightRatio);
         left =  maxWidth - (maxWidth *  beyond);

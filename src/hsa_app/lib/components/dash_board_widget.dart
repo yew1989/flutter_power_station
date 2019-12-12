@@ -119,6 +119,7 @@ class DashPainter extends CustomPainter {
     bluePath.addArc(Rect.fromCircle(center: Offset(0, 0), radius: 54.0), -pi, (powerPencent*1.5) * pi);
     canvas.drawPath(dashPath(bluePath,dashArray: CircularIntervalList<double>(<double>[1.0, 2.5])),paintPowerBlue);
 
+   // 超发
    if(beyondPencent > 0) {
       Paint paintPowerRed = Paint();
       paintPowerRed
@@ -137,6 +138,8 @@ class DashPainter extends CustomPainter {
       ).createShader(Rect.fromCircle(center: Offset(0, 0), radius: 50.0));
 
     Path redPath = Path(); 
+    // 为了展现好看,超发部分 放大 3倍
+    beyondPencent = beyondPencent * 3;
     redPath.addArc(Rect.fromCircle(center: Offset(0, 0), radius: 54.0),pi/2,beyondPencent * 1.0 * pi);
     canvas.drawPath(dashPath(redPath,dashArray: CircularIntervalList<double>(<double>[1.0, 2.5]),),paintPowerRed);
    }
