@@ -433,6 +433,9 @@ class _RuntimePageState extends State<RuntimePage> {
   }
 
   Widget operationBoard() {
+
+    var isMotorPowerOn = runtimeData?.isMotorPowerOn ?? false;
+
     return SafeArea(
       child: Container(
         height: 127,
@@ -595,10 +598,17 @@ class _RuntimePageState extends State<RuntimePage> {
                             child: SizedBox(
                                 height: 68,
                                 width: 68,
-                                child: Image.asset(
-                                    'images/runtime/Time_power_icon_on.png'))),
+                                child: isMotorPowerOn ? Image.asset('images/runtime/Time_power_icon_on.png') 
+                                    : Image.asset('images/runtime/Time_power_icon_off.png')
+                                )),
                       ),
-                    )
+                    ),
+                    GestureDetector(
+                      onTap: (){
+                        var taskName = isMotorPowerOn ? TaskName.powerOff : TaskName.powerOn;
+                        requestRemoteControlCommand(context, taskName, null);
+                      },
+                    ),
                   ],
                 ),
               ),
