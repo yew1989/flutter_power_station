@@ -659,11 +659,13 @@ class _RuntimePageState extends State<RuntimePage> {
                                     powerMax: runtimeData?.dashboard?.power?.max?.toInt() ?? 0,
                                     onConfirmActivePower:(String activePower) {
                                             debugPrint('有功功率:' + activePower);
-                                            requestRemoteSettingActivePower(context,activePower);
+                                            requestRemoteControlCommand(context,TaskName.setttingActivePower,activePower);
                                       },
                                       onConfirmPowerFactor:(String powerFactor) {
                                             debugPrint('功率因数:' + powerFactor);
-                                            requestRemoteSettingPowerFactor(context,powerFactor);
+                                            var hundred = double.parse(powerFactor) * 100;
+                                            var hundredStr = hundred.toStringAsFixed(0);
+                                            requestRemoteControlCommand(context,TaskName.settingPowerFactor,hundredStr);
                                       }));
                               },
                               child: Container(
@@ -708,7 +710,8 @@ class _RuntimePageState extends State<RuntimePage> {
                                     context: context,
                                     barrierDismissible: false,
                                     builder: (_) => DeviceControlDialog((TaskName taskName){
-                                      debugPrint(taskName.toString());
+                                      debugPrint('设备控制:' +taskName.toString());
+                                      requestRemoteControlCommand(context,taskName,null);
                                     }));
                               },
                               child: Container(
@@ -723,8 +726,7 @@ class _RuntimePageState extends State<RuntimePage> {
                                     SizedBox(
                                       height: 14,
                                       width: 14,
-                                      child: Image.asset(
-                                          'images/runtime/Time_list_icon.png'),
+                                      child: Image.asset('images/runtime/Time_list_icon.png'),
                                     )
                                   ],
                                 ),
@@ -815,9 +817,8 @@ class _RuntimePageState extends State<RuntimePage> {
     );
   }
 
-
-  // 调节有功功率
-  void requestRemoteSettingActivePower(BuildContext context,String activePower) async {
+  // 远程控制
+  void requestRemoteControlCommand(BuildContext context,TaskName taskName,String param) async{
     progressDialog.dismiss();
     updateProgressDialog('正在操作中');
     await Future.delayed(Duration(milliseconds: 600));
@@ -828,35 +829,7 @@ class _RuntimePageState extends State<RuntimePage> {
               debugPrint('操作密码 🔑 :' + succString);
               // 开始任务
               progressDialog.show();
-              remoteTask.startTask(TaskName.setttingActivePower, widget.address, activePower,(String succString) {
-                finishProgressDialog(succString, true);
-              }, (String failString) {
-                finishProgressDialog(failString, false);
-              }, (String loadingString) {
-                updateProgressDialog(loadingString);
-              });
-            }, (_) {
-              showOperationPasswordPopWindow();
-            });
-          });
-    });
-  }
-
-  // 调节功率因数 
-  void requestRemoteSettingPowerFactor(BuildContext context,String powerFactor) async {
-    progressDialog.dismiss();
-    updateProgressDialog('正在操作中');
-    await Future.delayed(Duration(milliseconds: 600));
-    showDialog(context: context,barrierDismissible: false,builder: (BuildContext context) {
-          return PasswordDialog((String pswd) {
-            // 检查操作密码
-            API.checkOperationPswd(context, pswd, (String succString) {
-              debugPrint('操作密码 🔑 :' + succString);
-              // 开始任务
-              progressDialog.show();
-              var hundred = double.parse(powerFactor) * 100;
-              var hundredStr = hundred.toStringAsFixed(0);
-              remoteTask.startTask(TaskName.settingPowerFactor, widget.address, hundredStr,(String succString) {
+              remoteTask.startTask(taskName, widget.address, param,(String succString) {
                 finishProgressDialog(succString, true);
               }, (String failString) {
                 finishProgressDialog(failString, false);
