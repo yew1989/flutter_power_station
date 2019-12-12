@@ -52,7 +52,8 @@ class _RuntimePageState extends State<RuntimePage> {
   // 初始化弹出框
   void initProgressDialog() {
     progressDialog = ProgressDialog(context,
-        type: ProgressDialogType.Normal, isDismissible: false, showLogs: false);
+        type: ProgressDialogType.Normal, 
+        isDismissible: false, showLogs: false);
     progressDialog.style(
         message: '正在操作中...',
         borderRadius: 10.0,
@@ -772,25 +773,14 @@ class _RuntimePageState extends State<RuntimePage> {
   Widget build(BuildContext context) {
     return ThemeGradientBackground(
       child: Scaffold(
-    //     floatingActionButton: FloatingActionButton(
-    //       onPressed: () {
-    // showDialog(context: context,barrierDismissible: false,builder: (BuildContext context){
-    //   return PasswordDialog((String pswd){
-        
-    //   });
-    // });
-    //       },
-    //     ),
         backgroundColor: Colors.transparent,
         appBar: AppBar(
           elevation: 0,
           backgroundColor: Colors.transparent,
           centerTitle: true,
           title: Text(widget.title,
-              style: TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.normal,
-                  fontSize: 20)),
+          style: TextStyle(color: Colors.white,
+          fontWeight: FontWeight.normal,fontSize: 20)),
           actions: <Widget>[
             GestureDetector(
                 onTap: () {
