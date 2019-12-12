@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:hsa_app/model/runtime_data.dart';
 import 'package:hsa_app/page/dialog/control_model_dialog.dart';
 
@@ -13,6 +14,7 @@ class RuntimeData {
   OtherDataPack other;
   List<EventTileData> events;
   ControlModelCurrentStatus status;
+  bool isMotorPowerOn;
 }
 
 
@@ -52,6 +54,42 @@ class RuntimeDataAdapter {
    var firstItem = temperatures.first;
    var name = firstItem?.mItem2 ?? '0.0';
    return name;
+ }
+
+ // 判断是否可信 - 可信标准为 冻结时间 在 5分钟内
+ static bool isDataAvailable(RuntimeDataResponse data) {
+    var freezeTime = data?.voltageAndCurrent?.freezeTime ?? '';
+    freezeTime = freezeTime.replaceAll('T', ' ');// 替换 C# 时间戳中的 T
+    DateTime now = DateTime.now();
+    DateTime freeze = DateTime.parse(freezeTime);
+    var t = now.millisecondsSinceEpoch - freeze.millisecondsSinceEpoch;
+    var minuteFive = 5 * 60 * 1000;
+    return t > minuteFive ? false : true;
+ }
+
+ // 机组开关机状态
+ static bool motorPowerBool(RuntimeDataResponse data) {
+
+   var statusString = data?.terminalInfo?.waterTurbineStartStopState ?? '未定义';
+   if(statusString.compareTo('正在开机') == 0 || statusString.compareTo('并网运行') == 0) {
+      var isAvailable = isDataAvailable(data);
+      return isAvailable;
+   }
+   else if(statusString.compareTo('正在关机') == 0 || statusString.compareTo('机组关机') == 0) {
+     return false;
+   }
+   else if(statusString.compareTo('未定义') == 0) {
+      var volt = data?.voltageAndCurrent?.aV?.toDouble() ?? 0.0;
+      if(volt <= 50) {
+        return false;
+      }
+      else if (volt > 50){
+        var isAvailable = isDataAvailable(data);
+        return isAvailable;
+      }
+      return false;
+   }
+   return false;
  }
 
 
@@ -169,6 +207,9 @@ class RuntimeDataAdapter {
    else if(modelString.compareTo('智能') == 0) {
      runtimeData.status = isRemoteControl ? ControlModelCurrentStatus.remoteOn : ControlModelCurrentStatus.remoteOff;
    }
+   // 开关机状态
+   runtimeData.isMotorPowerOn = motorPowerBool(data);
+
    return runtimeData;
  }
 
