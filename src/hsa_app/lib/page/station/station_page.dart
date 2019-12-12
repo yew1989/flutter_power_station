@@ -62,7 +62,6 @@ class _StationPageState extends State<StationPage> {
     API.stationInfo(stationId,(StationInfo station){
       
       if(station == null) return;
-      
 
       // 彩云天气接口
       requestWeatherCaiyun(station.geo,(int type){
@@ -119,7 +118,6 @@ class _StationPageState extends State<StationPage> {
     var powerCurrent = devices?.power?.current ?? 0.0;
     if( powerMax == 0 ) return 0.0;
     if( powerCurrent == 0 ) return 0.0; 
-    if( powerCurrent > powerMax) return 1;
     var ratio =  powerCurrent / powerMax;
     return ratio;
 
@@ -406,33 +404,85 @@ class _StationPageState extends State<StationPage> {
 
       var maxWidth = MediaQuery.of(context).size.width - 20;
       var ratio = caculatePowerRatio(device);
-      ratio = (1 - ratio);
-      var right = maxWidth * ratio;
 
-      // 渐变条
-      return  isOnline ? Positioned(
-          left: 0,right: right,bottom: 1,
-          child: Container(
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                colors: [HexColor('4778f7'),HexColor('66f7f9')]
-              ),
-            ),
-            height:2,
-    )) : Container();
+      bool isBeyond = false;
+      double right = 0;
+      double left = 0;
+
+      // 超发
+      if(ratio > 1.0) {
+        isBeyond = true;
+        final beyond = ratio - 1.0;
+        final rightRatio = 1.0 - beyond;
+        right = maxWidth * (1.0 - rightRatio);
+        left =  maxWidth - (maxWidth *  beyond);
+      }
+      // 正常发电
+      else {
+        isBeyond = false;
+        right = maxWidth * (1 - ratio);
+      }
+
+       return  isOnline ? Stack(
+         children: <Widget>[
+
+           // 蓝色正常部分
+           Positioned(
+            left: 0,right: right,bottom: 1,height:2,
+            child: Container(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [HexColor('4778f7'),HexColor('66f7f9')]
+                )))),
+          
+           // 红色超发部分
+           isBeyond == true ? Positioned(
+            left: left,right: 0,bottom: 1,height:2,
+            child: Container(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [HexColor('fff8083a'),HexColor('00f8083a'),]
+                )))) : Container(),
+         ],
+       ) : Container();
+
   }
 
   Widget gradientPowerLineTag(Devices device,bool isOnline) {
 
       var maxWidth = MediaQuery.of(context).size.width - 20;
       var ratio = caculatePowerRatio(device);
-      ratio = (1 - ratio);
-      var right = maxWidth * ratio;
+      
+      bool isBeyond = false;
+      double right = 0;
+      double left = 0;
+
+      // 超发
+      if(ratio > 1.0) {
+        isBeyond = true;
+        final beyond = ratio - 1.0;
+        final rightRatio = 1.0 - beyond;
+        right = maxWidth * (1.0 - rightRatio);
+        left =  maxWidth - (maxWidth *  beyond);
+      }
+      // 正常发电
+      else {
+        isBeyond = false;
+        right = maxWidth * (1 - ratio);
+      }
+
       // 渐变条指示器
-      return isOnline ? Positioned(
-          right: right,bottom: 0,
-            child: SizedBox(width: 30,height: 18, child: Image.asset('images/station/GL_BLight.png'),
-            ),
+      return isOnline ? Stack(
+          children: <Widget>[
+            // 蓝色正常部分
+            isBeyond == false ? Positioned(
+            right: right,bottom: 0,
+              child: SizedBox(width: 30,height: 18, child: Image.asset('images/station/GL_BLight.png'))) : Container(),
+            // 红色超发部分
+            isBeyond == true ? Positioned(
+                left: left,bottom: 0,
+              child: SizedBox(width: 30,height: 18, child: Image.asset('images/station/GL_RLight.png'))) : Container(),
+          ],
       ) : Container();
   }
 
