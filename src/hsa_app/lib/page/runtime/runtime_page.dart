@@ -707,7 +707,9 @@ class _RuntimePageState extends State<RuntimePage> {
                                 showDialog(
                                     context: context,
                                     barrierDismissible: false,
-                                    builder: (_) => DeviceControlDialog());
+                                    builder: (_) => DeviceControlDialog((TaskName taskName){
+                                      debugPrint(taskName.toString());
+                                    }));
                               },
                               child: Container(
                                 child: Row(
