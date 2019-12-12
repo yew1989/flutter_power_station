@@ -625,7 +625,19 @@ class _RuntimePageState extends State<RuntimePage> {
                                 showDialog(
                                     context: context,
                                     barrierDismissible: false,
-                                    builder: (_) => ControlModelDialog());
+                                    builder: (_) => ControlModelDialogWidget(
+                                      runtimeData: runtimeData,
+                                      onChoose: (ControlModelCurrentStatus status) {
+                                        debugPrint(status.toString());
+                                        if(status == ControlModelCurrentStatus.remoteOn) {
+                                          requestRemoteControlCommand(context, TaskName.switchRemoteOn, null);
+                                        }
+                                        else if(status == ControlModelCurrentStatus.remoteOff) {
+                                          requestRemoteControlCommand(context, TaskName.switchRemoteOff, null);
+                                        }
+                                        
+                                      },
+                                    ));
                               },
                               child: Container(
                                 child: Row(

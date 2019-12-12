@@ -1,4 +1,5 @@
 import 'package:hsa_app/model/runtime_data.dart';
+import 'package:hsa_app/page/dialog/control_model_dialog.dart';
 
 class EventTileData {
   final String leftString;
@@ -11,6 +12,7 @@ class RuntimeData {
   DashBoardDataPack dashboard;
   OtherDataPack other;
   List<EventTileData> events;
+  ControlModelCurrentStatus status;
 }
 
 
@@ -152,6 +154,21 @@ class RuntimeDataAdapter {
      }
    }
 
+   // 当前状态
+   var modelString = data?.terminalInfo?.controlModel ?? '未知';
+   var isRemoteControl = data?.terminalInfo?.isRemoteControl ?? false;
+   if(modelString.compareTo('未知') == 0) {
+     runtimeData.status = ControlModelCurrentStatus.unknow;
+   }
+   else if(modelString.compareTo('手动') == 0) {
+     runtimeData.status = ControlModelCurrentStatus.manual;
+   }
+   else if(modelString.compareTo('自动') == 0) {
+     runtimeData.status = ControlModelCurrentStatus.auto;
+   }
+   else if(modelString.compareTo('智能') == 0) {
+     runtimeData.status = isRemoteControl ? ControlModelCurrentStatus.remoteOn : ControlModelCurrentStatus.remoteOff;
+   }
    return runtimeData;
  }
 
