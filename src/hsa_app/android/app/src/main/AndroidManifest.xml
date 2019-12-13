@@ -1,4 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.example.hsa_app"> 
 
     <application
@@ -7,6 +8,7 @@
         android:usesCleartextTraffic="true"
         android:icon="@mipmap/ic_launcher"
         tools:replace="android:label"
+
         >
         <activity
             android:name=".MainActivity"
