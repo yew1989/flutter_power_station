@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:hsa_app/api/api.dart';
+import 'package:hsa_app/api/leancloud/leancloud_api.dart';
 import 'package:hsa_app/config/config.dart';
+import 'package:hsa_app/model/package.dart';
 import 'package:hsa_app/page/login/login_page.dart';
 import 'package:hsa_app/page/framework/root_page.dart';
 import 'package:hsa_app/service/versionManager.dart';
@@ -16,14 +18,29 @@ class WelcomePage extends StatefulWidget {
 
 class _WelcomePageState extends State<WelcomePage> with TickerProviderStateMixin,WidgetsBindingObserver {
 
-  String loadingText = '配置信息获取中 ...';
+
+  // 获取版本管理信息
+  void requestPackageInfo() {
+
+    // 获取版本信息
+    LeanCloudAPI.getPackageVersionInfo(LeanCloudEnv.test, (Package pack,String msg) {
+
+      debugPrint(msg);
+      debugPrint(pack.toJson().toString());
+
+    }, (String msg){
+
+      debugPrint(msg);
+    });
+  }
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     super.didChangeAppLifecycleState(state);
     debugPrint(state.toString());
     if(state == AppLifecycleState.resumed) {
-      checkUpdateVersion();
+      // checkUpdateVersion();
+      requestPackageInfo();
     }
   }
   @override
@@ -31,57 +48,64 @@ class _WelcomePageState extends State<WelcomePage> with TickerProviderStateMixin
     super.initState();
     WidgetsBinding.instance.addObserver(this);
     API.touchNetWork();
-    AppConfig.initConfig();
-    appCheck();
+    // AppConfig.initConfig();
+    // appCheck();
+    requestPackageInfo();
     DeviceInspector.inspectDevice(context);
   }
 
-
-
-  // APP 环境自检
-  void appCheck() async {
-    var isConfigOK = await readWebURLConfigFromRemote();
-    if(!isConfigOK) return;
-    checkUpdateVersion();
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
   }
 
-  // 检测更新
-  Future<bool> checkUpdateVersion() async {
-    await Future.delayed(Duration(seconds:1),(){
-    });
-    var state = await VersionManager.checkNewVersionWithPopAlert(context,(){},(){
-      checkIsLogined();
-    });
-    if(state == VersionUpdateState.fail) {
-      loadingText = '版本配置文件获取失败,请检查网络';
-      setState(() {});
-      return false;
-    }
-    else {
-      loadingText = '版本配置文件获取成功';
-      setState(() {});
-      if(state == VersionUpdateState.noUpdate) {
-        checkIsLogined();
-      }
-      return true;
-    }
-  }
 
-  // 读取远端文件
-  Future<bool> readWebURLConfigFromRemote() async {
-    await Future.delayed(Duration(seconds:1));
-    var routeOk = await getWebRoute();
-    if(!routeOk) {
-      loadingText = '配置文件获取失败,请检查网络';
-      setState(() {});
-      return false;
-    }
-    else {
-      loadingText = '配置文件获取成功';
-      setState(() {});
-      return true;
-    }
-  }
+
+  // // APP 环境自检
+  // void appCheck() async {
+  //   var isConfigOK = await readWebURLConfigFromRemote();
+  //   if(!isConfigOK) return;
+  //   checkUpdateVersion();
+  // }
+
+  // // 检测更新
+  // Future<bool> checkUpdateVersion() async {
+  //   await Future.delayed(Duration(seconds:1),(){
+  //   });
+  //   var state = await VersionManager.checkNewVersionWithPopAlert(context,(){},(){
+  //     checkIsLogined();
+  //   });
+  //   if(state == VersionUpdateState.fail) {
+  //     loadingText = '版本配置文件获取失败,请检查网络';
+  //     setState(() {});
+  //     return false;
+  //   }
+  //   else {
+  //     loadingText = '版本配置文件获取成功';
+  //     setState(() {});
+  //     if(state == VersionUpdateState.noUpdate) {
+  //       checkIsLogined();
+  //     }
+  //     return true;
+  //   }
+  // }
+
+  // // 读取远端文件
+  // Future<bool> readWebURLConfigFromRemote() async {
+  //   await Future.delayed(Duration(seconds:1));
+  //   var routeOk = await getWebRoute();
+  //   if(!routeOk) {
+  //     loadingText = '配置文件获取失败,请检查网络';
+  //     setState(() {});
+  //     return false;
+  //   }
+  //   else {
+  //     loadingText = '配置文件获取成功';
+  //     setState(() {});
+  //     return true;
+  //   }
+  // }
 
   void checkIsLogined() async {
     await Future.delayed(Duration(seconds:1));

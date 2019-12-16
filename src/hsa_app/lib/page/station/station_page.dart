@@ -330,7 +330,6 @@ class _StationPageState extends State<StationPage> {
                     child: Image.asset('images/station/GL_Video_btn.png'),
                     onTap: (){
                       pushToPage(context, LivePage(title: widget.title?? '',openLives: this.openLive));
-                      // pushToPage(context, WebViewPage('','http://hzhls01.ys7.com:7888/openlive/C55600574_1_2.m3u8?ticket=ME5aVFdrMHBTZXNkbEw1NFZxS0dMVXZiaTAwTlBoaXRKRWRyT3JaK3Z5cz0kMSQyMDE5MTIwMzE0MDYyNyQxNTc1MjY2NzU3MDA5JDE1NzUzNTMxODcwMDkkMSQxNTc1MjY2NzU3MDA5JDE1NzUzNTMxODcwMDkkMyRjNjYwZTJmZDIwZDQ0NThhYWNhY2YxMzhjY2MyYjMxZiQz&token=296349165ca6443082d799aa6aefa894',noNavBar: true,));
                     },
                   ) :Container(),
                 ),
@@ -383,6 +382,7 @@ class _StationPageState extends State<StationPage> {
      );
   }
 
+  // 风机控件
   Widget fanWidget(bool isMaster) {
     return Center(
       child: SizedBox(height: 34,width: 34,
@@ -392,7 +392,7 @@ class _StationPageState extends State<StationPage> {
     );
   }
 
-    // 展示 EventCount
+  // 展示 EventCount
   String buildEventCount(int eventCount) {
     if(eventCount == null) return '';
     if(eventCount == 0) return '';
@@ -450,6 +450,7 @@ class _StationPageState extends State<StationPage> {
 
   }
 
+  // 渐变标签
   Widget gradientPowerLineTag(Devices device,bool isOnline) {
 
       var maxWidth = MediaQuery.of(context).size.width - 20;

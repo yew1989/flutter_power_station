@@ -8,7 +8,6 @@
         android:usesCleartextTraffic="true"
         android:icon="@mipmap/ic_launcher"
         tools:replace="android:label"
-
         >
         <activity
             android:name=".MainActivity"
