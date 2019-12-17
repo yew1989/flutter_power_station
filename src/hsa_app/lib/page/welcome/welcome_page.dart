@@ -37,7 +37,7 @@ class _WelcomePageState extends State<WelcomePage> with WidgetsBindingObserver {
     AppConfig.getInstance().remotePackage = package;
     // 本地版本比远程版本还新,进入App
     if(isRemoteBiggerThanLocal() == false) {
-      enterApp();
+      enterApp(context);
       return;
     }
     // 强制更新
@@ -46,9 +46,8 @@ class _WelcomePageState extends State<WelcomePage> with WidgetsBindingObserver {
         title:AppConfig.getInstance().remotePackage.upgradeTitle, 
         content:AppConfig.getInstance().remotePackage.upgradeInfo,
         onTapAction:(){
-          var jumpUrl = isProductionEnv() ? AppConfig.getInstance().remotePackage.urlMarket
-          : AppConfig.getInstance().remotePackage.urlWeb;
-          VersionManager.goToUpgradeWebUrl(jumpUrl);
+          jumpToUpgradeUrl();
+          return;
         });
     }
     // 用户手动选择更新
@@ -57,19 +56,28 @@ class _WelcomePageState extends State<WelcomePage> with WidgetsBindingObserver {
         title:AppConfig.getInstance().remotePackage.upgradeTitle, 
         content:AppConfig.getInstance().remotePackage.upgradeInfo,
         onTapAction:(){
-          var jumpUrl = isProductionEnv() ? AppConfig.getInstance().remotePackage.urlMarket
-          : AppConfig.getInstance().remotePackage.urlWeb;
-          VersionManager.goToUpgradeWebUrl(jumpUrl);
+          jumpToUpgradeUrl();
+          return;
         },
         onTapCancel: (){
-          enterApp();
+          enterApp(context);
+          return;
         });
     }
 
   }
 
+  // 跳转到URL
+  void jumpToUpgradeUrl() async {
+    await Future.delayed(Duration(milliseconds: 500));
+    final jumpUrl = isProductionEnv() ? AppConfig.getInstance().remotePackage.urlMarket
+    : AppConfig.getInstance().remotePackage.urlWeb;
+    VersionManager.goToUpgradeWebUrl(jumpUrl);
+  }
+
   // 进入App
-  void enterApp() {
+  void enterApp(BuildContext context) async {
+    await Future.delayed(Duration(milliseconds: 500));
     pushToPageAndKill(context,LoginPage());
   }
 
