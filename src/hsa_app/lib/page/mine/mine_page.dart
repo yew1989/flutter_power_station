@@ -3,6 +3,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:hsa_app/api/api.dart';
 import 'package:hsa_app/components/shawdow_widget.dart';
+import 'package:hsa_app/config/app_config.dart';
 import 'package:hsa_app/page/about/about_page.dart';
 import 'package:hsa_app/page/login/login_page.dart';
 import 'package:hsa_app/page/search/search_page.dart';
@@ -97,7 +98,8 @@ class _MinePageState extends State<MinePage> {
 
   // SOS拨号器
   void onTapSOSCall(BuildContext context) {
-    onTapSoScall('18046053193');
+    final sosPhone = AppConfig.getInstance().remotePackage?.phoneSOS ?? '';
+    onTapSoScall(sosPhone);
   }
 
   // 登录界面
