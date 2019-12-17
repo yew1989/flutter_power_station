@@ -10,53 +10,8 @@ enum VersionUpdateState {
 
 class VersionManager {
 
-  static Future<VersionUpdateState> checkNewVersionWithPopAlert(int remoteVersionCode,BuildContext context,Function onTapAction,Function onTapCanel) async {
-    PackageInfo packageInfo = await PackageInfo.fromPlatform();
-    String localVersionString = packageInfo.buildNumber;
-    // var item = await VersionManager.getRemoteVerionForCurrentDevice();
-    // if(item == null) return VersionUpdateState.fail;
-    
-    var local  = int.tryParse(localVersionString) ?? 0;
-    var remote = remoteVersionCode ?? 0;
-    
-    debugPrint('🍬版本管理:本地版本 $local');
-    debugPrint('🍬版本管理:远端版本 $remote');
-
-    if(local >= remote) {
-      debugPrint('🍬版本管理:本地版本高于服务器,无需更新');
-      return VersionUpdateState.noUpdate;
-    }
-    else{
-      debugPrint('🍬版本管理:检测到服务器有新版本');
-      
-      var force = false;
-      var title = '提示';
-      var content = '发现新版本,是否立即更新?';
-      var url = '';
-
-      if(force) {
-        debugPrint('🍬版本管理:强制更新 开启');
-        showForceUpdateDialog(context, title, content,(){
-          goToUpdateWebUrl(url);
-          if(onTapAction != null)onTapAction();
-        });
-      }
-      else {
-        debugPrint('🍬版本管理:强制更新 关闭');
-        showUpdateDialog(context, title, content,(){
-          goToUpdateWebUrl(url);
-          if(onTapAction != null)onTapAction();
-        },(){
-          if(onTapCanel != null)onTapCanel();
-        });
-      }
-      return VersionUpdateState.canUpdate;
-      
-    }
-  }
-
-
-  static void goToUpdateWebUrl(String url) async {
+  // 跳转界面
+  static void goToUpgradeWebUrl(String url) async {
     if (await launcher.canLaunch(url)) {
       await launcher.launch(url);
     }   else {
@@ -64,8 +19,8 @@ class VersionManager {
     }
   }
 
-  // 非强制更新
-  static showUpdateDialog(BuildContext context,String title,String content,Function onTapAction,Function onTapCancel) {
+  // 非强制更新,用户手动更新
+  static showManualUpgradeDialog({BuildContext context,String title,String content,Function onTapAction,Function onTapCancel}) {
     showCupertinoDialog<int>(
         context: context,
         builder: (t) {
@@ -96,7 +51,7 @@ class VersionManager {
   }
 
   // 强制更新
-  static showForceUpdateDialog(BuildContext context,String title,String content,Function onTapAction) {
+  static showForceUpgradeDialog({BuildContext context,String title,String content,Function onTapAction}) {
     showCupertinoDialog<int>(
         context: context,
         builder: (t) {

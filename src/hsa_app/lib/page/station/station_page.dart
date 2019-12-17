@@ -581,7 +581,7 @@ class _StationPageState extends State<StationPage> {
   // 生成历史访问 URL
   void onTapPushToHistory() async {
 
-    var host = AppConfig.getInstance().package.hostWeb;
+    var host = AppConfig.getInstance().remotePackage.hostWeb;
     var urlHistory = host + '/#/' + 'history';
     // var pageItemHistory = AppConfig.getInstance().pageBundle.history;
     // var urlHistory = host + pageItemHistory.route ?? AppConfig.getInstance().deadLink;

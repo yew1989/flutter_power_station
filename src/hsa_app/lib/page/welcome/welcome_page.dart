@@ -5,11 +5,11 @@ import 'package:hsa_app/api/leancloud/leancloud_api.dart';
 import 'package:hsa_app/config/app_config.dart';
 import 'package:hsa_app/model/package.dart';
 import 'package:hsa_app/page/login/login_page.dart';
-import 'package:hsa_app/page/framework/root_page.dart';
+import 'package:hsa_app/service/versionManager.dart';
 import 'package:hsa_app/theme/theme_gradient_background.dart';
 import 'package:hsa_app/components/public_tool.dart';
 import 'package:hsa_app/util/device_inspector.dart';
-import 'package:hsa_app/util/share.dart';
+import 'package:package_info/package_info.dart';
 
 class WelcomePage extends StatefulWidget {
   @override
@@ -18,24 +18,85 @@ class WelcomePage extends StatefulWidget {
 
 class _WelcomePageState extends State<WelcomePage> with WidgetsBindingObserver {
 
+  String displayVersion = 'V1.0.0';
+
+  void showDiplayVersion() async {
+    PackageInfo packageInfo = await PackageInfo.fromPlatform();
+    String localDisplayVersionString = packageInfo?.version ?? '1.0.0';
+    setState(() {
+      displayVersion =  'V' + localDisplayVersionString;
+    });
+  }
   // 版本更新工作流
-  void workFlow(Package package) {
+  void upgradeWorkFlow(BuildContext context,Package package) {
     if(package == null) {
       exitApp(context);
       return;
     }
     // 保存包管理信息
-    AppConfig.getInstance().package = package;
-    checkIsLogined();
+    AppConfig.getInstance().remotePackage = package;
+    // 本地版本比远程版本还新,进入App
+    if(isRemoteBiggerThanLocal() == false) {
+      enterApp();
+      return;
+    }
+    // 强制更新
+    if(isForceUpdate() == true) {
+        VersionManager.showForceUpgradeDialog(context:context, 
+        title:AppConfig.getInstance().remotePackage.upgradeTitle, 
+        content:AppConfig.getInstance().remotePackage.upgradeInfo,
+        onTapAction:(){
+          var jumpUrl = isProductionEnv() ? AppConfig.getInstance().remotePackage.urlMarket
+          : AppConfig.getInstance().remotePackage.urlWeb;
+          VersionManager.goToUpgradeWebUrl(jumpUrl);
+        });
+    }
+    // 用户手动选择更新
+    else {
+        VersionManager.showManualUpgradeDialog(context:context, 
+        title:AppConfig.getInstance().remotePackage.upgradeTitle, 
+        content:AppConfig.getInstance().remotePackage.upgradeInfo,
+        onTapAction:(){
+          var jumpUrl = isProductionEnv() ? AppConfig.getInstance().remotePackage.urlMarket
+          : AppConfig.getInstance().remotePackage.urlWeb;
+          VersionManager.goToUpgradeWebUrl(jumpUrl);
+        },
+        onTapCancel: (){
+          enterApp();
+        });
+    }
+
+  }
+
+  // 进入App
+  void enterApp() {
+    pushToPageAndKill(context,LoginPage());
+  }
+
+  // 远程版本是否大于本地版本
+  bool isRemoteBiggerThanLocal() {
+    final remoteBuildVersion = AppConfig.getInstance().remotePackage.buildVersion;
+    final loacalBuildVersion = AppConfig.getInstance().localBuildVersion;
+    return remoteBuildVersion > loacalBuildVersion;
+  }
+
+  // 强制更新
+  bool isForceUpdate() {
+    return AppConfig.getInstance().remotePackage.isForced;
+  }
+
+  // 检测是否是生产环境
+  bool isProductionEnv() {
+    return LeanCloudEnv.product == AppConfig.getInstance().env;
   }
 
   // 获取版本管理信息
-  void requestPackageInfo() {
+  void requestPackageInfo(BuildContext context) {
     // 获取版本信息
     LeanCloudAPI.getPackageVersionInfo(LeanCloudEnv.test,(Package pack, String msg) {
       debugPrint('版本信息文件获取成功');
       debugPrint(pack.toJson().toString());
-      workFlow(pack);
+      upgradeWorkFlow(context,pack);
     }, (_) {
       debugPrint('版本信息文件获取失败');
       exitApp(context);
@@ -77,14 +138,15 @@ class _WelcomePageState extends State<WelcomePage> with WidgetsBindingObserver {
     super.didChangeAppLifecycleState(state);
     debugPrint(state.toString());
     if (state == AppLifecycleState.resumed) {
-      requestPackageInfo();
+      requestPackageInfo(context);
     }
   }
 
   @override
   void initState() {
     WidgetsBinding.instance.addObserver(this);
-    requestPackageInfo();
+    showDiplayVersion();
+    requestPackageInfo(context);
     DeviceInspector.inspectDevice(context);
     super.initState();
   }
@@ -95,16 +157,17 @@ class _WelcomePageState extends State<WelcomePage> with WidgetsBindingObserver {
     super.dispose();
   }
 
-  void checkIsLogined() async {
-    await Future.delayed(Duration(seconds: 1));
-    var token = await ShareManager.instance.loadToken();
-    var isLogined = token.length > 0;
-    debugPrint('🔑 本地Token:' + token);
-    pushToPageAndKill(context, isLogined ? RootPage() : LoginPage());
-  }
+  // void checkIsLogined() async {
+  //   await Future.delayed(Duration(seconds: 1));
+  //   var token = await ShareManager.instance.loadToken();
+  //   var isLogined = token.length > 0;
+  //   debugPrint('🔑 本地Token:' + token);
+  //   pushToPageAndKill(context, isLogined ? RootPage() : LoginPage());
+  // }
 
   @override
   Widget build(BuildContext context) {
+
     return ThemeGradientBackground(
       child: Scaffold(
         backgroundColor: Colors.transparent,
@@ -143,7 +206,7 @@ class _WelcomePageState extends State<WelcomePage> with WidgetsBindingObserver {
                     left: 0,
                     right: 0,
                     child: Center(
-                        child: Text('V1.0.0',
+                        child: Text(displayVersion ?? 'V1.0.0',
                             style: TextStyle(
                                 color: Colors.white70, fontSize: 10)))),
 

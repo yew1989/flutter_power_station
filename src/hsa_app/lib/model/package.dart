@@ -35,6 +35,8 @@ class Package {
   int buildVersion;
   bool isForced;
   String platform;
+  String urlMarket;
+  String urlWeb;
 
   Package(
       {this.phoneSOS,
@@ -46,6 +48,8 @@ class Package {
       this.env,
       this.buildVersion,
       this.isForced,
+      this.urlMarket,
+      this.urlWeb,
       this.platform});
 
   Package.fromJson(Map<String, dynamic> json) {
@@ -59,6 +63,8 @@ class Package {
     buildVersion = json['buildVersion'] ?? 0;
     isForced = json['isForced'] ?? false;
     platform = json['platform'] ?? '';
+    urlMarket = json['urlMarket'] ?? '';
+    urlWeb = json['urlWeb'] ?? '';
   }
 
   Map<String, dynamic> toJson() {
@@ -73,6 +79,8 @@ class Package {
     data['buildVersion'] = this.buildVersion;
     data['isForced'] = this.isForced;
     data['platform'] = this.platform;
+    data['urlMarket'] = this.urlMarket;
+    data['urlWeb'] = this.urlWeb;
     return data;
   }
 }

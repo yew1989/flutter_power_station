@@ -230,7 +230,7 @@ class _RuntimePageState extends State<RuntimePage> {
   }
 
   void onTapPushToHistory(String address) async {
-    var host = AppConfig.getInstance().package.hostWeb;
+    var host = AppConfig.getInstance().remotePackage.hostWeb;
     // host = 'http://192.168.31.228:8080/';
     host = 'http://192.168.16.120:18081/HsaApp2.0/Vue/';
     // var pageItemHistory = AppConfig.getInstance().pageBundle.history;
