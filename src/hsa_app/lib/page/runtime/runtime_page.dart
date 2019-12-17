@@ -231,9 +231,12 @@ class _RuntimePageState extends State<RuntimePage> {
 
   void onTapPushToHistory(String address) async {
     var host = AppConfig.getInstance().webHost;
-    var pageItemHistory = AppConfig.getInstance().pageBundle.history;
-    var urlHistory =
-        host + pageItemHistory.route ?? AppConfig.getInstance().deadLink;
+    // host = 'http://192.168.31.228:8080/';
+    host = 'http://192.168.16.120:18081/HsaApp2.0/Vue/';
+    // var pageItemHistory = AppConfig.getInstance().pageBundle.history;
+    // var urlHistory =
+    //     host + pageItemHistory.route ?? AppConfig.getInstance().deadLink;
+     var  urlHistory = host + '#/history'; 
     var auth = await ShareManager.instance.loadToken();
     var terminalsString = address;
     var titleString = widget?.title ?? '';
