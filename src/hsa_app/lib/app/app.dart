@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hsa_app/api/api.dart';
 import 'package:hsa_app/config/app_config.dart';
 import 'package:hsa_app/page/welcome/welcome_page.dart';
 
@@ -12,6 +13,7 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     AppConfig.initConfig();
+    API.touchNetWork();
     super.initState();
   }
 

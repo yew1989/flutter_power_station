@@ -1,7 +1,6 @@
 import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:hsa_app/api/api.dart';
 import 'package:hsa_app/api/leancloud/leancloud_api.dart';
 import 'package:hsa_app/config/app_config.dart';
 import 'package:hsa_app/model/package.dart';
@@ -21,6 +20,12 @@ class _WelcomePageState extends State<WelcomePage> with WidgetsBindingObserver {
 
   // 版本更新工作流
   void workFlow(Package package) {
+    if(package == null) {
+      exitApp(context);
+      return;
+    }
+    // 保存包管理信息
+    AppConfig.getInstance().package = package;
     checkIsLogined();
   }
 
@@ -36,6 +41,7 @@ class _WelcomePageState extends State<WelcomePage> with WidgetsBindingObserver {
       exitApp(context);
     });
   }
+
 
   // 关闭 App
   void exitApp(BuildContext context) async {
@@ -77,11 +83,10 @@ class _WelcomePageState extends State<WelcomePage> with WidgetsBindingObserver {
 
   @override
   void initState() {
-    super.initState();
     WidgetsBinding.instance.addObserver(this);
-    API.touchNetWork();
     requestPackageInfo();
     DeviceInspector.inspectDevice(context);
+    super.initState();
   }
 
   @override
@@ -109,7 +114,8 @@ class _WelcomePageState extends State<WelcomePage> with WidgetsBindingObserver {
             width: double.infinity,
             child: Stack(
               children: <Widget>[
-                // 中央
+
+                // 中央水背景图
                 Center(
                   child: SizedBox(
                     width: double.infinity,
@@ -119,7 +125,7 @@ class _WelcomePageState extends State<WelcomePage> with WidgetsBindingObserver {
                   ),
                 ),
 
-                // 发电从未如此简单
+                // 发电从未如此简单 slogan
                 Positioned(
                     bottom: 90,
                     left: 0,

@@ -4,7 +4,7 @@ import 'package:hsa_app/api/remote_task.dart';
 import 'package:hsa_app/components/dash_board_widget.dart';
 import 'package:hsa_app/components/runtime_progress_bar.dart';
 import 'package:hsa_app/components/shawdow_widget.dart';
-import 'package:hsa_app/config/config.dart';
+import 'package:hsa_app/config/app_config.dart';
 import 'package:hsa_app/model/runtime_adapter.dart';
 import 'package:hsa_app/model/runtime_data.dart';
 import 'package:hsa_app/page/dialog/control_model_dialog.dart';
@@ -230,7 +230,7 @@ class _RuntimePageState extends State<RuntimePage> {
   }
 
   void onTapPushToHistory(String address) async {
-    var host = AppConfig.getInstance().webHost;
+    var host = AppConfig.getInstance().package.hostWeb;
     // host = 'http://192.168.31.228:8080/';
     host = 'http://192.168.16.120:18081/HsaApp2.0/Vue/';
     // var pageItemHistory = AppConfig.getInstance().pageBundle.history;

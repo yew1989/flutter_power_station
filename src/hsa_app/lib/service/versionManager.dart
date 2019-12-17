@@ -1,7 +1,4 @@
 import 'package:flutter/cupertino.dart';
-import 'package:hsa_app/api/api.dart';
-import 'package:hsa_app/config/config.dart';
-import 'package:hsa_app/model/version.dart';
 import 'package:package_info/package_info.dart';
 import 'package:url_launcher/url_launcher.dart' as launcher;
 
@@ -13,41 +10,14 @@ enum VersionUpdateState {
 
 class VersionManager {
 
-  static Future<VersionItem> getRemoteVerionForCurrentDevice() async {
-    var version = await API.getAppVersionRemote();
-    final env = AppConfig.getInstance().envVersion;
-      switch (env) {
-        case EnvVersion.iosDev:
-          return version.versionInfo.iOSDev;
-          break;
-        case EnvVersion.androidDev:
-          return version.versionInfo.androidDev;
-          break;
-        case EnvVersion.iosTest:
-          return version.versionInfo.iOSTest;
-          break;
-        case EnvVersion.androidTest:
-          return version.versionInfo.androidTest;
-          break;
-        case EnvVersion.iosProduct:
-          return  version.versionInfo.iOSProduct;
-          break;
-        case EnvVersion.androidProduct:
-          return version.versionInfo.androidProduct;
-          break;
-        default:
-      }
-    return null;
-  }
-
-  static Future<VersionUpdateState> checkNewVersionWithPopAlert(BuildContext context,Function onTapAction,Function onTapCanel) async {
+  static Future<VersionUpdateState> checkNewVersionWithPopAlert(int remoteVersionCode,BuildContext context,Function onTapAction,Function onTapCanel) async {
     PackageInfo packageInfo = await PackageInfo.fromPlatform();
     String localVersionString = packageInfo.buildNumber;
-    var item = await VersionManager.getRemoteVerionForCurrentDevice();
-    if(item == null) return VersionUpdateState.fail;
+    // var item = await VersionManager.getRemoteVerionForCurrentDevice();
+    // if(item == null) return VersionUpdateState.fail;
     
     var local  = int.tryParse(localVersionString) ?? 0;
-    var remote = int.tryParse(item.versionCode) ?? 0;
+    var remote = remoteVersionCode ?? 0;
     
     debugPrint('🍬版本管理:本地版本 $local');
     debugPrint('🍬版本管理:远端版本 $remote');
@@ -59,10 +29,10 @@ class VersionManager {
     else{
       debugPrint('🍬版本管理:检测到服务器有新版本');
       
-      var force = item.lastForce;
+      var force = false;
       var title = '提示';
-      var content = item.upgradeInfo ?? '发现新版本,是否立即更新?';
-      var url = item.upgradeUrl ?? '';
+      var content = '发现新版本,是否立即更新?';
+      var url = '';
 
       if(force) {
         debugPrint('🍬版本管理:强制更新 开启');
