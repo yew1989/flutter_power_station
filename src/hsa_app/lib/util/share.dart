@@ -24,10 +24,6 @@ class ShareManager {
   static ShareManager _instance;
 
     ShareManager._internal() {
-    // token = '';
-    // isSavePassword = true;
-    // userPassword = '';
-    // userName = '';
   }
 
   static initConfig() async {
@@ -60,9 +56,6 @@ class ShareManager {
    ShareManager.instance.userName = userName;
    SharedPreferences prefs = await SharedPreferences.getInstance();
    await prefs.setString('UserName',userName);
-
-   var fff = prefs.getString('UserName') ?? '';
-    debugPrint(fff);
   }
 
   Future<String> loadUserName() async {
@@ -84,6 +77,21 @@ class ShareManager {
     var password = prefs.getString('UserPassword') ?? '';
     ShareManager.instance.userPassword = userPassword;
     return password;
+  }
+
+  // 记住密码状态保存
+  void saveIsSavePassword(bool isSavePassword) async{
+   ShareManager.instance.isSavePassword = isSavePassword;
+   SharedPreferences prefs = await SharedPreferences.getInstance();
+   await prefs.setBool('IsSavePassword',isSavePassword);
+  }
+
+  // 记住密码状态读取
+  Future<bool> loadIsSavePassword() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    var isSavePassword = prefs.getBool('IsSavePassword') ?? false;
+    ShareManager.instance.isSavePassword = isSavePassword;
+    return isSavePassword;
   }
 
 

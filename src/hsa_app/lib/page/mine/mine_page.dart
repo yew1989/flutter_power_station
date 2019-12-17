@@ -112,12 +112,10 @@ class _MinePageState extends State<MinePage> {
           child: Text('退出登录', style: TextStyle(color: Colors.white, fontSize: 16)),
           onPressed: () {
           showAlertViewDouble(context, '提示', '是否退出登录', () {
-      // ShareManager().clearAll();
-      var route = CupertinoPageRoute(
-        builder: (_) => LoginPage(),
-      );
-      Navigator.of(context, rootNavigator: true).pushAndRemoveUntil(route, (route) => route == null);
-      });
+            ShareManager.instance.saveIsSavePassword(false);
+            final route = CupertinoPageRoute(builder: (_) => LoginPage());
+            Navigator.of(context, rootNavigator: true).pushAndRemoveUntil(route, (route) => route == null);
+            });
           },
         ),
     );

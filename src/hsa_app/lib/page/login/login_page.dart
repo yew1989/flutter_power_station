@@ -22,16 +22,22 @@ class LoginPageState extends State<LoginPage> {
   @override
   void initState() {
     super.initState();
-    fillNameAndPasswordFromPref();
+    autoFillAndAutoLogin(context);
   }
 
-  void fillNameAndPasswordFromPref() async {
+  void autoFillAndAutoLogin(BuildContext context) async {
     var name = await ShareManager.instance.loadUserName();
     var pswd = await ShareManager.instance.loadUserPassword();
+    var isSave = await ShareManager.instance.loadIsSavePassword();
+
     setState(() {
         usrCtrl.text = name;
         pwdCtrl.text = pswd;
     });
+
+    if(isSave && pswd.length > 0) {
+      login(context);
+    }
   }
 
   void login(BuildContext context) async {
@@ -50,6 +56,7 @@ class LoginPageState extends State<LoginPage> {
       else {
         ShareManager.instance.savaUserPassword('');
       }
+      ShareManager.instance.saveIsSavePassword(checkBoxValue);
       Progresshud.dismiss();
       Progresshud.showSuccessWithStatus('登录成功');
       var route = CupertinoPageRoute(
