@@ -514,7 +514,8 @@ class _StationPageState extends State<StationPage> {
           // 内容
           GestureDetector(
             onTap: (){
-              pushToPage(context, RuntimePage(device?.name ?? '',device.address,badgeName + '#'));
+              pushToPage(context, 
+              RuntimePage(device?.name ?? '',device.address,badgeName + '#',isOnline));
             },
             child: Center(
               child: Container(

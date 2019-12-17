@@ -18,14 +18,16 @@ import 'package:hsa_app/page/runtime/runtime_squre_master_widget.dart';
 import 'package:hsa_app/theme/theme_gradient_background.dart';
 import 'package:hsa_app/components/public_tool.dart';
 import 'package:hsa_app/util/share.dart';
+import 'package:ovprogresshud/progresshud.dart';
 import 'package:progress_dialog/progress_dialog.dart';
 
 class RuntimePage extends StatefulWidget {
   final String title;
   final String address;
   final String alias;
+  final bool isOnline;
 
-  RuntimePage(this.title, this.address, this.alias);
+  RuntimePage(this.title, this.address, this.alias, this.isOnline);
 
   @override
   _RuntimePageState createState() => _RuntimePageState();
@@ -845,8 +847,33 @@ class _RuntimePageState extends State<RuntimePage> {
   // 远程控制
   void requestRemoteControlCommand(BuildContext context,TaskName taskName,String param) async{
     progressDialog.dismiss();
+    // 终端在线状态检测
+    final isOnline = widget.isOnline ?? false;
+    if(isOnline == false) {
+      Progresshud.showErrorWithStatus('终端不在线,远程操作被取消');
+      return;
+    }
+    // 远程控制检测
+    var isRemoteControl = false;
+    // 如果是远程控制模式开关
+    if(taskName == TaskName.switchRemoteOn || taskName == TaskName.switchRemoteOff) {
+      isRemoteControl = runtimeData.status == ControlModelCurrentStatus.remoteOn 
+      || runtimeData.status == ControlModelCurrentStatus.remoteOff;
+    }
+    // 其他指令 必须在远程控制模式打开情况下 有效
+    else {
+      isRemoteControl = runtimeData.status == ControlModelCurrentStatus.remoteOn;
+    }
+
+    if(isRemoteControl == false) {
+      Progresshud.showErrorWithStatus('请先切换到远程控制模式');
+      return;
+    }
+
     updateProgressDialog('正在操作中');
     await Future.delayed(Duration(milliseconds: 600));
+
+    
     showDialog(context: context,barrierDismissible: false,builder: (BuildContext context) {
           return PasswordDialog((String pswd) {
             // 检查操作密码
