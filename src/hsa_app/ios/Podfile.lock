@@ -8,6 +8,9 @@ PODS:
     - Flutter
     - TXLiteAVSDK_Player
   - Flutter (1.0.0)
+  - flutter_umeng_analytics (0.0.1):
+    - Flutter
+    - UMengAnalytics-NO-IDFA
   - fluttertoast (0.0.2):
     - Flutter
   - FMDB (2.7.5):
@@ -32,6 +35,7 @@ PODS:
     - FMDB (~> 2.7.2)
   - SVProgressHUD (2.2.5)
   - TXLiteAVSDK_Player (6.8.7969)
+  - UMengAnalytics-NO-IDFA (4.2.5)
   - url_launcher (0.0.1):
     - Flutter
   - webview_flutter (0.0.1):
@@ -42,6 +46,7 @@ DEPENDENCIES:
   - device_info (from `.symlinks/plugins/device_info/ios`)
   - flt_video_player (from `.symlinks/plugins/flt_video_player/ios`)
   - Flutter (from `Flutter`)
+  - flutter_umeng_analytics (from `.symlinks/plugins/flutter_umeng_analytics/ios`)
   - fluttertoast (from `.symlinks/plugins/fluttertoast/ios`)
   - ovprogresshud (from `.symlinks/plugins/ovprogresshud/ios`)
   - package_info (from `.symlinks/plugins/package_info/ios`)
@@ -59,6 +64,7 @@ SPEC REPOS:
     - Reachability
     - SVProgressHUD
     - TXLiteAVSDK_Player
+    - UMengAnalytics-NO-IDFA
 
 EXTERNAL SOURCES:
   connectivity:
@@ -69,6 +75,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/flt_video_player/ios"
   Flutter:
     :path: Flutter
+  flutter_umeng_analytics:
+    :path: ".symlinks/plugins/flutter_umeng_analytics/ios"
   fluttertoast:
     :path: ".symlinks/plugins/fluttertoast/ios"
   ovprogresshud:
@@ -95,6 +103,7 @@ SPEC CHECKSUMS:
   device_info: cbf09d2ec12aa7110e0b09fabe54b5bd6c8efe74
   flt_video_player: 5ac12f52274ca5f0446a8c735ab565e998d8c0a4
   Flutter: 0e3d915762c693b495b44d77113d4970485de6ec
+  flutter_umeng_analytics: 75b4569c5f0740bf86665e1b5ac3c8a79cf9c933
   fluttertoast: b644586ef3b16f67fae9a1f8754cef6b2d6b634b
   FMDB: 2ce00b547f966261cd18927a3ddb07cb6f3db82a
   ovprogresshud: 00b2a29c6c4a7166f044d00096aa78c224ef9338
@@ -107,6 +116,7 @@ SPEC CHECKSUMS:
   sqflite: 4001a31ff81d210346b500c55b17f4d6c7589dd0
   SVProgressHUD: 1428aafac632c1f86f62aa4243ec12008d7a51d6
   TXLiteAVSDK_Player: a3799add98c6802e382972d98cc0e7bacb50984f
+  UMengAnalytics-NO-IDFA: 16666e32edce5be44ae5b14aaaa7f3582e09d6ab
   url_launcher: a1c0cc845906122c4784c542523d8cacbded5626
   webview_flutter: db3aba222b23e4dc432e0c5882834123dc50ff9f
 

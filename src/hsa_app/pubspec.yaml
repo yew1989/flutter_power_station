@@ -41,6 +41,7 @@ dependencies:
   flutter_cupertino_data_picker: ^0.8.6
   progress_dialog: ^1.2.0
   device_info: ^0.4.1+3
+  flutter_umeng_analytics: ^0.0.2
 
 dev_dependencies:
   flutter_test:

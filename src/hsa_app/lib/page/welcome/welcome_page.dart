@@ -5,6 +5,7 @@ import 'package:hsa_app/api/leancloud/leancloud_api.dart';
 import 'package:hsa_app/config/app_config.dart';
 import 'package:hsa_app/model/package.dart';
 import 'package:hsa_app/page/login/login_page.dart';
+import 'package:hsa_app/service/umeng_analytics.dart';
 import 'package:hsa_app/service/versionManager.dart';
 import 'package:hsa_app/theme/theme_gradient_background.dart';
 import 'package:hsa_app/components/public_tool.dart';
@@ -148,6 +149,12 @@ class _WelcomePageState extends State<WelcomePage> with WidgetsBindingObserver {
     if (state == AppLifecycleState.resumed) {
       requestPackageInfo(context);
     }
+  }
+
+  // 初始化友盟 
+  void initUmengService() async{
+    await Future.delayed(Duration(milliseconds: 500));
+    UMengAnalyticsService.init();
   }
 
   @override
