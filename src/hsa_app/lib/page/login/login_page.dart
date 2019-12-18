@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:hsa_app/api/api.dart';
 import 'package:hsa_app/page/framework/root_page.dart';
+import 'package:hsa_app/service/umeng_analytics.dart';
 import 'package:hsa_app/theme/theme_gradient_background.dart';
 import 'package:hsa_app/util/share.dart';
 import 'package:ovprogresshud/progresshud.dart';
@@ -21,8 +22,15 @@ class LoginPageState extends State<LoginPage> {
 
   @override
   void initState() {
+    UMengAnalyticsService.enterPage('登录');
     super.initState();
     autoFillAndAutoLogin(context);
+  }
+
+  @override
+  void dispose() {
+    UMengAnalyticsService.exitPage('登录');
+    super.dispose();
   }
 
   void autoFillAndAutoLogin(BuildContext context) async {

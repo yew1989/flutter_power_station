@@ -4,6 +4,7 @@ import 'package:hsa_app/app/app.dart';
 import 'package:hsa_app/event/app_event.dart';
 import 'package:hsa_app/event/event_bird.dart';
 import 'package:hsa_app/page/home/home_station_list.dart';
+import 'package:hsa_app/service/umeng_analytics.dart';
 import 'package:hsa_app/theme/theme_gradient_background.dart';
 
 class SearchPage extends StatefulWidget {
@@ -43,11 +44,13 @@ class _SearchPageState extends State<SearchPage> {
 
   @override
   void initState() {
+    UMengAnalyticsService.enterPage('搜索电站');
     super.initState();
   }
 
   @override
   void dispose() {
+    UMengAnalyticsService.exitPage('搜索电站');
     super.dispose();
   }
 

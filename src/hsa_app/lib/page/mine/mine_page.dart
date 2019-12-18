@@ -7,7 +7,8 @@ import 'package:hsa_app/config/app_config.dart';
 import 'package:hsa_app/page/about/about_page.dart';
 import 'package:hsa_app/page/login/login_page.dart';
 import 'package:hsa_app/page/search/search_page.dart';
-import 'package:hsa_app/page/setting/modifypswd_page.dart';
+import 'package:hsa_app/page/password/modifypswd_page.dart';
+import 'package:hsa_app/service/umeng_analytics.dart';
 import 'package:hsa_app/theme/theme_gradient_background.dart';
 import 'package:hsa_app/components/public_tool.dart';
 import 'package:hsa_app/util/share.dart';
@@ -27,9 +28,16 @@ class _MinePageState extends State<MinePage> {
 
   @override
   void initState() {
-    super.initState();
     updateUserName();
     requestStationCount();
+    UMengAnalyticsService.enterPage('我的');
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    UMengAnalyticsService.exitPage('我的');
+    super.dispose();
   }
 
   void requestStationCount() {

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hsa_app/service/umeng_analytics.dart';
 import 'package:hsa_app/theme/theme_gradient_background.dart';
 
 class AboutPage extends StatefulWidget {
@@ -9,14 +10,22 @@ class AboutPage extends StatefulWidget {
 class _AboutPageState extends State<AboutPage> {
   
   String appInfo = '智能电站管家是福建省力得自动化设备有限公司专为智能电站1号打造的一款智能远程监控APP。';
-  String desc1 = '1.监测数据:监测电站水位、功率等数据,监测设备温度、水压等数据。';
-  String desc2 = '2.远程控制:远程控制机组的开关机状态,远程控制旁通阀、主阀、清污机等智能设备;远程调控有功、无功。';
-  String desc3 = '3.报警提醒:通过智能电站管家,第一时间将报警信息发送报给用户。';
+  String desc1   = '1.监测数据:监测电站水位、功率等数据,监测设备温度、水压等数据。';
+  String desc2   = '2.远程控制:远程控制机组的开关机状态,远程控制旁通阀、主阀、清污机等智能设备;远程调控有功、无功。';
+  String desc3   = '3.报警提醒:通过智能电站管家,第一时间将报警信息发送报给用户。';
+
+  @override
+  void initState() {
+    UMengAnalyticsService.enterPage('关于');
+    super.initState();
+  }
 
   @override
   void dispose() {
+    UMengAnalyticsService.exitPage('关于');
     super.dispose();
   }
+
   @override
   Widget build(BuildContext context) {
     return ThemeGradientBackground(

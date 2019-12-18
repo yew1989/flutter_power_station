@@ -15,6 +15,7 @@ import 'package:hsa_app/page/framework/webview_page.dart';
 import 'package:hsa_app/page/more/more_page.dart';
 import 'package:hsa_app/page/runtime/runtime_event_tile.dart';
 import 'package:hsa_app/page/runtime/runtime_squre_master_widget.dart';
+import 'package:hsa_app/service/umeng_analytics.dart';
 import 'package:hsa_app/theme/theme_gradient_background.dart';
 import 'package:hsa_app/components/public_tool.dart';
 import 'package:hsa_app/util/share.dart';
@@ -131,16 +132,18 @@ class _RuntimePageState extends State<RuntimePage> {
   }
 
   @override
-  void dispose() {
-    remoteTask.cancelTask();
-    super.dispose();
+  void initState() {
+    initProgressDialog();
+    requestRunTimeData();
+    UMengAnalyticsService.enterPage('机组实时');
+    super.initState();
   }
 
   @override
-  void initState() {
-    super.initState();
-    initProgressDialog();
-    requestRunTimeData();
+  void dispose() {
+    remoteTask.cancelTask();
+    UMengAnalyticsService.exitPage('机组实时');
+    super.dispose();
   }
 
   // 请求实时数据

@@ -4,6 +4,7 @@ import 'package:hsa_app/components/shawdow_widget.dart';
 import 'package:hsa_app/model/banner_item.dart';
 import 'package:hsa_app/page/home/home_station_list.dart';
 import 'package:hsa_app/page/home/view/home_banner.dart';
+import 'package:hsa_app/service/umeng_analytics.dart';
 import 'package:hsa_app/theme/theme_gradient_background.dart';
 import 'package:hsa_app/components/public_tool.dart';
 
@@ -60,13 +61,15 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
 
   @override
   void initState() {
-    super.initState();
+    UMengAnalyticsService.enterPage('首页');
     requestBanner();
     requestProvinces();
+    super.initState();
   }
 
   @override
   void dispose() {
+    UMengAnalyticsService.exitPage('首页');
     super.dispose();
   }
 

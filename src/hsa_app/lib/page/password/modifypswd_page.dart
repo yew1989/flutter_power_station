@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hsa_app/api/api.dart';
+import 'package:hsa_app/service/umeng_analytics.dart';
 import 'package:hsa_app/theme/theme_gradient_background.dart';
 import 'package:hsa_app/components/public_tool.dart';
 import 'package:native_color/native_color.dart';
@@ -14,6 +15,18 @@ class _ModifyPswdPageState extends State<ModifyPswdPage> {
   TextEditingController newController = TextEditingController();
   TextEditingController againController = TextEditingController();
 
+  @override
+  void initState() {
+    UMengAnalyticsService.enterPage('修改密码');
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    UMengAnalyticsService.exitPage('修改密码');
+    super.dispose();
+  }
+  
   @override
   Widget build(BuildContext context) {
     Widget pwswdTile(String rightHint, TextEditingController controller) {

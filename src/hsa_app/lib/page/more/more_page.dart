@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:hsa_app/api/api.dart';
 import 'package:hsa_app/model/more_data.dart';
 import 'package:hsa_app/page/more/more_page_tile.dart';
+import 'package:hsa_app/service/umeng_analytics.dart';
 import 'package:hsa_app/theme/theme_gradient_background.dart';
 
 class MorePage extends StatefulWidget {
@@ -19,10 +20,16 @@ class _MorePageState extends State<MorePage> {
 
   @override
   void initState() {
-    super.initState();
+    UMengAnalyticsService.enterPage('机组更多');
     requestMoreData();
+    super.initState();
   }
 
+  @override
+  void dispose() {
+    UMengAnalyticsService.exitPage('机组更多');
+    super.dispose();
+  }
   // 请求更多数据
   void requestMoreData() {
     

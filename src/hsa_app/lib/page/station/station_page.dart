@@ -7,6 +7,7 @@ import 'package:hsa_app/model/station_info.dart';
 import 'package:hsa_app/page/live/live_page.dart';
 import 'package:hsa_app/page/runtime/runtime_page.dart';
 import 'package:hsa_app/page/framework/webview_page.dart';
+import 'package:hsa_app/service/umeng_analytics.dart';
 import 'package:hsa_app/theme/theme_gradient_background.dart';
 import 'package:hsa_app/components/public_tool.dart';
 import 'package:hsa_app/util/share.dart';
@@ -33,10 +34,17 @@ class _StationPageState extends State<StationPage> {
 
   @override
   void initState() {
-    super.initState();
     reqeustStationInfo(widget.stationId);
-    
+    UMengAnalyticsService.enterPage('电站概要');
+    super.initState();
   }
+
+    @override
+  void dispose() {
+    UMengAnalyticsService.exitPage('电站概要');
+    super.dispose();
+  }
+
 
   Widget wetherImageWidget(int type) {
     if( type == 0 ) {
