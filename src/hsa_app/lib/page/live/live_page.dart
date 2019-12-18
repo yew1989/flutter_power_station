@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hsa_app/components/spinkit_indicator.dart';
+import 'package:hsa_app/service/umeng_analytics.dart';
 import 'package:hsa_app/theme/theme_gradient_background.dart';
 import 'package:flt_video_player/flt_video_player.dart';
 
@@ -66,12 +67,14 @@ class _LivePageState extends State<LivePage> {
 
   @override
   void initState() {
-    super.initState();
+    UMengAnalyticsService.enterPage('实况直播');
     initVideoPlayers();
+    super.initState();
   }
 
   @override
   void dispose() {
+    UMengAnalyticsService.exitPage('实况直播');
     disposeVideoPlayer();
     super.dispose();
   }
