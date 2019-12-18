@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:hsa_app/service/umeng_analytics.dart';
 import 'package:hsa_app/theme/theme_gradient_background.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
@@ -7,14 +8,35 @@ class WebViewPage extends StatefulWidget {
   final String url;
   final String title;
   final bool noNavBar;
+  final String description;
 
-  WebViewPage(this.title, this.url, {this.noNavBar});
+  WebViewPage(this.title, this.url, {this.noNavBar,this.description});
   @override
   _WebViewPageState createState() => _WebViewPageState();
 }
 
 class _WebViewPageState extends State<WebViewPage> {
+
+  
   WebViewController webViewController;
+  
+  @override
+  void initState() {
+    final pageName = widget.description;
+    if(pageName != null) {
+      UMengAnalyticsService.enterPage(pageName);
+    }
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    final pageName = widget.description;
+    if(pageName != null) {
+      UMengAnalyticsService.exitPage(pageName);
+    }
+    super.dispose();
+  }
   
   // 从js中解析数据
   void parseFromJS(String js,BuildContext context) {
@@ -50,7 +72,7 @@ class _WebViewPageState extends State<WebViewPage> {
   @override
   Widget build(BuildContext context) {
 
-    debugPrint('网页:'+widget.url);
+    debugPrint('🌍 🌍 🌍 WEBVIEW 🌍 🌍 🌍: '+widget.url);
   
     return Stack(
       children: [
@@ -82,7 +104,7 @@ class _WebViewPageState extends State<WebViewPage> {
                           webViewController.clearCache();
                         },
                         onPageFinished: (url) {
-                          debugPrint('WEBVIEW:' + url);
+                          debugPrint('WEBVIEW 加载成功 ✅:' + url);
                           hideLoading();
                         },
                         initialUrl: widget.url ?? '',

@@ -38,7 +38,7 @@ class _HomeBannerState extends State<HomeBanner> {
           child: Image.network(img,fit: BoxFit.fill),
           onTap: () {
             if(link.length > 0) {
-              pushToPage(context, WebViewPage('智能电站', link));
+              pushToPage(context, WebViewPage('智能电站管家', link,description: '展位详情'));
             }
           },
         );

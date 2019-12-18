@@ -168,10 +168,6 @@ class _MinePageState extends State<MinePage> {
                   ),
                 ],
               ),
-              // leading: Icon(icon, size: 20),
-              // title: Text(title),
-              // onTap: onTap,
-              // trailing: Icon(Icons.navigate_next, size: 20),
             ),
               // 分割线
               SizedBox(height: 0.3,child: Container(color:Colors.white24)),

@@ -236,24 +236,15 @@ class _RuntimePageState extends State<RuntimePage> {
 
   void onTapPushToHistory(String address) async {
     var host = AppConfig.getInstance().remotePackage.hostWeb;
-    // host = 'http://192.168.31.228:8080/';
-    host = 'http://192.168.16.120:18081/HsaApp2.0/Vue/';
-    // var pageItemHistory = AppConfig.getInstance().pageBundle.history;
-    // var urlHistory =
-    //     host + pageItemHistory.route ?? AppConfig.getInstance().deadLink;
-     var  urlHistory = host + '#/history'; 
+    var urlHistory = host + '/#/' + 'history';
     var auth = await ShareManager.instance.loadToken();
     var terminalsString = address;
     var titleString = widget?.title ?? '';
     var lastUrl = urlHistory +
-        '?auth=' +
-        auth +
-        '&address=' +
-        terminalsString +
-        '&title=' +
-        Uri.encodeComponent(titleString);
-    debugPrint('历史曲线Url:' + lastUrl);
-    pushToPage(context, WebViewPage('', lastUrl, noNavBar: true));
+        '?auth=' +auth +
+        '&address=' + terminalsString +
+        '&title=' + Uri.encodeComponent(titleString);
+    pushToPage(context, WebViewPage('', lastUrl, noNavBar: true,description:'历史曲线'));
   }
 
   // 仪表盘
