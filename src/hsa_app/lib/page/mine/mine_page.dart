@@ -94,12 +94,14 @@ class _MinePageState extends State<MinePage> {
   }
 
   // 修改密码
-  void onTapChangePswd(BuildContext context) {
+  void onTapChangePswd(BuildContext context) async {
+    await Future.delayed(Duration(milliseconds: 250));
     pushToPage(context, ModifyPswdPage());
   }
 
   // 关于
-  void onTapAbout(BuildContext context) {
+  void onTapAbout(BuildContext context) async {
+    await Future.delayed(Duration(milliseconds: 250));
     pushToPage(context, AboutPage());
   }
 
@@ -179,7 +181,8 @@ class _MinePageState extends State<MinePage> {
   }
 
   // 搜索电站
-  void onTapSearchStations(BuildContext context) {
+  void onTapSearchStations(BuildContext context) async {
+    await Future.delayed(Duration(milliseconds: 250));
     pushToPage(context, SearchPage());
   }
 
@@ -225,6 +228,7 @@ class _MinePageState extends State<MinePage> {
 
   // 拨打电话
   Future<bool> onTapSoScall(String phone) async {
+    await Future.delayed(Duration(milliseconds: 250));
     var url = 'tel:';
     if (TargetPlatform.iOS == defaultTargetPlatform) {
       url += '+86' + phone;

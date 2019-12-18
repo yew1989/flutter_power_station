@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:hsa_app/components/spinkit_indicator.dart';
 import 'package:hsa_app/service/umeng_analytics.dart';
@@ -14,11 +16,36 @@ class LivePage extends StatefulWidget {
 
 class _LivePageState extends State<LivePage> {
 
+  static const int watingCnt = 10;
+
   bool isFirstLoadingFinished = false;
-  bool isLastLoadingFinished  = false;
+  bool isLastLoadingFinished = false;
 
   VideoPlayerController firstVideoPlayerController;
   VideoPlayerController lastVideoPlayerController;
+
+  Timer coolDownTimer;
+
+  int coolDownCnt = watingCnt;
+
+  var loadingText = '直播准备中($watingCnt)';
+
+  // 开启定时器
+  void startTimer() async {
+    coolDownTimer = Timer.periodic(Duration(seconds: 1), (timer) {
+      coolDownCnt--;
+
+      if (coolDownCnt <= 0) {
+        coolDownCnt = 0;
+        loadingText = '马上就来...';
+        timer?.cancel();
+      }
+
+      setState(() {
+        loadingText = '直播准备中($coolDownCnt)';
+      });
+    });
+  }
 
   void initVideoPlayers() {
     var openLives = widget.openLives;
@@ -26,47 +53,47 @@ class _LivePageState extends State<LivePage> {
       var firstSrc = widget?.openLives?.first ?? '';
       firstVideoPlayerController = VideoPlayerController.path(firstSrc)
         ..initialize().then((_) {
-
-          Future.delayed(Duration(seconds:1),(){
-              setState(() {
-                isLastLoadingFinished = true;
-              });
+          Future.delayed(Duration(seconds: watingCnt), () {
+            setState(() {
+              isLastLoadingFinished = true;
             });
-
+          });
+          startTimer();
         });
     } else if (openLives.length == 2) {
       var firstSrc = widget?.openLives?.first ?? '';
       var lastSrc = widget?.openLives?.last ?? '';
       firstVideoPlayerController = VideoPlayerController.path(firstSrc)
         ..initialize().then((_) {
-     
-            Future.delayed(Duration(seconds:3),(){
-              setState(() {
-                isFirstLoadingFinished = true;
-              });
+          Future.delayed(Duration(seconds: watingCnt), () {
+            setState(() {
+              isFirstLoadingFinished = true;
             });
-
+          });
         });
       lastVideoPlayerController = VideoPlayerController.path(lastSrc)
         ..initialize().then((_) {
-
-            Future.delayed(Duration(seconds:3),(){
-              setState(() {
-                isLastLoadingFinished = true;
-              });
+          Future.delayed(Duration(seconds: watingCnt), () {
+            setState(() {
+              isLastLoadingFinished = true;
             });
-
+          });
         });
+        startTimer();
     }
   }
 
   void disposeVideoPlayer() {
+    coolDownTimer?.cancel();
     firstVideoPlayerController?.dispose();
     lastVideoPlayerController?.dispose();
   }
 
   @override
   void initState() {
+    final openLives = widget.openLives;
+    debugPrint('📺 直播1:' + openLives.first);
+    debugPrint('📺 直播2:' + openLives.last);
     UMengAnalyticsService.enterPage('实况直播');
     initVideoPlayers();
     super.initState();
@@ -83,24 +110,28 @@ class _LivePageState extends State<LivePage> {
     List<Widget> listView = [];
     for (int i = 0; i < openLives.length; i++) {
       // 最多只支持两路
-      if(i == 2) break;
+      if (i == 2) break;
       var index = i + 1;
-      listView.add(SizedBox(child: Container(child: Text('直播$index : ',
-      style: TextStyle(color: Colors.white, fontSize: 16)))));
+      listView.add(SizedBox(
+          child: Container(
+              child: Text('直播$index : ',
+                  style: TextStyle(color: Colors.white, fontSize: 16)))));
       if (i == 0) {
         listView.add(Container(
             padding: EdgeInsets.symmetric(vertical: 10),
-            child: AspectRatio(aspectRatio: 4 / 3, 
-            child: isFirstLoadingFinished == false ?  
-            SpinkitIndicator(title: '直播加载中...',subTitle: '请稍后')
-            : VideoPlayer(firstVideoPlayerController))));
+            child: AspectRatio(
+                aspectRatio: 4 / 3,
+                child: isFirstLoadingFinished == false
+                    ? SpinkitIndicator(title: loadingText, subTitle: '请稍后')
+                    : VideoPlayer(firstVideoPlayerController))));
       } else if (i == 1) {
         listView.add(Container(
             padding: EdgeInsets.symmetric(vertical: 10),
-            child: AspectRatio(aspectRatio: 4 / 3, 
-                child: isFirstLoadingFinished == false ? 
-                SpinkitIndicator(title: '直播加载中...',subTitle: '请稍后')
-                : VideoPlayer(lastVideoPlayerController))));
+            child: AspectRatio(
+                aspectRatio: 4 / 3,
+                child: isFirstLoadingFinished == false
+                    ? SpinkitIndicator(title: loadingText, subTitle: '请稍后')
+                    : VideoPlayer(lastVideoPlayerController))));
       }
     }
     return listView.length != 0
