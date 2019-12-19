@@ -17,7 +17,6 @@ import 'package:native_color/native_color.dart';
 import 'package:ovprogresshud/progresshud.dart';
 import 'package:wave/config.dart';
 import 'package:wave/wave.dart';
-import 'package:hsa_app/components/smart_refresher_style.dart';
 
 
 class StationPage extends StatefulWidget {
@@ -120,7 +119,7 @@ class _StationPageState extends State<StationPage> {
 
     },(String msg){
 
-      refreshController.refreshCompleted();
+      refreshController.refreshFailed();
       Progresshud.showErrorWithStatus('获取电站信息失败');
 
     });

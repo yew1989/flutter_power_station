@@ -44,9 +44,7 @@ class _HomeStationListState extends State<HomeStationList> {
       });
       refreshController.refreshCompleted();
     }, (String msg){
-      refreshController.refreshCompleted();
-      debugPrint(msg);
-      // progressShowError(msg);
+      refreshController.refreshFailed();
     },
     // 页码
     page:currentPage,
@@ -64,7 +62,7 @@ class _HomeStationListState extends State<HomeStationList> {
 
       API.stationsList((List<Stations> stations,int total){
       setState(() {
-        // this.stations = stations;
+        
         if(stations == null || stations?.length == 0) {
             refreshController.loadNoData();
         }
@@ -74,9 +72,7 @@ class _HomeStationListState extends State<HomeStationList> {
         }
       });
     }, (String msg){
-      refreshController.loadComplete();
-      debugPrint(msg);
-      // progressShowError(msg);
+      refreshController.loadFailed();
     },
     // 页码
     page:currentPage,

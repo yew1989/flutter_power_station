@@ -174,7 +174,7 @@ class _RuntimePageState extends State<RuntimePage> {
     }, (String msg) {
 
       Progresshud.showErrorWithStatus('获取实时机组数据失败');
-      refreshController.refreshCompleted();
+      refreshController.refreshFailed();
     });
   }
 
