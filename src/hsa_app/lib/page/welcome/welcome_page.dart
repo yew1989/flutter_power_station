@@ -159,6 +159,7 @@ class _WelcomePageState extends State<WelcomePage> with WidgetsBindingObserver {
 
   @override
   void initState() {
+    initUmengService();
     WidgetsBinding.instance.addObserver(this);
     showDiplayVersion();
     requestPackageInfo(context);
