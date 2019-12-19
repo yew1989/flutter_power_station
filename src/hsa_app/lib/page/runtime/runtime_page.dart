@@ -160,7 +160,7 @@ class _RuntimePageState extends State<RuntimePage> {
   //  设备概要头
   Widget terminalBriefHeader() {
     // 半装
-    barMaxWidth = MediaQuery.of(context).size.width / 3;
+    barMaxWidth = MediaQuery.of(context).size.width / 3.1;
 
     // 电压
     var voltage = runtimeData?.electrical?.voltage?.now ?? 0.0;
@@ -438,357 +438,360 @@ class _RuntimePageState extends State<RuntimePage> {
     return SafeArea(
       child: Container(
         height: 127,
-        margin: EdgeInsets.only(left: 10, right: 10, bottom: 10),
-        child: Stack(
-          children: <Widget>[
-            // 背景 分成上下两个区
-            Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: <Widget>[
-                // 上方大区
-                Expanded(
-                    flex: 1,
-                    child: Container(
-                      child: Row(
-                        children: <Widget>[
-                          // 左上角
-                          Expanded(
-                            flex: 1,
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: <Widget>[
-                                SizedBox(
-                                  width: 10,
-                                  child: Image.asset(
-                                      'images/board/board_top_left1.png'),
-                                ),
-                                Expanded(
-                                  child: Image.asset(
-                                    'images/board/board_center.png',
-                                    repeat: ImageRepeat.repeatX,
-                                  ),
-                                ),
-                                SizedBox(
-                                  width: 27,
-                                  child: Image.asset(
-                                      'images/board/board_top_left2.png'),
-                                ),
-                              ],
-                            ),
-                          ),
-                          SizedBox(width: 80),
-
-                          // 右上角
-                          Expanded(
-                            flex: 1,
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: <Widget>[
-                                SizedBox(
-                                  width: 27,
-                                  child: Image.asset(
-                                      'images/board/board_top_right2.png'),
-                                ),
-                                Expanded(
-                                  child: Image.asset(
-                                    'images/board/board_center.png',
-                                    repeat: ImageRepeat.repeatX,
-                                  ),
-                                ),
-                                SizedBox(
-                                  width: 10,
-                                  child: Image.asset(
-                                      'images/board/board_top_right1.png'),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    )),
-                SizedBox(height: 3),
-                // 下方大区
-                Expanded(
-                    flex: 1,
-                    child: Container(
-                      child: Row(
-                        children: <Widget>[
-                          // 左上角
-                          Expanded(
-                            flex: 1,
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: <Widget>[
-                                SizedBox(
-                                  width: 10,
-                                  child: Image.asset(
-                                      'images/board/board_bottom_left1.png'),
-                                ),
-                                Expanded(
-                                  child: Image.asset(
-                                    'images/board/board_center.png',
-                                    repeat: ImageRepeat.repeatX,
-                                  ),
-                                ),
-                                SizedBox(
-                                  width: 27,
-                                  child: Image.asset(
-                                      'images/board/board_bottom_left2.png'),
-                                ),
-                              ],
-                            ),
-                          ),
-                          SizedBox(width: 80),
-
-                          // 右上角
-                          Expanded(
-                            flex: 1,
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: <Widget>[
-                                SizedBox(
-                                  width: 27,
-                                  child: Image.asset(
-                                      'images/board/board_bottom_right2.png'),
-                                ),
-                                Expanded(
-                                  child: Image.asset(
-                                    'images/board/board_center.png',
-                                    repeat: ImageRepeat.repeatX,
-                                  ),
-                                ),
-                                SizedBox(
-                                  width: 10,
-                                  child: Image.asset(
-                                      'images/board/board_bottom_right1.png'),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    )),
-              ],
-            ),
-
-            // 中央按钮
-            Center(
-              child: Container(
-                height: 127,
-                width: 127,
-                child: Stack(
-                  children: <Widget>[
-                    // 中央按钮
-                    Center(
+        width: double.infinity,
+        padding: EdgeInsets.only(left: 4, right: 4, bottom: 4),
+        child: Container(
+          child: Stack(
+            children: <Widget>[
+              // 背景 分成上下两个区
+              Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  // 上方大区
+                  Expanded(
+                      flex: 1,
                       child: Container(
-                        height: double.infinity,
-                        width: double.infinity,
-                        decoration: BoxDecoration(
-                          image: DecorationImage(
-                              image: AssetImage(
-                                  'images/runtime/Time_power_btn.png')),
+                        child: Row(
+                          children: <Widget>[
+                            // 左上角
+                            Expanded(
+                              flex: 1,
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: <Widget>[
+                                  SizedBox(
+                                    width: 10,
+                                    child: Image.asset(
+                                        'images/board/board_top_left1.png'),
+                                  ),
+                                  Expanded(
+                                    child: Image.asset(
+                                      'images/board/board_center.png',
+                                      repeat: ImageRepeat.repeatX,
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    width: 27,
+                                    child: Image.asset(
+                                        'images/board/board_top_left2.png'),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            SizedBox(width: 80),
+
+                            // 右上角
+                            Expanded(
+                              flex: 1,
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: <Widget>[
+                                  SizedBox(
+                                    width: 27,
+                                    child: Image.asset(
+                                        'images/board/board_top_right2.png'),
+                                  ),
+                                  Expanded(
+                                    child: Image.asset(
+                                      'images/board/board_center.png',
+                                      repeat: ImageRepeat.repeatX,
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    width: 10,
+                                    child: Image.asset(
+                                        'images/board/board_top_right1.png'),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
                         ),
-                        child: Center(
-                            child: SizedBox(
-                                height: 68,
-                                width: 68,
-                                child: isMotorPowerOn ? Image.asset('images/runtime/Time_power_icon_on.png') 
-                                    : Image.asset('images/runtime/Time_power_icon_off.png')
-                                )),
+                      )),
+                  SizedBox(height: 3),
+                  // 下方大区
+                  Expanded(
+                      flex: 1,
+                      child: Container(
+                        child: Row(
+                          children: <Widget>[
+                            // 左上角
+                            Expanded(
+                              flex: 1,
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: <Widget>[
+                                  SizedBox(
+                                    width: 10,
+                                    child: Image.asset(
+                                        'images/board/board_bottom_left1.png'),
+                                  ),
+                                  Expanded(
+                                    child: Image.asset(
+                                      'images/board/board_center.png',
+                                      repeat: ImageRepeat.repeatX,
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    width: 27,
+                                    child: Image.asset(
+                                        'images/board/board_bottom_left2.png'),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            SizedBox(width: 80),
+
+                            // 右上角
+                            Expanded(
+                              flex: 1,
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: <Widget>[
+                                  SizedBox(
+                                    width: 27,
+                                    child: Image.asset(
+                                        'images/board/board_bottom_right2.png'),
+                                  ),
+                                  Expanded(
+                                    child: Image.asset(
+                                      'images/board/board_center.png',
+                                      repeat: ImageRepeat.repeatX,
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    width: 10,
+                                    child: Image.asset(
+                                        'images/board/board_bottom_right1.png'),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      )),
+                ],
+              ),
+
+              // 中央按钮
+              Center(
+                child: Container(
+                  height: 127,
+                  width: 127,
+                  child: Stack(
+                    children: <Widget>[
+                      // 中央按钮
+                      Center(
+                        child: Container(
+                          height: double.infinity,
+                          width: double.infinity,
+                          decoration: BoxDecoration(
+                            image: DecorationImage(
+                                image: AssetImage(
+                                    'images/runtime/Time_power_btn.png')),
+                          ),
+                          child: Center(
+                              child: SizedBox(
+                                  height: 68,
+                                  width: 68,
+                                  child: isMotorPowerOn ? Image.asset('images/runtime/Time_power_icon_on.png') 
+                                      : Image.asset('images/runtime/Time_power_icon_off.png')
+                                  )),
+                        ),
                       ),
-                    ),
-                    GestureDetector(
-                      onTap: (){
-                        var taskName = isMotorPowerOn ? TaskName.powerOff : TaskName.powerOn;
-                        requestRemoteControlCommand(context, taskName, null);
-                      },
-                    ),
-                  ],
+                      GestureDetector(
+                        onTap: (){
+                          var taskName = isMotorPowerOn ? TaskName.powerOff : TaskName.powerOn;
+                          requestRemoteControlCommand(context, taskName, null);
+                        },
+                      ),
+                    ],
+                  ),
                 ),
               ),
-            ),
 
-            // 操作按钮
-            Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: <Widget>[
-                // 上半区
-                Expanded(
-                    flex: 1,
-                    child: Container(
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: <Widget>[
-                          // 自动
-                          Expanded(
-                            flex: 1,
-                            child: GestureDetector(
-                              onTap: () {
-                                showDialog(
-                                    context: context,
-                                    barrierDismissible: false,
-                                    builder: (_) => ControlModelDialogWidget(
-                                      runtimeData: runtimeData,
-                                      onChoose: (ControlModelCurrentStatus status) {
-                                        debugPrint(status.toString());
-                                        if(status == ControlModelCurrentStatus.remoteOn) {
-                                          requestRemoteControlCommand(context, TaskName.switchRemoteOn, null);
-                                        }
-                                        else if(status == ControlModelCurrentStatus.remoteOff) {
-                                          requestRemoteControlCommand(context, TaskName.switchRemoteOff, null);
-                                        }
-                                        
-                                      },
-                                    ));
-                              },
-                              child: Container(
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceEvenly,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: <Widget>[
-                                    Text('自          动',
-                                        style: TextStyle(
-                                            color: Colors.white, fontSize: 15)),
-                                    SizedBox(
-                                      height: 14,
-                                      width: 14,
-                                      child: Image.asset(
-                                          'images/runtime/Time_list_icon.png'),
-                                    )
-                                  ],
+              // 操作按钮
+              Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  // 上半区
+                  Expanded(
+                      flex: 1,
+                      child: Container(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: <Widget>[
+                            // 自动
+                            Expanded(
+                              flex: 1,
+                              child: GestureDetector(
+                                onTap: () {
+                                  showDialog(
+                                      context: context,
+                                      barrierDismissible: false,
+                                      builder: (_) => ControlModelDialogWidget(
+                                        runtimeData: runtimeData,
+                                        onChoose: (ControlModelCurrentStatus status) {
+                                          debugPrint(status.toString());
+                                          if(status == ControlModelCurrentStatus.remoteOn) {
+                                            requestRemoteControlCommand(context, TaskName.switchRemoteOn, null);
+                                          }
+                                          else if(status == ControlModelCurrentStatus.remoteOff) {
+                                            requestRemoteControlCommand(context, TaskName.switchRemoteOff, null);
+                                          }
+                                          
+                                        },
+                                      ));
+                                },
+                                child: Container(
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceEvenly,
+                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    children: <Widget>[
+                                      Text('自          动',
+                                          style: TextStyle(
+                                              color: Colors.white, fontSize: 15)),
+                                      SizedBox(
+                                        height: 14,
+                                        width: 14,
+                                        child: Image.asset(
+                                            'images/runtime/Time_list_icon.png'),
+                                      )
+                                    ],
+                                  ),
                                 ),
                               ),
                             ),
-                          ),
-                          SizedBox(width: 127),
-                          // 调功率
-                          Expanded(
-                            flex: 1,
-                            child: GestureDetector(
-                              onTap: () {
-                                showDialog(
-                                  context: context,barrierDismissible: false,
-                                  builder: (_) => PowerControlDialogWidget(
-                                    powerMax: runtimeData?.dashboard?.power?.max?.toInt() ?? 0,
-                                    onConfirmActivePower:(String activePower) {
-                                            debugPrint('有功功率:' + activePower);
-                                            requestRemoteControlCommand(context,TaskName.setttingActivePower,activePower);
-                                      },
-                                      onConfirmPowerFactor:(String powerFactor) {
-                                            debugPrint('功率因数:' + powerFactor);
-                                            var hundred = double.parse(powerFactor) * 100;
-                                            var hundredStr = hundred.toStringAsFixed(0);
-                                            requestRemoteControlCommand(context,TaskName.settingPowerFactor,hundredStr);
+                            SizedBox(width: 127),
+                            // 调功率
+                            Expanded(
+                              flex: 1,
+                              child: GestureDetector(
+                                onTap: () {
+                                  showDialog(
+                                    context: context,barrierDismissible: false,
+                                    builder: (_) => PowerControlDialogWidget(
+                                      powerMax: runtimeData?.dashboard?.power?.max?.toInt() ?? 0,
+                                      onConfirmActivePower:(String activePower) {
+                                              debugPrint('有功功率:' + activePower);
+                                              requestRemoteControlCommand(context,TaskName.setttingActivePower,activePower);
+                                        },
+                                        onConfirmPowerFactor:(String powerFactor) {
+                                              debugPrint('功率因数:' + powerFactor);
+                                              var hundred = double.parse(powerFactor) * 100;
+                                              var hundredStr = hundred.toStringAsFixed(0);
+                                              requestRemoteControlCommand(context,TaskName.settingPowerFactor,hundredStr);
+                                        }));
+                                },
+                                child: Container(
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    children: <Widget>[
+                                      SizedBox(
+                                        height: 22,
+                                        width: 22,
+                                        child: Image.asset(
+                                            'images/runtime/Time_Apower_icon.png'),
+                                      ),
+                                      SizedBox(width: 4),
+                                      Text('调功',
+                                          style: TextStyle(
+                                              color: Colors.white, fontSize: 15)),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      )),
+                  // 分割线
+                  SizedBox(height: 3),
+                  // 下半区
+                  Expanded(
+                      flex: 1,
+                      child: Container(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: <Widget>[
+                            // 设备控制
+                            Expanded(
+                              flex: 1,
+                              child: GestureDetector(
+                                onTap: () {
+                                  showDialog(
+                                      context: context,
+                                      barrierDismissible: false,
+                                      builder: (_) => DeviceControlDialog((TaskName taskName){
+                                        debugPrint('设备控制:' +taskName.toString());
+                                        requestRemoteControlCommand(context,taskName,null);
                                       }));
-                              },
-                              child: Container(
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: <Widget>[
-                                    SizedBox(
-                                      height: 22,
-                                      width: 22,
-                                      child: Image.asset(
-                                          'images/runtime/Time_Apower_icon.png'),
-                                    ),
-                                    SizedBox(width: 4),
-                                    Text('调功',
-                                        style: TextStyle(
-                                            color: Colors.white, fontSize: 15)),
-                                  ],
+                                },
+                                child: Container(
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceEvenly,
+                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    children: <Widget>[
+                                      Text('设备控制',
+                                          style: TextStyle(
+                                              color: Colors.white, fontSize: 15)),
+                                      SizedBox(
+                                        height: 14,
+                                        width: 14,
+                                        child: Image.asset('images/runtime/Time_list_icon.png'),
+                                      )
+                                    ],
+                                  ),
                                 ),
                               ),
                             ),
-                          ),
-                        ],
-                      ),
-                    )),
-                // 分割线
-                SizedBox(height: 3),
-                // 下半区
-                Expanded(
-                    flex: 1,
-                    child: Container(
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: <Widget>[
-                          // 设备控制
-                          Expanded(
-                            flex: 1,
-                            child: GestureDetector(
-                              onTap: () {
-                                showDialog(
-                                    context: context,
-                                    barrierDismissible: false,
-                                    builder: (_) => DeviceControlDialog((TaskName taskName){
-                                      debugPrint('设备控制:' +taskName.toString());
-                                      requestRemoteControlCommand(context,taskName,null);
-                                    }));
-                              },
-                              child: Container(
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceEvenly,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: <Widget>[
-                                    Text('设备控制',
-                                        style: TextStyle(
-                                            color: Colors.white, fontSize: 15)),
-                                    SizedBox(
-                                      height: 14,
-                                      width: 14,
-                                      child: Image.asset('images/runtime/Time_list_icon.png'),
-                                    )
-                                  ],
+                            SizedBox(width: 127),
+                            // 更多
+                            Expanded(
+                              flex: 1,
+                              child: GestureDetector(
+                                onTap: () {
+                                  pushToPage(context,
+                                      MorePage(addressId: widget.address));
+                                },
+                                child: Container(
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    children: <Widget>[
+                                      SizedBox(
+                                        height: 22,
+                                        width: 22,
+                                        child: Image.asset(
+                                            'images/runtime/Time_set_icon.png'),
+                                      ),
+                                      SizedBox(width: 4),
+                                      Text('更多',
+                                          style: TextStyle(
+                                              color: Colors.white, fontSize: 15)),
+                                    ],
+                                  ),
                                 ),
                               ),
                             ),
-                          ),
-                          SizedBox(width: 127),
-                          // 更多
-                          Expanded(
-                            flex: 1,
-                            child: GestureDetector(
-                              onTap: () {
-                                pushToPage(context,
-                                    MorePage(addressId: widget.address));
-                              },
-                              child: Container(
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: <Widget>[
-                                    SizedBox(
-                                      height: 22,
-                                      width: 22,
-                                      child: Image.asset(
-                                          'images/runtime/Time_set_icon.png'),
-                                    ),
-                                    SizedBox(width: 4),
-                                    Text('更多',
-                                        style: TextStyle(
-                                            color: Colors.white, fontSize: 15)),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    )),
-              ],
-            ),
-          ],
+                          ],
+                        ),
+                      )),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );

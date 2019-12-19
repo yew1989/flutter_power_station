@@ -15,6 +15,7 @@ class PasswordDialog extends Dialog {
 
   @override
   Widget build(BuildContext context) {
+    var boxSize = MediaQuery.of(context).size.width / 8;
     //创建透明层
     return Material(
       //透明类型
@@ -91,8 +92,8 @@ class PasswordDialog extends Dialog {
                     pinTextStyle: TextStyle(fontSize: 18.0),
                     pinTextAnimatedSwitcherTransition:ProvidedPinBoxTextAnimation.scalingTransition,
                     pinTextAnimatedSwitcherDuration: Duration(milliseconds: 300),
-                    pinBoxHeight: 50,
-                    pinBoxWidth: 50,
+                    pinBoxHeight: boxSize,
+                    pinBoxWidth: boxSize,
                   ),
                 ],
               ),
