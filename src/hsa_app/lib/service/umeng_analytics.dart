@@ -17,8 +17,8 @@ class UMengAnalyticsService {
         iOSAppKey: '5df9724c0cafb2eaed000202',
         androidAppKey: '5df9720d4ca357120b000d92',
         channel: getChannelName(),
-        logEnable: true,
-        encrypt: false);
+        logEnable: false,
+        encrypt: true);
   }
 
   static void enterPage(String name) {
