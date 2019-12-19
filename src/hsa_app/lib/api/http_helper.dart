@@ -14,11 +14,11 @@ typedef HttpFailCallback = void Function(String msg);
 class HttpHelper {
 
   // 开启代理模式,允许抓包
-  static final isProxyModeOpen = false;
+  static final isProxyModeOpen = true;
   // 代理地址
   static final proxyIP = 'PROXY 192.168.31.74:8888';
   // 超时时间
-  static final kTimeOutSeconds = 20;
+  static final kTimeOutSeconds = 10000;
 
   // 创建 DIO 对象
   static Dio initDio() {
