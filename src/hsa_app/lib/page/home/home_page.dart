@@ -16,20 +16,13 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin {
 
   // 广告条
-  List<BannerItem> banners = [
-
-  ];
+  List<BannerItem> banners = [];
   
   // 省份列表
-  List<String> provinces = [
-
-  ];
+  List<String> provinces = [];
 
   // UI分节列表
-  List<String> sections = [
-    '特别关注',
-    '全部电站',
-  ];
+  List<String> sections = ['特别关注','全部电站'];
 
   // 获取广告条
   void requestBanner() {
@@ -38,26 +31,25 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
       setState(() {
         this.banners = banners;
       });
-    }, (String msg){
-      debugPrint(msg);
-      progressShowError(msg);
+    }, (_){
+
     });
+
   }
 
   // 省份列表
   void requestProvinces() {
-    
+
     API.provinces((List<String> provinces){
       setState(() {
         this.provinces = provinces;
         this.sections.addAll(provinces.map((name)=>name+'省').toList());
       });
-    }, (String msg){
-      debugPrint(msg);
-      // progressShowError(msg);
+    }, (_){
+      progressShowError('获取省份列表失败');
     });
-  }
 
+  }
 
   @override
   void initState() {
@@ -73,6 +65,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
     super.dispose();
   }
 
+  // 标签页 Header
   Widget tabBarHeader() {
     return Center(
       child: TabBar(
@@ -84,15 +77,12 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
         unselectedLabelStyle:TextStyle(color: Colors.grey, fontSize: 15), 
         indicatorColor: Colors.transparent,
         isScrollable: true,
-        tabs: this.sections.map(
-          (name){
-            return SizedBox(height: 40, child: Center(child: Text(name)));
-        }).toList(),
+        tabs: this.sections.map((name) => SizedBox(height: 40, child: Center(child: Text(name)))).toList(),
       ),
     );
   }
 
-  // 标签页身体
+  // 标签页 Body
   Widget tabBarBody() {
     return Expanded(
         child: TabBarView(
