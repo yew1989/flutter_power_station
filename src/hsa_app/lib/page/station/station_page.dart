@@ -219,7 +219,7 @@ class _StationPageState extends State<StationPage> {
           profitWidget(stationInfo),
 
           // 左侧水库图片
-          /*
+          
           Positioned(
             left: 0,bottom: 12,
             child: SizedBox(
@@ -229,40 +229,40 @@ class _StationPageState extends State<StationPage> {
           ),
 
           // 渐变条左边
-           Positioned(
-            left: 0,bottom: 0,
-            child: SizedBox(
-              height: 160,
-              width: 23,
-              child: Container(
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [Color.fromRGBO(3,169,244, 1),Color.fromRGBO(3,169,244, 0.3)],
-                    begin:Alignment.topCenter,
-                    end:Alignment.bottomCenter
+          //  Positioned(
+          //   left: 0,bottom: 0,
+          //   child: SizedBox(
+          //     height: 160,
+          //     width: 23,
+          //     child: Container(
+          //       decoration: BoxDecoration(
+          //         gradient: LinearGradient(
+          //           colors: [Color.fromRGBO(3,169,244, 1),Color.fromRGBO(3,169,244, 0.3)],
+          //           begin:Alignment.topCenter,
+          //           end:Alignment.bottomCenter
 
-                  ),
-                ),
-              )),
-          ),
+          //         ),
+          //       ),
+          //     )),
+          // ),
 
           // 渐变条右边
-           Positioned(
-            right: 0,bottom: 0,
-            child: SizedBox(
-              height: 130,
-              width: 23,
-              child: Container(
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [Color.fromRGBO(3,169,244, 1),Color.fromRGBO(3,169,244, 0.3)],
-                    begin:Alignment.topCenter,
-                    end:Alignment.bottomCenter
+          //  Positioned(
+          //   right: 0,bottom: 0,
+          //   child: SizedBox(
+          //     height: 130,
+          //     width: 23,
+          //     child: Container(
+          //       decoration: BoxDecoration(
+          //         gradient: LinearGradient(
+          //           colors: [Color.fromRGBO(3,169,244, 1),Color.fromRGBO(3,169,244, 0.3)],
+          //           begin:Alignment.topCenter,
+          //           end:Alignment.bottomCenter
 
-                  ),
-                ),
-              )),
-          ),
+          //         ),
+          //       ),
+          //     )),
+          // ),
 
           // 水库文本
           Positioned(
@@ -287,7 +287,7 @@ class _StationPageState extends State<StationPage> {
             child: Text('尾水',style: TextStyle(color: Colors.white,fontSize: 13),
             ),
           ),
-          */
+          
           
           
           // 当前功率 / 总功率
