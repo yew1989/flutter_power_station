@@ -679,7 +679,7 @@ class _RuntimePageState extends State<RuntimePage> {
                                   showDialog(
                                     context: context,barrierDismissible: false,
                                     builder: (_) => PowerControlDialogWidget(
-                                      powerMax: runtimeData?.dashboard?.power?.max?.toInt() ?? 0,
+                                      powerMax: runtimeData?.equippedCapacitor?.toInt() ?? 0,
                                       onConfirmActivePower:(String activePower) {
                                               debugPrint('有功功率:' + activePower);
                                               requestRemoteControlCommand(context,TaskName.setttingActivePower,activePower);

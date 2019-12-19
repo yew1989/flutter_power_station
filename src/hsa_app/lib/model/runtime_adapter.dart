@@ -15,6 +15,7 @@ class RuntimeData {
   List<EventTileData> events;
   ControlModelCurrentStatus status;
   bool isMotorPowerOn;
+  num equippedCapacitor;
 }
 
 
@@ -128,7 +129,9 @@ class RuntimeDataAdapter {
    // 功率因数
    runtimeData.electrical.powerFactor = ValueItem(now: powerFactorNow,max: powerFactorMax,percent: powerFactorPercent);
    
-
+   // 最大装机功率
+   runtimeData.equippedCapacitor =  data?.terminalInfo?.waterTurbineEquippedCapacitor ?? 0.0;
+   
    // 功率面板
    runtimeData.dashboard = DashBoardDataPack();
     
