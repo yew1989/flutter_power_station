@@ -1,5 +1,7 @@
 import 'package:badges/badges.dart';
 import 'package:flutter/material.dart';
+import 'package:hsa_app/components/smart_refresher_style.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:hsa_app/api/api.dart';
 import 'package:hsa_app/api/http_helper.dart';
 import 'package:hsa_app/config/app_config.dart';
@@ -12,6 +14,7 @@ import 'package:hsa_app/theme/theme_gradient_background.dart';
 import 'package:hsa_app/components/public_tool.dart';
 import 'package:hsa_app/util/share.dart';
 import 'package:native_color/native_color.dart';
+import 'package:ovprogresshud/progresshud.dart';
 import 'package:wave/config.dart';
 import 'package:wave/wave.dart';
 
@@ -31,16 +34,18 @@ class _StationPageState extends State<StationPage> {
   int weatherType = 0;
   String weatherString = '晴';
   List<String> openLive = [];
+  RefreshController refreshController = RefreshController(initialRefresh: false);
 
   @override
   void initState() {
-    reqeustStationInfo(widget.stationId);
+    reqeustStationInfo();
     UMengAnalyticsService.enterPage('电站概要');
     super.initState();
   }
 
     @override
   void dispose() {
+    Progresshud.dismiss();
     UMengAnalyticsService.exitPage('电站概要');
     super.dispose();
   }
@@ -65,12 +70,23 @@ class _StationPageState extends State<StationPage> {
   }
 
   // 请求电站概要
-  void reqeustStationInfo(String stationId) {
+  void reqeustStationInfo() {
 
+    Progresshud.showWithStatus('读取数据中...');
+
+    final stationId = widget?.stationId ?? '' ;
+
+    if(stationId.length == 0) {
+      Progresshud.showErrorWithStatus('获取电站信息失败');
+      return;
+    }
+    
     API.stationInfo(stationId,(StationInfo station){
-      
-      if(station == null) return;
 
+      Progresshud.dismiss();
+      refreshController.refreshCompleted();
+
+      if(station == null) return;
       // 彩云天气接口
       requestWeatherCaiyun(station.geo,(int type){
         setState(() {
@@ -101,7 +117,10 @@ class _StationPageState extends State<StationPage> {
       });
 
     },(String msg){
-      debugPrint(msg);
+
+      refreshController.refreshCompleted();
+      Progresshud.showErrorWithStatus('获取电站信息失败');
+
     });
 
   }
@@ -628,12 +647,19 @@ class _StationPageState extends State<StationPage> {
             ],
           ),
           body: Container(
-            child: ListView(
-              children: <Widget>[
-                waterPool(stationInfo),
-                terminalListHeader(),
-                terminalList(),
-              ],
+            child: SmartRefresher(
+                header: appRefreshHeader(),
+                footer: appRefreshFooter(),
+                enablePullDown: true,
+                onRefresh: reqeustStationInfo,
+                controller: refreshController,
+              child: ListView(
+                children: <Widget>[
+                  waterPool(stationInfo),
+                  terminalListHeader(),
+                  terminalList(),
+                ],
+              ),
             ),
           ),
         ),

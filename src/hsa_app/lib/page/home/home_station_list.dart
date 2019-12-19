@@ -2,6 +2,7 @@ import 'package:badges/badges.dart';
 import 'package:flutter/material.dart';
 import 'package:hsa_app/api/api.dart';
 import 'package:hsa_app/components/public_tool.dart';
+import 'package:hsa_app/components/smart_refresher_style.dart';
 import 'package:hsa_app/components/wave_ball.dart';
 import 'package:hsa_app/event/app_event.dart';
 import 'package:hsa_app/event/event_bird.dart';
@@ -132,6 +133,8 @@ class _HomeStationListState extends State<HomeStationList> {
   Widget build(BuildContext context) {
 
     return SmartRefresher(
+      header: appRefreshHeader(),
+      footer: appRefreshFooter(),
       enablePullDown: true,
       enablePullUp: true,
       onLoading: loadNext,
