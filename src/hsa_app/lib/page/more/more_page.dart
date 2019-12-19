@@ -4,6 +4,7 @@ import 'package:hsa_app/model/more_data.dart';
 import 'package:hsa_app/page/more/more_page_tile.dart';
 import 'package:hsa_app/service/umeng_analytics.dart';
 import 'package:hsa_app/theme/theme_gradient_background.dart';
+import 'package:ovprogresshud/progresshud.dart';
 
 class MorePage extends StatefulWidget {
 
@@ -28,19 +29,25 @@ class _MorePageState extends State<MorePage> {
   @override
   void dispose() {
     UMengAnalyticsService.exitPage('机组更多');
+    Progresshud.dismiss();
     super.dispose();
   }
   // 请求更多数据
   void requestMoreData() {
-    
+    Progresshud.showWithStatus('读取数据中...');
     var address = widget.addressId ?? '';
 
-    // 更多数据
+    if(address.length == 0) {
+      Progresshud.showErrorWithStatus('获取更多信息失败');
+      return;
+    }
     API.moreData(address,(List<MoreItem> items){
+      Progresshud.dismiss();
       setState(() {
         this.moreItems = items;
       });
     }, (String msg){
+      Progresshud.showErrorWithStatus('获取更多信息失败');
       debugPrint(msg);
     });
 
@@ -60,7 +67,7 @@ class _MorePageState extends State<MorePage> {
         ),
         body: Center(
           child: Padding(
-            padding: EdgeInsets.only(left:14.0,right: 14.0,bottom: 14.0),
+            padding: EdgeInsets.only(left:10.0,right: 10.0,bottom: 10.0),
               child: ListView.builder(
                 itemCount: moreItems?.length ?? 0,
                 itemBuilder: (_,index) {
