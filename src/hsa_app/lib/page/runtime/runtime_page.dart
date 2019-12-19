@@ -4,6 +4,7 @@ import 'package:hsa_app/api/remote_task.dart';
 import 'package:hsa_app/components/dash_board_widget.dart';
 import 'package:hsa_app/components/runtime_progress_bar.dart';
 import 'package:hsa_app/components/shawdow_widget.dart';
+import 'package:hsa_app/components/smart_refresher_style.dart';
 import 'package:hsa_app/config/app_config.dart';
 import 'package:hsa_app/model/runtime_adapter.dart';
 import 'package:hsa_app/model/runtime_data.dart';
@@ -21,6 +22,7 @@ import 'package:hsa_app/components/public_tool.dart';
 import 'package:hsa_app/util/share.dart';
 import 'package:ovprogresshud/progresshud.dart';
 import 'package:progress_dialog/progress_dialog.dart';
+import 'package:pull_to_refresh/src/smart_refresher.dart';
 
 class RuntimePage extends StatefulWidget {
   final String title;
@@ -35,6 +37,9 @@ class RuntimePage extends StatefulWidget {
 }
 
 class _RuntimePageState extends State<RuntimePage> {
+
+  RefreshController refreshController = RefreshController(initialRefresh: false);
+  
   // 计算宽度
   double barMaxWidth = 0;
 
@@ -142,19 +147,35 @@ class _RuntimePageState extends State<RuntimePage> {
   @override
   void dispose() {
     remoteTask.cancelTask();
+    Progresshud.dismiss();
     UMengAnalyticsService.exitPage('机组实时');
     super.dispose();
   }
 
   // 请求实时数据
   void requestRunTimeData() {
-    var addressId = widget.address ?? '';
+    
+    Progresshud.showWithStatus('读取数据中...');
+
+    final addressId = widget.address ?? '';
+
+    if(addressId.length == 0) {
+      Progresshud.showErrorWithStatus('获取实时机组数据失败');
+      return;
+    }
 
     API.runtimeData(addressId, (RuntimeDataResponse data) {
+
+      Progresshud.dismiss();
+      refreshController.refreshCompleted();
       setState(() {
         this.runtimeData = RuntimeDataAdapter.adapter(data, widget.alias);
       });
-    }, (String msg) {});
+    }, (String msg) {
+
+      Progresshud.showErrorWithStatus('获取实时机组数据失败');
+      refreshController.refreshCompleted();
+    });
   }
 
   //  设备概要头
@@ -386,11 +407,12 @@ class _RuntimePageState extends State<RuntimePage> {
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
-          terminalBriefFooterItem(runtimeData?.other?.radial),
-          terminalBriefFooterItem(runtimeData?.other?.thrust),
-          terminalBriefFooterItem(runtimeData?.other?.pressure),
-        ],
-      )),
+         Expanded(flex:1,child: Container(height: 50,color: Colors.transparent,child: terminalBriefFooterItem(runtimeData?.other?.radial))),
+         Expanded(flex:1,child: Container(height: 50,color: Colors.transparent,child: terminalBriefFooterItem(runtimeData?.other?.thrust))),
+         Expanded(flex:1,child: Container(height: 50,color: Colors.transparent,child: terminalBriefFooterItem(runtimeData?.other?.pressure))),
+          ],
+        ),
+      ),
       color: Colors.transparent,
     );
   }
@@ -402,16 +424,20 @@ class _RuntimePageState extends State<RuntimePage> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
-                Text(otherData?.title ?? '',
-                    style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 22,
-                        fontFamily: 'ArialNarrow')),
-                Text(otherData?.subTitle ?? '',
-                    style: TextStyle(
-                        color: Colors.grey,
-                        fontSize: 15,
-                        fontFamily: 'ArialNarrow')),
+                Center(
+                  child: Text(otherData?.title ?? '',
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 22,
+                          fontFamily: 'ArialNarrow')),
+                ),
+                Center(
+                  child: Text(otherData?.subTitle ?? '',
+                      style: TextStyle(
+                          color: Colors.grey,
+                          fontSize: 15,
+                          fontFamily: 'ArialNarrow')),
+                ),
               ],
             ),
           )
@@ -822,18 +848,34 @@ class _RuntimePageState extends State<RuntimePage> {
         ),
         body: Container(
           color: Colors.transparent,
-          child: Column(children: <Widget>[
-            SizedBox(height: 12),
-            terminalBriefHeader(),
-            RuntimeSqureMasterWidget(
-              isMaster: runtimeData?.dashboard?.isMaster ?? false,
-              aliasName: runtimeData?.dashboard?.aliasName ?? '',
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children:[
+            Container(
+              height: 400,
+              child: SmartRefresher(
+                header: appRefreshHeader(),
+                enablePullDown: true,
+                onRefresh: requestRunTimeData,
+                controller: refreshController,
+                child: ListView(
+                children: <Widget>[
+                  SizedBox(height: 12),
+                  terminalBriefHeader(),
+                  RuntimeSqureMasterWidget(
+                   isMaster: runtimeData?.dashboard?.isMaster ?? false,
+                    aliasName: runtimeData?.dashboard?.aliasName ?? '',
+                  ),
+                 dashBoardWidget(),
+                  terminalBriefFooter(),
+                  SizedBox(height: 8),
+                  ],
+                ),
+              ),
             ),
-            dashBoardWidget(),
-            terminalBriefFooter(),
-            SizedBox(height: 8),
             Expanded(child: eventList()),
-            RunTimeLightDarkShawdow(), // 淡阴影
+            RunTimeLightDarkShawdow(),
             operationBoard(),
           ]),
         ),
