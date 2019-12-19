@@ -32,7 +32,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
         this.banners = banners;
       });
     }, (_){
-
+      progressShowError('广告信息获取失败');
     });
 
   }
@@ -46,7 +46,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
         this.sections.addAll(provinces.map((name)=>name+'省').toList());
       });
     }, (_){
-      progressShowError('获取省份列表失败');
+      progressShowError('省份信息获取失败');
     });
 
   }
