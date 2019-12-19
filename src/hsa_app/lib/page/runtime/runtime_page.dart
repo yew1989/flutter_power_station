@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:hsa_app/api/api.dart';
 import 'package:hsa_app/api/remote_task.dart';
@@ -9,11 +11,8 @@ import 'package:hsa_app/config/app_config.dart';
 import 'package:hsa_app/model/runtime_adapter.dart';
 import 'package:hsa_app/model/runtime_data.dart';
 import 'package:hsa_app/page/dialog/control_model_dialog.dart';
-import 'package:hsa_app/page/dialog/device_control_dialog.dart';
 import 'package:hsa_app/page/dialog/password_dialog.dart';
-import 'package:hsa_app/page/dialog/power_control_dialog.dart';
 import 'package:hsa_app/page/framework/webview_page.dart';
-import 'package:hsa_app/page/more/more_page.dart';
 import 'package:hsa_app/page/runtime/runtime_event_tile.dart';
 import 'package:hsa_app/page/runtime/runtime_operation_board.dart';
 import 'package:hsa_app/page/runtime/runtime_squre_master_widget.dart';
@@ -57,6 +56,9 @@ class _RuntimePageState extends State<RuntimePage> {
 
   // 弹出进度对话框
   ProgressDialog progressDialog;
+
+  // 轮询定时器
+  Timer runLoopTimer;
 
   // 初始化弹出框
   void initProgressDialog() {
@@ -137,16 +139,24 @@ class _RuntimePageState extends State<RuntimePage> {
     progressDialog.dismiss(); 
   }
 
+  // 轮询查询
+  void startRunLoopTimer(int runLoopSecond) async {
+    await Future.delayed(Duration(seconds:1));
+    runLoopTimer = Timer.periodic(Duration(seconds:runLoopSecond), (_) => requestRunTimeDataInBackground());
+  }
+
   @override
   void initState() {
     initProgressDialog();
     requestRunTimeData();
     UMengAnalyticsService.enterPage('机组实时');
+    startRunLoopTimer(5);
     super.initState();
   }
 
   @override
   void dispose() {
+    runLoopTimer?.cancel();
     remoteTask.cancelTask();
     Progresshud.dismiss();
     UMengAnalyticsService.exitPage('机组实时');
@@ -180,13 +190,13 @@ class _RuntimePageState extends State<RuntimePage> {
   }
 
   // 静默任务请求
-  void requestRunTimeDataInBackground(int second) async {
-    await Future.delayed(Duration(seconds: second));
+  void requestRunTimeDataInBackground() async {
+
     final addressId = widget.address ?? '';
     if(addressId.length == 0) {
+      runLoopTimer?.cancel();
       return;
     }
-
     API.runtimeData(addressId, (RuntimeDataResponse data) {
 
       setState(() {
@@ -196,14 +206,6 @@ class _RuntimePageState extends State<RuntimePage> {
 
     });
   }
-
-  // 静默任务组 - 三次同步数据
-  void startSyncRunTimeDataInBackground() async{
-    requestRunTimeDataInBackground(1);
-    requestRunTimeDataInBackground(3);
-    requestRunTimeDataInBackground(10);
-  }
-
 
   //  设备概要头
   Widget terminalBriefHeader() {
@@ -538,7 +540,7 @@ class _RuntimePageState extends State<RuntimePage> {
             Expanded(child: eventList()),
             RunTimeLightDarkShawdow(),
             RunTimeOperationBoard(runtimeData,widget.address,(taskName,param) => requestRemoteControlCommand(context, taskName, param)),
-            
+
           ]),
         ),
       ),
@@ -584,8 +586,6 @@ class _RuntimePageState extends State<RuntimePage> {
               progressDialog.show();
               remoteTask.startTask(taskName, widget.address, param,(String succString) {
                 finishProgressDialog(succString, true);
-                // 三次请求 同步数据
-                startSyncRunTimeDataInBackground();
               }, (String failString) {
                 finishProgressDialog(failString, false);
               }, (String loadingString) {
