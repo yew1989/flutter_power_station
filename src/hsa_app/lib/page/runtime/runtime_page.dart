@@ -178,6 +178,32 @@ class _RuntimePageState extends State<RuntimePage> {
     });
   }
 
+  // 静默任务请求
+  void requestRunTimeDataInBackground(int second) async {
+    await Future.delayed(Duration(seconds: second));
+    final addressId = widget.address ?? '';
+    if(addressId.length == 0) {
+      return;
+    }
+
+    API.runtimeData(addressId, (RuntimeDataResponse data) {
+
+      setState(() {
+        this.runtimeData = RuntimeDataAdapter.adapter(data, widget.alias);
+      });
+    }, (_) {
+
+    });
+  }
+
+  // 静默任务组 - 三次同步数据
+  void startSyncRunTimeDataInBackground() async{
+    requestRunTimeDataInBackground(1);
+    requestRunTimeDataInBackground(3);
+    requestRunTimeDataInBackground(10);
+  }
+
+
   //  设备概要头
   Widget terminalBriefHeader() {
     // 半装
@@ -596,11 +622,12 @@ class _RuntimePageState extends State<RuntimePage> {
                                         'images/board/board_bottom_right1.png'),
                                   ),
                                 ],
-                              ),
-                            ),
-                          ],
-                        ),
-                      )),
+                             ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
                 ],
               ),
 
@@ -922,6 +949,8 @@ class _RuntimePageState extends State<RuntimePage> {
               progressDialog.show();
               remoteTask.startTask(taskName, widget.address, param,(String succString) {
                 finishProgressDialog(succString, true);
+                // 三次请求 同步数据
+                startSyncRunTimeDataInBackground();
               }, (String failString) {
                 finishProgressDialog(failString, false);
               }, (String loadingString) {
