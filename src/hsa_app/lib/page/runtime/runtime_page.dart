@@ -337,9 +337,9 @@ class _RuntimePageState extends State<RuntimePage> {
                             children: <Widget>[
                               Text(freqNowStr,
                                   style: TextStyle(
-                                      color: Colors.white,
-                                      fontFamily: 'ArialNarrow',
-                                      fontSize: 24)),
+                                  color: Colors.white,
+                                  fontFamily: 'ArialNarrow',
+                                  fontSize: 24)),
                               SizedBox(
                                   height: 2,
                                   width: 52,
@@ -347,7 +347,8 @@ class _RuntimePageState extends State<RuntimePage> {
                                       'images/runtime/Time_line1.png')),
                               Text('频率:Hz',
                                   style: TextStyle(
-                                      color: Colors.white30, fontSize: 11)),
+                                  color: Colors.white30, 
+                                  fontSize: 11)),
                             ],
                           ),
                         ),
@@ -500,9 +501,7 @@ class _RuntimePageState extends State<RuntimePage> {
           fontWeight: FontWeight.normal,fontSize: 20)),
           actions: <Widget>[
             GestureDetector(
-                onTap: () {
-                  onTapPushToHistory(widget.address);
-                },
+                onTap: () => onTapPushToHistory(widget.address),
                 child: Center(
                     child: Text('历史曲线',
                         style: TextStyle(color: Colors.white, fontSize: 16)))),
@@ -530,7 +529,7 @@ class _RuntimePageState extends State<RuntimePage> {
                    isMaster: runtimeData?.dashboard?.isMaster ?? false,
                     aliasName: runtimeData?.dashboard?.aliasName ?? '',
                   ),
-                 dashBoardWidget(),
+                  dashBoardWidget(),
                   terminalBriefFooter(),
                   SizedBox(height: 8),
                   ],
