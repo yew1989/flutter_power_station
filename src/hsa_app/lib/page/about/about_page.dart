@@ -28,6 +28,8 @@ class _AboutPageState extends State<AboutPage> {
 
   @override
   Widget build(BuildContext context) {
+    final isIphone5S = MediaQuery.of(context).size.width == 320.0 ? true : false;
+
     return ThemeGradientBackground(
       child:Scaffold(
           backgroundColor: Colors.transparent,
@@ -44,7 +46,7 @@ class _AboutPageState extends State<AboutPage> {
                 children: <Widget>[
                   ListView(
                   children: <Widget>[
-                    SizedBox(height: 50),
+                    SizedBox(height: isIphone5S ? 10 : 50),
                     Center(child: SizedBox(
                       height: 82,
                       width: 82,
@@ -53,7 +55,7 @@ class _AboutPageState extends State<AboutPage> {
                     Center(child: Text('V1.0.0',style: TextStyle(color: Colors.white70,fontSize: 10))),
                     SizedBox(height: 4),
                     Center(child: Text('Build 20191220',style: TextStyle(color: Colors.white70,fontSize: 10))),
-                    SizedBox(height: 50),
+                    SizedBox(height: isIphone5S ? 10 : 50),
                     Text('【应用简介】',style: TextStyle(color: Colors.white,fontSize:13)),
                     SizedBox(height: 4),
                     Text('  '+appInfo,style: TextStyle(color: Colors.white54,fontSize: 13)),

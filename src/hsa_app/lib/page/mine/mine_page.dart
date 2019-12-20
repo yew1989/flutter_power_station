@@ -189,6 +189,9 @@ class _MinePageState extends State<MinePage> {
   // 界面构建
   @override
   Widget build(BuildContext context) {
+
+    final isIphone5S = MediaQuery.of(context).size.width == 320.0 ? true : false;
+
     return Scaffold(
       body: ThemeGradientBackground(
         child: Stack(
@@ -208,7 +211,7 @@ class _MinePageState extends State<MinePage> {
           ),
           // 注销按钮
           Positioned(
-            bottom: 56,
+            bottom: isIphone5S ? 30 : 56,
             left: 0,
             right: 0,
             child: Padding(padding: EdgeInsets.symmetric(horizontal: 50),child: loginOutButton())
