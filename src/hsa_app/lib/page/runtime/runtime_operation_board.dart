@@ -28,16 +28,21 @@ class _RunTimeOperationBoardState extends State<RunTimeOperationBoard> {
     
     var isMotorPowerOn = runtimeData?.isMotorPowerOn ?? false;
 
+    var deviceWidth = MediaQuery.of(context).size.width;
+    final right = deviceWidth % 2 == 0 ? 4.0 : 5.0 ;
+    final isIphone5S = MediaQuery.of(context).size.width == 320.0 ? true : false;
+
     return SafeArea(
+      
       child: Container(
-        height: 127,
+        height: 129,
         width: double.infinity,
-        padding: EdgeInsets.only(left: 4, right: 4, bottom: 4),
-        child: Container(
+        margin: EdgeInsets.only(left: 4, right: right, bottom: isIphone5S ? 3 : 4),
+        child: Center(
           child: Stack(
             children: <Widget>[
               // 背景 分成上下两个区
-              Column(
+                Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
@@ -62,7 +67,7 @@ class _RunTimeOperationBoardState extends State<RunTimeOperationBoard> {
                                   Expanded(
                                     child: Image.asset(
                                       'images/board/board_center.png',
-                                      repeat: ImageRepeat.repeatX,
+                                      repeat: ImageRepeat.repeat,
                                     ),
                                   ),
                                   SizedBox(
@@ -90,7 +95,7 @@ class _RunTimeOperationBoardState extends State<RunTimeOperationBoard> {
                                   Expanded(
                                     child: Image.asset(
                                       'images/board/board_center.png',
-                                      repeat: ImageRepeat.repeatX,
+                                      repeat: ImageRepeat.repeat,
                                     ),
                                   ),
                                   SizedBox(
@@ -126,7 +131,7 @@ class _RunTimeOperationBoardState extends State<RunTimeOperationBoard> {
                                   Expanded(
                                     child: Image.asset(
                                       'images/board/board_center.png',
-                                      repeat: ImageRepeat.repeatX,
+                                      repeat: ImageRepeat.repeat,
                                     ),
                                   ),
                                   SizedBox(
@@ -137,7 +142,7 @@ class _RunTimeOperationBoardState extends State<RunTimeOperationBoard> {
                                 ],
                               ),
                             ),
-                            SizedBox(width: 80),
+                            SizedBox(width:80),
 
                             // 右上角
                             Expanded(
@@ -154,7 +159,7 @@ class _RunTimeOperationBoardState extends State<RunTimeOperationBoard> {
                                   Expanded(
                                     child: Image.asset(
                                       'images/board/board_center.png',
-                                      repeat: ImageRepeat.repeatX,
+                                      repeat: ImageRepeat.repeat,
                                     ),
                                   ),
                                   SizedBox(

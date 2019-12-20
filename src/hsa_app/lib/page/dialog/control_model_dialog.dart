@@ -91,6 +91,9 @@ class ControlModelDialog extends Dialog {
 
   @override
   Widget build(BuildContext context) {
+
+    final isIphone5s = MediaQuery.of(context).size.width == 320.0 ? true : false;
+
     return SafeArea(
       child: Material(
         type: MaterialType.transparency,
@@ -101,7 +104,7 @@ class ControlModelDialog extends Dialog {
               right: 0,
               bottom: 75,
               child: Container(
-                padding: EdgeInsets.symmetric(horizontal: 10),
+                padding: EdgeInsets.symmetric(horizontal: isIphone5s ? 9 : 10),
                 child: SizedBox(
                   width: double.infinity,
                   height: 280,
@@ -146,10 +149,10 @@ class ControlModelDialog extends Dialog {
                                           text: ' (下位机智能控制屏旋钮处于智能模式时,方可开启)',
                                           style: TextStyle(
                                               color: Colors.white60,
-                                              fontSize: 12)),
+                                              fontSize: isIphone5s ? 10 : 12)),
                                     ]),
                                   ),
-                                  SizedBox(height: 22, width: 22),
+                                  // SizedBox(height: 22, width: 22),
                                 ],
                               ),
                             ),
@@ -159,7 +162,6 @@ class ControlModelDialog extends Dialog {
                           modelTile(context,'远程控制',true,ControlModelCurrentStatus.remoteOn),
                           divider(40),
                           modelTile(context,'智能水位控制',true,ControlModelCurrentStatus.remoteOff),
-                          divider(40),
 
                           // 分割线顶格
                           Container(

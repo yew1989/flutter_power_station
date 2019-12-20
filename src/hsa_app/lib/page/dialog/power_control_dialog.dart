@@ -72,6 +72,8 @@ class PowerControlDialog extends Dialog {
 
   @override
   Widget build(BuildContext context) {
+
+    final isIphone5S = MediaQuery.of(context).size.width == 320.0 ? true : false;
     return SafeArea(
       child: Material(
         //透明类型
@@ -84,7 +86,7 @@ class PowerControlDialog extends Dialog {
               right: 0,
               bottom: 75,
               child: Container(
-                padding: EdgeInsets.symmetric(horizontal: 10),
+                padding: EdgeInsets.symmetric(horizontal: isIphone5S ? 9 : 10),
                 child: SizedBox(
                   width: double.infinity,
                   height: 152,
@@ -115,15 +117,8 @@ class PowerControlDialog extends Dialog {
                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                   children: <Widget>[
-                                    Text('有功调控',
-                                        style: TextStyle(
-                                            color: Colors.white, fontSize: 16)),
-                                    SizedBox(
-                                        height: 22,
-                                        width: 22,
-                                        // child: Image.asset(
-                                        //     'images/runtime/Time_selected_icon.png'),
-                                        ),
+                                    Text('有功调控',style: TextStyle(color: Colors.white, fontSize: 16)),
+                                    SizedBox(height: 22,width: 22),
                                   ],
                                 ),
                               ),
@@ -162,11 +157,8 @@ class PowerControlDialog extends Dialog {
                                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                           crossAxisAlignment: CrossAxisAlignment.center,
                                           children: <Widget>[
-                                            Text('功率因数调控',
-                                        style: TextStyle(color: Colors.white, fontSize: 16)),
-                                        SizedBox(height: 22,width: 22,
-                                            // child: Image.asset('images/runtime/Time_selected_icon.png'),
-                                            ),
+                                            Text('功率因数调控',style: TextStyle(color: Colors.white, fontSize: 16)),
+                                            SizedBox(height: 22,width: 22),
                                        ],
                                         ),
                                       ),

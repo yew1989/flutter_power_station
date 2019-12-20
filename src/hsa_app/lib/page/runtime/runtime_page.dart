@@ -209,8 +209,14 @@ class _RuntimePageState extends State<RuntimePage> {
 
   //  设备概要头
   Widget terminalBriefHeader() {
-    // 半装
-    barMaxWidth = MediaQuery.of(context).size.width / 3.1;
+    var deviceWidth = MediaQuery.of(context).size.width;
+    var denominator = 3.1;
+    if(deviceWidth == 320.0) {
+      denominator = 3.3;
+    }
+
+    // 条状宽度
+    barMaxWidth = deviceWidth / denominator;
 
     // 电压
     var voltage = runtimeData?.electrical?.voltage?.now ?? 0.0;
@@ -430,6 +436,7 @@ class _RuntimePageState extends State<RuntimePage> {
 
   //  设备概要尾
   Widget terminalBriefFooter() {
+
     return Container(
       padding: EdgeInsets.symmetric(vertical: 6),
       child: Center(
@@ -489,6 +496,9 @@ class _RuntimePageState extends State<RuntimePage> {
 
   @override
   Widget build(BuildContext context) {
+    var deviceWidth = MediaQuery.of(context).size.width;
+    var isIphone5S = deviceWidth == 320.0 ? true : false;
+
     return ThemeGradientBackground(
       child: Scaffold(
         backgroundColor: Colors.transparent,
@@ -515,7 +525,7 @@ class _RuntimePageState extends State<RuntimePage> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children:[
             Container(
-              height: 400,
+              height: isIphone5S ? 350 : 400,
               child: SmartRefresher(
                 header: appRefreshHeader(),
                 enablePullDown: true,
@@ -536,7 +546,7 @@ class _RuntimePageState extends State<RuntimePage> {
                 ),
               ),
             ),
-            Expanded(child: eventList()),
+            isIphone5S ? Container() :Expanded(child: eventList()),
             RunTimeLightDarkShawdow(),
             RunTimeOperationBoard(runtimeData,widget.address,(taskName,param) => requestRemoteControlCommand(context, taskName, param)),
 
