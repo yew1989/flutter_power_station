@@ -55,7 +55,7 @@ class _LivePageState extends State<LivePage> {
         ..initialize().then((_) {
           Future.delayed(Duration(seconds: watingCnt), () {
             setState(() {
-              isLastLoadingFinished = true;
+              isFirstLoadingFinished = true;
             });
           });
           startTimer();
