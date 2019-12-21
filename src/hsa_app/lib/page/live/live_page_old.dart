@@ -1,20 +1,19 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:hsa_app/components/spinkit_indicator.dart';
 import 'package:hsa_app/service/umeng_analytics.dart';
 import 'package:hsa_app/theme/theme_gradient_background.dart';
 import 'package:flt_video_player/flt_video_player.dart';
 
-class LivePage extends StatefulWidget {
+class LivePageOld extends StatefulWidget {
   final List<String> openLives;
   final String title;
-  const LivePage({Key key, this.openLives, this.title}) : super(key: key);
+  const LivePageOld({Key key, this.openLives, this.title}) : super(key: key);
   @override
-  _LivePageState createState() => _LivePageState();
+  _LivePageOldState createState() => _LivePageOldState();
 }
 
-class _LivePageState extends State<LivePage> {
+class _LivePageOldState extends State<LivePageOld> {
 
   static const int watingCnt = 10;
 

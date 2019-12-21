@@ -1,12 +1,12 @@
 import 'package:badges/badges.dart';
 import 'package:flutter/material.dart';
 import 'package:hsa_app/components/smart_refresher_style.dart';
+import 'package:hsa_app/page/live/live_list_page.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:hsa_app/api/api.dart';
 import 'package:hsa_app/api/http_helper.dart';
 import 'package:hsa_app/config/app_config.dart';
 import 'package:hsa_app/model/station_info.dart';
-import 'package:hsa_app/page/live/live_page.dart';
 import 'package:hsa_app/page/runtime/runtime_page.dart';
 import 'package:hsa_app/page/framework/webview_page.dart';
 import 'package:hsa_app/service/umeng_analytics.dart';
@@ -357,7 +357,7 @@ class _StationPageState extends State<StationPage> {
                   child: openLive.length != 0 ? GestureDetector(
                     child: Image.asset('images/station/GL_Video_btn.png'),
                     onTap: (){
-                      pushToPage(context, LivePage(title: widget.title?? '',openLives: this.openLive));
+                      pushToPage(context, LiveListPage(openLives: this.openLive));
                     },
                   ) :Container(),
                 ),
