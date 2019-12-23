@@ -1,8 +1,10 @@
 import 'package:badges/badges.dart';
 import 'package:flutter/material.dart';
 import 'package:hsa_app/api/api.dart';
+import 'package:hsa_app/components/empty_page.dart';
 import 'package:hsa_app/components/public_tool.dart';
 import 'package:hsa_app/components/smart_refresher_style.dart';
+import 'package:hsa_app/components/spinkit_indicator.dart';
 import 'package:hsa_app/components/wave_ball.dart';
 import 'package:hsa_app/event/app_event.dart';
 import 'package:hsa_app/event/event_bird.dart';
@@ -33,17 +35,32 @@ class _HomeStationListState extends State<HomeStationList> {
   String provinceName = '';
   String keyWord = '';
 
+  // 是否空视图
+  bool isEmpty = false;
+  // 是否首次数据加载完毕
+  bool isLoadFinsh = false;
+
   // 按省获取电站列表 加载首页
   void loadFirst() async {
     
-    currentPage = 1;
+    this.currentPage = 1;
+    this.isEmpty = false;
 
     API.stationsList((List<Stations> stations,int total){
+      
+      isLoadFinsh = true;
+      refreshController.refreshCompleted();
+      
+      if(stations.length == 0) {
+        this.isEmpty = true;
+      }
       setState(() {
         this.stations = stations;
       });
-      refreshController.refreshCompleted();
+
     }, (String msg){
+      
+      isLoadFinsh = true;
       refreshController.refreshFailed();
     },
     // 页码
@@ -61,7 +78,9 @@ class _HomeStationListState extends State<HomeStationList> {
       currentPage++ ;
 
       API.stationsList((List<Stations> stations,int total){
-      setState(() {
+
+        isLoadFinsh = true;
+        setState(() {
         
         if(stations == null || stations?.length == 0) {
             refreshController.loadNoData();
@@ -72,6 +91,8 @@ class _HomeStationListState extends State<HomeStationList> {
         }
       });
     }, (String msg){
+
+      isLoadFinsh = true;
       refreshController.loadFailed();
     },
     // 页码
@@ -113,6 +134,7 @@ class _HomeStationListState extends State<HomeStationList> {
   }
 
   void initPage() {
+    isLoadFinsh = false;
     caculateType(widget.homeParam);
     loadFirst();
   }
@@ -127,7 +149,14 @@ class _HomeStationListState extends State<HomeStationList> {
 
   @override
   Widget build(BuildContext context) {
+    if(isEmpty == true) return EmptyPage(title: '暂无数据',subTitle: '');
+    if(isLoadFinsh == false) return SpinkitIndicator(title: '正在加载',subTitle: '请稍后');
+    return stationListView(context);
+  }
 
+
+  // 电站列表
+  Widget stationListView(BuildContext context) {
     return SmartRefresher(
       header: appRefreshHeader(),
       footer: appRefreshFooter(),
