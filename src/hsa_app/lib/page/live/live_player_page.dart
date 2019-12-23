@@ -10,8 +10,9 @@ class LivePlayerPage extends StatefulWidget {
 
   final String title;
   final String playUrl;
+  final String stationName;
 
-  const LivePlayerPage({Key key, this.playUrl, this.title}) : super(key: key);
+  const LivePlayerPage({Key key, this.playUrl, this.title, this.stationName}) : super(key: key);
   @override
   _LivePlayerPageState createState() => _LivePlayerPageState();
 }
@@ -30,11 +31,18 @@ class _LivePlayerPageState extends State<LivePlayerPage> {
 
   String loadingText = '直播准备中...';
 
+  String systemName = '未知';
+
+  String stationName = '';
+
   void initUIData() {
+    stationName = widget?.stationName ?? '';
+    systemName = getSystemName();
     watingCnt = getWatinngTimeSecond();
     isFinished = false;
     coolDownCnt = watingCnt;
     loadingText = '直播准备中($watingCnt)';
+    systemName = '未知';
   }
 
   // 获取等待时间
@@ -46,6 +54,17 @@ class _LivePlayerPageState extends State<LivePlayerPage> {
     }
     return 45;
   }
+
+    // 获取等待时间
+  String getSystemName() {
+    if (TargetPlatform.iOS == defaultTargetPlatform) {
+      return '苹果';
+    } else if (TargetPlatform.android == defaultTargetPlatform) {
+      return '安卓';
+    }
+    return '未知';
+  }
+
 
   @override
   void initState() {
@@ -83,6 +102,9 @@ class _LivePlayerPageState extends State<LivePlayerPage> {
   // 初始化播放器
   void initVideoPlayers() {
       final playUrl  = widget?.playUrl ?? '';
+
+      debugPrint('📺直播流:' + playUrl);
+      
       if(playUrl.length == 0) {
         setState(() {
           loadingText = '直播源地址不存在';
@@ -138,7 +160,18 @@ class _LivePlayerPageState extends State<LivePlayerPage> {
         body: SafeArea(
           child: Container(
             padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-            child: Center(child: playerWidget(playerUrl)),
+            child: Center(
+              child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: <Widget>[
+                Text('$stationName',style: TextStyle(fontSize: 16,color: Colors.white)),
+                SizedBox(height: 10),
+                Text('通道:$systemName',style: TextStyle(fontSize: 16,color: Colors.white)),
+                SizedBox(height: 10),
+                playerWidget(playerUrl),
+              ],
+            )),
           ),
         ),
       ),

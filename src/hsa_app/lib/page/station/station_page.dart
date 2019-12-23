@@ -357,7 +357,10 @@ class _StationPageState extends State<StationPage> {
                   child: openLive.length != 0 ? GestureDetector(
                     child: Image.asset('images/station/GL_Video_btn.png'),
                     onTap: (){
-                      pushToPage(context, LiveListPage(openLives: this.openLive));
+                      pushToPage(context, LiveListPage(
+                        openLives: this.openLive,
+                        stationName: stationInfo?.name ?? '',
+                      ));
                     },
                   ) :Container(),
                 ),

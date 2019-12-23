@@ -7,7 +7,8 @@ import 'package:hsa_app/theme/theme_gradient_background.dart';
 class LiveListPage extends StatefulWidget {
   
   final List<String> openLives;
-  const LiveListPage({Key key, this.openLives}) : super(key: key);
+  final String stationName;
+  const LiveListPage({Key key, this.openLives, this.stationName}) : super(key: key);
   @override
   _LiveListPageState createState() => _LiveListPageState();
 }
@@ -87,15 +88,15 @@ class _LiveListPageState extends State<LiveListPage> {
               ),
             ),
           ),
-          onTap:() => onTapPlayerUrl(context, liveStr, liveUrl),
+          onTap:() => onTapPlayerUrl(context, liveStr, liveUrl,widget?.stationName ?? ''),
         ),
       ),
     );
   }
 
   // 点击到播放器
-  void onTapPlayerUrl(BuildContext context,String title,String playUrl) async {
+  void onTapPlayerUrl(BuildContext context,String title,String playUrl,String stationName) async {
     await Future.delayed(Duration(milliseconds: 500));
-    pushToPage(context, LivePlayerPage(playUrl: playUrl,title: title));
+    pushToPage(context, LivePlayerPage(playUrl: playUrl,title: title,stationName: stationName));
   }
 }
