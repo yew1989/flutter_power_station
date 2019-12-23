@@ -150,7 +150,7 @@ class _RuntimePageState extends State<RuntimePage> {
     initProgressDialog();
     requestRunTimeData();
     UMengAnalyticsService.enterPage('机组实时');
-    startRunLoopTimer(5);
+    // startRunLoopTimer(5);
     super.initState();
   }
 
@@ -253,16 +253,12 @@ class _RuntimePageState extends State<RuntimePage> {
                   barMaxWidth: barMaxWidth,
                   leftText: '电压',
                   valueText: voltageStr,
-                  redLinePercent: voltagePecent,
-                  readValuePercent: voltagePecent,
-                  showLabel: true),
+                  pencent: voltagePecent),
               RuntimeProgressBar(
                   barMaxWidth: barMaxWidth,
                   leftText: '励磁电流',
                   valueText: excitationStr,
-                  redLinePercent: excitationPecent,
-                  readValuePercent: excitationPecent,
-                  showLabel: true),
+                  pencent: excitationPecent),
             ],
           ),
           Row(
@@ -273,16 +269,12 @@ class _RuntimePageState extends State<RuntimePage> {
                   barMaxWidth: barMaxWidth,
                   leftText: '电流',
                   valueText: currentStr,
-                  redLinePercent: currentPecent,
-                  readValuePercent: currentPecent,
-                  showLabel: true),
+                  pencent: currentPecent),
               RuntimeProgressBar(
                   barMaxWidth: barMaxWidth,
                   leftText: '功率因数',
                   valueText: powfactorStr,
-                  redLinePercent: powfactorPencent,
-                  readValuePercent: powfactorPencent,
-                  showLabel: true),
+                  pencent: powfactorPencent),
             ],
           ),
         ],
