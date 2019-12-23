@@ -37,11 +37,11 @@ typedef MoreDataResponseCallBack = void Function(List<MoreItem> items);
 typedef FollowCommandResponseCallBack = void Function(FollowCommandResp commandResp);
 
 class API {
-  // 内网主机地址
-  static final host = 'http://192.168.16.120:18081/';
-  
-  // 穿透内网主机地址
-  // static final host = 'http://18046053193.qicp.vip:20187/';
+
+  // 开发环境主机
+  // static final host = 'http://192.168.16.120:18081/';
+  // 生产环境主机
+  static final host = 'http://hsa.fjlead.com/';
 
   // 文件路径 与 地址
   static final filePath = 'HsaApp2.0/Native/';
