@@ -75,7 +75,7 @@ class LoginPageState extends State<LoginPage> {
     }
     debugPrint('❌:登录失败');
     Progresshud.dismiss();
-    Progresshud.showErrorWithStatus('登录失败');
+    Progresshud.showErrorWithStatus('登录失败,请检查您的信息');
   }
 
   @override
@@ -103,14 +103,6 @@ class LoginPageState extends State<LoginPage> {
                 ),
               ), 
           ),
-
-          // 智能电站管家文字
-          // Positioned(
-          //   top: 320,
-          //   left: 0,
-          //   right: 0,
-          //   child: Center(child: Text('智能电站管家',style: TextStyle(color: Colors.black,fontSize:15))),
-          // ),
 
           // 控件群 
           Positioned(
@@ -201,8 +193,8 @@ class LoginPageState extends State<LoginPage> {
                                   style:TextStyle(color: Colors.white,fontSize: 14),
                                   decoration: InputDecoration(
                                       border: InputBorder.none,
+                                      counterText: "", 
                                       hintText: '请输入密码',
-                                      counterText: "",       
                                       hintStyle: TextStyle(color: Colors.white54,fontSize: 14)),
                                   maxLength: 20,
                                   obscureText: isShowPassword ? true : false,

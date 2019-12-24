@@ -516,43 +516,6 @@ class API {
       return null;
     }
   }
-
-  // 机组信息列表根据客户Id和电站Id
-  // static Future<List<Terminal>> getTerminalsWithCustomIdAndStationId(String customId,String stationId) async {
-  //   Progresshud.showWithStatus('正在加载...');
-  //   try {
-  //     final path = host + terminalInfoPath + '/' + customId + '/' + stationId;
-  //     Response response = await Dio().get(path,
-  //       options: Options(
-  //         headers: {
-  //           'Authorization':ShareManager.instance.token
-  //         }
-  //       )
-  //     );
-  //     if(response.statusCode != 200) {
-  //       Progresshud.dismiss();
-  //       Progresshud.showErrorWithStatus('请求失败...');
-  //       return null;
-  //     }
-  //     if(response.data is! List){
-  //       Progresshud.dismiss();
-  //       Progresshud.showErrorWithStatus('请求失败...');
-  //       return null;
-  //     }
-  //     List<Terminal> terminals = [];
-  //     var list = response.data as List;
-  //     for (var item in list) {
-  //       Terminal terminal = Terminal.fromJson(item);
-  //       terminals.add(terminal);
-  //     }
-  //     Progresshud.dismiss();
-  //     return terminals;
-  //     } catch (e) {
-  //       handleError(e);
-  //     }
-  //     return null;
-  // }
-
   // 登录获取 Token
   static Future<String> getLoginToken(String name, String pwd) async {
     try {

@@ -41,8 +41,7 @@ class _RuntimeProgressBarState extends State<RuntimeProgressBar> {
 
       final ratio = widget?.pencent ?? 0.0;
       final maxWidth = widget?.barMaxWidth ?? 0.0;
-      debugPrint(ratio.toString());
-
+      
       bool isBeyond = false;
       double right = 0;
       double left = 0;

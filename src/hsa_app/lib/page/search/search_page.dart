@@ -1,6 +1,4 @@
-import 'package:event_taxi/event_taxi.dart';
 import 'package:flutter/material.dart';
-import 'package:hsa_app/app/app.dart';
 import 'package:hsa_app/event/app_event.dart';
 import 'package:hsa_app/event/event_bird.dart';
 import 'package:hsa_app/page/home/home_station_list.dart';
@@ -23,12 +21,14 @@ class _SearchPageState extends State<SearchPage> {
          border: Border.all(color: Colors.white38),
          borderRadius: BorderRadius.all(Radius.circular(35)),
        ),
-       child: TextField(
-         autofocus: true,
+       child: TextFormField(
+         maxLength: 20,
+         autofocus: false,
          cursorColor: Colors.white,
          style: TextStyle(color: Colors.white,fontSize: 16),
          decoration: InputDecoration(
            icon: SizedBox(width: 12),
+           counterText: "",
            border:InputBorder.none,
            hintText: '请输入电站中文名或拼音首字母',
            labelStyle: TextStyle(color: Colors.white,fontSize: 16),
