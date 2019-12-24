@@ -15,8 +15,12 @@ enum LeanCloudEnv{
 
 class LeanCloudAPI {
 
-  // leanCloud服务器主机地址
-  static final host = 'https://leancloud.cn:443/1.1';
+  // 力得版本信息服务器主机地址
+  static final host = 'https://shitangdev.fjlead.com/1.1';
+
+  // leanCloud服务器主机地址(备用)
+  // static final host = 'https://leancloud.cn:443/1.1';
+
   // 包管理对象操作路径
   static final packagePath = '/classes/Pacakge';
 

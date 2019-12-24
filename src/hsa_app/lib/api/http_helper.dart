@@ -1,9 +1,9 @@
 import 'dart:io';
-import 'package:hsa_app/api/api.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:dio/adapter.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:hsa_app/config/app_config.dart';
 import 'package:hsa_app/event/app_event.dart';
 import 'package:hsa_app/event/event_bird.dart';
 import 'package:hsa_app/util/share.dart';
@@ -94,7 +94,7 @@ class HttpHelper {
 
     // 尝试请求
     try {
-      var url = API.host + path;
+      var url = AppConfig.getInstance().remotePackage.hostApi + path;
       Response response = await dio.get(
         url,
         options: Options(
@@ -153,7 +153,7 @@ class HttpHelper {
 
     // 尝试请求
     try {
-      final url = API.host + path;
+      final url = AppConfig.getInstance().remotePackage.hostApi + path;
       Response response = await dio.post(
         url,
         options: Options(

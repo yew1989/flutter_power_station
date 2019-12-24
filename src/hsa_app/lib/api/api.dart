@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:hsa_app/api/http_helper.dart';
+import 'package:hsa_app/config/app_config.dart';
 import 'package:hsa_app/model/caiyun.dart';
 import 'package:hsa_app/model/follow_command.dart';
 import 'package:hsa_app/model/more_data.dart';
@@ -41,12 +42,9 @@ class API {
   // 开发环境主机
   // static final host = 'http://192.168.16.120:18081/';
   // 生产环境主机
-  static final host = 'http://hsa.fjlead.com/';
-
-  // 文件路径 与 地址
-  static final filePath = 'HsaApp2.0/Native/';
-  static final fileVersionInfo = 'appVersion.json';
-  static final fileWebRoute = 'pageConfig.json';
+  // static final host = 'http://hsa.fjlead.com/';
+  // 动态主机
+  static final host = AppConfig.getInstance().remotePackage.hostApi;
 
   // API 接口地址
   static final loginPath = 'Account/Login';
@@ -74,21 +72,27 @@ class API {
   static final stationInfoPath  = 'app/GetStationInfo';
 
   // 彩云天气 url
-  static final caiyunWeatherPath = 'https://api.caiyunapp.com/v2/iAKlQ99dfiDclxut/';
+  // static final caiyunWeatherPath = 'https://api.caiyunapp.com/v2/iAKlQ99dfiDclxut/';
+  static final apiWeatherPath = AppConfig.getInstance().remotePackage.apiWeather;
 
   // 实时运行参数
-  static final runtimeDataPath = API.host + 'api/General/RuntimeData';
+  static final runtimeDataPath = host + 'api/General/RuntimeData';
 
   // 更多数据
-  static final moreDataPath = API.host + 'api/General/TerminalOverViewData';
+  static final moreDataPath = host + 'api/General/TerminalOverViewData';
 
   // 操作密码检查
-  static final operationCheckPath = API.host + 'api/Account/CheckOperationTicket';
+  static final operationCheckPath = host + 'api/Account/CheckOperationTicket';
 
   // 跟踪指令执行情况
-  static final followCommandPath = API.host + 'Api/Cmd';
+  static final followCommandPath = host + 'Api/Cmd';
   // 远程指令下发
-  static final remoteCommandPath = API.host + 'Api/Cmd/Send';
+  static final remoteCommandPath = host + 'Api/Cmd/Send';
+
+  // 文件路径 与 地址
+  static final filePath = 'HsaApp2.0/Native/';
+  static final fileVersionInfo = 'appVersion.json';
+  static final fileWebRoute = 'pageConfig.json';
 
   // 远程开机
   static void remotePowerOn(String address,HttpSuccMsgCallback onSucc,HttpFailCallback onFail) {
@@ -239,7 +243,7 @@ class API {
       return;
     }
 
-    var totalPath = caiyunWeatherPath + longitude.toString() + ',' + latitude.toString() + '/realtime.json';
+    var totalPath = apiWeatherPath + longitude.toString() + ',' + latitude.toString() + '/realtime.json';
     
     HttpHelper.getHttpCommon(totalPath, null, (dynamic data,String msg) {
         var map  = data as Map<String,dynamic>;

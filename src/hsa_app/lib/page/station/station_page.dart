@@ -612,15 +612,15 @@ class _StationPageState extends State<StationPage> {
 
   // 生成历史访问 URL
   void onTapPushToHistory() async {
-    var host = AppConfig.getInstance().remotePackage.hostWeb;
-    var urlHistory = host + '/#/' + 'history';
-    var auth = await ShareManager.instance.loadToken();
-    var deviceIdList = stationInfo.devices.map((device){
+    final host = AppConfig.getInstance().remotePackage.hostWeb;
+    final urlHistory = host + '/#/' + 'history';
+    final auth = await ShareManager.instance.loadToken();
+    final deviceIdList = stationInfo.devices.map((device){
       return device?.address ?? '';
     }).toList();
-    var terminalsString = deviceIdList.join(',');
-    var titleString = stationInfo?.name ?? '';
-    var lastUrl =  urlHistory + '?auth=' + auth + '&address=' + terminalsString + '&title=' + Uri.encodeComponent(titleString);
+    final terminalsString = deviceIdList.join(',');
+    final titleString = stationInfo?.name ?? '';
+    final lastUrl =  urlHistory + '?auth=' + auth + '&address=' + terminalsString + '&title=' + Uri.encodeComponent(titleString);
     pushToPage(context, WebViewPage('', lastUrl,noNavBar:true,description:'历史曲线'));
   }
 

@@ -283,12 +283,12 @@ class _RuntimePageState extends State<RuntimePage> {
   }
 
   void onTapPushToHistory(String address) async {
-    var host = AppConfig.getInstance().remotePackage.hostWeb;
-    var urlHistory = host + '/#/' + 'history';
-    var auth = await ShareManager.instance.loadToken();
-    var terminalsString = address;
-    var titleString = widget?.title ?? '';
-    var lastUrl = urlHistory +
+    final host = AppConfig.getInstance().remotePackage.hostWeb;
+    final urlHistory = host + '/#/' + 'history';
+    final auth = await ShareManager.instance.loadToken();
+    final terminalsString = address;
+    final titleString = widget?.title ?? '';
+    final lastUrl = urlHistory +
         '?auth=' +auth +
         '&address=' + terminalsString +
         '&title=' + Uri.encodeComponent(titleString);

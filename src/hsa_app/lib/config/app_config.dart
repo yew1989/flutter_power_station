@@ -5,10 +5,9 @@ import 'package:package_info/package_info.dart';
 class AppConfig {
 
   LeanCloudEnv env;
-  String deadLink = 'http://www.google.cn/intl/zh-CN/chrome/browser/';
   Package remotePackage = Package();
-  String localDisplayVersionString = '';
-  int localBuildVersion            = 0;
+  String localDisplayVersionString    = '';
+  int    localBuildVersion            = 0;
 
   static initConfig() {
     AppConfig.getInstance().env     = LeanCloudEnv.test;

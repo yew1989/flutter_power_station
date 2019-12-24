@@ -37,9 +37,10 @@ class Package {
   String platform;
   String urlMarket;
   String urlWeb;
+  String apiWeather;
 
-  Package(
-      {this.phoneSOS,
+  Package({
+      this.phoneSOS,
       this.displayVersion,
       this.hostApi,
       this.hostWeb,
@@ -50,7 +51,9 @@ class Package {
       this.isForced,
       this.urlMarket,
       this.urlWeb,
-      this.platform});
+      this.platform,
+      this.apiWeather
+      });
 
   Package.fromJson(Map<String, dynamic> json) {
     phoneSOS = json['phoneSOS'] ?? '';
@@ -65,6 +68,7 @@ class Package {
     platform = json['platform'] ?? '';
     urlMarket = json['urlMarket'] ?? '';
     urlWeb = json['urlWeb'] ?? '';
+    apiWeather = json['apiWeather'] ?? '';
   }
 
   Map<String, dynamic> toJson() {
@@ -81,6 +85,7 @@ class Package {
     data['platform'] = this.platform;
     data['urlMarket'] = this.urlMarket;
     data['urlWeb'] = this.urlWeb;
+    data['apiWeather'] = this.apiWeather;
     return data;
   }
 }
