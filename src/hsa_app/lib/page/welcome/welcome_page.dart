@@ -169,14 +169,6 @@ class _WelcomePageState extends State<WelcomePage> with WidgetsBindingObserver {
     super.dispose();
   }
 
-  // void checkIsLogined() async {
-  //   await Future.delayed(Duration(seconds: 1));
-  //   var token = await ShareManager.instance.loadToken();
-  //   var isLogined = token.length > 0;
-  //   debugPrint('🔑 本地Token:' + token);
-  //   pushToPageAndKill(context, isLogined ? RootPage() : LoginPage());
-  // }
-
   @override
   Widget build(BuildContext context) {
 

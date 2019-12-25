@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:ovprogresshud/progresshud.dart';
 
@@ -55,12 +56,14 @@ showAlertViewSingle(BuildContext context, String title, String content,Function 
 
   // Route Manager
   pushToPage(BuildContext context,Widget page) {
-      var route = CupertinoPageRoute(builder: (_) => page);
+      final route = CupertinoPageRoute(builder: (context) => page);
       Navigator.of(context,rootNavigator: true).push(route);
   }
 
   pushToPageAndKill(BuildContext context,Widget page){
-     var route = CupertinoPageRoute(builder: (_) => page);
+    // final route = MaterialPageRoute(builder: (context) => page);
+    // Navigator.of(context).pushAndRemoveUntil(route, (route) => route == null);
+     final route = CupertinoPageRoute(builder: (_) => page);
      Navigator.of(context,rootNavigator: true).pushAndRemoveUntil(route, (route) => route == null);
   }
 

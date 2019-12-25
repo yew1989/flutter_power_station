@@ -24,7 +24,7 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: '智能电站管家',
+      title: '智能电站',
       debugShowCheckedModeBanner: false,
       home: WelcomePage(),
     );

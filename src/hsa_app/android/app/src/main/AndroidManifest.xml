@@ -4,7 +4,7 @@
 
     <application
         android:name="io.flutter.app.FlutterApplication"
-        android:label="智能电站管家"
+        android:label="智能电站"
         android:usesCleartextTraffic="true"
         android:icon="@mipmap/ic_launcher"
         tools:replace="android:label"
