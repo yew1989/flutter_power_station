@@ -18,12 +18,11 @@ class JpushService {
       channel: '',
     );
 
-    jpush.applyPushAuthority(NotificationSettingsIOS(
-      sound: true,alert: true,badge: true));
-
     jpush.getRegistrationID().then((regId) {
       debugPrint('🐦 🐦 🐦 推送RegistrationID 🐦 🐦 🐦:' + regId);
     });
+
+    jpush.applyPushAuthority(NotificationSettingsIOS(sound: true,alert: true,badge: true));
 
     jpush.addEventHandler(
       onOpenNotification: (Map<String, dynamic> message) {
