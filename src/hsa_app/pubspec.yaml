@@ -42,7 +42,9 @@ dependencies:
   progress_dialog: ^1.2.0
   device_info: ^0.4.1+3
   lcfarm_flutter_umeng: ^0.1.8
-
+  # jpush_flutter: ^0.1.0
+  jpush_flutter: 0.0.13
+  
 dev_dependencies:
   flutter_test:
     sdk: flutter
