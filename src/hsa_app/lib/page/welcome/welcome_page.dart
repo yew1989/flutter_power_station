@@ -19,15 +19,9 @@ class WelcomePage extends StatefulWidget {
 
 class _WelcomePageState extends State<WelcomePage> with WidgetsBindingObserver {
 
-  String displayVersion = 'V1.0.0';
+  String displayVersion = '';
+  String displayBuild   = '';
 
-  void showDiplayVersion() async {
-    PackageInfo packageInfo = await PackageInfo.fromPlatform();
-    String localDisplayVersionString = packageInfo?.version ?? '1.0.0';
-    setState(() {
-      displayVersion =  'V' + localDisplayVersionString;
-    });
-  }
   // 版本更新工作流
   void upgradeWorkFlow(BuildContext context,Package package) {
     if(package == null) {
@@ -105,6 +99,9 @@ class _WelcomePageState extends State<WelcomePage> with WidgetsBindingObserver {
     LeanCloudAPI.getPackageVersionInfo(LeanCloudEnv.test,(Package pack, String msg) {
       debugPrint('版本信息文件获取成功');
       debugPrint(pack.toJson().toString());
+      setState(() {
+        
+      });
       upgradeWorkFlow(context,pack);
     }, (_) {
       debugPrint('版本信息文件获取失败');
@@ -161,7 +158,6 @@ class _WelcomePageState extends State<WelcomePage> with WidgetsBindingObserver {
   void initState() {
     initUmengService();
     WidgetsBinding.instance.addObserver(this);
-    showDiplayVersion();
     requestPackageInfo(context);
     DeviceInspector.inspectDevice(context);
     super.initState();
@@ -222,9 +218,7 @@ class _WelcomePageState extends State<WelcomePage> with WidgetsBindingObserver {
                     left: 0,
                     right: 0,
                     child: Center(
-                        child: Text(displayVersion ?? 'V1.0.0',
-                            style: TextStyle(
-                                color: Colors.white70, fontSize: 10)))),
+                        child: Text('$displayVersion',style: TextStyle(color: Colors.white70, fontSize: 10)))),
 
                 // 构建版本
                 Positioned(
@@ -232,9 +226,7 @@ class _WelcomePageState extends State<WelcomePage> with WidgetsBindingObserver {
                     left: 0,
                     right: 0,
                     child: Center(
-                        child: Text('Build 20191220',
-                            style: TextStyle(
-                                color: Colors.white70, fontSize: 10)))),
+                        child: Text('$displayBuild',style: TextStyle(color: Colors.white70, fontSize: 10)))),
 
                 // 版权信息
                 Positioned(

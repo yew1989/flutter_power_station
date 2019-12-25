@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hsa_app/config/app_config.dart';
 import 'package:hsa_app/service/umeng_analytics.dart';
 import 'package:hsa_app/theme/theme_gradient_background.dart';
 
@@ -28,7 +29,10 @@ class _AboutPageState extends State<AboutPage> {
 
   @override
   Widget build(BuildContext context) {
+
     final isIphone5S = MediaQuery.of(context).size.width == 320.0 ? true : false;
+    final displayVersion = AppConfig.getInstance().remotePackage.displayVersion;
+    final displayBuild = AppConfig.getInstance().remotePackage.displayBuild;
 
     return ThemeGradientBackground(
       child:Scaffold(
@@ -52,9 +56,9 @@ class _AboutPageState extends State<AboutPage> {
                       width: 82,
                       child: Image.asset('images/about/about_icon.png'))),
                     SizedBox(height: 14),
-                    Center(child: Text('V1.0.0',style: TextStyle(color: Colors.white70,fontSize: 10))),
+                    Center(child: Text('$displayVersion',style: TextStyle(color: Colors.white70,fontSize: 10))),
                     SizedBox(height: 4),
-                    Center(child: Text('Build 20191220',style: TextStyle(color: Colors.white70,fontSize: 10))),
+                    Center(child: Text('$displayBuild',style: TextStyle(color: Colors.white70,fontSize: 10))),
                     SizedBox(height: isIphone5S ? 10 : 50),
                     Text('【应用简介】',style: TextStyle(color: Colors.white,fontSize:13)),
                     SizedBox(height: 4),

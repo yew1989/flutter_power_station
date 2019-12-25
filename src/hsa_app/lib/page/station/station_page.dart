@@ -238,17 +238,7 @@ class _StationPageState extends State<StationPage> {
           // 富文本收益值
           profitWidget(stationInfo),
 
-          // 左侧水库图片
-          
-          Positioned(
-            left: 0,bottom: 12,
-            child: SizedBox(
-              height: 186,
-              width: 33,
-              child: Image.asset('images/station/GL_Water_Line.png')),
-          ),
-
-          // 渐变条左边
+          // 渐变条左边水库
           //  Positioned(
           //   left: 0,bottom: 0,
           //   child: SizedBox(
@@ -266,7 +256,7 @@ class _StationPageState extends State<StationPage> {
           //     )),
           // ),
 
-          // 渐变条右边
+          // 渐变条右边尾水
           //  Positioned(
           //   right: 0,bottom: 0,
           //   child: SizedBox(
@@ -284,6 +274,18 @@ class _StationPageState extends State<StationPage> {
           //     )),
           // ),
 
+
+          /*
+          // 左侧水库图片
+          Positioned(
+            left: 0,bottom: 12,
+            child: SizedBox(
+              height: 186,
+              width: 33,
+              child: Image.asset('images/station/GL_Water_Line.png')),
+          ),
+
+
           // 水库文本
           Positioned(
             left: 0,bottom: 200,
@@ -298,8 +300,7 @@ class _StationPageState extends State<StationPage> {
               height: 186,
               width: 33,
               child: Image.asset('images/station/GL_Water_Line2.png')),
-          ),
-          
+          ), 
 
           // 尾水文本
           Positioned(
@@ -307,6 +308,7 @@ class _StationPageState extends State<StationPage> {
             child: Text('尾水',style: TextStyle(color: Colors.white,fontSize: 13),
             ),
           ),
+          */
           
           
           

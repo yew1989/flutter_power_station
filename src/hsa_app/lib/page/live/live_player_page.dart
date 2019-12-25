@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:hsa_app/components/spinkit_indicator.dart';
+import 'package:hsa_app/config/app_config.dart';
 import 'package:hsa_app/service/umeng_analytics.dart';
 import 'package:hsa_app/theme/theme_gradient_background.dart';
 import 'package:flt_video_player/flt_video_player.dart';
@@ -38,18 +39,17 @@ class _LivePlayerPageState extends State<LivePlayerPage> {
   void initUIData() {
     stationName = widget?.stationName ?? '';
     systemName = getSystemName();
-    watingCnt = getWatinngTimeSecond();
+    watingCnt  = getWatinngTimeSecond();
     isFinished = false;
     coolDownCnt = watingCnt;
     loadingText = '直播准备中($watingCnt)';
-    systemName = '未知';
   }
 
   // 获取等待时间
   int getWatinngTimeSecond() {
-    if (TargetPlatform.iOS == defaultTargetPlatform) {
+    if (TargetPlatform.iOS == AppConfig.getInstance().platform) {
       return 15;
-    } else if (TargetPlatform.android == defaultTargetPlatform) {
+    } else if (TargetPlatform.android == AppConfig.getInstance().platform) {
       return 45;
     }
     return 45;
@@ -57,9 +57,9 @@ class _LivePlayerPageState extends State<LivePlayerPage> {
 
     // 获取等待时间
   String getSystemName() {
-    if (TargetPlatform.iOS == defaultTargetPlatform) {
+    if (TargetPlatform.iOS == AppConfig.getInstance().platform) {
       return '苹果';
-    } else if (TargetPlatform.android == defaultTargetPlatform) {
+    } else if (TargetPlatform.android == AppConfig.getInstance().platform) {
       return '安卓';
     }
     return '未知';
