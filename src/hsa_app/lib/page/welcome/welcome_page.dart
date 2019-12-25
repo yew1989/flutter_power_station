@@ -10,7 +10,6 @@ import 'package:hsa_app/service/versionManager.dart';
 import 'package:hsa_app/theme/theme_gradient_background.dart';
 import 'package:hsa_app/components/public_tool.dart';
 import 'package:hsa_app/util/device_inspector.dart';
-import 'package:package_info/package_info.dart';
 
 class WelcomePage extends StatefulWidget {
   @override
@@ -100,7 +99,8 @@ class _WelcomePageState extends State<WelcomePage> with WidgetsBindingObserver {
       debugPrint('版本信息文件获取成功');
       debugPrint(pack.toJson().toString());
       setState(() {
-        
+        displayVersion   = pack?.displayVersion ?? '';
+        displayBuild     = pack?.displayBuild ?? '';
       });
       upgradeWorkFlow(context,pack);
     }, (_) {
