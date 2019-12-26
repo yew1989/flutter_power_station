@@ -126,6 +126,7 @@ class DeviceControlDialog extends Dialog {
         type: MaterialType.transparency,
         child: Stack(
           children: <Widget>[
+            GestureDetector(onTap: () => Navigator.of(context).pop()),
             Positioned(
               left: 0,
               right: 0,

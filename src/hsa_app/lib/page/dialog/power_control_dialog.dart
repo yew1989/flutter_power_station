@@ -210,6 +210,7 @@ class PowerControlDialog extends Dialog {
         //保证控件居中效果
         child: Stack(
           children: <Widget>[
+            GestureDetector(onTap: () => Navigator.of(context).pop()),
             Positioned(
               left: 0,
               right: 0,
