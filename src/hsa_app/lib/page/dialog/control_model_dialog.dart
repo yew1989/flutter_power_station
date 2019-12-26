@@ -26,73 +26,137 @@ class _ControlModelDialogWidgetState extends State<ControlModelDialogWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return ControlModelDialog(widget.runtimeData.status,widget.onChoose);
+    return ControlModelDialog(widget.runtimeData.status, widget.onChoose);
   }
 }
 
 enum ControlModelCurrentStatus { unknow, manual, auto, remoteOn, remoteOff }
 
 class ControlModelDialog extends Dialog {
-
   final ControlModelCurrentStatus currentStatus;
   final void Function(ControlModelCurrentStatus status) onChoose;
-  
+
   ControlModelDialog(this.currentStatus, this.onChoose);
 
-  Widget modelTile(BuildContext context,String string,bool enable,ControlModelCurrentStatus status) {
+  // 自动
+  Widget bottomTile(BuildContext context) {
+    return Expanded(
+      child: Stack(
+        children: <Widget>[
+          Center(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: <Widget>[
+                // 自动
+                Expanded(
+                  flex: 1,
+                  child: GestureDetector(
+                    onTap: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: Container(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: <Widget>[
+                          Text('自          动',
+                              style:
+                                  TextStyle(color: Colors.white, fontSize: 15)),
+                          SizedBox(
+                            height: 14,
+                            width: 14,
+                            child: Image.asset(
+                                'images/runtime/Time_list_icon_down.png'),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+                SizedBox(width: 127),
+                // 调功率
+                Expanded(
+                  flex: 1,
+                  child: Container(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: <Widget>[
+                        SizedBox(height: 22, width: 22),
+                        SizedBox(width: 4),
+                        Text('调功',
+                            style: TextStyle(
+                                color: Colors.transparent, fontSize: 15)),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          GestureDetector(onTap: () => Navigator.of(context).pop()),
+        ],
+      ),
+    );
+  }
 
-    var isRemoteMode = status == ControlModelCurrentStatus.remoteOff 
-    || status == ControlModelCurrentStatus.remoteOn;
-    
+  Widget modelTile(BuildContext context, String string, bool enable,
+      ControlModelCurrentStatus status) {
+    var isRemoteMode = status == ControlModelCurrentStatus.remoteOff ||
+        status == ControlModelCurrentStatus.remoteOn;
+
     return Container(
-      margin: EdgeInsets.only(right: 12,
-      left:  isRemoteMode ? 40 : 12),
+      margin: EdgeInsets.only(right: 12, left: isRemoteMode ? 40 : 12),
       child: SizedBox(
         height: 43,
         child: Stack(
           children: <Widget>[
             Center(
               child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: <Widget>[
-              Text(string, style: TextStyle(color: enable ? Colors.white :Colors.white60, fontSize: 16)),
-              SizedBox(
-                  height: 22,
-                  width: 22,
-                  child: status == currentStatus
-                      ? Image.asset('images/runtime/Time_selected_icon.png')
-                      : null),
-          ],
-        ),
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  Text(string,
+                      style: TextStyle(
+                          color: enable ? Colors.white : Colors.white60,
+                          fontSize: 16)),
+                  SizedBox(
+                      height: 22,
+                      width: 22,
+                      child: status == currentStatus
+                          ? Image.asset('images/runtime/Time_selected_icon.png')
+                          : null),
+                ],
+              ),
             ),
-        GestureDetector(
-          onTap: (){
-            if(isRemoteMode) {
-              Navigator.of(context).pop();
-              if(onChoose != null) onChoose(status);
-            }
-          },
-        ),
+            GestureDetector(
+              onTap: () {
+                if (isRemoteMode) {
+                  Navigator.of(context).pop();
+                  if (onChoose != null) onChoose(status);
+                }
+              },
+            ),
           ],
         ),
       ),
     );
   }
 
-  Widget divider(double left){
+  Widget divider(double left) {
     return Container(
       width: double.infinity,
       margin: EdgeInsets.only(left: left),
       height: 1,
       color: Colors.white12,
-      );
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-
-    final isIphone5s = MediaQuery.of(context).size.width == 320.0 ? true : false;
+    final isIphone5s =
+        MediaQuery.of(context).size.width == 320.0 ? true : false;
 
     return SafeArea(
       child: Material(
@@ -122,10 +186,11 @@ class ControlModelDialog extends Dialog {
                         mainAxisAlignment: MainAxisAlignment.start,
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: <Widget>[
-
-                          modelTile(context,'手动',false,ControlModelCurrentStatus.manual),
+                          modelTile(context, '手动', false,
+                              ControlModelCurrentStatus.manual),
                           divider(12),
-                          modelTile(context,'自动',false,ControlModelCurrentStatus.auto),
+                          modelTile(context, '自动', false,
+                              ControlModelCurrentStatus.auto),
                           divider(12),
 
                           // 智能
@@ -159,9 +224,11 @@ class ControlModelDialog extends Dialog {
                           ),
 
                           divider(12),
-                          modelTile(context,'远程控制',true,ControlModelCurrentStatus.remoteOn),
+                          modelTile(context, '远程控制', true,
+                              ControlModelCurrentStatus.remoteOn),
                           divider(40),
-                          modelTile(context,'智能水位控制',true,ControlModelCurrentStatus.remoteOff),
+                          modelTile(context, '智能水位控制', true,
+                              ControlModelCurrentStatus.remoteOff),
 
                           // 分割线顶格
                           Container(
@@ -169,71 +236,8 @@ class ControlModelDialog extends Dialog {
                             height: 1,
                             color: Colors.white12,
                           ),
-
-                          // 底部扩展区
-                          Expanded(
-                            child: Center(
-                              child: Container(
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: <Widget>[
-                                    // 自动
-                                    Expanded(
-                                      flex: 1,
-                                      child: GestureDetector(
-                                        onTap: () {
-                                          Navigator.of(context).pop();
-                                        },
-                                        child: Container(
-                                          child: Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceEvenly,
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.center,
-                                            children: <Widget>[
-                                              Text('自          动',
-                                                  style: TextStyle(
-                                                      color: Colors.white,
-                                                      fontSize: 15)),
-                                              SizedBox(
-                                                height: 14,
-                                                width: 14,
-                                                child: Image.asset(
-                                                    'images/runtime/Time_list_icon_down.png'),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                    SizedBox(width: 127),
-                                    // 调功率
-                                    Expanded(
-                                      flex: 1,
-                                      child: Container(
-                                        child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.center,
-                                          children: <Widget>[
-                                            SizedBox(height: 22, width: 22),
-                                            SizedBox(width: 4),
-                                            Text('调功',
-                                                style: TextStyle(
-                                                    color: Colors.transparent,
-                                                    fontSize: 15)),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          )
+                          // 自动
+                          bottomTile(context),
                         ],
                       ),
                     ),
