@@ -171,7 +171,7 @@ class _RuntimePageState extends State<RuntimePage> {
     final addressId = widget.address ?? '';
 
     if(addressId.length == 0) {
-      Progresshud.showErrorWithStatus('获取实时机组数据失败');
+      Progresshud.showInfoWithStatus('获取实时机组数据失败');
       return;
     }
 
@@ -184,7 +184,7 @@ class _RuntimePageState extends State<RuntimePage> {
       });
     }, (String msg) {
 
-      Progresshud.showErrorWithStatus('获取实时机组数据失败');
+      Progresshud.showInfoWithStatus('获取实时机组数据失败');
       refreshController.refreshFailed();
     });
   }
@@ -554,7 +554,7 @@ class _RuntimePageState extends State<RuntimePage> {
     // 终端在线状态检测
     final isOnline = widget.isOnline ?? false;
     if(isOnline == false) {
-      Progresshud.showErrorWithStatus('终端不在线,远程操作被取消');
+      Progresshud.showInfoWithStatus('终端不在线,远程操作被取消');
       return;
     }
     // 远程控制检测
@@ -570,7 +570,7 @@ class _RuntimePageState extends State<RuntimePage> {
     }
 
     if(isRemoteControl == false) {
-      Progresshud.showErrorWithStatus('请先切换到远程控制模式');
+      Progresshud.showInfoWithStatus('请先切换到远程控制模式');
       return;
     }
 

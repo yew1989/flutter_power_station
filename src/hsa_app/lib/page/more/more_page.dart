@@ -38,7 +38,7 @@ class _MorePageState extends State<MorePage> {
     var address = widget.addressId ?? '';
 
     if(address.length == 0) {
-      Progresshud.showErrorWithStatus('获取更多信息失败');
+      Progresshud.showInfoWithStatus('获取更多信息失败');
       return;
     }
     API.moreData(address,(List<MoreItem> items){
@@ -47,7 +47,7 @@ class _MorePageState extends State<MorePage> {
         this.moreItems = items;
       });
     }, (String msg){
-      Progresshud.showErrorWithStatus('获取更多信息失败');
+      Progresshud.showInfoWithStatus('获取更多信息失败');
       debugPrint(msg);
     });
 

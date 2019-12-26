@@ -75,7 +75,7 @@ class LoginPageState extends State<LoginPage> {
     }
     debugPrint('❌:登录失败');
     Progresshud.dismiss();
-    Progresshud.showErrorWithStatus('登录失败,请检查您的信息');
+    Progresshud.showInfoWithStatus('登录失败,请检查您的信息');
   }
 
   @override

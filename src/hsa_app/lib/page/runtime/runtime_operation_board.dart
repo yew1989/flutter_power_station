@@ -278,44 +278,49 @@ class _RunTimeOperationBoardState extends State<RunTimeOperationBoard> {
                             // 调功率
                             Expanded(
                               flex: 1,
-                              child: GestureDetector(
-                                onTap: () {
-                                  showDialog(
-                                    context: context,barrierDismissible: false,
-                                    builder: (_) => PowerControlDialogWidget(
-                                      powerMax: runtimeData?.equippedCapacitor?.toInt() ?? 0,
-                                        onConfirmActivePower:(String activePower) {
-                                           if(widget.onSholdRequestRemoteCommand != null) {
-                                            widget.onSholdRequestRemoteCommand(TaskName.setttingActivePower,activePower);
-                                           }
-                                        },
-                                        onConfirmPowerFactor:(String powerFactor) {
-                                              debugPrint('功率因数:' + powerFactor);
-                                              var hundred = double.parse(powerFactor) * 100;
-                                              var hundredStr = hundred.toStringAsFixed(0);
-                                           if(widget.onSholdRequestRemoteCommand != null) {
-                                            widget.onSholdRequestRemoteCommand(TaskName.settingPowerFactor,hundredStr);
-                                           }
-                                        }));
-                                },
-                                child: Container(
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    crossAxisAlignment: CrossAxisAlignment.center,
-                                    children: <Widget>[
-                                      SizedBox(
-                                        height: 22,
-                                        width: 22,
-                                        child: Image.asset(
-                                            'images/runtime/Time_Apower_icon.png'),
-                                      ),
-                                      SizedBox(width: 4),
-                                      Text('调功',
-                                          style: TextStyle(
-                                              color: Colors.white, fontSize: 15)),
-                                    ],
+                              child: Stack(
+                                children: <Widget>[
+                                  // 功率调整
+                                  Center(
+                                      child: Row(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        crossAxisAlignment: CrossAxisAlignment.center,
+                                        children: <Widget>[
+                                          SizedBox(
+                                            height: 22,
+                                            width: 22,
+                                            child: Image.asset('images/runtime/Time_Apower_icon.png')),
+                                          SizedBox(width: 4),
+                                          Text('调功',
+                                              style: TextStyle(
+                                                  color: Colors.white, fontSize: 15)),
+                                        ],
+                                    ),
                                   ),
+                                  // 调功
+                                  GestureDetector(
+                                  onTap: () {
+                                    showDialog(
+                                      context: context,barrierDismissible: false,
+                                      builder: (_) => PowerControlDialogWidget(
+                                        powerMax: runtimeData?.equippedCapacitor?.toInt() ?? 0,
+                                          onConfirmActivePower:(String activePower) {
+                                             if(widget.onSholdRequestRemoteCommand != null) {
+                                              widget.onSholdRequestRemoteCommand(TaskName.setttingActivePower,activePower);
+                                             }
+                                          },
+                                          onConfirmPowerFactor:(String powerFactor) {
+                                                debugPrint('功率因数:' + powerFactor);
+                                                var hundred = double.parse(powerFactor) * 100;
+                                                var hundredStr = hundred.toStringAsFixed(0);
+                                             if(widget.onSholdRequestRemoteCommand != null) {
+                                              widget.onSholdRequestRemoteCommand(TaskName.settingPowerFactor,hundredStr);
+                                             }
+                                          }));
+                                  },
                                 ),
+
+                                ],
                               ),
                             ),
                           ],
@@ -334,18 +339,10 @@ class _RunTimeOperationBoardState extends State<RunTimeOperationBoard> {
                             // 设备控制
                             Expanded(
                               flex: 1,
-                              child: GestureDetector(
-                                onTap: () {
-                                  showDialog(
-                                      context: context,
-                                      barrierDismissible: false,
-                                      builder: (_) => DeviceControlDialog((taskName){
-                                        if(widget.onSholdRequestRemoteCommand != null) {
-                                          widget.onSholdRequestRemoteCommand(taskName,null);
-                                        }
-                                      }));
-                                },
-                                child: Container(
+                              child: Stack(
+                                children: <Widget>[
+                                  // 设备控制
+                                  Center(
                                   child: Row(
                                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                     crossAxisAlignment: CrossAxisAlignment.center,
@@ -359,18 +356,29 @@ class _RunTimeOperationBoardState extends State<RunTimeOperationBoard> {
                                     ],
                                   ),
                                 ),
+                                
+                                GestureDetector(
+                                onTap: () {
+                                  showDialog(
+                                      context: context,
+                                      barrierDismissible: false,
+                                      builder: (_) => DeviceControlDialog((taskName){
+                                        if(widget.onSholdRequestRemoteCommand != null) {
+                                          widget.onSholdRequestRemoteCommand(taskName,null);
+                                        }
+                                      }));
+                                },
+                              ),
+                                ],
                               ),
                             ),
                             SizedBox(width: 127),
                             // 更多
                             Expanded(
                               flex: 1,
-                              child: GestureDetector(
-                                onTap: () {
-                                  pushToPage(context,
-                                      MorePage(addressId: widget?.addressId ??''));
-                                },
-                                child: Container(
+                              child:Stack(
+                                children: <Widget>[
+                                  Center(
                                   child: Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     crossAxisAlignment: CrossAxisAlignment.center,
@@ -388,6 +396,14 @@ class _RunTimeOperationBoardState extends State<RunTimeOperationBoard> {
                                     ],
                                   ),
                                 ),
+
+                                GestureDetector(
+                                onTap: () {
+                                  pushToPage(context,MorePage(addressId: widget?.addressId ??''));
+                                },
+                              ),
+
+                                ],
                               ),
                             ),
                           ],

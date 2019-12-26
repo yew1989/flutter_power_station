@@ -457,12 +457,12 @@ class API {
         result.success = false;
         result.msg = map['Msg'] ?? '';
         Progresshud.dismiss();
-        Progresshud.showErrorWithStatus(result.msg);
+        Progresshud.showInfoWithStatus(result.msg);
       }
       return result;
     } catch (e) {
       Progresshud.dismiss();
-      Progresshud.showErrorWithStatus('网络错误');
+      Progresshud.showInfoWithStatus('网络错误');
       print(e);
       return result;
     }

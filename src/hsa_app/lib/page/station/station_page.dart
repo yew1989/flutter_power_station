@@ -78,7 +78,7 @@ class _StationPageState extends State<StationPage> {
     final stationId = widget?.stationId ?? '' ;
 
     if(stationId.length == 0) {
-      Progresshud.showErrorWithStatus('获取电站信息失败');
+      Progresshud.showInfoWithStatus('获取电站信息失败');
       return;
     }
     
@@ -120,7 +120,7 @@ class _StationPageState extends State<StationPage> {
     },(String msg){
 
       refreshController.refreshFailed();
-      Progresshud.showErrorWithStatus('获取电站信息失败');
+      Progresshud.showInfoWithStatus('获取电站信息失败');
 
     });
 
