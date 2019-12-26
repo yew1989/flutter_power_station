@@ -1,25 +1,29 @@
 import 'package:flutter/material.dart';
 import 'package:hsa_app/components/data_picker.dart';
 
-
-typedef PowControlDialogOnConfirmActivePower = void Function(String activePower);
-typedef PowControlDialogOnConfirmPowerFactor = void Function(String powerFactor);
+typedef PowControlDialogOnConfirmActivePower = void Function(
+    String activePower);
+typedef PowControlDialogOnConfirmPowerFactor = void Function(
+    String powerFactor);
 
 class PowerControlDialogWidget extends StatefulWidget {
-  
   final int powerMax;
   final PowControlDialogOnConfirmActivePower onConfirmActivePower;
   final PowControlDialogOnConfirmPowerFactor onConfirmPowerFactor;
 
-  const PowerControlDialogWidget({Key key, this.powerMax, this.onConfirmActivePower, this.onConfirmPowerFactor}) 
-  : super(key: key);
+  const PowerControlDialogWidget(
+      {Key key,
+      this.powerMax,
+      this.onConfirmActivePower,
+      this.onConfirmPowerFactor})
+      : super(key: key);
 
   @override
-  _PowerControlDialogWidgetState createState() => _PowerControlDialogWidgetState();
+  _PowerControlDialogWidgetState createState() =>
+      _PowerControlDialogWidgetState();
 }
 
 class _PowerControlDialogWidgetState extends State<PowerControlDialogWidget> {
-  
   List<String> powerFactorList = [];
   List<String> activePowerList = [];
 
@@ -60,20 +64,164 @@ class _PowerControlDialogWidgetState extends State<PowerControlDialogWidget> {
   }
 }
 
-
 class PowerControlDialog extends Dialog {
-
   final List<String> powerFactorList;
   final List<String> activePowerList;
   final PowControlDialogOnConfirmActivePower onConfirmActivePower;
   final PowControlDialogOnConfirmPowerFactor onConfirmPowerFactor;
 
-  PowerControlDialog({this.activePowerList, this.powerFactorList, this.onConfirmActivePower, this.onConfirmPowerFactor});
+  PowerControlDialog(
+      {this.activePowerList,
+      this.powerFactorList,
+      this.onConfirmActivePower,
+      this.onConfirmPowerFactor});
+
+  // 功率因数调控
+  Widget powerFactorTile(BuildContext context) {
+    return Container(
+      margin: EdgeInsets.symmetric(horizontal: 12),
+      child: SizedBox(
+        height: 43,
+        child: Stack(
+          children: <Widget>[
+            Center(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  Text('功率因数调控',
+                      style: TextStyle(color: Colors.white, fontSize: 16)),
+                  SizedBox(height: 22, width: 22),
+                ],
+              ),
+            ),
+            GestureDetector(
+              onTap: () {
+                Navigator.of(context).pop();
+                showDataPicker(context, '请选择功率因数', powerFactorList,
+                    (String data) {
+                  if (onConfirmPowerFactor != null) onConfirmPowerFactor(data);
+                });
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  //  有功调控
+  Widget activePowerTile(BuildContext context) {
+    return Container(
+      margin: EdgeInsets.symmetric(horizontal: 12),
+      child: SizedBox(
+        height: 43,
+        child: Stack(
+          children: <Widget>[
+            Center(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  Text('有功调控',
+                      style: TextStyle(color: Colors.white, fontSize: 16)),
+                  SizedBox(height: 22, width: 22),
+                ],
+              ),
+            ),
+            GestureDetector(
+              onTap: () {
+                Navigator.of(context).pop();
+                showDataPicker(context, '请选择有功功率(kW)', activePowerList,
+                    (String data) {
+                  if (onConfirmActivePower != null) onConfirmActivePower(data);
+                });
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // 分割线
+  Widget divLine(double left) {
+    return Container(
+      width: double.infinity,
+      margin: EdgeInsets.only(left: left),
+      height: 1,
+      color: Colors.white12,
+    );
+  }
+
+  // 底部调功
+  Widget bottomTile(BuildContext context) {
+    return Expanded(
+      child: Stack(
+        children: [
+          Center(
+            child: Container(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  // 自动
+                  Expanded(
+                    flex: 1,
+                    child: Container(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: <Widget>[
+                          Text('自          动',
+                              style: TextStyle(
+                                  color: Colors.transparent, fontSize: 15)),
+                          SizedBox(height: 14, width: 14),
+                        ],
+                      ),
+                    ),
+                  ),
+                  SizedBox(width: 127),
+                  // 调功率
+                  Expanded(
+                    flex: 1,
+                    child: Container(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: <Widget>[
+                          SizedBox(
+                            height: 22,
+                            width: 22,
+                            child: Image.asset(
+                                'images/runtime/Time_Apower_icon.png'),
+                          ),
+                          SizedBox(width: 4),
+                          Text('调功',
+                              style:
+                                  TextStyle(color: Colors.white, fontSize: 15)),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          GestureDetector(
+            onTap: () {
+              Navigator.of(context).pop();
+            },
+          ),
+        ],
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
-
-    final isIphone5S = MediaQuery.of(context).size.width == 320.0 ? true : false;
+    final isIphone5S =
+        MediaQuery.of(context).size.width == 320.0 ? true : false;
     return SafeArea(
       child: Material(
         //透明类型
@@ -104,140 +252,11 @@ class PowerControlDialog extends Dialog {
                         mainAxisAlignment: MainAxisAlignment.start,
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: <Widget>[
-                          //  有功调控
-                          Container(
-                            margin: EdgeInsets.symmetric(horizontal: 12),
-                            child: SizedBox(
-                              height: 43,
-                              child: Stack(
-                                children: <Widget>[
-
-                                  Center( 
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: <Widget>[
-                                    Text('有功调控',style: TextStyle(color: Colors.white, fontSize: 16)),
-                                    SizedBox(height: 22,width: 22),
-                                  ],
-                                ),
-                              ),
-
-                              GestureDetector(
-                                    onTap: (){
-                                      Navigator.of(context).pop();
-                                      showDataPicker(context,'请选择有功功率(kW)',activePowerList,(String data){
-                                         if(onConfirmActivePower != null) onConfirmActivePower(data);
-                                      });
-                                    },
-                                  ),
-
-                                ],
-                              ),
-                            ),
-                          ),
-
-                          // 分割线
-                          Container(
-                            width: double.infinity,
-                            margin: EdgeInsets.only(left: 12),
-                            height: 1,
-                            color: Colors.white12,
-                          ),
-
-                          // 无功调控
-                          Container(
-                            margin: EdgeInsets.symmetric(horizontal: 12),
-                              child: SizedBox(
-                                height: 43,
-                                  child: Stack(
-                                    children: <Widget>[
-                                      Center(
-                                        child: Row(
-                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                          crossAxisAlignment: CrossAxisAlignment.center,
-                                          children: <Widget>[
-                                            Text('功率因数调控',style: TextStyle(color: Colors.white, fontSize: 16)),
-                                            SizedBox(height: 22,width: 22),
-                                       ],
-                                        ),
-                                      ),
-                                      GestureDetector(
-                                        onTap: (){
-                                          Navigator.of(context).pop();
-                                          showDataPicker(context,'请选择功率因数',powerFactorList,(String data){
-                                            if(onConfirmPowerFactor != null) onConfirmPowerFactor(data);
-                                          });
-                                        },
-                                      ),
-
-                                    ],
-                                  ),
-                            ),
-                          ),
-
-                          // 分割线
-                          Container(
-                            width: double.infinity,
-                            height: 1,
-                            color: Colors.white12,
-                          ),
-
-                          // 底部扩展区
-                          Expanded(
-                            child: Center(
-                            child: Container(
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: <Widget>[
-                                // 自动
-                                Expanded(
-                                  flex: 1,
-                                  child:Container(
-                                    child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                      crossAxisAlignment: CrossAxisAlignment.center,
-                                      children: <Widget>[
-                                        Text('自          动',
-                                        style: TextStyle(color: Colors.transparent,
-                                        fontSize: 15)),
-                                        SizedBox(height: 14,width: 14),
-                              ],
-                            ),
-                           ),
-                          ),
-                          SizedBox(width: 127),
-                          // 调功率
-                          Expanded(
-                            flex: 1,
-                            child:GestureDetector(
-                              onTap: (){
-                                Navigator.of(context).pop();
-                              },
-                              child: Container(
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: <Widget>[
-                                SizedBox(height: 22,width: 22,
-                                    child: Image.asset('images/runtime/Time_Apower_icon.png'),
-                                  ),
-                                SizedBox(width: 4),
-                                Text('调功',style: TextStyle(color: Colors.white,fontSize: 15)),
-
-                                ],
-                              ),
-                           ),
-                            ),
-                          ),
-                        ],
-                      ),
-                              ),
-                            ),
-                          )
-
-
+                          activePowerTile(context),
+                          divLine(12),
+                          powerFactorTile(context),
+                          divLine(0),
+                          bottomTile(context),
                         ],
                       ),
                     ),
