@@ -2,23 +2,20 @@ import 'package:flutter/material.dart';
 import 'package:pin_code_text_field/pin_code_text_field.dart';
 
 typedef PasswordDialogOnSuccCallback = void Function(String pswd);
-typedef PasswordDialogOnCancelCallBack = void Function();
 
 class PasswordDialog extends Dialog {
 
   final PasswordDialogOnSuccCallback onSucc;
-  final PasswordDialogOnCancelCallBack onCancel;
 
-  PasswordDialog(this.onSucc, {this.onCancel});
+  PasswordDialog(this.onSucc);
 
   @override
   Widget build(BuildContext context) {
-    var boxSize = MediaQuery.of(context).size.width / 8;
-    //创建透明层
+
+    final boxSize = MediaQuery.of(context).size.width / 8;
+
     return Material(
-      //透明类型
       type: MaterialType.transparency,
-      //保证控件居中效果
       child: Stack(
         children:[
         GestureDetector(onTap: () => Navigator.of(context).pop()),
@@ -55,7 +52,6 @@ class PasswordDialog extends Dialog {
                            GestureDetector(
                               onTap: () {
                                 Navigator.of(context).pop();
-                                if(onCancel != null) onCancel();
                               },
                               child: SizedBox(
                                   height: 22,

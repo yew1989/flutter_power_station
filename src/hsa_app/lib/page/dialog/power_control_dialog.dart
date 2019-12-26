@@ -205,9 +205,7 @@ class PowerControlDialog extends Dialog {
     final isIphone5S = MediaQuery.of(context).size.width == 320.0 ? true : false;
     return SafeArea(
       child: Material(
-        //透明类型
         type: MaterialType.transparency,
-        //保证控件居中效果
         child: Stack(
           children: <Widget>[
             GestureDetector(onTap: () => Navigator.of(context).pop()),
