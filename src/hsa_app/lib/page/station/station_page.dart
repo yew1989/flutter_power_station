@@ -314,7 +314,7 @@ class _StationPageState extends State<StationPage> {
           
           // 当前功率 / 总功率
           Positioned(
-            right: 50,bottom: 15,
+            right: 10,bottom: 15,
             child: powerWidget(stationInfo)
           ),
 
@@ -350,7 +350,7 @@ class _StationPageState extends State<StationPage> {
                 SizedBox(
                   height: 22,
                   width: 22,
-                  child: Image.asset('images/station/GL_Locationbtn.png'),
+                  // child: Image.asset('images/station/GL_Locationbtn.png'),
                 ),
 
                 SizedBox(
@@ -531,11 +531,11 @@ class _StationPageState extends State<StationPage> {
     var isMaster = device?.isMaster ?? false;
     var isOnline = device?.status == 'online' ? true : false;
     var currentPower = device?.power?.current ?? 0.0;
-    var currentPowerStr = currentPower.toString() + 'kW';
+    var currentPowerStr = currentPower.toString() + '';
     var timeStamp = device?.updateTime ?? '';
     timeStamp += isOnline ? '         ' : ' 离线';
     var maxPower = device?.power?.max ?? 0;
-    var maxPowerStr = maxPower.toString();
+    var maxPowerStr = maxPower.toString() + 'kW';
     var eventCount = device?.eventCount ?? 0;
     var eventStr = buildEventCount(eventCount);
     
@@ -578,7 +578,7 @@ class _StationPageState extends State<StationPage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
                         SizedBox(height: 8),
-                        Text(currentPowerStr,style: TextStyle(color: isOnline ? Colors.white : Colors.white60,
+                        Text(maxPowerStr,style: TextStyle(color: isOnline ? Colors.white : Colors.white60,
                         fontFamily: 'ArialNarrow',fontSize: 20)),
                         SizedBox(height: 4),
                         Text(timeStamp,style: TextStyle(color: Colors.white54,fontFamily: 'ArialNarrow',fontSize: 15)),
@@ -594,7 +594,7 @@ class _StationPageState extends State<StationPage> {
                     : SizedBox(height: 24,width: 24),
 
                     // 当前功率
-                    Text(maxPowerStr,style: TextStyle(color: isOnline ? Colors.white : Colors.white60,fontFamily: 'ArialNarrow',fontSize: 28)),
+                    Text(currentPowerStr,style: TextStyle(color: isOnline ? Colors.white : Colors.white60,fontFamily: 'ArialNarrow',fontSize: 28)),
                   ],
                 ),
               ),
