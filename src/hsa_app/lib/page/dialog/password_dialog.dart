@@ -11,8 +11,6 @@ class PasswordDialog extends Dialog {
 
   PasswordDialog(this.onSucc, {this.onCancel});
 
-  // TextEditingController controller = TextEditingController();
-
   @override
   Widget build(BuildContext context) {
     var boxSize = MediaQuery.of(context).size.width / 8;
@@ -40,29 +38,29 @@ class PasswordDialog extends Dialog {
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
-                  SizedBox(
+                  // 头部
+                  Container(
+                    margin: EdgeInsets.symmetric(horizontal: 10),
                     height: 46,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: <Widget>[
-                        SizedBox(width: 8),
-                        GestureDetector(
-                          onTap: () {
-                            Navigator.of(context).pop();
-                            if(onCancel != null) onCancel();
-                          },
-                          child: SizedBox(
-                              height: 22,
-                              width: 22,
-                              child: Image.asset(
-                                  'images/runtime/Time_close_icon.png')),
-                        ),
-                        SizedBox(width: 10),
-                        Text('请输入操作密码',
-                            style:
-                                TextStyle(color: Colors.black, fontSize: 16)),
-                      ],
+                    child: Center(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: <Widget>[
+                          Text('请输入操作密码',style:TextStyle(color: Colors.black, fontSize: 16)),
+
+                         GestureDetector(
+                            onTap: () {
+                              Navigator.of(context).pop();
+                              if(onCancel != null) onCancel();
+                            },
+                            child: SizedBox(
+                                height: 22,
+                                width: 22,
+                                child: Image.asset('images/runtime/Time_close_icon.png')),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                   Divider(color: Color(0xDCDCDCFF)),
@@ -71,7 +69,6 @@ class PasswordDialog extends Dialog {
                   // 密码输入框
                   PinCodeTextField(
                     autofocus: true,
-                    // controller: controller,
                     hideCharacter: true,
                     highlight: true,
                     highlightColor: Colors.black26,
