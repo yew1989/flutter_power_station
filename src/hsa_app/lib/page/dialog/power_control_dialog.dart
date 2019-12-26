@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:hsa_app/components/data_picker.dart';
 
-typedef PowControlDialogOnConfirmActivePower = void Function(
-    String activePower);
-typedef PowControlDialogOnConfirmPowerFactor = void Function(
-    String powerFactor);
+typedef PowControlDialogOnConfirmActivePower = void Function(String activePower);
+typedef PowControlDialogOnConfirmPowerFactor = void Function(String powerFactor);
 
 class PowerControlDialogWidget extends StatefulWidget {
   final int powerMax;
@@ -19,8 +17,7 @@ class PowerControlDialogWidget extends StatefulWidget {
       : super(key: key);
 
   @override
-  _PowerControlDialogWidgetState createState() =>
-      _PowerControlDialogWidgetState();
+  _PowerControlDialogWidgetState createState() => _PowerControlDialogWidgetState();
 }
 
 class _PowerControlDialogWidgetState extends State<PowerControlDialogWidget> {
@@ -89,8 +86,7 @@ class PowerControlDialog extends Dialog {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
-                  Text('功率因数调控',
-                      style: TextStyle(color: Colors.white, fontSize: 16)),
+                  Text('功率因数调控',style: TextStyle(color: Colors.white, fontSize: 16)),
                   SizedBox(height: 22, width: 22),
                 ],
               ),
@@ -123,8 +119,7 @@ class PowerControlDialog extends Dialog {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
-                  Text('有功调控',
-                      style: TextStyle(color: Colors.white, fontSize: 16)),
+                  Text('有功调控',style: TextStyle(color: Colors.white, fontSize: 16)),
                   SizedBox(height: 22, width: 22),
                 ],
               ),
@@ -160,59 +155,46 @@ class PowerControlDialog extends Dialog {
       child: Stack(
         children: [
           Center(
-            child: Container(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: <Widget>[
-                  // 自动
-                  Expanded(
-                    flex: 1,
-                    child: Container(
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: <Widget>[
-                          Text('自          动',
-                              style: TextStyle(
-                                  color: Colors.transparent, fontSize: 15)),
-                          SizedBox(height: 14, width: 14),
-                        ],
-                      ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: <Widget>[
+                // 自动
+                Expanded(
+                  flex: 1,
+                  child: Container(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: <Widget>[
+                        Text('自          动',
+                            style: TextStyle(
+                                color: Colors.transparent, fontSize: 15)),
+                        SizedBox(height: 14, width: 14),
+                      ],
                     ),
                   ),
-                  SizedBox(width: 127),
-                  // 调功率
-                  Expanded(
-                    flex: 1,
-                    child: Container(
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: <Widget>[
-                          SizedBox(
-                            height: 22,
-                            width: 22,
-                            child: Image.asset(
-                                'images/runtime/Time_Apower_icon.png'),
-                          ),
-                          SizedBox(width: 4),
-                          Text('调功',
-                              style:
-                                  TextStyle(color: Colors.white, fontSize: 15)),
-                        ],
-                      ),
+                ),
+                SizedBox(width: 127),
+                // 调功率
+                Expanded(
+                  flex: 1,
+                  child: Container(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: <Widget>[
+                        SizedBox(height: 22,width: 22,child: Image.asset('images/runtime/Time_Apower_icon.png')),
+                        SizedBox(width: 4),
+                        Text('调功',style:TextStyle(color: Colors.white, fontSize: 15)),
+                      ],
                     ),
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
-          GestureDetector(
-            onTap: () {
-              Navigator.of(context).pop();
-            },
-          ),
+          GestureDetector(onTap: () => Navigator.of(context).pop()),
         ],
       ),
     );
@@ -220,8 +202,7 @@ class PowerControlDialog extends Dialog {
 
   @override
   Widget build(BuildContext context) {
-    final isIphone5S =
-        MediaQuery.of(context).size.width == 320.0 ? true : false;
+    final isIphone5S = MediaQuery.of(context).size.width == 320.0 ? true : false;
     return SafeArea(
       child: Material(
         //透明类型
