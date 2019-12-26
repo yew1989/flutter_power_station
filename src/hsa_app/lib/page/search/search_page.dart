@@ -12,6 +12,8 @@ class SearchPage extends StatefulWidget {
 
 class _SearchPageState extends State<SearchPage> {
 
+  bool isProtect = false;
+
   Widget seachingBar() {
 
      return SizedBox(height: 70,width: double.infinity,
@@ -22,6 +24,7 @@ class _SearchPageState extends State<SearchPage> {
          borderRadius: BorderRadius.all(Radius.circular(35)),
        ),
        child: TextFormField(
+         enabled: isProtect,
          maxLength: 20,
          autofocus: false,
          cursorColor: Colors.white,
@@ -42,9 +45,17 @@ class _SearchPageState extends State<SearchPage> {
     );
   }
 
+  void openSearchBarProtect() async {
+    await Future.delayed(Duration(milliseconds: 500));
+    setState(() {
+      isProtect = true;
+    });
+  }
+
   @override
   void initState() {
     UMengAnalyticsService.enterPage('搜索电站');
+    openSearchBarProtect();
     super.initState();
   }
 
