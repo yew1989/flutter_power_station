@@ -4,9 +4,9 @@ import 'package:hsa_app/components/smart_refresher_style.dart';
 import 'package:hsa_app/page/station/station_list_header.dart';
 import 'package:hsa_app/page/station/station_profit_widget.dart';
 import 'package:hsa_app/page/station/station_wave_widget.dart';
+import 'package:hsa_app/page/station/station_weather_widget.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:hsa_app/api/api.dart';
-import 'package:hsa_app/api/http_helper.dart';
 import 'package:hsa_app/config/app_config.dart';
 import 'package:hsa_app/model/station_info.dart';
 import 'package:hsa_app/page/runtime/runtime_page.dart';
@@ -31,8 +31,7 @@ class StationPage extends StatefulWidget {
 class _StationPageState extends State<StationPage> {
 
   StationInfo stationInfo = StationInfo();
-  int weatherType = 0;
-  String weatherString = '晴';
+  String weather = '晴';
   List<String> openLive = [];
   RefreshController refreshController = RefreshController(initialRefresh: false);
 
@@ -48,25 +47,6 @@ class _StationPageState extends State<StationPage> {
     Progresshud.dismiss();
     UMengAnalyticsService.exitPage('电站概要');
     super.dispose();
-  }
-
-
-  Widget wetherImageWidget(int type) {
-    if( type == 0 ) {
-      return Image.asset('images/station/GL_sun_icon.png');
-    }
-    if( type == 1 ) {
-      return Image.asset('images/station/GL_cloudy_icon.png');
-    }
-    if( type == 2 ) {
-      return Image.asset('images/station/GL_rain_icon.png');
-    }
-    return Image.asset('images/station/GL_sun_icon.png');
-  }
-
-  // 彩云天气
-  void requestWeatherCaiyun(Geo geo,WeatherTypeResponseCallBack onSucc,HttpFailCallback onFail) {
-    API.weatherCaiyun(geo, onSucc, onFail);
   }
 
   // 请求电站概要
@@ -87,27 +67,6 @@ class _StationPageState extends State<StationPage> {
       refreshController.refreshCompleted();
 
       if(station == null) return;
-      // 彩云天气接口
-      requestWeatherCaiyun(station.geo,(int type){
-        setState(() {
-          if(type == 0) {
-            this.weatherString = '晴';
-          }
-          else if(type == 1) {
-            this.weatherString = '多云';
-          }
-          else if(type == 2) {
-            this.weatherString = '雨';
-          }
-          this.weatherType = type;
-        });
-      },(String msg){
-        setState(() {
-          this.weatherString = '晴';
-          this.weatherType = 0;
-        });
-      });
-      
 
       setState(() {
         this.stationInfo =  station;
@@ -516,9 +475,14 @@ class _StationPageState extends State<StationPage> {
     return ThemeGradientBackground(
       child: Stack(
         children:[
-          
-          // 天气图片
-          wetherImageWidget(weatherType),
+
+          // 天气组件
+          this.stationInfo.geo != null ? 
+          StationWeatherWidget(geo: stationInfo.geo,onWeahterResponse: (weather) {
+            setState(() {
+              this.weather = weather;
+            });
+          }): Container(),
 
           Scaffold(
           backgroundColor: Colors.transparent,
@@ -545,7 +509,7 @@ class _StationPageState extends State<StationPage> {
               child: ListView(
                 children: <Widget>[
                   waterPool(stationInfo),
-                  StationListHeader(weather: weatherString,openLive: openLive,stationName: stationInfo.name),
+                  StationListHeader(weather: weather,openLive: openLive,stationName: stationInfo.name),
                   terminalList(),
                 ],
               ),
