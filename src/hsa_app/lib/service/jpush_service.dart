@@ -17,7 +17,7 @@ class JpushService {
       debug: !isProduction,
       channel: '',
     );
-
+    
     jpush.getRegistrationID().then((regId) {
       debugPrint('🐦 🐦 🐦 推送RegistrationID 🐦 🐦 🐦:' + regId);
     });

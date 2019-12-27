@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hsa_app/api/leancloud/leancloud_api.dart';
@@ -123,16 +122,6 @@ class _WelcomePageState extends State<WelcomePage> with WidgetsBindingObserver {
     await Future.delayed(Duration(seconds: 3));
     requestPackageInfo(context);
   }
-
-  @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    super.didChangeAppLifecycleState(state);
-    debugPrint('生命周期改变:' + state.toString());
-    if (state == AppLifecycleState.resumed) {
-      requestPackageInfo(context);
-    }
-  }
-
   // 初始化友盟 
   void initUmengService() async{
     await Future.delayed(Duration(milliseconds: 500));
@@ -150,14 +139,12 @@ class _WelcomePageState extends State<WelcomePage> with WidgetsBindingObserver {
     DeviceInspector.inspectDevice(context);
     initUmengService();
     initJpush();
-    WidgetsBinding.instance.addObserver(this);
     requestPackageInfo(context);
     super.initState();
   }
 
   @override
   void dispose() {
-    WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
 
