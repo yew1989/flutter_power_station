@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:hsa_app/components/wave_widget.dart';
 import 'package:hsa_app/model/station_info.dart';
-import 'package:wave/config.dart';
-import 'package:wave/wave.dart';
 
 class StationWaveWidget extends StatefulWidget {
   
@@ -42,11 +41,15 @@ class _StationWaveWidgetState extends State<StationWaveWidget> {
     final wave      = caculateUIWave(waveRatio);
     return Center(
        child: WaveWidget(
-         waveFrequency: 3.6,
+         waveFrequency: 1.6,
          config: CustomConfig(
-           gradients: [[Color.fromRGBO(3,169,244, 1),Color.fromRGBO(3,169,244, 0.3)]],
-           durations: [10000],
-           heightPercentages: [wave],
+           gradients: [
+             [Color.fromRGBO(42,120,250, 0.5),Color.fromRGBO(42,120,250, 0.5)],
+             [Color.fromRGBO(42,120,250, 1),Color.fromRGBO(42,120,250, 1)],
+            ],
+          //  blur: MaskFilter.blur(BlurStyle.inner, 2),
+           durations: [3000,4000],
+           heightPercentages: [wave,wave+0.05],
            gradientBegin: Alignment.topCenter,
            gradientEnd: Alignment.bottomCenter
            ),

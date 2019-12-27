@@ -28,7 +28,6 @@ dependencies:
   flutter_spinkit: ^4.0.0
   ovprogresshud: ^0.2.5
   event_taxi: ^0.1.5
-  wave: ^0.0.8
   badges: ^1.1.0
   flutter_banner_swiper: ^0.1.4
   loading: ^1.0.1
@@ -42,9 +41,10 @@ dependencies:
   progress_dialog: ^1.2.0
   device_info: ^0.4.1+3
   lcfarm_flutter_umeng: ^0.1.8
-  # jpush_flutter: ^0.1.0
   jpush_flutter: 0.0.13
-  
+  # jpush_flutter: ^0.1.0
+  # wave: ^0.0.8
+    
 dev_dependencies:
   flutter_test:
     sdk: flutter

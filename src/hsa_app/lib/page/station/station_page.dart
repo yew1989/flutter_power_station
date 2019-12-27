@@ -341,6 +341,13 @@ class _StationPageState extends State<StationPage> {
     pushToPage(context, WebViewPage('', lastUrl,noNavBar:true,description:'历史曲线'));
   }
 
+  // 同步天气数据
+  void syncWeaher(String weather) async {
+   await Future.delayed(Duration(milliseconds: 500));
+   setState(() {
+      this.weather = weather;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -348,13 +355,8 @@ class _StationPageState extends State<StationPage> {
       child: Stack(
         children:[
 
-          // 天气组件
-          this.stationInfo.geo != null ? 
-          StationWeatherWidget(geo: stationInfo.geo,onWeahterResponse: (weather) {
-            setState(() {
-              this.weather = weather;
-            });
-          }): Container(),
+          stationInfo?.geo == null ? Container() : 
+          StationWeatherWidget(geo: stationInfo.geo,onWeahterResponse: (weather) => syncWeaher(weather)),
 
           Scaffold(
           backgroundColor: Colors.transparent,

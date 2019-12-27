@@ -232,8 +232,11 @@ class API {
   // 彩云天气
   static void weatherCaiyun(Geo geo,WeatherTypeResponseCallBack onSucc,HttpFailCallback onFail) {
 
-    var longitude = geo?.longitude ?? 0.0;
-    var latitude  = geo?.latitude ?? 0.0;
+    final longitude = geo?.longitude ?? 0.0;
+    final latitude  = geo?.latitude ?? 0.0;
+
+    debugPrint('🌍 🌍 🌍 经纬度 🌍 🌍 🌍 : $longitude,$latitude ');
+
     if(longitude == 0){
       onSucc(0);
       return;
@@ -256,6 +259,7 @@ class API {
           }
           // 获取天气情况
           var sky = resp?.result?.skycon ?? '';
+          debugPrint('🌞 🌞 🌞 天气 🌞 🌞 🌞: $sky');
           // 晴天
           if(sky == 'CLEAR_DAY' || sky == 'CLEAR_NIGHT' || sky == '') {
             onSucc(0);
