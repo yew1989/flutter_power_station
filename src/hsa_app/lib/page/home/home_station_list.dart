@@ -17,8 +17,9 @@ class HomeStationList extends StatefulWidget {
 
   final String homeParam;
   final bool isFromSearch;
+  final Function onFirstLoadFinish;
 
-  const HomeStationList({Key key, this.homeParam,this.isFromSearch}) : super(key: key);
+  const HomeStationList({Key key, this.homeParam,this.isFromSearch,this.onFirstLoadFinish}) : super(key: key);
   @override
   _HomeStationListState createState() => _HomeStationListState();
 
@@ -55,18 +56,18 @@ class _HomeStationListState extends State<HomeStationList> {
         this.isEmpty = true;
       }
 
-      if(this.widget.isFromSearch == true) {
-        EventBird().emit(AppEvent.searchFirstLoadFinish);
-      }
-
       setState(() {
         this.stations = stations;
       });
+
+      if(widget.onFirstLoadFinish != null) widget.onFirstLoadFinish();
 
     }, (String msg){
       
       isLoadFinsh = true;
       refreshController.refreshFailed();
+
+      if(widget.onFirstLoadFinish != null) widget.onFirstLoadFinish();
     },
     // 页码
     page:currentPage,

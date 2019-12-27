@@ -15,16 +15,6 @@ class _SearchPageState extends State<SearchPage> {
 
   bool isEditEnable = false;
 
-  void addEventListener() {
-    EventBird().on(AppEvent.searchFirstLoadFinish, (_){
-      if(isEditEnable == false) {
-        setState(() {
-          isEditEnable = true;
-        });
-      }
-    });
-  }
-
   @override
   void initState() {
     UMengAnalyticsService.enterPage('搜索电站');
@@ -34,7 +24,6 @@ class _SearchPageState extends State<SearchPage> {
   @override
   void dispose() {
     UMengAnalyticsService.exitPage('搜索电站');
-    EventBird().off(AppEvent.searchFirstLoadFinish);
     super.dispose();
   }
 
@@ -55,7 +44,16 @@ class _SearchPageState extends State<SearchPage> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
             SearchBar(isEditEnable: isEditEnable),
-            Expanded(child: HomeStationList(homeParam:'全部电站',isFromSearch: true)),
+            Expanded(child: 
+            HomeStationList(
+            homeParam:'全部电站',
+            isFromSearch: true,
+            onFirstLoadFinish: (){
+              setState(() {
+                this.isEditEnable = true;
+              });
+            },
+            )),
           ],
         ),
       ),
