@@ -1,7 +1,9 @@
 import 'package:badges/badges.dart';
 import 'package:flutter/material.dart';
 import 'package:hsa_app/components/smart_refresher_style.dart';
-import 'package:hsa_app/page/live/live_list_page.dart';
+import 'package:hsa_app/page/station/station_list_header.dart';
+import 'package:hsa_app/page/station/station_profit_widget.dart';
+import 'package:hsa_app/page/station/station_wave_widget.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:hsa_app/api/api.dart';
 import 'package:hsa_app/api/http_helper.dart';
@@ -15,9 +17,6 @@ import 'package:hsa_app/components/public_tool.dart';
 import 'package:hsa_app/util/share.dart';
 import 'package:native_color/native_color.dart';
 import 'package:ovprogresshud/progresshud.dart';
-import 'package:wave/config.dart';
-import 'package:wave/wave.dart';
-
 
 class StationPage extends StatefulWidget {
 
@@ -126,18 +125,7 @@ class _StationPageState extends State<StationPage> {
 
   }
 
-  // 计算 水波纹比率
-  static double caculateWaveRatio(StationInfo station) {
 
-    var waterMax = station?.water?.max ?? 0.0;
-    var waterCurrent = station?.water?.current ?? 0.0;
-    if( waterMax == 0 ) return 0.0;
-    if( waterCurrent == 0 ) return 0.0; 
-    if( waterCurrent > waterMax) return 1;
-    var ratio =  waterCurrent / waterMax;
-    return ratio;
-
-  }
 
   // 计算 功率比率
   static double caculatePowerRatio(Devices devices) {
@@ -149,57 +137,6 @@ class _StationPageState extends State<StationPage> {
     var ratio =  powerCurrent / powerMax;
     return ratio;
 
-  }
-
-  // UI Wave 
-  static double caculateUIWave(double waveRatio) {
-
-    if(waveRatio > 1)  {
-      waveRatio = 1;
-    }
-    var wave = 0.75 - (waveRatio / 2);
-    return wave;
-
-  }
-
-
-  // 波浪高度
-  Widget waveWidget(StationInfo stationInfo,double width) { 
-     // wave 波浪
-     var waveRatio = caculateWaveRatio(stationInfo);
-     var wave      = caculateUIWave(waveRatio);
-      // 波浪效果
-     return Center(
-       child: WaveWidget(
-         waveFrequency: 3.6,
-         config: CustomConfig(
-           gradients: [[Color.fromRGBO(3,169,244, 1),Color.fromRGBO(3,169,244, 0.3)]],
-           durations: [10000],
-           heightPercentages: [wave],
-           gradientBegin: Alignment.topCenter,
-           gradientEnd: Alignment.bottomCenter
-           ),
-           waveAmplitude: 0,
-           backgroundColor: Colors.transparent,
-           size: Size(width, double.infinity),
-          ),
-      );
-  }
-
-  // 富文本收益值
-  Widget profitWidget(StationInfo stationInfo) { 
-    var profit = stationInfo?.profit ?? 0.0;
-    return Center(
-      child: RichText(
-        text: TextSpan(
-          children: 
-          [
-            TextSpan(text:profit.toString(),style: TextStyle(color: Colors.white,fontFamily: 'ArialNarrow',fontSize: 50)),
-            TextSpan(text:' 元',style: TextStyle(color: Colors.white,fontSize: 13)),
-          ]
-        ),
-      ),
-    );
   }
 
   // 当前功率 / 总功率组件
@@ -225,18 +162,21 @@ class _StationPageState extends State<StationPage> {
 
   // 大水池
   Widget waterPool(StationInfo stationInfo) {
-    // var width = MediaQuery.of(context).size.width - 46;
-    var width = MediaQuery.of(context).size.width;
+
+    final profit = stationInfo?.profit ?? 0.0;
+    
+    final width = MediaQuery.of(context).size.width;
+    
     return  Container(
       height: 266,
       color: Colors.transparent,
       child: Stack(
         children: <Widget>[
           
-          // 波浪球
-          waveWidget(stationInfo,width),
+          // 波浪组件
+          StationWaveWidget(stationInfo),
           // 富文本收益值
-          profitWidget(stationInfo),
+          StationProfitWidget(profit:profit),
 
           // 渐变条左边水库
           //  Positioned(
@@ -327,62 +267,6 @@ class _StationPageState extends State<StationPage> {
       ),
     );
   }
-
-  // 机组信息
-  Widget terminalListHeader() {
-    return Container(
-    padding: EdgeInsets.symmetric(horizontal: 10),
-    height: 54,
-    color: Colors.transparent,
-    child: Stack(
-      children: <Widget>[
-        
-        Positioned(
-          left: 0,right: 0,bottom: 4,
-          child: Container(
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: <Widget>[
-                Text('机组信息',style: TextStyle(color: Colors.white,fontSize: 15)),
-                Text('天气:' + weatherString ,style: TextStyle(color: Colors.white,fontSize: 15)),
-
-                SizedBox(
-                  height: 22,
-                  width: 22,
-                  // child: Image.asset('images/station/GL_Locationbtn.png'),
-                ),
-
-                SizedBox(
-                  height: 32,
-                  width: 32,
-                  child: openLive.length != 0 ? GestureDetector(
-                    child: Image.asset('images/station/GL_Video_btn.png'),
-                    onTap: (){
-                      pushToPage(context, LiveListPage(
-                        openLives: this.openLive,
-                        stationName: stationInfo?.name ?? '',
-                      ));
-                    },
-                  ) :Container(),
-                ),
-                
-              ],
-            ),
-          ),
-        ),
-
-        // 分割线
-        Positioned(
-            left: 0,right: 0,bottom: 0,
-            child: SizedBox(height: 1,child: Container(color: Colors.white38)),
-        ),
-
-      ],
-    ));
-  } 
-  
-
 
   // 机组列表
   Widget terminalList() {
@@ -661,7 +545,7 @@ class _StationPageState extends State<StationPage> {
               child: ListView(
                 children: <Widget>[
                   waterPool(stationInfo),
-                  terminalListHeader(),
+                  StationListHeader(weather: weatherString,openLive: openLive,stationName: stationInfo.name),
                   terminalList(),
                 ],
               ),

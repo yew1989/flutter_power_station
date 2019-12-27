@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:hsa_app/event/app_event.dart';
-import 'package:hsa_app/event/event_bird.dart';
 import 'package:hsa_app/page/home/home_station_list.dart';
 import 'package:hsa_app/page/search/search_bar.dart';
 import 'package:hsa_app/service/umeng_analytics.dart';
@@ -27,7 +25,6 @@ class _SearchPageState extends State<SearchPage> {
     super.dispose();
   }
 
-
   @override
   Widget build(BuildContext context) {
     return ThemeGradientBackground(
@@ -50,9 +47,9 @@ class _SearchPageState extends State<SearchPage> {
             isFromSearch: true,
             onFirstLoadFinish: (){
               setState(() {
-                this.isEditEnable = true;
-              });
-            },
+                  this.isEditEnable = true;
+               });
+              },
             )),
           ],
         ),
