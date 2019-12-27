@@ -26,6 +26,7 @@ class LeanCloudAPI {
 
   // 获取包信息
   static void getPackageVersionInfo(LeanCloudEnv env,PackageSuccCallback onSucc,LeanCloudHttpFailCallback onFail) { 
+    
     final path = host + packagePath;
     var queryParam = Map<String,dynamic>();
     queryParam['count'] = '1';

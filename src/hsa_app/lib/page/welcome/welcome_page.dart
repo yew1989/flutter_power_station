@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -12,6 +13,7 @@ import 'package:hsa_app/theme/theme_gradient_background.dart';
 import 'package:hsa_app/components/public_tool.dart';
 import 'package:hsa_app/util/device_inspector.dart';
 import 'package:jpush_flutter/jpush_flutter.dart';
+import 'package:ovprogresshud/progresshud.dart';
 
 class WelcomePage extends StatefulWidget {
   @override
@@ -27,7 +29,8 @@ class _WelcomePageState extends State<WelcomePage> with WidgetsBindingObserver {
   // 版本更新工作流
   void upgradeWorkFlow(BuildContext context,Package package) {
     if(package == null) {
-      exitApp(context);
+      debugPrint(' ❌ 版本信息文件获取失败 Package 为空 ');
+      Progresshud.showInfoWithStatus('版本信息文件获取失败');
       return;
     }
     // 保存包管理信息
@@ -61,7 +64,6 @@ class _WelcomePageState extends State<WelcomePage> with WidgetsBindingObserver {
           return;
         });
     }
-
   }
 
   // 跳转到URL
@@ -99,53 +101,33 @@ class _WelcomePageState extends State<WelcomePage> with WidgetsBindingObserver {
   void requestPackageInfo(BuildContext context) {
     // 获取版本信息
     LeanCloudAPI.getPackageVersionInfo(LeanCloudEnv.test,(Package pack, String msg) {
-      debugPrint('版本信息文件获取成功');
+      debugPrint(' 🎉 版本信息文件获取成功');
       debugPrint(pack.toJson().toString());
       setState(() {
         displayVersion   = pack?.displayVersion ?? '';
         displayBuild     = pack?.displayBuild ?? '';
       });
       upgradeWorkFlow(context,pack);
-    }, (_) {
-      debugPrint('版本信息文件获取失败');
-      exitApp(context);
+    }, (String msg) {
+      debugPrint(' ❌ 版本信息文件获取失败 ');
+      if(msg == '请求错误') {
+         Progresshud.showInfoWithStatus('请检查网络');
+         retryRequestPackageInfo(context);
+      }
     });
   }
 
-
-  // 关闭 App
-  void exitApp(BuildContext context) async {
-    showDialog(
-      context: context,
-      child: CupertinoAlertDialog(
-        title: Text('提示'),
-        content: SingleChildScrollView(
-          child: ListBody(
-            children: <Widget>[
-              Text(' '),
-              Text('版本信息获取失败'),
-              Text(' '),
-              Text('点击确认按钮将退出应用'),
-              Text(' '),
-            ],
-          ),
-        ),
-        actions: <Widget>[
-          CupertinoDialogAction(
-            child: Text('确认'),
-            onPressed: () {
-              Future.delayed(Duration(milliseconds: 500), () => exit(0));
-            },
-          )
-        ],
-      ),
-    );
+  // 重试获取版本信息
+  void retryRequestPackageInfo(BuildContext contex) async {
+    debugPrint('🔥发起重试:获取版本信息...');
+    await Future.delayed(Duration(seconds: 3));
+    requestPackageInfo(context);
   }
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     super.didChangeAppLifecycleState(state);
-    debugPrint(state.toString());
+    debugPrint('生命周期改变:' + state.toString());
     if (state == AppLifecycleState.resumed) {
       requestPackageInfo(context);
     }
@@ -165,11 +147,11 @@ class _WelcomePageState extends State<WelcomePage> with WidgetsBindingObserver {
 
   @override
   void initState() {
+    DeviceInspector.inspectDevice(context);
     initUmengService();
     initJpush();
     WidgetsBinding.instance.addObserver(this);
     requestPackageInfo(context);
-    DeviceInspector.inspectDevice(context);
     super.initState();
   }
 
