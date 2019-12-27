@@ -41,14 +41,14 @@ class _StationWaveWidgetState extends State<StationWaveWidget> {
     final wave      = caculateUIWave(waveRatio);
     return Center(
        child: WaveWidget(
-         waveFrequency: 1.6,
+         waveFrequency: 1.8,
          config: CustomConfig(
            gradients: [
              [Color.fromRGBO(42,120,250, 0.5),Color.fromRGBO(42,120,250, 0.5)],
              [Color.fromRGBO(42,120,250, 1),Color.fromRGBO(42,120,250, 1)],
             ],
           //  blur: MaskFilter.blur(BlurStyle.inner, 2),
-           durations: [3000,4000],
+           durations: [2000,3000],
            heightPercentages: [wave,wave+0.05],
            gradientBegin: Alignment.topCenter,
            gradientEnd: Alignment.bottomCenter
