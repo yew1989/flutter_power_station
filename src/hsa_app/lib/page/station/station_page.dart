@@ -3,8 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:hsa_app/components/smart_refresher_style.dart';
 import 'package:hsa_app/page/station/station_big_pool.dart';
 import 'package:hsa_app/page/station/station_list_header.dart';
-import 'package:hsa_app/page/station/station_profit_widget.dart';
-import 'package:hsa_app/page/station/station_wave_widget.dart';
 import 'package:hsa_app/page/station/station_weather_widget.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:hsa_app/api/api.dart';
