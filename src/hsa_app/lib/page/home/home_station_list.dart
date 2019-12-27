@@ -54,6 +54,11 @@ class _HomeStationListState extends State<HomeStationList> {
       if(stations.length == 0) {
         this.isEmpty = true;
       }
+
+      if(this.widget.isFromSearch == true) {
+        EventBird().emit(AppEvent.searchFirstLoadFinish);
+      }
+
       setState(() {
         this.stations = stations;
       });
