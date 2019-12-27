@@ -8,7 +8,7 @@ class StationListHeader extends StatefulWidget {
   final List<String> openLive;
   final String stationName;
 
-  const StationListHeader({Key key, this.weather, this.openLive, this.stationName}) : super(key: key);
+  const StationListHeader(this.weather, this.openLive, this.stationName,{Key key}) : super(key: key);
 
   @override
   _StationListHeaderState createState() => _StationListHeaderState();
