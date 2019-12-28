@@ -47,7 +47,7 @@ class _StationPageState extends State<StationPage> {
   }
 
   // 请求电站概要
-  void reqeustStationInfo() {
+  void reqeustStationInfo() { 
     Progresshud.showWithStatus('读取数据中...');
 
     final stationId = widget?.stationId ?? '';
