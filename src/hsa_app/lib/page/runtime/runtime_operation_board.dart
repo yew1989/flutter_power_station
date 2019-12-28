@@ -6,6 +6,7 @@ import 'package:hsa_app/page/dialog/control_model_dialog.dart';
 import 'package:hsa_app/page/dialog/device_control_dialog.dart';
 import 'package:hsa_app/page/dialog/power_control_dialog.dart';
 import 'package:hsa_app/page/more/more_page.dart';
+import 'package:ovprogresshud/progresshud.dart';
 
 class RunTimeOperationBoard extends StatefulWidget {
   
@@ -359,14 +360,16 @@ class _RunTimeOperationBoardState extends State<RunTimeOperationBoard> {
                                 
                                 GestureDetector(
                                 onTap: () {
-                                  showDialog(
-                                      context: context,
-                                      barrierDismissible: false,
-                                      builder: (_) => DeviceControlDialog((taskName){
-                                        if(widget.onSholdRequestRemoteCommand != null) {
-                                          widget.onSholdRequestRemoteCommand(taskName,null);
-                                        }
-                                      }));
+                                  Progresshud.showInfoWithStatus('功能未开放,尽请期待');
+                                  return;
+                                  // showDialog(
+                                  //     context: context,
+                                  //     barrierDismissible: false,
+                                  //     builder: (_) => DeviceControlDialog((taskName){
+                                  //       if(widget.onSholdRequestRemoteCommand != null) {
+                                  //         widget.onSholdRequestRemoteCommand(taskName,null);
+                                  //       }
+                                  //     }));
                                 },
                               ),
                                 ],
