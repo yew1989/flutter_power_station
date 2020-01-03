@@ -13,11 +13,8 @@ class AppConfig {
   TargetPlatform platform;
 
   static initConfig() async {
-    
     // ⚠️ 环境控制
-    AppConfig.getInstance().env     = LeanCloudEnv.test;
-
-
+    AppConfig.getInstance().env     = LeanCloudEnv.product;
     AppConfig.getInstance().remotePackage = Package();
     AppConfig.getInstance().localVersion();
     AppConfig.getInstance().platform = defaultTargetPlatform;

@@ -75,25 +75,29 @@ class _StationPageState extends State<StationPage> {
     });
   }
 
-  // 生成历史访问 URL
+  // // 生成历史访问 URL
+  // void onTapPushToHistory() async {
+  //   final host = AppConfig.getInstance().remotePackage.hostWeb;
+  //   final urlHistory = host + '/#/' + 'history';
+  //   final auth = await ShareManager.instance.loadToken();
+  //   final deviceIdList = stationInfo.devices.map((device) {
+  //     return device?.address ?? '';
+  //   }).toList();
+  //   final terminalsString = deviceIdList.join(',');
+  //   final titleString = stationInfo?.name ?? '';
+  //   final lastUrl = urlHistory +
+  //       '?auth=' +
+  //       auth +
+  //       '&address=' +
+  //       terminalsString +
+  //       '&title=' +
+  //       Uri.encodeComponent(titleString);
+  //   pushToPage(
+  //       context, WebViewPage('', lastUrl, noNavBar: true, description: '历史曲线'));
+  // }
+
   void onTapPushToHistory() async {
-    final host = AppConfig.getInstance().remotePackage.hostWeb;
-    final urlHistory = host + '/#/' + 'history';
-    final auth = await ShareManager.instance.loadToken();
-    final deviceIdList = stationInfo.devices.map((device) {
-      return device?.address ?? '';
-    }).toList();
-    final terminalsString = deviceIdList.join(',');
-    final titleString = stationInfo?.name ?? '';
-    final lastUrl = urlHistory +
-        '?auth=' +
-        auth +
-        '&address=' +
-        terminalsString +
-        '&title=' +
-        Uri.encodeComponent(titleString);
-    pushToPage(
-        context, WebViewPage('', lastUrl, noNavBar: true, description: '历史曲线'));
+    
   }
 
   // 同步天气数据
