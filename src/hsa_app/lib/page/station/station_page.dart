@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hsa_app/components/smart_refresher_style.dart';
+import 'package:hsa_app/page/history/history_page.dart';
 import 'package:hsa_app/page/station/device/station_device_list.dart';
 import 'package:hsa_app/page/station/station_big_pool.dart';
 import 'package:hsa_app/page/station/station_list_header.dart';
@@ -97,7 +98,7 @@ class _StationPageState extends State<StationPage> {
   // }
 
   void onTapPushToHistory() async {
-    
+    pushToPage(context, HistoryPage());
   }
 
   // 同步天气数据
@@ -130,11 +131,7 @@ class _StationPageState extends State<StationPage> {
                     fontSize: 20)),
             actions: <Widget>[
               GestureDetector(
-                  onTap: stationInfo.devices == null
-                      ? null
-                      : () {
-                          onTapPushToHistory();
-                        },
+                  onTap: stationInfo.devices == null ? null : () => onTapPushToHistory(),
                   child: Center(
                       child: Text('历史曲线',
                           style:
