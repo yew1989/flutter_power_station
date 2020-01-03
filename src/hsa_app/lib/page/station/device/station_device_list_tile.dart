@@ -26,7 +26,7 @@ class _StationDeviceListTileState extends State<StationDeviceListTile> {
     final isMaster = device?.isMaster ?? false;
     final isOnline = device?.status == 'online' ? true : false;
     final currentPower = device?.power?.current ?? 0.0;
-    final currentPowerStr = currentPower.toString() + '';
+    final currentPowerStr = currentPower.toStringAsFixed(0) + '';
     var timeStamp = device?.updateTime ?? '';
     timeStamp += isOnline ? '         ' : ' 离线';
     final maxPower = device?.power?.max ?? 0;
@@ -89,7 +89,16 @@ class _StationDeviceListTileState extends State<StationDeviceListTile> {
                     : SizedBox(height: 24,width: 24),
 
                     // 当前功率
-                    Text(currentPowerStr,style: TextStyle(color: isOnline ? Colors.white : Colors.white60,fontFamily: 'ArialNarrow',fontSize: 28)),
+                    SizedBox(
+                      width: 54,
+                      child: Align(
+                        alignment: Alignment.centerRight,
+                        child: Text(currentPowerStr,
+                        style: TextStyle(
+                        color: isOnline ? Colors.white : Colors.white60,
+                        fontFamily: 'ArialNarrow',
+                        fontSize: 28)),
+                      )),
                   ],
                 ),
               ),
