@@ -31,13 +31,9 @@ class _HistoryPageState extends State<HistoryPage> {
           elevation: 0,
           centerTitle: true,
           title: Text('历史曲线',
-              style: TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.normal,
-                  fontSize: 18)),
+          style: TextStyle(color: Colors.white,fontWeight: FontWeight.normal,fontSize: 18)),
         ),
-        body: SafeArea(
-          child: Container(
+        body: Container(
             padding: EdgeInsets.symmetric(horizontal: 10),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
@@ -50,7 +46,6 @@ class _HistoryPageState extends State<HistoryPage> {
                 eventListView(),
               ],
             ),
-          ),
         ),
       ),
     );
@@ -61,7 +56,7 @@ class _HistoryPageState extends State<HistoryPage> {
   }
 
   Widget chartGraphWidget() {
-    return Container(height: 300, color: Colors.blueAccent);
+    return Container(height: 300, color: Colors.transparent);
   }
 
   Widget segmentWidget() {
