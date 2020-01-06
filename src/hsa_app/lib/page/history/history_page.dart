@@ -23,6 +23,24 @@ class _HistoryPageState extends State<HistoryPage> {
     super.dispose();
   }
 
+  void onTapFilterButton() {
+
+  }
+
+  Widget filterButton() {
+    return GestureDetector(
+      onTap: () => onTapFilterButton(),
+      child: Container(
+        padding: EdgeInsets.symmetric(horizontal: 10),
+        child: SizedBox(
+          height: 22,
+          width: 22,
+          child: Image.asset('images/history/History_selt_btn.png'),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return ThemeGradientBackground(
@@ -37,6 +55,9 @@ class _HistoryPageState extends State<HistoryPage> {
                   color: Colors.white,
                   fontWeight: FontWeight.normal,
                   fontSize: 18)),
+          actions: <Widget>[
+            filterButton(),
+          ],
         ),
         body: Container(
           padding: EdgeInsets.symmetric(horizontal: 10),
@@ -64,8 +85,8 @@ class _HistoryPageState extends State<HistoryPage> {
         borderRadius: BorderRadius.circular(6),
       ),
       child: SfCartesianChart(
-          zoomPanBehavior:ZoomPanBehavior(
-            enablePinching: true, 
+          zoomPanBehavior: ZoomPanBehavior(
+            enablePinching: true,
             enablePanning: true,
             zoomMode: ZoomMode.x,
           ),
@@ -80,31 +101,26 @@ class _HistoryPageState extends State<HistoryPage> {
             majorTickLines: MajorTickLines(
               width: 0,
             ),
-          ),
-          primaryYAxis: NumericAxis(
-            minimum:300,
-            labelStyle: ChartTextStyle(color: Colors.white),
-            majorTickLines: MajorTickLines(
-              width: 0
-            ),
-            majorGridLines: MajorGridLines(
-              width: 0.5,
-              color: Colors.white60,
-            ),
-            minorGridLines: MinorGridLines(
-              width: 0,
-            ),
             minorTickLines: MinorTickLines(
               width: 0,
             ),
           ),
-          series: getRandomData()
-        ),
+          primaryYAxis: NumericAxis(
+            minimum: 300,
+            labelStyle: ChartTextStyle(color: Colors.white),
+            majorTickLines: MajorTickLines(width: 0),
+            majorGridLines: MajorGridLines(
+              width: 0.5,
+              color: Colors.white60,
+            ),
+            minorGridLines: MinorGridLines(width: 0),
+            minorTickLines: MinorTickLines(width: 0),
+          ),
+          series: getRandomData()),
     );
   }
 
   static List<ChartSeries> getRandomData() {
-
     final chartData1 = <ActivePowerPoint>[
       ActivePowerPoint(0, 240),
       ActivePowerPoint(10, 236),
@@ -152,33 +168,27 @@ class _HistoryPageState extends State<HistoryPage> {
       ActivePowerPoint(190, 125),
       ActivePowerPoint(200, 119),
     ];
-    
 
     return <ChartSeries>[
-
       SplineSeries<ActivePowerPoint, num>(
-          animationDuration: 5000,
-          dataSource: chartData1,
-          splineType: SplineType.natural,
-          color: HexColor('ee2e3b'),
-          xValueMapper: (ActivePowerPoint sales, _) => sales.minute,
-          yValueMapper: (ActivePowerPoint sales, _) => sales.value,
+        animationDuration: 5000,
+        dataSource: chartData1,
+        splineType: SplineType.natural,
+        color: HexColor('ee2e3b'),
+        xValueMapper: (ActivePowerPoint sales, _) => sales.minute,
+        yValueMapper: (ActivePowerPoint sales, _) => sales.value,
       ),
-
       SplineAreaSeries<ActivePowerPoint, num>(
-          animationDuration: 5000,
-          dataSource: chartData2,
-          borderDrawMode: BorderDrawMode.excludeBottom,
-          gradient: LinearGradient(
-            colors: [
-              HexColor('0003a9f4'),
-              HexColor('9903a9f4'),
-            ]
-          ),
-          xValueMapper: (ActivePowerPoint sales, _) => sales.minute,
-          yValueMapper: (ActivePowerPoint sales, _) => sales.value,
+        animationDuration: 5000,
+        dataSource: chartData2,
+        borderDrawMode: BorderDrawMode.excludeBottom,
+        gradient: LinearGradient(colors: [
+          HexColor('0003a9f4'),
+          HexColor('9903a9f4'),
+        ]),
+        xValueMapper: (ActivePowerPoint sales, _) => sales.minute,
+        yValueMapper: (ActivePowerPoint sales, _) => sales.value,
       ),
-
     ];
   }
 
@@ -229,8 +239,6 @@ class _HistoryPageState extends State<HistoryPage> {
             itemCount: 20));
   }
 }
-
-
 
 class ActivePowerPoint {
   ActivePowerPoint(this.minute, this.value);
