@@ -59,14 +59,12 @@ class _HistoryPageState extends State<HistoryPage> {
   Widget chartGraphWidget() {
     return Container(
       height: 400,
-      color: HexColor('1affffff'),
+      decoration: BoxDecoration(
+        color: HexColor('1affffff'),
+        borderRadius: BorderRadius.circular(6),
+      ),
       child: SfCartesianChart(
           zoomPanBehavior:ZoomPanBehavior(enablePinching: true, enablePanning: true),
-          title: ChartTitle(
-              text: ' ',
-              alignment: ChartAlignment.center,
-              borderColor: Colors.transparent,
-              borderWidth: 0),
           primaryXAxis: NumericAxis(
             labelStyle: ChartTextStyle(
               color: Colors.white),
@@ -75,7 +73,8 @@ class _HistoryPageState extends State<HistoryPage> {
             labelStyle: ChartTextStyle(
               color: Colors.white),
           ),
-          series: getRandomData()),
+          series: getRandomData()
+        ),
     );
   }
 
