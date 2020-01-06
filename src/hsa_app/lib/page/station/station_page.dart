@@ -97,7 +97,7 @@ class _StationPageState extends State<StationPage> {
   //       context, WebViewPage('', lastUrl, noNavBar: true, description: '历史曲线'));
   // }
 
-  void onTapPushToHistory() async {
+  void onTapPushToHistoryPage() async {
     pushToPage(context, HistoryPage());
   }
 
@@ -131,7 +131,7 @@ class _StationPageState extends State<StationPage> {
                     fontSize: 20)),
             actions: <Widget>[
               GestureDetector(
-                  onTap: stationInfo.devices == null ? null : () => onTapPushToHistory(),
+                  onTap: stationInfo.devices == null ? null : () => onTapPushToHistoryPage(),
                   child: Center(
                       child: Text('历史曲线',
                           style:
