@@ -85,12 +85,15 @@ class _HistoryPageState extends State<HistoryPage> {
         borderRadius: BorderRadius.circular(6),
       ),
       child: SfCartesianChart(
+          plotAreaBorderWidth:2,
+          plotAreaBorderColor: Colors.transparent,
           zoomPanBehavior: ZoomPanBehavior(
             enablePinching: true,
             enablePanning: true,
             zoomMode: ZoomMode.x,
           ),
           primaryXAxis: NumericAxis(
+            
             labelStyle: ChartTextStyle(color: Colors.white),
             majorGridLines: MajorGridLines(
               width: 0,
@@ -106,6 +109,7 @@ class _HistoryPageState extends State<HistoryPage> {
             ),
           ),
           primaryYAxis: NumericAxis(
+            axisLine: AxisLine(color: Colors.transparent),
             minimum: 300,
             labelStyle: ChartTextStyle(color: Colors.white),
             majorTickLines: MajorTickLines(width: 0),
