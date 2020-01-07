@@ -23,9 +23,7 @@ class _HistoryPageState extends State<HistoryPage> {
     super.dispose();
   }
 
-  void onTapFilterButton() {
-
-  }
+  void onTapFilterButton() {}
 
   Widget filterButton() {
     return GestureDetector(
@@ -85,7 +83,7 @@ class _HistoryPageState extends State<HistoryPage> {
         borderRadius: BorderRadius.circular(6),
       ),
       child: SfCartesianChart(
-          plotAreaBorderWidth:2,
+          plotAreaBorderWidth: 2,
           plotAreaBorderColor: Colors.transparent,
           zoomPanBehavior: ZoomPanBehavior(
             enablePinching: true,
@@ -93,7 +91,6 @@ class _HistoryPageState extends State<HistoryPage> {
             zoomMode: ZoomMode.x,
           ),
           primaryXAxis: NumericAxis(
-            
             labelStyle: ChartTextStyle(color: Colors.white),
             majorGridLines: MajorGridLines(
               width: 0,
@@ -173,6 +170,54 @@ class _HistoryPageState extends State<HistoryPage> {
       ActivePowerPoint(200, 119),
     ];
 
+    final chartData3 = <ActivePowerPoint>[
+      ActivePowerPoint(0, 210),
+      ActivePowerPoint(10, 210),
+      ActivePowerPoint(20, 210),
+      ActivePowerPoint(30, 210),
+      ActivePowerPoint(40, 210),
+      ActivePowerPoint(50, 210),
+      ActivePowerPoint(60, 210),
+      ActivePowerPoint(70, 210),
+      ActivePowerPoint(80, 210),
+      ActivePowerPoint(90, 210),
+      ActivePowerPoint(100, 210),
+      ActivePowerPoint(110, 210),
+      ActivePowerPoint(120, 210),
+      ActivePowerPoint(130, 210),
+      ActivePowerPoint(140, 210),
+      ActivePowerPoint(150, 210),
+      ActivePowerPoint(160, 210),
+      ActivePowerPoint(170, 210),
+      ActivePowerPoint(180, 210),
+      ActivePowerPoint(190, 210),
+      ActivePowerPoint(200, 210),
+    ];
+
+    final chartData4 = <ActivePowerPoint>[
+      ActivePowerPoint(0, 180),
+      ActivePowerPoint(10, 180),
+      ActivePowerPoint(20, 180),
+      ActivePowerPoint(30, 180),
+      ActivePowerPoint(40, 180),
+      ActivePowerPoint(50, 180),
+      ActivePowerPoint(60, 180),
+      ActivePowerPoint(70, 180),
+      ActivePowerPoint(80, 180),
+      ActivePowerPoint(90, 180),
+      ActivePowerPoint(100, 180),
+      ActivePowerPoint(110, 180),
+      ActivePowerPoint(120, 180),
+      ActivePowerPoint(130, 180),
+      ActivePowerPoint(140, 180),
+      ActivePowerPoint(150, 180),
+      ActivePowerPoint(160, 180),
+      ActivePowerPoint(170, 180),
+      ActivePowerPoint(180, 180),
+      ActivePowerPoint(190, 180),
+      ActivePowerPoint(200, 180),
+    ];
+
     return <ChartSeries>[
       SplineSeries<ActivePowerPoint, num>(
         animationDuration: 5000,
@@ -190,6 +235,24 @@ class _HistoryPageState extends State<HistoryPage> {
           HexColor('0003a9f4'),
           HexColor('9903a9f4'),
         ]),
+        xValueMapper: (ActivePowerPoint sales, _) => sales.minute,
+        yValueMapper: (ActivePowerPoint sales, _) => sales.value,
+      ),
+      LineSeries<ActivePowerPoint, num>(
+        animationDuration: 2500,
+        dataSource: chartData3,
+        dashArray: <double>[10, 10],
+        color: Colors.white,
+        width: 0.5,
+        xValueMapper: (ActivePowerPoint sales, _) => sales.minute,
+        yValueMapper: (ActivePowerPoint sales, _) => sales.value,
+      ),
+      LineSeries<ActivePowerPoint, num>(
+        animationDuration: 2500,
+        dataSource: chartData4,
+        dashArray: <double>[10, 10],
+        color: Colors.white,
+        width: 0.5,
         xValueMapper: (ActivePowerPoint sales, _) => sales.minute,
         yValueMapper: (ActivePowerPoint sales, _) => sales.value,
       ),
