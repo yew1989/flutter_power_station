@@ -84,6 +84,12 @@ class API {
   // 操作密码检查
   static final operationCheckPath = host + 'api/Account/CheckOperationTicket';
 
+  // 历史有功和历史水位
+  static final historyPowerAndWaterPath = host + 'api/History/PowerAndWaterStage';
+
+  // 历史事件列表
+  static final eventsListPath = host + 'api/History/AlarmEventLogs';
+
   // 跟踪指令执行情况
   static final followCommandPath = host + 'Api/Cmd';
   // 远程指令下发
@@ -228,6 +234,49 @@ class API {
     }, onFail);
 
   }
+
+  // 历史有功和历史水位
+  static void historyPowerAndWater(String address,String startDateTime,String endDateTime) {
+    var addressId = address ?? '';
+    var totalPath = moreDataPath + '/' + addressId;
+
+    Map<String,String> param = {};
+    if(startDateTime != null && startDateTime.length > 0 ) {
+      param['StartDateTime'] = startDateTime;
+    }
+    if(endDateTime != null && endDateTime.length > 0 ) {
+      param['EndDateTime'] = endDateTime;
+    }
+
+    HttpHelper.postHttp(totalPath, param, (dynamic data,String msg){
+
+    }, (String msg){
+
+    });
+
+  }
+
+  // 事件列表
+  static void eventList(String address,String startDateTime,String endDateTime) {
+    var addressId = address ?? '';
+    var totalPath = moreDataPath + '/' + addressId;
+
+    Map<String,String> param = {};
+    if(startDateTime != null && startDateTime.length > 0 ) {
+      param['StartDateTime'] = startDateTime;
+    }
+    if(endDateTime != null && endDateTime.length > 0 ) {
+      param['EndDateTime'] = endDateTime;
+    }
+    
+    HttpHelper.postHttp(totalPath, param, (dynamic data,String msg){
+
+    }, (String msg){
+
+    });
+
+  }
+
 
   // 彩云天气
   static void weatherCaiyun(Geo geo,WeatherTypeResponseCallBack onSucc,HttpFailCallback onFail) {

@@ -91,7 +91,7 @@ class _HistoryPageState extends State<HistoryPage> {
           ),
 
           GestureDetector(
-              onTap: ()=>debugPrint('📅点击'),
+              onTap: ()=> debugPrint('📅点击'),
           ),
         ]
       ),
