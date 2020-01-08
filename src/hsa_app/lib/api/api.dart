@@ -4,6 +4,8 @@ import 'package:hsa_app/api/http_helper.dart';
 import 'package:hsa_app/config/app_config.dart';
 import 'package:hsa_app/model/caiyun.dart';
 import 'package:hsa_app/model/follow_command.dart';
+import 'package:hsa_app/model/history_event.dart';
+import 'package:hsa_app/model/history_point.dart';
 import 'package:hsa_app/model/more_data.dart';
 import 'package:hsa_app/model/pageConfig.dart';
 import 'package:hsa_app/model/province.dart';
@@ -36,6 +38,10 @@ typedef RuntimeDataResponseCallBack = void Function(RuntimeDataResponse data);
 typedef MoreDataResponseCallBack = void Function(List<MoreItem> items);
 // 跟踪指令
 typedef FollowCommandResponseCallBack = void Function(FollowCommandResp commandResp);
+// 历史事件列表
+typedef HistoryEventResponseCallBack = void Function(List<HistoryEvent> events);
+// 历史有功和历史水位
+typedef HistoryPowerAndWaterResponseCallBack = void Function(HistoryPointResp resp);
 
 class API {
 
@@ -236,9 +242,9 @@ class API {
   }
 
   // 历史有功和历史水位
-  static void historyPowerAndWater(String address,String startDateTime,String endDateTime) {
+  static void historyPowerAndWater(String address,String startDateTime,String endDateTime,HistoryPowerAndWaterResponseCallBack onSucc,HttpFailCallback onFail) {
     var addressId = address ?? '';
-    var totalPath = moreDataPath + '/' + addressId;
+    var totalPath = historyPowerAndWaterPath + '/' + addressId;
 
     Map<String,String> param = {};
     if(startDateTime != null && startDateTime.length > 0 ) {
@@ -249,17 +255,17 @@ class API {
     }
 
     HttpHelper.postHttp(totalPath, param, (dynamic data,String msg){
-
-    }, (String msg){
-
-    });
+        var map  = data as Map<String,dynamic>;
+        var resp = HistoryPointResp.fromJson(map);
+        if(onSucc != null) onSucc(resp);
+    }, onFail);
 
   }
 
   // 事件列表
-  static void eventList(String address,String startDateTime,String endDateTime) {
+  static void eventList(String address,String startDateTime,String endDateTime,HistoryEventResponseCallBack onSucc,HttpFailCallback onFail) {
     var addressId = address ?? '';
-    var totalPath = moreDataPath + '/' + addressId;
+    var totalPath = eventsListPath + '/' + addressId;
 
     Map<String,String> param = {};
     if(startDateTime != null && startDateTime.length > 0 ) {
@@ -270,10 +276,13 @@ class API {
     }
     
     HttpHelper.postHttp(totalPath, param, (dynamic data,String msg){
-
-    }, (String msg){
-
-    });
+        final list  = data as List;
+        final events = List<HistoryEvent>();
+        for(var str in list) {
+          events.add(HistoryEvent.fromJson(str));
+        }
+        if(onSucc != null) onSucc(events);
+    }, onFail);
 
   }
 
