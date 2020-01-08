@@ -75,49 +75,82 @@ class _HistoryPageState extends State<HistoryPage> {
     );
   }
 
+  Widget calendarBar() {
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 4),
+      height: 36,
+      child: Stack(
+        children:[
+          
+          Container(
+            child: Align(alignment: Alignment.centerRight,
+            child: SizedBox(
+              height: 22,
+              width: 22,
+              child: Image.asset('images/history/History_calendar_btn.png'))),
+          ),
+
+          GestureDetector(
+              onTap: ()=>debugPrint('📅点击'),
+          ),
+        ]
+      ),
+    );
+  }
+
   Widget chartGraphWidget() {
     return Container(
-      height: 400,
+      height: 300,
       decoration: BoxDecoration(
         color: HexColor('1affffff'),
         borderRadius: BorderRadius.circular(6),
       ),
-      child: SfCartesianChart(
-          plotAreaBorderWidth: 2,
-          plotAreaBorderColor: Colors.transparent,
-          zoomPanBehavior: ZoomPanBehavior(
-            enablePinching: true,
-            enablePanning: true,
-            zoomMode: ZoomMode.x,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: <Widget>[
+          calendarBar(),
+          Container(
+            height: 264,
+            child: SfCartesianChart(
+              plotAreaBorderWidth: 2,
+              plotAreaBorderColor: Colors.transparent,
+              zoomPanBehavior: ZoomPanBehavior(
+                enablePinching: true,
+                enablePanning: true,
+                zoomMode: ZoomMode.x,
+              ),
+              primaryXAxis: NumericAxis(
+                labelStyle: ChartTextStyle(color: Colors.white),
+                majorGridLines: MajorGridLines(
+                  width: 0,
+                ),
+                minorGridLines: MinorGridLines(
+                  width: 0,
+                ),
+                majorTickLines: MajorTickLines(
+                  width: 0,
+                ),
+                minorTickLines: MinorTickLines(
+                  width: 0,
+                ),
+              ),
+              primaryYAxis: NumericAxis(
+                axisLine: AxisLine(color: Colors.transparent),
+                minimum: 300,
+                labelStyle: ChartTextStyle(color: Colors.white),
+                majorTickLines: MajorTickLines(width: 0),
+                majorGridLines: MajorGridLines(
+                  width: 0.5,
+                  color: Colors.white60,
+                ),
+                minorGridLines: MinorGridLines(width: 0),
+                minorTickLines: MinorTickLines(width: 0),
+              ),
+              series: getRandomData()),
           ),
-          primaryXAxis: NumericAxis(
-            labelStyle: ChartTextStyle(color: Colors.white),
-            majorGridLines: MajorGridLines(
-              width: 0,
-            ),
-            minorGridLines: MinorGridLines(
-              width: 0,
-            ),
-            majorTickLines: MajorTickLines(
-              width: 0,
-            ),
-            minorTickLines: MinorTickLines(
-              width: 0,
-            ),
-          ),
-          primaryYAxis: NumericAxis(
-            axisLine: AxisLine(color: Colors.transparent),
-            minimum: 300,
-            labelStyle: ChartTextStyle(color: Colors.white),
-            majorTickLines: MajorTickLines(width: 0),
-            majorGridLines: MajorGridLines(
-              width: 0.5,
-              color: Colors.white60,
-            ),
-            minorGridLines: MinorGridLines(width: 0),
-            minorTickLines: MinorTickLines(width: 0),
-          ),
-          series: getRandomData()),
+        ],
+      ),
     );
   }
 
