@@ -1,11 +1,11 @@
 class HistoryPointResp {
 
   List<HistoryPoint> data;
-  int equippedCapacitor;
-  int ratedActivePower;
-  int waterStageAlarmValue;
-  int relativeMaxWaterStage;
-  int altitudeWaterStage;
+  num equippedCapacitor;
+  num ratedActivePower;
+  num waterStageAlarmValue;
+  num relativeMaxWaterStage;
+  num altitudeWaterStage;
 
   HistoryPointResp(
       {this.data,
@@ -22,11 +22,11 @@ class HistoryPointResp {
         data.add(HistoryPoint.fromJson(v));
       });
     }
-    equippedCapacitor = json['EquippedCapacitor'];
-    ratedActivePower = json['RatedActivePower'];
-    waterStageAlarmValue = json['WaterStageAlarmValue'];
-    relativeMaxWaterStage = json['RelativeMaxWaterStage'];
-    altitudeWaterStage = json['AltitudeWaterStage'];
+    equippedCapacitor = json['EquippedCapacitor'] ?? 0.0;
+    ratedActivePower = json['RatedActivePower'] ?? 0.0;
+    waterStageAlarmValue = json['WaterStageAlarmValue'] ?? 0.0;
+    relativeMaxWaterStage = json['RelativeMaxWaterStage'] ?? 0.0;
+    altitudeWaterStage = json['AltitudeWaterStage'] ?? 0.0;
   }
 
   Map<String, dynamic> toJson() {
@@ -46,16 +46,16 @@ class HistoryPointResp {
 class HistoryPoint {
   String freezeTime;
   int terminalCount;
-  double tkW;
-  double waterStage;
+  num tkW;
+  num waterStage;
 
   HistoryPoint({this.freezeTime, this.terminalCount, this.tkW, this.waterStage});
 
   HistoryPoint.fromJson(Map<String, dynamic> json) {
     freezeTime = json['FreezeTime'];
-    terminalCount = json['TerminalCount'];
-    tkW = json['TkW'];
-    waterStage = json['WaterStage'];
+    terminalCount = json['TerminalCount'] ?? 0;
+    tkW = json['TkW'] ?? 0.0;
+    waterStage = json['WaterStage'] ?? 0.0;
   }
 
   Map<String, dynamic> toJson() {

@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:hsa_app/api/api.dart';
 import 'package:hsa_app/components/segment_control.dart';
 import 'package:hsa_app/model/runtime_adapter.dart';
 import 'package:hsa_app/page/history/history_event_tile.dart';
@@ -8,11 +9,41 @@ import 'package:native_color/native_color.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
 class HistoryPage extends StatefulWidget {
+
+  final String title;
+  final String address;
+
+  const HistoryPage({Key key, this.title, this.address}) : super(key: key);
+  
   @override
   _HistoryPageState createState() => _HistoryPageState();
 }
 
 class _HistoryPageState extends State<HistoryPage> {
+
+
+  void onTapToggleButton(int index) {
+
+    final address = widget.address ?? '';
+
+    API.eventList(address, '2019-07-16', '2019-07-17', (events){
+      debugPrint(events.toString());
+    }, (msg){
+      debugPrint(msg);
+    });
+
+    /*
+    // 历史图表曲线
+    API.historyPowerAndWater(address, '2019-01-08', '2020-01-09', (historyResp){
+      debugPrint(historyResp.toString());
+    }, (msg){
+      debugPrint(msg);
+    });
+    */
+
+  }
+
+
   @override
   void initState() {
     super.initState();
@@ -309,9 +340,8 @@ class _HistoryPageState extends State<HistoryPage> {
         normalTitleColor: Colors.white,
         normalBackgroundColor: Colors.transparent,
         activeBackgroundColor: Color.fromRGBO(72, 114, 222, 1),
-        selected: (int value, String valueM) {
-          debugPrint(valueM);
-          debugPrint(value.toString());
+        selected: (int index, String valueM) {
+          onTapToggleButton(index);
         },
         tabs: <String>['日', '周', '月', '年'],
       ),
@@ -324,11 +354,7 @@ class _HistoryPageState extends State<HistoryPage> {
         color: Colors.transparent,
         child: Align(
             alignment: Alignment.centerLeft,
-            child: Text('  系统日志',
-                style: TextStyle(
-                  fontSize: 16,
-                  color: Colors.white,
-                ))));
+            child: Text('  系统日志',style: TextStyle(fontSize: 16,color: Colors.white))));
   }
 
   Widget eventListView() {

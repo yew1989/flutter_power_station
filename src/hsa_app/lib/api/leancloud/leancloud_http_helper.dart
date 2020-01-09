@@ -57,10 +57,6 @@ class LeanCloudHttpHelper {
         onFail('请求错误 ( ' + response.statusCode.toString() + ' )');
         return;
       }
-      if (response.data is! Map) {
-        onFail('返回格式错误');
-        return;
-      }
       onSucc(response.data, '请求成功');
     } catch (e) {
       onFail('请求错误');
@@ -91,10 +87,6 @@ class LeanCloudHttpHelper {
       }
       if ((response.statusCode - 200) >= 100) {
         onFail('请求错误 ( ' + response.statusCode.toString() + ' )');
-        return;
-      }
-      if (response.data is! Map) {
-        onFail('返回格式错误');
         return;
       }
       onSucc(response.data, '请求成功');
@@ -129,10 +121,6 @@ class LeanCloudHttpHelper {
         onFail('请求错误 ( ' + response.statusCode.toString() + ' )');
         return;
       }
-      if (response.data is! Map) {
-        onFail('返回格式错误');
-        return;
-      }
       onSucc(response.data, '请求成功');
     } catch (e) {
       onFail('请求错误');
@@ -163,10 +151,6 @@ class LeanCloudHttpHelper {
       }
       if ((response.statusCode - 200) >= 100) {
         onFail('请求错误 ( ' + response.statusCode.toString() + ' )');
-        return;
-      }
-      if (response.data is! Map) {
-        onFail('返回格式错误');
         return;
       }
       onSucc(response.data, '请求成功');

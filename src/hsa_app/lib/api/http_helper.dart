@@ -113,20 +113,15 @@ class HttpHelper {
         onFail('请求错误 ( ' + response.statusCode.toString() + ' )');
         return;
       }
-      if (response.data is! Map) {
-        onFail('请求错误');
-        return;
-      }
-      // 初步解析数据包
-      Map<String, dynamic> map = response.data;
-      var code = map['code'] ?? -1;
-      if (code != 0) {
-        var msg = map['msg'] ?? '请求错误';
-        onFail(msg);
-        return;
-      }
-      var msg = map['msg'] ?? '请求成功';
-      onSucc(response.data, msg);
+      // Map<String, dynamic> map = response.data;
+      // var code = map['code'] ?? -1;
+      // if (code != 0) {
+      //   var msg = map['msg'] ?? '请求错误';
+      //   onFail(msg);
+      //   return;
+      // }
+      // var msg = map['msg'] ?? '请求成功';
+      onSucc(response.data, '请求成功');
     } catch (e) {
       handleDioError(e,(String msg) => onFail(msg));
       onFail('请求错误');
@@ -163,7 +158,6 @@ class HttpHelper {
           sendTimeout: HttpHelper.kTimeOutSeconds,
         ),
         queryParameters: param,
-        // data: param,
       );
       if (response == null) {
         onFail('网络异常,请检查网络');
@@ -173,20 +167,52 @@ class HttpHelper {
         onFail('请求错误 ( ' + response.statusCode.toString() + ' )');
         return;
       }
-      if (response.data is! Map) {
-        onFail('请求错误');
+      onSucc(response.data, '请求成功');
+    } catch (e) {
+      handleDioError(e,(String msg) => onFail(msg));
+      onFail('请求错误');
+    }
+  }
+
+  static void postHttpForm(
+      String path, 
+      dynamic param, 
+      HttpSuccCallback onSucc,
+      HttpFailCallback onFail ) async {
+
+    // 检测网络
+    var isReachable = await isReachablity();
+    if (isReachable == false) {
+      if (onFail != null) {
+        onFail('网络异常,请检查网络');
         return;
       }
-      // 初步解析数据包
-      Map<String, dynamic> map = response.data;
-      var code = map['code'] ?? -1;
-      if (code != 0) {
-        var msg = map['msg'] ?? '请求错误';
-        onFail(msg);
+    }
+
+    var dio = HttpHelper.initDio();
+
+    // 尝试请求
+    try {
+      final url = AppConfig.getInstance().remotePackage.hostApi + path;
+      Response response = await dio.post(
+        url,
+        options: Options(
+          headers: {'Authorization': ShareManager.instance.token},
+          contentType: Headers.formUrlEncodedContentType,
+          receiveTimeout: HttpHelper.kTimeOutSeconds,
+          sendTimeout: HttpHelper.kTimeOutSeconds,
+        ),
+        data: param,
+      );
+      if (response == null) {
+        onFail('网络异常,请检查网络');
         return;
       }
-      var msg = map['msg'] ?? '请求成功';
-      onSucc(response.data, msg);
+      if (response.statusCode != 200) {
+        onFail('请求错误 ( ' + response.statusCode.toString() + ' )');
+        return;
+      }
+      onSucc(response.data, '请求成功');
     } catch (e) {
       handleDioError(e,(String msg) => onFail(msg));
       onFail('请求错误');
@@ -233,11 +259,6 @@ class HttpHelper {
         onFail('请求错误 ( ' + response.statusCode.toString() + ' )');
         return;
       }
-      if (response.data is! Map) {
-        onFail('请求错误');
-        return;
-      }
-      // 初步解析数据包
       onSucc(response.data, '请求成功');
     } catch (e) {
       handleDioError(e,(String msg) => onFail(msg));
@@ -280,67 +301,12 @@ class HttpHelper {
         onFail('请求错误 ( ' + response.statusCode.toString() + ' )');
         return;
       }
-      if (response.data is! Map) {
-        onFail('请求错误');
-        return;
-      }
       onSucc(response.data, '请求成功');
     } catch (e) {
       handleDioError(e,(String msg) => onFail(msg));
       onFail('请求错误');
     }
 
-  }
-
-  // POST 请求通用封装
-  static void postHttpForm(
-      String path, 
-      dynamic param, 
-      HttpSuccCallback onSucc,
-      HttpFailCallback onFail,
-      ) async {
-
-    // 检测网络
-    var isReachable = await isReachablity();
-    if (isReachable == false) {
-      if (onFail != null) {
-        onFail('网络异常,请检查网络');
-        return;
-      }
-    }
-
-    var dio = HttpHelper.initDio();
-
-    // 尝试请求
-    try {
-      var url = path ?? '';
-      Response response = await dio.post(
-        url,
-        options: Options(
-          headers: {'Authorization': ShareManager.instance.token},
-          contentType: Headers.formUrlEncodedContentType,
-          receiveTimeout: HttpHelper.kTimeOutSeconds,
-          sendTimeout: HttpHelper.kTimeOutSeconds,
-        ),
-        queryParameters: param,
-      );
-      if (response == null) {
-        onFail('网络异常,请检查网络');
-        return;
-      }
-      if (response.statusCode != 200) {
-        onFail('请求错误 ( ' + response.statusCode.toString() + ' )');
-        return;
-      }
-      if (response.data is! Map) {
-        onFail('请求错误');
-        return;
-      }
-      onSucc(response.data, '请求成功');
-    } catch (e) {
-      handleDioError(e,(String msg) => onFail(msg));
-      onFail('请求错误');
-    }
   }
 
   // POST 请求通用封装 String 
@@ -381,10 +347,6 @@ class HttpHelper {
       }
       if (response.statusCode != 200) {
         onFail('请求错误 ( ' + response.statusCode.toString() + ' )');
-        return;
-      }
-      if (response.data is! Map) {
-        onFail('请求错误');
         return;
       }
       onSucc(response.data, '请求成功');

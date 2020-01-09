@@ -49,6 +49,7 @@ class API {
   // static final host = 'http://192.168.16.120:18081/';
   // 生产环境主机
   // static final host = 'http://hsa.fjlead.com/';
+  
   // 动态主机
   static final host = AppConfig.getInstance().remotePackage.hostApi;
 
@@ -91,10 +92,10 @@ class API {
   static final operationCheckPath = host + 'api/Account/CheckOperationTicket';
 
   // 历史有功和历史水位
-  static final historyPowerAndWaterPath = host + 'api/History/PowerAndWaterStage';
+  static final historyPowerAndWaterPath = 'api/History/PowerAndWaterStage';
 
   // 历史事件列表
-  static final eventsListPath = host + 'api/History/AlarmEventLogs';
+  static final eventsListPath = 'api/History/AlarmEventLogs';
 
   // 跟踪指令执行情况
   static final followCommandPath = host + 'Api/Cmd';
@@ -254,7 +255,7 @@ class API {
       param['EndDateTime'] = endDateTime;
     }
 
-    HttpHelper.postHttp(totalPath, param, (dynamic data,String msg){
+    HttpHelper.postHttpForm(totalPath, param, (dynamic data,String msg){
         var map  = data as Map<String,dynamic>;
         var resp = HistoryPointResp.fromJson(map);
         if(onSucc != null) onSucc(resp);
@@ -275,7 +276,7 @@ class API {
       param['EndDateTime'] = endDateTime;
     }
     
-    HttpHelper.postHttp(totalPath, param, (dynamic data,String msg){
+    HttpHelper.postHttpForm(totalPath, param, (dynamic data,String msg){
         final list  = data as List;
         final events = List<HistoryEvent>();
         for(var str in list) {
@@ -283,9 +284,7 @@ class API {
         }
         if(onSucc != null) onSucc(events);
     }, onFail);
-
   }
-
 
   // 彩云天气
   static void weatherCaiyun(Geo geo,WeatherTypeResponseCallBack onSucc,HttpFailCallback onFail) {
