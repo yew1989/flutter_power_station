@@ -83,7 +83,7 @@ class API {
   static final apiWeatherPath = AppConfig.getInstance().remotePackage.apiWeather;
 
   // 实时运行参数
-  static final runtimeDataPath = host + 'api/General/RuntimeData';
+  static final runtimeDataPath = 'api/General/RuntimeData';
 
   // 更多数据
   static final moreDataPath = host + 'api/General/TerminalOverViewData';

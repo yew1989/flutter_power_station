@@ -32,14 +32,14 @@ class _HistoryPageState extends State<HistoryPage> {
       debugPrint(msg);
     });
 
-    /*
+    
     // 历史图表曲线
-    API.historyPowerAndWater(address, '2019-01-08', '2020-01-09', (historyResp){
+    API.historyPowerAndWater(address, '2019-07-16', '2019-07-17', (historyResp){
       debugPrint(historyResp.toString());
     }, (msg){
       debugPrint(msg);
     });
-    */
+    
 
   }
 
