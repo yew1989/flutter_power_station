@@ -15,6 +15,7 @@ dependencies:
   cached_network_image: ^1.1.1
   shared_preferences: ^0.5.6
   event_bus: ^1.1.0
+  date_format: ^1.0.8
   equatable: ^0.4.0
   url_launcher: ^5.1.2
   sqlcool: ^3.2.0
@@ -42,6 +43,7 @@ dependencies:
   lcfarm_flutter_umeng: ^0.1.8
   jpush_flutter: 0.0.13
   syncfusion_flutter_charts: ^17.4.40
+  flutter_cupertino_date_picker: ^1.0.12
     
 dev_dependencies:
   flutter_test:

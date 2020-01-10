@@ -1,8 +1,12 @@
+import 'package:date_format/date_format.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_cupertino_data_picker/flutter_cupertino_data_picker.dart';
+import 'package:flutter_cupertino_date_picker/flutter_cupertino_date_picker.dart';
 import 'package:hsa_app/api/api.dart';
 import 'package:hsa_app/components/segment_control.dart';
 import 'package:hsa_app/model/history_event.dart';
+import 'package:hsa_app/model/history_point.dart';
 import 'package:hsa_app/model/runtime_adapter.dart';
 import 'package:hsa_app/page/history/history_event_tile.dart';
 import 'package:hsa_app/theme/theme_gradient_background.dart';
@@ -23,10 +27,47 @@ class HistoryPage extends StatefulWidget {
 class _HistoryPageState extends State<HistoryPage> {
 
   List<HistoryEvent> showEvents = List<HistoryEvent>();
-  
+  HistoryPointResp historyPointResp = HistoryPointResp();
+  int segmentIndex = 0;
+
   @override
   void initState() {
     super.initState();
+    requestNowData();
+  }
+
+  // 获取当天数据
+  void requestNowData() {
+    final dayDateTime = formatDate(DateTime.now(),[yyyy, '-', mm, '-', dd]);
+    requestData(dayDateTime,dayDateTime);
+  }
+
+  // 获取当周数据
+
+  // 获取当月数据
+
+  // 获取本年数据
+
+
+  // 获取数据
+  void requestData(String start,String end) {
+    final address = widget.address ?? '';
+
+    API.eventList(address, start, end, (events){
+      setState(() {
+        this.showEvents = events;
+      });
+    }, (msg){
+      debugPrint(msg);
+    });
+
+    API.historyPowerAndWater(address, start, end, (historyResp){
+      setState(() {
+        this.historyPointResp = historyResp;
+      });
+    }, (msg){
+      debugPrint(msg);
+    });
   }
 
   @override
@@ -36,13 +77,12 @@ class _HistoryPageState extends State<HistoryPage> {
 
   void onTapFilterButton() {}
 
-  void onTapToggleButton(int index) {
+  void onTapToggleButton() {
 
     final address = widget.address ?? '';
 
     // 历史事件列表
     API.eventList(address, '2018-07-16', '2019-07-17', (events){
-      debugPrint(events.toString());
       setState(() {
         showEvents = events;
       });
@@ -52,11 +92,85 @@ class _HistoryPageState extends State<HistoryPage> {
     
     // 历史图表曲线
     API.historyPowerAndWater(address, '2019-07-16', '2019-07-17', (historyResp){
-      debugPrint(historyResp.toString());
+      setState(() {
+        this.historyPointResp = historyResp;
+      });
     }, (msg){
       debugPrint(msg);
     });
+
     
+
+  }
+
+  // void showPopWindowPickerDay() {
+
+  // }
+
+  // void showPopWindowPickerWeek() {
+
+  // }
+
+  // void showPopWindowPickerMonth() {
+
+  // }
+
+  void showPickerPopWindow() {
+
+    final now = DateTime.now();
+    final year = now.year;
+    final month = now.month;
+    final week = now.weekday;
+    final day = now.day;
+    final max = DateTime.now();
+
+    debugPrint(' ' + '$year ' + '$month ' + '$week ' + '$day ');
+
+    // 选择 日
+    if(segmentIndex == 0) {
+      final min = max.subtract(Duration(days: 365));
+      DatePicker.showDatePicker(context,
+        maxDateTime: now,
+        minDateTime: min,
+        pickerMode:DateTimePickerMode.date,
+        pickerTheme:DateTimePickerTheme(
+          cancel:Center(child: Text('取消',style: TextStyle(color: Colors.white54,fontSize: 18))),
+          confirm: Center(child: Text('确定',style: TextStyle(color: Colors.white,fontSize: 18))),
+          backgroundColor: Color.fromRGBO(53, 117, 191, 1),
+          itemTextStyle: TextStyle(color: Colors.white,fontFamily: 'ArialNarrow',fontSize: 22),
+        ),
+      );
+    }
+    // 选择 周
+    else if(segmentIndex == 1) {
+      final min = max.subtract(Duration(days: 365));
+      DatePicker.showDatePicker(context,
+        maxDateTime: now,
+        minDateTime: min,
+        pickerMode:DateTimePickerMode.date,
+        pickerTheme:DateTimePickerTheme(
+          cancel:Center(child: Text('取消',style: TextStyle(color: Colors.white54,fontSize: 18))),
+          confirm: Center(child: Text('确定',style: TextStyle(color: Colors.white,fontSize: 18))),
+          backgroundColor: Color.fromRGBO(53, 117, 191, 1),
+          itemTextStyle: TextStyle(color: Colors.white,fontFamily: 'ArialNarrow',fontSize: 22),
+        ),
+      );
+    }
+    else if(segmentIndex == 2) {
+      final min = max.subtract(Duration(days: 365));
+      DatePicker.showDatePicker(context,
+        maxDateTime: now,
+        minDateTime: min,
+        pickerMode:DateTimePickerMode.date,
+        pickerTheme:DateTimePickerTheme(
+          cancel:Center(child: Text('取消',style: TextStyle(color: Colors.white54,fontSize: 18))),
+          confirm: Center(child: Text('确定',style: TextStyle(color: Colors.white,fontSize: 18))),
+          backgroundColor: Color.fromRGBO(53, 117, 191, 1),
+          itemTextStyle: TextStyle(color: Colors.white,fontFamily: 'ArialNarrow',fontSize: 22),
+        ),
+      );
+    }
+
 
   }
 
@@ -126,7 +240,7 @@ class _HistoryPageState extends State<HistoryPage> {
           ),
 
           GestureDetector(
-              onTap: ()=> debugPrint('📅点击'),
+              onTap: ()=> showPickerPopWindow(),
           ),
         ]
       ),
@@ -345,7 +459,8 @@ class _HistoryPageState extends State<HistoryPage> {
         normalBackgroundColor: Colors.transparent,
         activeBackgroundColor: Color.fromRGBO(72, 114, 222, 1),
         selected: (int index, String valueM) {
-          onTapToggleButton(index);
+          segmentIndex = index;
+          onTapToggleButton();
         },
         tabs: <String>['日', '周', '月', '年'],
       ),
@@ -366,7 +481,7 @@ class _HistoryPageState extends State<HistoryPage> {
         child: ListView.builder(
             itemBuilder: (ctx, index) {
               final event = events[index];
-              final left  = 'ERC ' + event.eRCTitle;
+              final left  = 'ERC--' + event.eRCTitle;
               var right = event.freezeTime.replaceAll('T', ' ');
               right = right.split(' ').last ?? '';
               return HistoryEventTile(event: EventTileData(left, right));
