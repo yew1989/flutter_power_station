@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hsa_app/api/api.dart';
 import 'package:hsa_app/components/segment_control.dart';
+import 'package:hsa_app/model/history_event.dart';
 import 'package:hsa_app/model/runtime_adapter.dart';
 import 'package:hsa_app/page/history/history_event_tile.dart';
 import 'package:hsa_app/theme/theme_gradient_background.dart';
@@ -21,29 +22,8 @@ class HistoryPage extends StatefulWidget {
 
 class _HistoryPageState extends State<HistoryPage> {
 
-
-  void onTapToggleButton(int index) {
-
-    final address = widget.address ?? '';
-
-    API.eventList(address, '2019-07-16', '2019-07-17', (events){
-      debugPrint(events.toString());
-    }, (msg){
-      debugPrint(msg);
-    });
-
-    
-    // 历史图表曲线
-    API.historyPowerAndWater(address, '2019-07-16', '2019-07-17', (historyResp){
-      debugPrint(historyResp.toString());
-    }, (msg){
-      debugPrint(msg);
-    });
-    
-
-  }
-
-
+  List<HistoryEvent> showEvents = List<HistoryEvent>();
+  
   @override
   void initState() {
     super.initState();
@@ -55,6 +35,30 @@ class _HistoryPageState extends State<HistoryPage> {
   }
 
   void onTapFilterButton() {}
+
+  void onTapToggleButton(int index) {
+
+    final address = widget.address ?? '';
+
+    // 历史事件列表
+    API.eventList(address, '2018-07-16', '2019-07-17', (events){
+      debugPrint(events.toString());
+      setState(() {
+        showEvents = events;
+      });
+    }, (msg){
+      debugPrint(msg);
+    });
+    
+    // 历史图表曲线
+    API.historyPowerAndWater(address, '2019-07-16', '2019-07-17', (historyResp){
+      debugPrint(historyResp.toString());
+    }, (msg){
+      debugPrint(msg);
+    });
+    
+
+  }
 
   Widget filterButton() {
     return GestureDetector(
@@ -98,7 +102,7 @@ class _HistoryPageState extends State<HistoryPage> {
               chartGraphWidget(),
               eventListViewHeader(),
               divLine(),
-              eventListView(),
+              eventListView(showEvents),
             ],
           ),
         ),
@@ -357,12 +361,17 @@ class _HistoryPageState extends State<HistoryPage> {
             child: Text('  系统日志',style: TextStyle(fontSize: 16,color: Colors.white))));
   }
 
-  Widget eventListView() {
+  Widget eventListView(List<HistoryEvent> events) {
     return Expanded(
         child: ListView.builder(
-            itemBuilder: (ctx, index) => HistoryEventTile(
-                event: EventTileData('ERC 三相电压不平衡', '2019-08-05')),
-            itemCount: 20));
+            itemBuilder: (ctx, index) {
+              final event = events[index];
+              final left  = 'ERC ' + event.eRCTitle;
+              var right = event.freezeTime.replaceAll('T', ' ');
+              right = right.split(' ').last ?? '';
+              return HistoryEventTile(event: EventTileData(left, right));
+            },
+      itemCount: events.length ?? 0));
   }
 }
 
