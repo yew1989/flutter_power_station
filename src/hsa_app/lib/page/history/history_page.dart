@@ -1,7 +1,6 @@
 import 'package:date_format/date_format.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_cupertino_data_picker/flutter_cupertino_data_picker.dart';
 import 'package:flutter_cupertino_date_picker/flutter_cupertino_date_picker.dart';
 import 'package:hsa_app/api/api.dart';
 import 'package:hsa_app/components/segment_control.dart';
@@ -29,6 +28,9 @@ class _HistoryPageState extends State<HistoryPage> {
   List<HistoryEvent> showEvents = List<HistoryEvent>();
   HistoryPointResp historyPointResp = HistoryPointResp();
   int segmentIndex = 0;
+
+  String startDateTime;
+  String endDateTime;
 
   @override
   void initState() {
@@ -103,35 +105,17 @@ class _HistoryPageState extends State<HistoryPage> {
 
   }
 
-  // void showPopWindowPickerDay() {
-
-  // }
-
-  // void showPopWindowPickerWeek() {
-
-  // }
-
-  // void showPopWindowPickerMonth() {
-
-  // }
 
   void showPickerPopWindow() {
 
-    final now = DateTime.now();
-    final year = now.year;
-    final month = now.month;
-    final week = now.weekday;
-    final day = now.day;
     final max = DateTime.now();
-
-    debugPrint(' ' + '$year ' + '$month ' + '$week ' + '$day ');
+    final min = max.subtract(Duration(days: 365*2));
 
     // 选择 日
     if(segmentIndex == 0) {
-      final min = max.subtract(Duration(days: 365));
       DatePicker.showDatePicker(context,
        dateFormat: 'yyyy-MM-dd',
-        maxDateTime: now,
+        maxDateTime: max,
         minDateTime: min,
         pickerMode:DateTimePickerMode.date,
         pickerTheme:DateTimePickerTheme(
@@ -140,15 +124,18 @@ class _HistoryPageState extends State<HistoryPage> {
           backgroundColor: Color.fromRGBO(53, 117, 191, 1),
           itemTextStyle: TextStyle(color: Colors.white,fontFamily: 'ArialNarrow',fontSize: 22),
         ),
+        onConfirm: (selectDate,_) {
+          this.startDateTime = formatDate(selectDate, [yyyy, '-', mm, '-', dd]);
+          this.endDateTime   = formatDate(selectDate, [yyyy, '-', mm, '-', dd]);
+        }
       );
     }
     // 选择 周
     else if(segmentIndex == 1) {
-      final min = max.subtract(Duration(days: 365));
       DatePicker.showDatePicker(
         context,
         dateFormat: 'yyyy-MM-dd',
-        maxDateTime: now,
+        maxDateTime: max,
         minDateTime: min,
         pickerMode:DateTimePickerMode.date,
         pickerTheme:DateTimePickerTheme(
@@ -157,14 +144,23 @@ class _HistoryPageState extends State<HistoryPage> {
           backgroundColor: Color.fromRGBO(53, 117, 191, 1),
           itemTextStyle: TextStyle(color: Colors.white,fontFamily: 'ArialNarrow',fontSize: 22),
         ),
+        onConfirm: (selectDate,index) {
+          final year = selectDate.year;
+          final month = selectDate.month;
+          final day = selectDate.day;
+          final end = formatDate(DateTime(year,month,day), [yyyy, '-', mm, '-', dd]);
+          final start = formatDate(DateTime(year,month,day).subtract(Duration(days: 6)), [yyyy, '-', mm, '-', dd]);
+          this.startDateTime = start;
+          this.endDateTime = end;
+        }
       );
     }
+    // 按月
     else if(segmentIndex == 2) {
-      final min = max.subtract(Duration(days: 365));
       DatePicker.showDatePicker(
         context,
         dateFormat: 'yyyy-MM',
-        maxDateTime: now,
+        maxDateTime: max,
         minDateTime: min,
         pickerMode:DateTimePickerMode.date,
         pickerTheme:DateTimePickerTheme(
@@ -173,14 +169,28 @@ class _HistoryPageState extends State<HistoryPage> {
           backgroundColor: Color.fromRGBO(53, 117, 191, 1),
           itemTextStyle: TextStyle(color: Colors.white,fontFamily: 'ArialNarrow',fontSize: 22),
         ),
+        onConfirm: (selectDate,index) {
+          final year = selectDate.year;
+          final month = selectDate.month;
+          final start = formatDate(DateTime(year,month), [yyyy, '-', mm, '-', dd]);
+          final endDate = DateTime(year,month+1).subtract(Duration(days: 1));
+          var end = '';
+          if( max.isBefore(endDate)) {
+            end   = formatDate(max, [yyyy, '-', mm, '-', dd]);;
+          }
+          else {
+            end   = formatDate(endDate, [yyyy, '-', mm, '-', dd]);
+          }
+          this.startDateTime = start;
+          this.endDateTime = end;
+        }
       );
     }
     else if(segmentIndex == 3) {
-      final min = max.subtract(Duration(days: 365*2));
       DatePicker.showDatePicker(
         context,
         dateFormat: 'yyyy',
-        maxDateTime: now,
+        maxDateTime: max,
         minDateTime: min,
         pickerMode:DateTimePickerMode.date,
         pickerTheme:DateTimePickerTheme(
@@ -189,6 +199,20 @@ class _HistoryPageState extends State<HistoryPage> {
           backgroundColor: Color.fromRGBO(53, 117, 191, 1),
           itemTextStyle: TextStyle(color: Colors.white,fontFamily: 'ArialNarrow',fontSize: 22),
         ),
+        onConfirm: (selectDate,index){
+          final year = selectDate.year;
+          final start = formatDate(DateTime(year), [yyyy, '-', mm, '-', dd]);
+          final endDate = DateTime(year+1).subtract(Duration(days: 1));
+          var end = '';
+          if( max.isBefore(endDate)) {
+            end   = formatDate(max, [yyyy, '-', mm, '-', dd]);;
+          }
+          else {
+            end   = formatDate(endDate, [yyyy, '-', mm, '-', dd]);
+          }
+          this.startDateTime = start;
+          this.endDateTime = end;
+        }
       );
     }
 
