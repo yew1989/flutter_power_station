@@ -130,6 +130,7 @@ class _HistoryPageState extends State<HistoryPage> {
     if(segmentIndex == 0) {
       final min = max.subtract(Duration(days: 365));
       DatePicker.showDatePicker(context,
+       dateFormat: 'yyyy-MM-dd',
         maxDateTime: now,
         minDateTime: min,
         pickerMode:DateTimePickerMode.date,
@@ -144,7 +145,9 @@ class _HistoryPageState extends State<HistoryPage> {
     // 选择 周
     else if(segmentIndex == 1) {
       final min = max.subtract(Duration(days: 365));
-      DatePicker.showDatePicker(context,
+      DatePicker.showDatePicker(
+        context,
+        dateFormat: 'yyyy-MM-dd',
         maxDateTime: now,
         minDateTime: min,
         pickerMode:DateTimePickerMode.date,
@@ -158,7 +161,25 @@ class _HistoryPageState extends State<HistoryPage> {
     }
     else if(segmentIndex == 2) {
       final min = max.subtract(Duration(days: 365));
-      DatePicker.showDatePicker(context,
+      DatePicker.showDatePicker(
+        context,
+        dateFormat: 'yyyy-MM',
+        maxDateTime: now,
+        minDateTime: min,
+        pickerMode:DateTimePickerMode.date,
+        pickerTheme:DateTimePickerTheme(
+          cancel:Center(child: Text('取消',style: TextStyle(color: Colors.white54,fontSize: 18))),
+          confirm: Center(child: Text('确定',style: TextStyle(color: Colors.white,fontSize: 18))),
+          backgroundColor: Color.fromRGBO(53, 117, 191, 1),
+          itemTextStyle: TextStyle(color: Colors.white,fontFamily: 'ArialNarrow',fontSize: 22),
+        ),
+      );
+    }
+    else if(segmentIndex == 3) {
+      final min = max.subtract(Duration(days: 365*2));
+      DatePicker.showDatePicker(
+        context,
+        dateFormat: 'yyyy',
         maxDateTime: now,
         minDateTime: min,
         pickerMode:DateTimePickerMode.date,
