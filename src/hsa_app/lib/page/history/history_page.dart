@@ -539,7 +539,7 @@ class _HistoryPageState extends State<HistoryPage> {
         child: ListView.builder(
             itemBuilder: (ctx, index) {
               final event = events[index];
-              final left  = 'ERC--' + event.eRCTitle;
+              final left  = 'ERC${event.eRCFlag}--${event.eRCTitle}';
               var right = event.freezeTime.replaceAll('T', ' ');
               right = right.split(' ').last ?? '';
               return HistoryEventTile(event: EventTileData(left, right));
