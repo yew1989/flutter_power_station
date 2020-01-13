@@ -8,6 +8,7 @@ import 'package:hsa_app/model/history_event.dart';
 import 'package:hsa_app/model/history_point.dart';
 import 'package:hsa_app/model/runtime_adapter.dart';
 import 'package:hsa_app/page/history/history_event_tile.dart';
+import 'package:hsa_app/page/history/history_pop_dialog.dart';
 import 'package:hsa_app/theme/theme_gradient_background.dart';
 import 'package:native_color/native_color.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
@@ -44,13 +45,6 @@ class _HistoryPageState extends State<HistoryPage> {
     requestData(dayDateTime,dayDateTime);
   }
 
-  // 获取当周数据
-
-  // 获取当月数据
-
-  // 获取本年数据
-
-
   // 获取数据
   void requestData(String start,String end) {
     final address = widget.address ?? '';
@@ -77,7 +71,12 @@ class _HistoryPageState extends State<HistoryPage> {
     super.dispose();
   }
 
-  void onTapFilterButton() {}
+  void onTapFilterButton(BuildContext context) {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (_) => HistoryEventDialogWidget());
+  }
 
   void onTapToggleButton() {
 
@@ -221,7 +220,7 @@ class _HistoryPageState extends State<HistoryPage> {
 
   Widget filterButton() {
     return GestureDetector(
-      onTap: () => onTapFilterButton(),
+      onTap: () => onTapFilterButton(context),
       child: Container(
         padding: EdgeInsets.symmetric(horizontal: 10),
         child: SizedBox(
