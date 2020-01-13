@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_cupertino_date_picker/flutter_cupertino_date_picker.dart';
 import 'package:hsa_app/api/api.dart';
 import 'package:hsa_app/components/segment_control.dart';
+import 'package:hsa_app/model/event_types.dart';
 import 'package:hsa_app/model/history_event.dart';
 import 'package:hsa_app/model/history_point.dart';
 import 'package:hsa_app/model/runtime_adapter.dart';
@@ -33,9 +34,21 @@ class _HistoryPageState extends State<HistoryPage> {
   String startDateTime;
   String endDateTime;
 
+  List<EventTypes> evnetTypes = List<EventTypes>();
+
+  // 获取事件类型
+  void reqeustGetEventTypes() {
+    API.eventTypes((types){
+      this.evnetTypes = types;
+    }, (msg){
+
+    });
+  }
+
   @override
   void initState() {
     super.initState();
+    reqeustGetEventTypes();
     requestNowData();
   }
 
@@ -72,10 +85,11 @@ class _HistoryPageState extends State<HistoryPage> {
   }
 
   void onTapFilterButton(BuildContext context) {
+    if(this.evnetTypes.length ==0) return;
     showDialog(
       context: context,
       barrierDismissible: false,
-      builder: (_) => HistoryEventDialogWidget());
+      builder: (_) => HistoryEventDialogWidget(eventTypes: this.evnetTypes));
   }
 
   void onTapToggleButton() {

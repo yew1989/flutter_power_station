@@ -1,14 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:hsa_app/model/event_types.dart';
+import 'package:hsa_app/page/history/history_pop_dialog_tile.dart';
 
 class HistoryEventDialogWidget extends StatefulWidget {
 
-  const HistoryEventDialogWidget({Key key}): super(key: key);
+  final List<EventTypes> eventTypes;
+
+  const HistoryEventDialogWidget({Key key, this.eventTypes}): super(key: key);
 
   @override
   _ControlModelDialogWidgetState createState() => _ControlModelDialogWidgetState();
 }
 
 class _ControlModelDialogWidgetState extends State<HistoryEventDialogWidget> {
+
   @override
   void initState() {
     super.initState();
@@ -21,62 +26,28 @@ class _ControlModelDialogWidgetState extends State<HistoryEventDialogWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return HistoryEventDialog();
+    List<HistoryPopDialogTile> tiles = [
+       HistoryPopDialogTile('图表筛选', false,false),
+       HistoryPopDialogTile('水位&功率图', true,true),
+       HistoryPopDialogTile('日志筛选', false,false),
+       HistoryPopDialogTile('全部', true,true),
+    ];
+    for (var type in widget.eventTypes) {
+      tiles.add(HistoryPopDialogTile('ERC${type.eRCFlag}${type.eRCTitle}', true,false));
+    }
+     return HistoryEventDialog(tiles);
   }
 }
 
 class HistoryEventDialog extends Dialog {
 
+  final List<HistoryPopDialogTile> tiles;
 
-  Widget modelTile(BuildContext context, String string, bool enable,bool isSelected) {
-
-    return Container(
-      margin: EdgeInsets.only(right: 12, left: 12),
-      child: SizedBox(
-        height: 43,
-        child: Stack(
-          children: <Widget>[
-            Center(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: <Widget>[
-                  Text(string,
-                      style: TextStyle(
-                          color: enable ? Colors.white : Colors.white60,
-                          fontSize: 16)),
-                  SizedBox(
-                      height: 22,
-                      width: 22,
-                      child: isSelected ? Image.asset('images/runtime/Time_selected_icon.png') : null
-                    ),
-                ],
-              ),
-            ),
-            GestureDetector(
-              onTap: () {
-                  Navigator.of(context).pop();
-              },
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget divider(double left) {
-    return Container(
-      width: double.infinity,
-      margin: EdgeInsets.only(left: left),
-      height: 1,
-      color: Colors.white12,
-    );
-  }
+  HistoryEventDialog(this.tiles);
 
   @override
   Widget build(BuildContext context) {
     final isIphone5s = MediaQuery.of(context).size.width == 320.0 ? true : false;
-
     return SafeArea(
       child: Material(
         type: MaterialType.transparency,
@@ -101,22 +72,9 @@ class HistoryEventDialog extends Dialog {
                         ),
                       ),
                     ),
-                    child: Container(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: <Widget>[
-
-                          modelTile(context, '图表筛选', false,false),
-                          divider(12),
-                          modelTile(context, '水位&功率图', true,true),
-                          divider(12),
-                          modelTile(context, '日志筛选', false,false),
-                          divider(12),
-                          modelTile(context, '全部', true,true),
-                          divider(12),
-                        ],
-                      ),
+                    child: ListView.builder(
+                      itemBuilder: (context,index) => tiles[index],
+                      itemCount: tiles?.length??0,
                     ),
                   ),
                 ),

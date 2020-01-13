@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:hsa_app/api/http_helper.dart';
 import 'package:hsa_app/config/app_config.dart';
 import 'package:hsa_app/model/caiyun.dart';
+import 'package:hsa_app/model/event_types.dart';
 import 'package:hsa_app/model/follow_command.dart';
 import 'package:hsa_app/model/history_event.dart';
 import 'package:hsa_app/model/history_point.dart';
@@ -40,6 +41,8 @@ typedef MoreDataResponseCallBack = void Function(List<MoreItem> items);
 typedef FollowCommandResponseCallBack = void Function(FollowCommandResp commandResp);
 // 历史事件列表
 typedef HistoryEventResponseCallBack = void Function(List<HistoryEvent> events);
+// 事件类型
+typedef EventTypesResponseCallBack = void Function(List<EventTypes> types);
 // 历史有功和历史水位
 typedef HistoryPowerAndWaterResponseCallBack = void Function(HistoryPointResp resp);
 
@@ -96,6 +99,9 @@ class API {
 
   // 历史事件列表
   static final eventsListPath = 'api/History/AlarmEventLogs';
+
+  // 事件类型接口
+  static final eventsTypePath = 'api/ERC/AlarmEventERCFlags';
 
   // 跟踪指令执行情况
   static final followCommandPath = host + 'Api/Cmd';
@@ -285,6 +291,20 @@ class API {
         if(onSucc != null) onSucc(events);
     }, onFail);
   }
+
+  // 事件类型
+  static void eventTypes(EventTypesResponseCallBack onSucc,HttpFailCallback onFail) {
+
+    HttpHelper.getHttp(eventsTypePath, null, (dynamic data,String msg){
+        final list  = data as List;
+        final types = List<EventTypes>();
+        for(var str in list) {
+          types.add(EventTypes.fromJson(str));
+        }
+        if(onSucc != null) onSucc(types);
+    }, onFail);
+  }
+
 
   // 彩云天气
   static void weatherCaiyun(Geo geo,WeatherTypeResponseCallBack onSucc,HttpFailCallback onFail) {

@@ -14,7 +14,7 @@ typedef HttpFailCallback = void Function(String msg);
 class HttpHelper {
 
   // 开启代理模式,允许抓包
-  static final isProxyModeOpen = false;
+  static final isProxyModeOpen = true;
   // 代理地址
   static final proxyIP = 'PROXY 192.168.31.74:8888';
   // 超时时间
@@ -113,14 +113,6 @@ class HttpHelper {
         onFail('请求错误 ( ' + response.statusCode.toString() + ' )');
         return;
       }
-      // Map<String, dynamic> map = response.data;
-      // var code = map['code'] ?? -1;
-      // if (code != 0) {
-      //   var msg = map['msg'] ?? '请求错误';
-      //   onFail(msg);
-      //   return;
-      // }
-      // var msg = map['msg'] ?? '请求成功';
       onSucc(response.data, '请求成功');
     } catch (e) {
       handleDioError(e,(String msg) => onFail(msg));
