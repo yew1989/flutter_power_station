@@ -191,8 +191,10 @@ class _HistoryPageState extends State<HistoryPage> {
             itemTextStyle: TextStyle(
                 color: Colors.white, fontFamily: 'ArialNarrow', fontSize: 22),
           ), onConfirm: (selectDate, _) {
-        this.startDateTime = formatDate(selectDate, [yyyy, '-', mm, '-', dd]);
-        this.endDateTime = formatDate(selectDate, [yyyy, '-', mm, '-', dd]);
+        setState(() {
+          this.startDateTime = formatDate(selectDate, [yyyy, '-', mm, '-', dd]);
+          this.endDateTime = formatDate(selectDate, [yyyy, '-', mm, '-', dd]);
+        });
       });
     }
     // 选择 周
@@ -221,8 +223,10 @@ class _HistoryPageState extends State<HistoryPage> {
         final start = formatDate(
             DateTime(year, month, day).subtract(Duration(days: 6)),
             [yyyy, '-', mm, '-', dd]);
-        this.startDateTime = start;
-        this.endDateTime = end;
+        setState(() {
+          this.startDateTime = start;
+          this.endDateTime = end;
+        });
       });
     }
     // 按月
@@ -254,8 +258,10 @@ class _HistoryPageState extends State<HistoryPage> {
         } else {
           end = formatDate(endDate, [yyyy, '-', mm, '-', dd]);
         }
-        this.startDateTime = start;
-        this.endDateTime = end;
+        setState(() {
+          this.startDateTime = start;
+          this.endDateTime = end;
+        });
       });
     } else if (segmentIndex == 3) {
       DatePicker.showDatePicker(context,
@@ -283,8 +289,10 @@ class _HistoryPageState extends State<HistoryPage> {
         } else {
           end = formatDate(endDate, [yyyy, '-', mm, '-', dd]);
         }
-        this.startDateTime = start;
-        this.endDateTime = end;
+        setState(() {
+          this.startDateTime = start;
+          this.endDateTime = end;
+        });
       });
     }
   }
@@ -343,10 +351,9 @@ class _HistoryPageState extends State<HistoryPage> {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 4),
       height: 36,
-      child: Stack(
-        children: [
-          Container(
-            child: Align(
+      child: Stack(children: [
+        Container(
+          child: Align(
               alignment: Alignment.centerRight,
               child: SizedBox(
                   height: 22,
@@ -358,14 +365,13 @@ class _HistoryPageState extends State<HistoryPage> {
           right: 32,
           top: 8,
           child: Align(
-          alignment: Alignment.centerRight,
-          child:Text('$startDateTime ～ $endDateTime',
-          style: TextStyle(
-            color: Colors.white,
-            fontFamily: 'ArialNarrow',
-            fontSize: 16
+            alignment: Alignment.centerRight,
+            child: Text(
+              '$startDateTime ～ $endDateTime',
+              style: TextStyle(
+                  color: Colors.white, fontFamily: 'ArialNarrow', fontSize: 16),
             ),
-          ),),
+          ),
         ),
         GestureDetector(
           onTap: () => showPickerPopWindow(),
