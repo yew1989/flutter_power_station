@@ -79,8 +79,8 @@ class _HistoryPageState extends State<HistoryPage> {
 
   // 获取当天数据
   void requestTodayData() {
-    startDateTime = formatDate(DateTime.now(), [yyyy, '-', mm, '-', dd]);
-    endDateTime = formatDate(DateTime.now(), [yyyy, '-', mm, '-', dd]);
+    this.startDateTime = formatDate(DateTime.now(), [yyyy, '-', mm, '-', dd]);
+    this.endDateTime = formatDate(DateTime.now(), [yyyy, '-', mm, '-', dd]);
     requestData();
   }
 
@@ -343,15 +343,29 @@ class _HistoryPageState extends State<HistoryPage> {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 4),
       height: 36,
-      child: Stack(children: [
-        Container(
-          child: Align(
+      child: Stack(
+        children: [
+          Container(
+            child: Align(
               alignment: Alignment.centerRight,
               child: SizedBox(
                   height: 22,
                   width: 22,
                   child:
                       Image.asset('images/history/History_calendar_btn.png'))),
+        ),
+        Positioned(
+          right: 32,
+          top: 8,
+          child: Align(
+          alignment: Alignment.centerRight,
+          child:Text('$startDateTime ～ $endDateTime',
+          style: TextStyle(
+            color: Colors.white,
+            fontFamily: 'ArialNarrow',
+            fontSize: 16
+            ),
+          ),),
         ),
         GestureDetector(
           onTap: () => showPickerPopWindow(),
