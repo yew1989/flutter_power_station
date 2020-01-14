@@ -3,7 +3,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_cupertino_date_picker/flutter_cupertino_date_picker.dart';
 import 'package:hsa_app/api/api.dart';
+import 'package:hsa_app/components/empty_page.dart';
 import 'package:hsa_app/components/segment_control.dart';
+import 'package:hsa_app/components/spinkit_indicator.dart';
 import 'package:hsa_app/event/app_event.dart';
 import 'package:hsa_app/event/event_bird.dart';
 import 'package:hsa_app/model/event_types.dart';
@@ -17,18 +19,16 @@ import 'package:native_color/native_color.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
 class HistoryPage extends StatefulWidget {
-
   final String title;
   final String address;
 
   const HistoryPage({Key key, this.title, this.address}) : super(key: key);
-  
+
   @override
   _HistoryPageState createState() => _HistoryPageState();
 }
 
 class _HistoryPageState extends State<HistoryPage> {
-
   List<HistoryEvent> showEvents = List<HistoryEvent>();
   HistoryPointResp historyPointResp = HistoryPointResp();
   int segmentIndex = 0;
@@ -36,22 +36,25 @@ class _HistoryPageState extends State<HistoryPage> {
   String startDateTime;
   String endDateTime;
 
+  // 是否空视图
+  bool isEmpty = false;
+  // 是否首次数据加载完毕
+  bool isLoadFinsh = false;
+
   List<EventTypes> evnetTypes = List<EventTypes>();
 
   // 获取事件类型
   void reqeustGetEventTypes() {
-    API.eventTypes((types){
+    API.eventTypes((types) {
       this.evnetTypes = types;
-    }, (msg){
-
-    });
+    }, (msg) {});
   }
 
   @override
   void initState() {
     super.initState();
     reqeustGetEventTypes();
-    requestNowData();
+    requestTodayData();
     addObserverEventFilterChoose();
   }
 
@@ -61,194 +64,229 @@ class _HistoryPageState extends State<HistoryPage> {
     super.dispose();
   }
 
-  void addObserverEventFilterChoose(){
-    EventBird().on(AppEvent.eventFilterChoose,(flag){
+  void addObserverEventFilterChoose() {
+    EventBird().on(AppEvent.eventFilterChoose, (flag) {
       String ercFlag = flag;
-      if(ercFlag == '')return;
-      else if(ercFlag == '全部'){
+      if (ercFlag == '')
+        return;
+      else if (ercFlag == '全部') {
         debugPrint(ercFlag);
-      }
-      else {
+      } else {
         debugPrint(ercFlag);
       }
     });
   }
 
   // 获取当天数据
-  void requestNowData() {
-    final dayDateTime = formatDate(DateTime.now(),[yyyy, '-', mm, '-', dd]);
-    requestData(dayDateTime,dayDateTime);
+  void requestTodayData() {
+    startDateTime = formatDate(DateTime.now(), [yyyy, '-', mm, '-', dd]);
+    endDateTime = formatDate(DateTime.now(), [yyyy, '-', mm, '-', dd]);
+    requestData();
   }
 
   // 获取数据
-  void requestData(String start,String end) {
+  void requestData() {
+    this.isEmpty = false;
+    this.isLoadFinsh = false;
+
     final address = widget.address ?? '';
 
-    API.eventList(address, start, end, (events){
+    API.eventList(address, startDateTime, endDateTime, (events) {
+      isLoadFinsh = true;
+
+      if (events.length == 0) {
+        this.isEmpty = true;
+      }
       setState(() {
         this.showEvents = events;
       });
-    }, (msg){
+    }, (msg) {
       debugPrint(msg);
     });
 
-    API.historyPowerAndWater(address, start, end, (historyResp){
+    API.historyPowerAndWater(address, startDateTime, endDateTime,
+        (historyResp) {
       setState(() {
         this.historyPointResp = historyResp;
       });
-    }, (msg){
+    }, (msg) {
       debugPrint(msg);
     });
   }
-
-
 
   void onTapFilterButton(BuildContext context) {
-    if(this.evnetTypes.length ==0) return;
+    if (this.evnetTypes.length == 0) return;
     showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (_) => HistoryEventDialogWidget(eventTypes: this.evnetTypes));
+        context: context,
+        barrierDismissible: false,
+        builder: (_) => HistoryEventDialogWidget(eventTypes: this.evnetTypes));
   }
 
+  // 点击了日.周.月.年
   void onTapToggleButton() {
+    final now = DateTime.now();
 
-    final address = widget.address ?? '';
-
-    // 历史事件列表
-    API.eventList(address, '2018-07-16', '2019-07-17', (events){
-      setState(() {
-        showEvents = events;
-      });
-    }, (msg){
-      debugPrint(msg);
-    });
-    
-    // 历史图表曲线
-    API.historyPowerAndWater(address, '2019-07-16', '2019-07-17', (historyResp){
-      setState(() {
-        this.historyPointResp = historyResp;
-      });
-    }, (msg){
-      debugPrint(msg);
-    });
-
-    
-
+    if (segmentIndex == 0) {
+      this.startDateTime = formatDate(now, [yyyy, '-', mm, '-', dd]);
+      this.endDateTime = formatDate(now, [yyyy, '-', mm, '-', dd]);
+    } else if (segmentIndex == 1) {
+      final year = now.year;
+      final month = now.month;
+      final day = now.day;
+      final end =
+          formatDate(DateTime(year, month, day), [yyyy, '-', mm, '-', dd]);
+      final start = formatDate(
+          DateTime(year, month, day).subtract(Duration(days: 6)),
+          [yyyy, '-', mm, '-', dd]);
+      this.startDateTime = start;
+      this.endDateTime = end;
+    } else if (segmentIndex == 2) {
+      final year = now.year;
+      final month = now.month;
+      final start = formatDate(DateTime(year, month), [yyyy, '-', mm, '-', dd]);
+      final endDate = DateTime(year, month + 1).subtract(Duration(days: 1));
+      var end = '';
+      if (now.isBefore(endDate)) {
+        end = formatDate(now, [yyyy, '-', mm, '-', dd]);
+      } else {
+        end = formatDate(endDate, [yyyy, '-', mm, '-', dd]);
+      }
+      this.startDateTime = start;
+      this.endDateTime = end;
+    } else if (segmentIndex == 3) {
+      final year = now.year;
+      final start = formatDate(DateTime(year), [yyyy, '-', mm, '-', dd]);
+      final endDate = DateTime(year + 1).subtract(Duration(days: 1));
+      var end = '';
+      if (now.isBefore(endDate)) {
+        end = formatDate(now, [yyyy, '-', mm, '-', dd]);
+      } else {
+        end = formatDate(endDate, [yyyy, '-', mm, '-', dd]);
+      }
+      this.startDateTime = start;
+      this.endDateTime = end;
+    }
+    requestData();
   }
-
 
   void showPickerPopWindow() {
-
     final max = DateTime.now();
-    final min = max.subtract(Duration(days: 365*2));
+    final min = max.subtract(Duration(days: 365 * 2));
 
     // 选择 日
-    if(segmentIndex == 0) {
+    if (segmentIndex == 0) {
       DatePicker.showDatePicker(context,
-       dateFormat: 'yyyy-MM-dd',
-        maxDateTime: max,
-        minDateTime: min,
-        pickerMode:DateTimePickerMode.date,
-        pickerTheme:DateTimePickerTheme(
-          cancel:Center(child: Text('取消',style: TextStyle(color: Colors.white54,fontSize: 18))),
-          confirm: Center(child: Text('确定',style: TextStyle(color: Colors.white,fontSize: 18))),
-          backgroundColor: Color.fromRGBO(53, 117, 191, 1),
-          itemTextStyle: TextStyle(color: Colors.white,fontFamily: 'ArialNarrow',fontSize: 22),
-        ),
-        onConfirm: (selectDate,_) {
-          this.startDateTime = formatDate(selectDate, [yyyy, '-', mm, '-', dd]);
-          this.endDateTime   = formatDate(selectDate, [yyyy, '-', mm, '-', dd]);
-        }
-      );
+          dateFormat: 'yyyy-MM-dd',
+          maxDateTime: max,
+          minDateTime: min,
+          pickerMode: DateTimePickerMode.date,
+          pickerTheme: DateTimePickerTheme(
+            cancel: Center(
+                child: Text('取消',
+                    style: TextStyle(color: Colors.white54, fontSize: 18))),
+            confirm: Center(
+                child: Text('确定',
+                    style: TextStyle(color: Colors.white, fontSize: 18))),
+            backgroundColor: Color.fromRGBO(53, 117, 191, 1),
+            itemTextStyle: TextStyle(
+                color: Colors.white, fontFamily: 'ArialNarrow', fontSize: 22),
+          ), onConfirm: (selectDate, _) {
+        this.startDateTime = formatDate(selectDate, [yyyy, '-', mm, '-', dd]);
+        this.endDateTime = formatDate(selectDate, [yyyy, '-', mm, '-', dd]);
+      });
     }
     // 选择 周
-    else if(segmentIndex == 1) {
-      DatePicker.showDatePicker(
-        context,
-        dateFormat: 'yyyy-MM-dd',
-        maxDateTime: max,
-        minDateTime: min,
-        pickerMode:DateTimePickerMode.date,
-        pickerTheme:DateTimePickerTheme(
-          cancel:Center(child: Text('取消',style: TextStyle(color: Colors.white54,fontSize: 18))),
-          confirm: Center(child: Text('确定',style: TextStyle(color: Colors.white,fontSize: 18))),
-          backgroundColor: Color.fromRGBO(53, 117, 191, 1),
-          itemTextStyle: TextStyle(color: Colors.white,fontFamily: 'ArialNarrow',fontSize: 22),
-        ),
-        onConfirm: (selectDate,index) {
-          final year = selectDate.year;
-          final month = selectDate.month;
-          final day = selectDate.day;
-          final end = formatDate(DateTime(year,month,day), [yyyy, '-', mm, '-', dd]);
-          final start = formatDate(DateTime(year,month,day).subtract(Duration(days: 6)), [yyyy, '-', mm, '-', dd]);
-          this.startDateTime = start;
-          this.endDateTime = end;
-        }
-      );
+    else if (segmentIndex == 1) {
+      DatePicker.showDatePicker(context,
+          dateFormat: 'yyyy-MM-dd',
+          maxDateTime: max,
+          minDateTime: min,
+          pickerMode: DateTimePickerMode.date,
+          pickerTheme: DateTimePickerTheme(
+            cancel: Center(
+                child: Text('取消',
+                    style: TextStyle(color: Colors.white54, fontSize: 18))),
+            confirm: Center(
+                child: Text('确定',
+                    style: TextStyle(color: Colors.white, fontSize: 18))),
+            backgroundColor: Color.fromRGBO(53, 117, 191, 1),
+            itemTextStyle: TextStyle(
+                color: Colors.white, fontFamily: 'ArialNarrow', fontSize: 22),
+          ), onConfirm: (selectDate, index) {
+        final year = selectDate.year;
+        final month = selectDate.month;
+        final day = selectDate.day;
+        final end =
+            formatDate(DateTime(year, month, day), [yyyy, '-', mm, '-', dd]);
+        final start = formatDate(
+            DateTime(year, month, day).subtract(Duration(days: 6)),
+            [yyyy, '-', mm, '-', dd]);
+        this.startDateTime = start;
+        this.endDateTime = end;
+      });
     }
     // 按月
-    else if(segmentIndex == 2) {
-      DatePicker.showDatePicker(
-        context,
-        dateFormat: 'yyyy-MM',
-        maxDateTime: max,
-        minDateTime: min,
-        pickerMode:DateTimePickerMode.date,
-        pickerTheme:DateTimePickerTheme(
-          cancel:Center(child: Text('取消',style: TextStyle(color: Colors.white54,fontSize: 18))),
-          confirm: Center(child: Text('确定',style: TextStyle(color: Colors.white,fontSize: 18))),
-          backgroundColor: Color.fromRGBO(53, 117, 191, 1),
-          itemTextStyle: TextStyle(color: Colors.white,fontFamily: 'ArialNarrow',fontSize: 22),
-        ),
-        onConfirm: (selectDate,index) {
-          final year = selectDate.year;
-          final month = selectDate.month;
-          final start = formatDate(DateTime(year,month), [yyyy, '-', mm, '-', dd]);
-          final endDate = DateTime(year,month+1).subtract(Duration(days: 1));
-          var end = '';
-          if( max.isBefore(endDate)) {
-            end   = formatDate(max, [yyyy, '-', mm, '-', dd]);;
-          }
-          else {
-            end   = formatDate(endDate, [yyyy, '-', mm, '-', dd]);
-          }
-          this.startDateTime = start;
-          this.endDateTime = end;
+    else if (segmentIndex == 2) {
+      DatePicker.showDatePicker(context,
+          dateFormat: 'yyyy-MM',
+          maxDateTime: max,
+          minDateTime: min,
+          pickerMode: DateTimePickerMode.date,
+          pickerTheme: DateTimePickerTheme(
+            cancel: Center(
+                child: Text('取消',
+                    style: TextStyle(color: Colors.white54, fontSize: 18))),
+            confirm: Center(
+                child: Text('确定',
+                    style: TextStyle(color: Colors.white, fontSize: 18))),
+            backgroundColor: Color.fromRGBO(53, 117, 191, 1),
+            itemTextStyle: TextStyle(
+                color: Colors.white, fontFamily: 'ArialNarrow', fontSize: 22),
+          ), onConfirm: (selectDate, index) {
+        final year = selectDate.year;
+        final month = selectDate.month;
+        final start =
+            formatDate(DateTime(year, month), [yyyy, '-', mm, '-', dd]);
+        final endDate = DateTime(year, month + 1).subtract(Duration(days: 1));
+        var end = '';
+        if (max.isBefore(endDate)) {
+          end = formatDate(max, [yyyy, '-', mm, '-', dd]);
+        } else {
+          end = formatDate(endDate, [yyyy, '-', mm, '-', dd]);
         }
-      );
-    }
-    else if(segmentIndex == 3) {
-      DatePicker.showDatePicker(
-        context,
-        dateFormat: 'yyyy',
-        maxDateTime: max,
-        minDateTime: min,
-        pickerMode:DateTimePickerMode.date,
-        pickerTheme:DateTimePickerTheme(
-          cancel:Center(child: Text('取消',style: TextStyle(color: Colors.white54,fontSize: 18))),
-          confirm: Center(child: Text('确定',style: TextStyle(color: Colors.white,fontSize: 18))),
-          backgroundColor: Color.fromRGBO(53, 117, 191, 1),
-          itemTextStyle: TextStyle(color: Colors.white,fontFamily: 'ArialNarrow',fontSize: 22),
-        ),
-        onConfirm: (selectDate,index){
-          final year = selectDate.year;
-          final start = formatDate(DateTime(year), [yyyy, '-', mm, '-', dd]);
-          final endDate = DateTime(year+1).subtract(Duration(days: 1));
-          var end = '';
-          if( max.isBefore(endDate)) {
-            end   = formatDate(max, [yyyy, '-', mm, '-', dd]);;
-          }
-          else {
-            end   = formatDate(endDate, [yyyy, '-', mm, '-', dd]);
-          }
-          this.startDateTime = start;
-          this.endDateTime = end;
+        this.startDateTime = start;
+        this.endDateTime = end;
+      });
+    } else if (segmentIndex == 3) {
+      DatePicker.showDatePicker(context,
+          dateFormat: 'yyyy',
+          maxDateTime: max,
+          minDateTime: min,
+          pickerMode: DateTimePickerMode.date,
+          pickerTheme: DateTimePickerTheme(
+            cancel: Center(
+                child: Text('取消',
+                    style: TextStyle(color: Colors.white54, fontSize: 18))),
+            confirm: Center(
+                child: Text('确定',
+                    style: TextStyle(color: Colors.white, fontSize: 18))),
+            backgroundColor: Color.fromRGBO(53, 117, 191, 1),
+            itemTextStyle: TextStyle(
+                color: Colors.white, fontFamily: 'ArialNarrow', fontSize: 22),
+          ), onConfirm: (selectDate, index) {
+        final year = selectDate.year;
+        final start = formatDate(DateTime(year), [yyyy, '-', mm, '-', dd]);
+        final endDate = DateTime(year + 1).subtract(Duration(days: 1));
+        var end = '';
+        if (max.isBefore(endDate)) {
+          end = formatDate(max, [yyyy, '-', mm, '-', dd]);
+        } else {
+          end = formatDate(endDate, [yyyy, '-', mm, '-', dd]);
         }
-      );
+        this.startDateTime = start;
+        this.endDateTime = end;
+      });
     }
-
-
   }
 
   Widget filterButton() {
@@ -305,22 +343,20 @@ class _HistoryPageState extends State<HistoryPage> {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 4),
       height: 36,
-      child: Stack(
-        children:[
-          
-          Container(
-            child: Align(alignment: Alignment.centerRight,
-            child: SizedBox(
-              height: 22,
-              width: 22,
-              child: Image.asset('images/history/History_calendar_btn.png'))),
-          ),
-
-          GestureDetector(
-              onTap: ()=> showPickerPopWindow(),
-          ),
-        ]
-      ),
+      child: Stack(children: [
+        Container(
+          child: Align(
+              alignment: Alignment.centerRight,
+              child: SizedBox(
+                  height: 22,
+                  width: 22,
+                  child:
+                      Image.asset('images/history/History_calendar_btn.png'))),
+        ),
+        GestureDetector(
+          onTap: () => showPickerPopWindow(),
+        ),
+      ]),
     );
   }
 
@@ -339,41 +375,41 @@ class _HistoryPageState extends State<HistoryPage> {
           Container(
             height: 264,
             child: SfCartesianChart(
-              plotAreaBorderWidth: 2,
-              plotAreaBorderColor: Colors.transparent,
-              zoomPanBehavior: ZoomPanBehavior(
-                enablePinching: true,
-                enablePanning: true,
-                zoomMode: ZoomMode.x,
-              ),
-              primaryXAxis: NumericAxis(
-                labelStyle: ChartTextStyle(color: Colors.white),
-                majorGridLines: MajorGridLines(
-                  width: 0,
+                plotAreaBorderWidth: 2,
+                plotAreaBorderColor: Colors.transparent,
+                zoomPanBehavior: ZoomPanBehavior(
+                  enablePinching: true,
+                  enablePanning: true,
+                  zoomMode: ZoomMode.x,
                 ),
-                minorGridLines: MinorGridLines(
-                  width: 0,
+                primaryXAxis: NumericAxis(
+                  labelStyle: ChartTextStyle(color: Colors.white),
+                  majorGridLines: MajorGridLines(
+                    width: 0,
+                  ),
+                  minorGridLines: MinorGridLines(
+                    width: 0,
+                  ),
+                  majorTickLines: MajorTickLines(
+                    width: 0,
+                  ),
+                  minorTickLines: MinorTickLines(
+                    width: 0,
+                  ),
                 ),
-                majorTickLines: MajorTickLines(
-                  width: 0,
+                primaryYAxis: NumericAxis(
+                  axisLine: AxisLine(color: Colors.transparent),
+                  minimum: 300,
+                  labelStyle: ChartTextStyle(color: Colors.white),
+                  majorTickLines: MajorTickLines(width: 0),
+                  majorGridLines: MajorGridLines(
+                    width: 0.5,
+                    color: Colors.white60,
+                  ),
+                  minorGridLines: MinorGridLines(width: 0),
+                  minorTickLines: MinorTickLines(width: 0),
                 ),
-                minorTickLines: MinorTickLines(
-                  width: 0,
-                ),
-              ),
-              primaryYAxis: NumericAxis(
-                axisLine: AxisLine(color: Colors.transparent),
-                minimum: 300,
-                labelStyle: ChartTextStyle(color: Colors.white),
-                majorTickLines: MajorTickLines(width: 0),
-                majorGridLines: MajorGridLines(
-                  width: 0.5,
-                  color: Colors.white60,
-                ),
-                minorGridLines: MinorGridLines(width: 0),
-                minorTickLines: MinorTickLines(width: 0),
-              ),
-              series: getRandomData()),
+                series: getRandomData()),
           ),
         ],
       ),
@@ -550,20 +586,25 @@ class _HistoryPageState extends State<HistoryPage> {
         color: Colors.transparent,
         child: Align(
             alignment: Alignment.centerLeft,
-            child: Text('  系统日志',style: TextStyle(fontSize: 16,color: Colors.white))));
+            child: Text('  系统日志',
+                style: TextStyle(fontSize: 16, color: Colors.white))));
   }
 
   Widget eventListView(List<HistoryEvent> events) {
+    if (isLoadFinsh == false)
+      return Expanded(child: SpinkitIndicator(title: '正在加载', subTitle: '请稍后'));
+    if (isEmpty == true)
+      return Expanded(child: EmptyPage(title: '暂无数据', subTitle: ''));
     return Expanded(
         child: ListView.builder(
             itemBuilder: (ctx, index) {
               final event = events[index];
-              final left  = 'ERC${event.eRCFlag}--${event.eRCTitle}';
+              final left = 'ERC${event.eRCFlag}--${event.eRCTitle}';
               var right = event.freezeTime.replaceAll('T', ' ');
               right = right.split(' ').last ?? '';
               return HistoryEventTile(event: EventTileData(left, right));
             },
-      itemCount: events.length ?? 0));
+            itemCount: events.length ?? 0));
   }
 }
 

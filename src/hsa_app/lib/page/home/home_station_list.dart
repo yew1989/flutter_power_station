@@ -155,8 +155,8 @@ class _HomeStationListState extends State<HomeStationList> {
 
   @override
   Widget build(BuildContext context) {
-    if(isEmpty == true) return EmptyPage(title: '暂无数据',subTitle: '');
     if(isLoadFinsh == false) return SpinkitIndicator(title: '正在加载',subTitle: '请稍后');
+    if(isEmpty == true) return EmptyPage(title: '暂无数据',subTitle: '');
     return stationListView(context);
   }
 
