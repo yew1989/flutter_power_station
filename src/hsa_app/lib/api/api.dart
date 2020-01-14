@@ -270,10 +270,13 @@ class API {
   }
 
   // 事件列表
-  static void eventList(String address,String startDateTime,String endDateTime,HistoryEventResponseCallBack onSucc,HttpFailCallback onFail) {
-    var addressId = address ?? '';
-    var totalPath = eventsListPath + '/' + addressId;
+  static void eventList(String address,String startDateTime,String endDateTime,HistoryEventResponseCallBack onSucc,HttpFailCallback onFail,{String ercFlag}) {
 
+    final addressId = address ?? '';
+    var totalPath = eventsListPath + '/' + addressId;
+    if(ercFlag != null) {
+      totalPath += '/' + ercFlag;
+    }
     Map<String,String> param = {};
     if(startDateTime != null && startDateTime.length > 0 ) {
       param['StartDateTime'] = startDateTime;

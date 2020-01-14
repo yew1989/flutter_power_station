@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_cupertino_date_picker/flutter_cupertino_date_picker.dart';
 import 'package:hsa_app/api/api.dart';
 import 'package:hsa_app/components/segment_control.dart';
+import 'package:hsa_app/event/app_event.dart';
+import 'package:hsa_app/event/event_bird.dart';
 import 'package:hsa_app/model/event_types.dart';
 import 'package:hsa_app/model/history_event.dart';
 import 'package:hsa_app/model/history_point.dart';
@@ -50,6 +52,26 @@ class _HistoryPageState extends State<HistoryPage> {
     super.initState();
     reqeustGetEventTypes();
     requestNowData();
+    addObserverEventFilterChoose();
+  }
+
+  @override
+  void dispose() {
+    EventBird().off(AppEvent.eventFilterChoose);
+    super.dispose();
+  }
+
+  void addObserverEventFilterChoose(){
+    EventBird().on(AppEvent.eventFilterChoose,(flag){
+      String ercFlag = flag;
+      if(ercFlag == '')return;
+      else if(ercFlag == '全部'){
+        debugPrint(ercFlag);
+      }
+      else {
+        debugPrint(ercFlag);
+      }
+    });
   }
 
   // 获取当天数据
@@ -79,10 +101,7 @@ class _HistoryPageState extends State<HistoryPage> {
     });
   }
 
-  @override
-  void dispose() {
-    super.dispose();
-  }
+
 
   void onTapFilterButton(BuildContext context) {
     if(this.evnetTypes.length ==0) return;

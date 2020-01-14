@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:hsa_app/event/app_event.dart';
+import 'package:hsa_app/event/event_bird.dart';
 
 class HistoryPopDialogTile extends StatefulWidget {
 
   final String string; 
   final bool enable;
   final bool isSelected;
+  final String ercFlag;
 
-  const HistoryPopDialogTile(this.string, this.enable, this.isSelected,{Key key}) : super(key: key);
+  const HistoryPopDialogTile(this.string, this.enable, this.isSelected,{Key key, this.ercFlag}) : super(key: key);
   
   @override
   _HistoryPopDialogState createState() => _HistoryPopDialogState();
@@ -49,6 +52,8 @@ class _HistoryPopDialogState extends State<HistoryPopDialogTile> {
                 GestureDetector(
                   onTap: () {
                       Navigator.of(context).pop();
+                      final erc = widget?.ercFlag ?? '';
+                      EventBird().emit(AppEvent.eventFilterChoose,erc);
                   },
                 ),
               ],
