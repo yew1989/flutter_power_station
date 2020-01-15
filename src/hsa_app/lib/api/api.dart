@@ -274,7 +274,7 @@ class API {
 
     final addressId = address ?? '';
     var totalPath = eventsListPath + '/' + addressId;
-    if(ercFlag != null) {
+    if(ercFlag != null && ercFlag.compareTo('0') != 0) {
       totalPath += '/' + ercFlag;
     }
     Map<String,String> param = {};

@@ -30,7 +30,7 @@ class _ControlModelDialogWidgetState extends State<HistoryEventDialogWidget> {
        HistoryPopDialogTile('图表筛选', false,false),
        HistoryPopDialogTile('水位&功率图', true,true),
        HistoryPopDialogTile('日志筛选', false,false),
-       HistoryPopDialogTile('全部', true,true,ercFlag: '全部'),
+       HistoryPopDialogTile('全部', true,true,ercFlag: '0'),
     ];
     for (var type in widget.eventTypes) {
       tiles.add(HistoryPopDialogTile('ERC${type.eRCFlag}${type.eRCTitle}', 

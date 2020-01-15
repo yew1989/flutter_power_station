@@ -17,6 +17,7 @@ import 'package:hsa_app/page/history/history_pop_dialog.dart';
 import 'package:hsa_app/theme/theme_gradient_background.dart';
 import 'package:native_color/native_color.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
+import 'package:intl/intl.dart';
 
 class HistoryPage extends StatefulWidget {
   final String title;
@@ -29,12 +30,16 @@ class HistoryPage extends StatefulWidget {
 }
 
 class _HistoryPageState extends State<HistoryPage> {
+
   List<HistoryEvent> showEvents = List<HistoryEvent>();
   HistoryPointResp historyPointResp = HistoryPointResp();
   int segmentIndex = 0;
 
+  // 时间
   String startDateTime;
   String endDateTime;
+  // 事件标志
+  String ercFlag = '0';
 
   // 是否空视图
   bool isEmpty = false;
@@ -43,11 +48,14 @@ class _HistoryPageState extends State<HistoryPage> {
 
   List<EventTypes> evnetTypes = List<EventTypes>();
 
+  // 曲线点
+  List<DateValuePoint> points = List<DateValuePoint>();
+
   // 获取事件类型
   void reqeustGetEventTypes() {
     API.eventTypes((types) {
       this.evnetTypes = types;
-    }, (msg) {});
+    }, (_) {});
   }
 
   @override
@@ -64,34 +72,42 @@ class _HistoryPageState extends State<HistoryPage> {
     super.dispose();
   }
 
+  // 监听事件过滤选择器
   void addObserverEventFilterChoose() {
     EventBird().on(AppEvent.eventFilterChoose, (flag) {
-      String ercFlag = flag;
-      if (ercFlag == '')
-        return;
-      else if (ercFlag == '全部') {
-        debugPrint(ercFlag);
-      } else {
-        debugPrint(ercFlag);
-      }
+      if (flag == '') return;
+      this.ercFlag = flag;
+      requestEventListData();
     });
   }
 
   // 获取当天数据
   void requestTodayData() {
-    this.startDateTime = formatDate(DateTime.now(), [yyyy, '-', mm, '-', dd]);
-    this.endDateTime = formatDate(DateTime.now(), [yyyy, '-', mm, '-', dd]);
-    requestData();
+
+    var now = DateTime.now();
+    final year = now.year;
+    final month = now.month;
+    final day = now.day;
+    final end   = formatDate(DateTime(year, month, day), [yyyy, '-', mm, '-', dd]);
+    final start = formatDate(DateTime(year, month, day),[yyyy, '-', mm, '-', dd]);
+    this.startDateTime = start;
+    this.endDateTime = end;
+
+    requestEventListData();
+    requestChartHistory();
   }
 
-  // 获取数据
-  void requestData() {
+  // 获取事件列表
+  void requestEventListData() {
+
     this.isEmpty = false;
     this.isLoadFinsh = false;
 
     final address = widget.address ?? '';
+    var apiStartDateTime = startDateTime + '  00:00:00';
+    var apiEndDateTime = endDateTime + '  23:59:59';
 
-    API.eventList(address, startDateTime, endDateTime, (events) {
+    API.eventList(address, apiStartDateTime, apiEndDateTime, (events) {
       isLoadFinsh = true;
 
       if (events.length == 0) {
@@ -102,16 +118,64 @@ class _HistoryPageState extends State<HistoryPage> {
       });
     }, (msg) {
       debugPrint(msg);
-    });
+    },ercFlag: this.ercFlag);
 
-    API.historyPowerAndWater(address, startDateTime, endDateTime,
-        (historyResp) {
+
+  }
+
+  // 获取曲线列表图
+  void requestChartHistory() {
+
+    final address = widget.address ?? '';
+    var  apiStartDateTime = startDateTime + '  00:00:00';
+    var  apiEndDateTime = endDateTime + '  23:59:59';
+
+    API.historyPowerAndWater(address, apiStartDateTime, apiEndDateTime,(historyResp) {
+
       setState(() {
         this.historyPointResp = historyResp;
+        List<DateValuePoint> originalPoints = [];
+        for(final p in this.historyPointResp.data) {
+          originalPoints.add(DateValuePoint.fromPoint(p));
+        }
+        this.points = filterPoint(originalPoints);
       });
+      
     }, (msg) {
       debugPrint(msg);
     });
+  }
+
+  // 点过滤
+  List<DateValuePoint> filterPoint(List<DateValuePoint> originalPoints) {
+    List<DateValuePoint> newPoints = [];
+    var weight = 1;
+    if(originalPoints.length < 1000){
+      weight = 1;
+    }
+    else if (originalPoints.length >= 1000 && originalPoints.length < 10000){
+      weight = 10;
+    }
+    else if (originalPoints.length >= 10000 && originalPoints.length < 100000){
+      weight = 100;
+    }
+    else if (originalPoints.length >= 100000 && originalPoints.length < 1000000){
+      weight = 1000;
+    }
+    else if (originalPoints.length >= 1000000 && originalPoints.length < 10000000){
+      weight = 10000;
+    }
+    else if (originalPoints.length >= 10000000 && originalPoints.length < 100000000){
+      weight = 100000;
+    }
+
+    for (int i = 0 ; i < originalPoints.length ; i++) {
+      final p = originalPoints[i];
+      if(i % weight == 0) {
+        newPoints.add(p);
+      }
+    }
+    return newPoints;
   }
 
   void onTapFilterButton(BuildContext context) {
@@ -166,7 +230,8 @@ class _HistoryPageState extends State<HistoryPage> {
       this.startDateTime = start;
       this.endDateTime = end;
     }
-    requestData();
+    requestEventListData();
+    requestChartHistory();
   }
 
   void showPickerPopWindow() {
@@ -402,8 +467,15 @@ class _HistoryPageState extends State<HistoryPage> {
                   enablePanning: true,
                   zoomMode: ZoomMode.x,
                 ),
-                primaryXAxis: NumericAxis(
-                  labelStyle: ChartTextStyle(color: Colors.white),
+                primaryXAxis: DateTimeAxis(
+                  axisLine: AxisLine(
+                    color: Colors.white60,
+                    width: 0.5
+                  ),
+                  labelStyle: ChartTextStyle(
+                    color: Colors.white,
+                    fontFamily:'ArialNarrow',
+                  ),
                   majorGridLines: MajorGridLines(
                     width: 0,
                   ),
@@ -416,11 +488,16 @@ class _HistoryPageState extends State<HistoryPage> {
                   minorTickLines: MinorTickLines(
                     width: 0,
                   ),
+                  dateFormat: DateFormat.Md(),
                 ),
                 primaryYAxis: NumericAxis(
+                  opposedPosition: true,
                   axisLine: AxisLine(color: Colors.transparent),
-                  minimum: 300,
-                  labelStyle: ChartTextStyle(color: Colors.white),
+                  minimum: 100,
+                  labelStyle: ChartTextStyle(
+                    color: Colors.white,
+                    fontFamily:'ArialNarrow',
+                  ),
                   majorTickLines: MajorTickLines(width: 0),
                   majorGridLines: MajorGridLines(
                     width: 0.5,
@@ -429,148 +506,75 @@ class _HistoryPageState extends State<HistoryPage> {
                   minorGridLines: MinorGridLines(width: 0),
                   minorTickLines: MinorTickLines(width: 0),
                 ),
-                series: getRandomData()),
+                axes:[
+                  NumericAxis(
+                  name: 'water',
+                  opposedPosition: false,
+                  axisLine: AxisLine(color: Colors.transparent),
+                  minimum: 8,
+                  labelStyle: ChartTextStyle(
+                    color: Colors.white,
+                    fontFamily:'ArialNarrow',
+                  ),
+                  majorTickLines: MajorTickLines(width: 0),
+                  majorGridLines: MajorGridLines(
+                    // width: 0.5,
+                    // color: Colors.white60,
+                    width: 0
+                  ),
+                  minorGridLines: MinorGridLines(width: 0),
+                  minorTickLines: MinorTickLines(width: 0),
+                ),
+                ],
+                series: getChartData()),
           ),
         ],
       ),
     );
   }
 
-  static List<ChartSeries> getRandomData() {
-    final chartData1 = <ActivePowerPoint>[
-      ActivePowerPoint(0, 240),
-      ActivePowerPoint(10, 236),
-      ActivePowerPoint(20, 233),
-      ActivePowerPoint(30, 232),
-      ActivePowerPoint(40, 230),
-      ActivePowerPoint(50, 232),
-      ActivePowerPoint(60, 234),
-      ActivePowerPoint(70, 236),
-      ActivePowerPoint(80, 242),
-      ActivePowerPoint(90, 238),
-      ActivePowerPoint(100, 236),
-      ActivePowerPoint(110, 234),
-      ActivePowerPoint(120, 230),
-      ActivePowerPoint(130, 238),
-      ActivePowerPoint(140, 242),
-      ActivePowerPoint(150, 245),
-      ActivePowerPoint(160, 241),
-      ActivePowerPoint(170, 240),
-      ActivePowerPoint(180, 238),
-      ActivePowerPoint(190, 236),
-      ActivePowerPoint(200, 235),
-    ];
-
-    final chartData2 = <ActivePowerPoint>[
-      ActivePowerPoint(0, 120),
-      ActivePowerPoint(10, 118),
-      ActivePowerPoint(20, 116),
-      ActivePowerPoint(30, 112),
-      ActivePowerPoint(40, 116),
-      ActivePowerPoint(50, 122),
-      ActivePowerPoint(60, 128),
-      ActivePowerPoint(70, 124),
-      ActivePowerPoint(80, 122),
-      ActivePowerPoint(90, 121),
-      ActivePowerPoint(100, 134),
-      ActivePowerPoint(110, 132),
-      ActivePowerPoint(120, 128),
-      ActivePowerPoint(130, 119),
-      ActivePowerPoint(140, 113),
-      ActivePowerPoint(150, 112),
-      ActivePowerPoint(160, 110),
-      ActivePowerPoint(170, 118),
-      ActivePowerPoint(180, 120),
-      ActivePowerPoint(190, 125),
-      ActivePowerPoint(200, 119),
-    ];
-
-    final chartData3 = <ActivePowerPoint>[
-      ActivePowerPoint(0, 210),
-      ActivePowerPoint(10, 210),
-      ActivePowerPoint(20, 210),
-      ActivePowerPoint(30, 210),
-      ActivePowerPoint(40, 210),
-      ActivePowerPoint(50, 210),
-      ActivePowerPoint(60, 210),
-      ActivePowerPoint(70, 210),
-      ActivePowerPoint(80, 210),
-      ActivePowerPoint(90, 210),
-      ActivePowerPoint(100, 210),
-      ActivePowerPoint(110, 210),
-      ActivePowerPoint(120, 210),
-      ActivePowerPoint(130, 210),
-      ActivePowerPoint(140, 210),
-      ActivePowerPoint(150, 210),
-      ActivePowerPoint(160, 210),
-      ActivePowerPoint(170, 210),
-      ActivePowerPoint(180, 210),
-      ActivePowerPoint(190, 210),
-      ActivePowerPoint(200, 210),
-    ];
-
-    final chartData4 = <ActivePowerPoint>[
-      ActivePowerPoint(0, 180),
-      ActivePowerPoint(10, 180),
-      ActivePowerPoint(20, 180),
-      ActivePowerPoint(30, 180),
-      ActivePowerPoint(40, 180),
-      ActivePowerPoint(50, 180),
-      ActivePowerPoint(60, 180),
-      ActivePowerPoint(70, 180),
-      ActivePowerPoint(80, 180),
-      ActivePowerPoint(90, 180),
-      ActivePowerPoint(100, 180),
-      ActivePowerPoint(110, 180),
-      ActivePowerPoint(120, 180),
-      ActivePowerPoint(130, 180),
-      ActivePowerPoint(140, 180),
-      ActivePowerPoint(150, 180),
-      ActivePowerPoint(160, 180),
-      ActivePowerPoint(170, 180),
-      ActivePowerPoint(180, 180),
-      ActivePowerPoint(190, 180),
-      ActivePowerPoint(200, 180),
-    ];
+   List<ChartSeries> getChartData() {
 
     return <ChartSeries>[
-      SplineSeries<ActivePowerPoint, num>(
-        animationDuration: 5000,
-        dataSource: chartData1,
+      // 有功曲线
+      SplineSeries<DateValuePoint, DateTime>(
+        //animationDuration: 50000,
+        dataSource: points,
         splineType: SplineType.natural,
         color: HexColor('ee2e3b'),
-        xValueMapper: (ActivePowerPoint sales, _) => sales.minute,
-        yValueMapper: (ActivePowerPoint sales, _) => sales.value,
+        xValueMapper: (DateValuePoint sales, _) => sales.time,
+        yValueMapper: (DateValuePoint sales, _) => sales.tkW,
       ),
-      SplineAreaSeries<ActivePowerPoint, num>(
-        animationDuration: 5000,
-        dataSource: chartData2,
+      // 水位高度
+      SplineAreaSeries<DateValuePoint, DateTime>(
+        //animationDuration: 5000,
+        dataSource: points,
         borderDrawMode: BorderDrawMode.excludeBottom,
-        gradient: LinearGradient(colors: [
-          HexColor('0003a9f4'),
-          HexColor('9903a9f4'),
-        ]),
-        xValueMapper: (ActivePowerPoint sales, _) => sales.minute,
-        yValueMapper: (ActivePowerPoint sales, _) => sales.value,
+        gradient: LinearGradient(
+          colors: [HexColor('0003a9f4'),HexColor('9903a9f4')]
+        ),
+        xValueMapper: (DateValuePoint sales, _) => sales.time,
+        yValueMapper: (DateValuePoint sales, _) => sales.waterStage,
+        yAxisName: 'water'
       ),
-      LineSeries<ActivePowerPoint, num>(
-        animationDuration: 2500,
-        dataSource: chartData3,
-        dashArray: <double>[10, 10],
-        color: Colors.white,
-        width: 0.5,
-        xValueMapper: (ActivePowerPoint sales, _) => sales.minute,
-        yValueMapper: (ActivePowerPoint sales, _) => sales.value,
-      ),
-      LineSeries<ActivePowerPoint, num>(
-        animationDuration: 2500,
-        dataSource: chartData4,
-        dashArray: <double>[10, 10],
-        color: Colors.white,
-        width: 0.5,
-        xValueMapper: (ActivePowerPoint sales, _) => sales.minute,
-        yValueMapper: (ActivePowerPoint sales, _) => sales.value,
-      ),
+      // LineSeries<DateValuePoint, DateTime>(
+      //   animationDuration: 2500,
+      //   dataSource: chartData3,
+      //   dashArray: <double>[10, 10],
+      //   color: Colors.white,
+      //   width: 0.5,
+      //   xValueMapper: (DateValuePoint sales, _) => sales.time,
+      //   yValueMapper: (DateValuePoint sales, _) => sales.value,
+      // ),
+      // LineSeries<DateValuePoint, DateTime>(
+      //   animationDuration: 2500,
+      //   dataSource: chartData4,
+      //   dashArray: <double>[10, 10],
+      //   color: Colors.white,
+      //   width: 0.5,
+      //   xValueMapper: (DateValuePoint sales, _) => sales.time,
+      //   yValueMapper: (DateValuePoint sales, _) => sales.value,
+      // ),
     ];
   }
 
@@ -628,8 +632,28 @@ class _HistoryPageState extends State<HistoryPage> {
   }
 }
 
-class ActivePowerPoint {
-  ActivePowerPoint(this.minute, this.value);
-  final num minute;
-  final int value;
+class DateValuePoint {
+
+  DateTime time;
+  num tkW;
+  num waterStage;
+
+  DateValuePoint(this.time, {this.tkW,this.waterStage});
+
+  DateValuePoint.fromPoint(HistoryPoint point) {
+    final freezDate = point.freezeTime.replaceAll('T', ' ');
+    DateTime freeze = DateTime.parse(freezDate);
+    time = freeze;
+    tkW = point?.tkW ?? 1.0;
+    waterStage = point?.waterStage ?? 0.0;
+    if(point.tkW == 0.0) {
+      tkW = 1.0;
+    }
+    if(point?.tkW == null) {
+      tkW = 1.0;
+    }
+  }
+
 }
+
+
