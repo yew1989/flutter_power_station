@@ -140,7 +140,7 @@ class _HistoryPageState extends State<HistoryPage> {
         }
         this.points = filterPoint(originalPoints);
       });
-      
+
     }, (msg) {
       debugPrint(msg);
     });
@@ -183,7 +183,7 @@ class _HistoryPageState extends State<HistoryPage> {
     showDialog(
         context: context,
         barrierDismissible: false,
-        builder: (_) => HistoryEventDialogWidget(eventTypes: this.evnetTypes));
+        builder: (_) => HistoryEventDialogWidget(ercFlag: this.ercFlag,eventTypes: this.evnetTypes));
   }
 
   // 点击了日.周.月.年
