@@ -422,11 +422,12 @@ class _HistoryPageState extends State<HistoryPage> {
           backgroundColor: Colors.transparent,
           elevation: 0,
           centerTitle: true,
-          title: Text('历史曲线',
+          title: Text(widget?.title ?? '历史曲线',
               style: TextStyle(
                   color: Colors.white,
                   fontWeight: FontWeight.normal,
-                  fontSize: 18)),
+                  fontFamily: 'ArialNarrow',
+                  fontSize: 16)),
           actions: <Widget>[
             filterButton(),
           ],

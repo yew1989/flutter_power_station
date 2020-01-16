@@ -13,6 +13,7 @@ import 'package:hsa_app/model/runtime_data.dart';
 import 'package:hsa_app/page/dialog/control_model_dialog.dart';
 import 'package:hsa_app/page/dialog/password_dialog.dart';
 import 'package:hsa_app/page/framework/webview_page.dart';
+import 'package:hsa_app/page/history/history_page.dart';
 import 'package:hsa_app/page/runtime/runtime_event_tile.dart';
 import 'package:hsa_app/page/runtime/runtime_operation_board.dart';
 import 'package:hsa_app/page/runtime/runtime_squre_master_widget.dart';
@@ -282,17 +283,8 @@ class _RuntimePageState extends State<RuntimePage> {
     );
   }
 
-  void onTapPushToHistory(String address) async {
-    final host = AppConfig.getInstance().remotePackage.hostWeb;
-    final urlHistory = host + '/#/' + 'history';
-    final auth = await ShareManager.instance.loadToken();
-    final terminalsString = address;
-    final titleString = widget?.title ?? '';
-    final lastUrl = urlHistory +
-        '?auth=' +auth +
-        '&address=' + terminalsString +
-        '&title=' + Uri.encodeComponent(titleString);
-    pushToPage(context, WebViewPage('', lastUrl, noNavBar: true,description:'历史曲线'));
+  void onTapPushToHistoryPage(String navTitle,String address) async {
+    pushToPage(context, HistoryPage(title: navTitle,address: address));
   }
 
   // 仪表盘
@@ -488,9 +480,9 @@ class _RuntimePageState extends State<RuntimePage> {
 
   @override
   Widget build(BuildContext context) {
-    var deviceWidth = MediaQuery.of(context).size.width;
-    var isIphone5S = deviceWidth == 320.0 ? true : false;
-
+    final deviceWidth = MediaQuery.of(context).size.width;
+    final isIphone5S = deviceWidth == 320.0 ? true : false;
+    final historyNavTitle = widget.title;
     return ThemeGradientBackground(
       child: Scaffold(
         backgroundColor: Colors.transparent,
@@ -503,7 +495,7 @@ class _RuntimePageState extends State<RuntimePage> {
           fontWeight: FontWeight.normal,fontSize: 20)),
           actions: <Widget>[
             GestureDetector(
-                onTap: () => onTapPushToHistory(widget.address),
+                onTap: () => onTapPushToHistoryPage(historyNavTitle,widget.address),
                 child: Center(
                     child: Text('历史曲线',
                         style: TextStyle(color: Colors.white, fontSize: 16)))),
