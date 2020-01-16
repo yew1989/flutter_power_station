@@ -48,6 +48,8 @@ class HistoryPoint {
   int terminalCount;
   num tkW;
   num waterStage;
+  num tkWMax;
+  num waterStageMax;
 
   HistoryPoint({this.freezeTime, this.terminalCount, this.tkW, this.waterStage});
 

@@ -12,13 +12,13 @@ import 'package:hsa_app/model/event_types.dart';
 import 'package:hsa_app/model/history_event.dart';
 import 'package:hsa_app/model/history_point.dart';
 import 'package:hsa_app/model/runtime_adapter.dart';
+import 'package:hsa_app/page/history/history_calendar_bar.dart';
 import 'package:hsa_app/page/history/history_event_tile.dart';
 import 'package:hsa_app/page/history/history_pop_dialog.dart';
 import 'package:hsa_app/theme/theme_gradient_background.dart';
 import 'package:native_color/native_color.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:intl/intl.dart';
-import 'package:loading_indicator/loading_indicator.dart';
 
 class HistoryPage extends StatefulWidget {
   final String title;
@@ -53,6 +53,15 @@ class _HistoryPageState extends State<HistoryPage> {
 
   // 曲线点
   List<DateValuePoint> points = List<DateValuePoint>();
+
+  // 获取日期格式化
+  DateFormat getDateFormat() {
+    if(segmentIndex == 0) return DateFormat.Hm();
+    if(segmentIndex == 1) return DateFormat.Md();
+    if(segmentIndex == 2) return DateFormat.Md();
+    if(segmentIndex == 3) return DateFormat.Md();
+    return DateFormat.Md();
+  }
 
   // 获取事件类型
   void reqeustGetEventTypes() {
@@ -132,8 +141,15 @@ class _HistoryPageState extends State<HistoryPage> {
     this.isChartLoadFinsh = false;
 
     final address = widget.address ?? '';
-    var  apiStartDateTime = startDateTime + '  00:00:00';
-    var  apiEndDateTime = endDateTime + '  23:59:59';
+    var  apiStartDateTime = startDateTime + ' 00:00:00';
+    var  apiEndDateTime = endDateTime + ' 23:59:59';
+
+    final now = DateTime.now();
+    final will = DateTime.parse(apiEndDateTime);
+
+    if(will.isAfter(now)) {
+      apiEndDateTime = formatDate(now, [yyyy, '-', mm, '-', dd,' ',hh, ':', nn, ':', ss]);
+    }
 
     API.historyPowerAndWater(address, apiStartDateTime, apiEndDateTime,(historyResp) {
 
@@ -141,8 +157,14 @@ class _HistoryPageState extends State<HistoryPage> {
 
       setState(() {
         this.historyPointResp = historyResp;
+        
+        final tkWMax = this.historyPointResp.ratedActivePower;
+        final waterStageMax = this.historyPointResp.waterStageAlarmValue;
+
         List<DateValuePoint> originalPoints = [];
-        for(final p in this.historyPointResp.data) {
+        for(var p in this.historyPointResp.data) {
+          p.tkWMax = tkWMax;
+          p.waterStageMax = waterStageMax;
           originalPoints.add(DateValuePoint.fromPoint(p));
         }
         this.points = filterPoint(originalPoints);
@@ -419,53 +441,6 @@ class _HistoryPageState extends State<HistoryPage> {
     );
   }
 
-  Widget calendarBar() {
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: 4),
-      height: 36,
-      child: Stack(children: [
-        Positioned(
-          left: 32,
-          top: 8,
-          child: Align(
-            alignment: Alignment.centerRight,
-            child: SizedBox(
-              height: 20,
-              width: 20,
-              child: this.isChartLoadFinsh ==false ? LoadingIndicator(
-                indicatorType: Indicator.ballPulse, 
-                color: Colors.white70,
-              ) : null),
-          ),
-        ),
-        Container(
-          child: Align(
-              alignment: Alignment.centerRight,
-              child: SizedBox(
-                  height: 22,
-                  width: 22,
-                  child:
-                      Image.asset('images/history/History_calendar_btn.png'))),
-        ),
-        Positioned(
-          right: 32,
-          top: 8,
-          child: Align(
-            alignment: Alignment.centerRight,
-            child: Text(
-              '$startDateTime ～ $endDateTime',
-              style: TextStyle(
-                  color: Colors.white, fontFamily: 'ArialNarrow', fontSize: 16),
-            ),
-          ),
-        ),
-        GestureDetector(
-          onTap: () => showPickerPopWindow(),
-        ),
-      ]),
-    );
-  }
-
   Widget chartGraphWidget() {
     return Container(
       height: 300,
@@ -477,10 +452,28 @@ class _HistoryPageState extends State<HistoryPage> {
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
-          calendarBar(),
+
+          HistoryCalendarBar(
+            startDateTime: this.startDateTime,
+            endDateTime: this.endDateTime,
+            isLoading: this.isChartLoadFinsh,
+            onChoose: () => showPickerPopWindow(),
+          ),
+
           Container(
             height: 264,
             child: SfCartesianChart(
+                // annotations: [
+                //   CartesianChartAnnotation(
+                //     widget: 
+                //       Container(
+                //         child: const Text('Text',style: TextStyle(color: Colors.white,fontSize: 10))
+                //       ),
+                //     coordinateUnit: CoordinateUnit.logicalPixel,
+                //     x: 150,
+                //     y: 200,
+                //   )
+                // ],
                 plotAreaBorderWidth: 2,
                 plotAreaBorderColor: Colors.transparent,
                 zoomPanBehavior: ZoomPanBehavior(
@@ -509,7 +502,7 @@ class _HistoryPageState extends State<HistoryPage> {
                   minorTickLines: MinorTickLines(
                     width: 0,
                   ),
-                  dateFormat: DateFormat.Md(),
+                  dateFormat: getDateFormat(),
                 ),
                 primaryYAxis: NumericAxis(
                   opposedPosition: true,
@@ -538,11 +531,7 @@ class _HistoryPageState extends State<HistoryPage> {
                     fontFamily:'ArialNarrow',
                   ),
                   majorTickLines: MajorTickLines(width: 0),
-                  majorGridLines: MajorGridLines(
-                    // width: 0.5,
-                    // color: Colors.white60,
-                    width: 0
-                  ),
+                  majorGridLines: MajorGridLines(width: 0),
                   minorGridLines: MinorGridLines(width: 0),
                   minorTickLines: MinorTickLines(width: 0),
                 ),
@@ -559,7 +548,6 @@ class _HistoryPageState extends State<HistoryPage> {
     return <ChartSeries>[
       // 有功曲线
       SplineSeries<DateValuePoint, DateTime>(
-        //animationDuration: 50000,
         dataSource: points,
         splineType: SplineType.natural,
         color: HexColor('ee2e3b'),
@@ -568,7 +556,6 @@ class _HistoryPageState extends State<HistoryPage> {
       ),
       // 水位高度
       SplineAreaSeries<DateValuePoint, DateTime>(
-        //animationDuration: 5000,
         dataSource: points,
         borderDrawMode: BorderDrawMode.excludeBottom,
         gradient: LinearGradient(
@@ -578,24 +565,23 @@ class _HistoryPageState extends State<HistoryPage> {
         yValueMapper: (DateValuePoint sales, _) => sales.waterStage,
         yAxisName: 'water'
       ),
-      // LineSeries<DateValuePoint, DateTime>(
-      //   animationDuration: 2500,
-      //   dataSource: chartData3,
-      //   dashArray: <double>[10, 10],
-      //   color: Colors.white,
-      //   width: 0.5,
-      //   xValueMapper: (DateValuePoint sales, _) => sales.time,
-      //   yValueMapper: (DateValuePoint sales, _) => sales.value,
-      // ),
-      // LineSeries<DateValuePoint, DateTime>(
-      //   animationDuration: 2500,
-      //   dataSource: chartData4,
-      //   dashArray: <double>[10, 10],
-      //   color: Colors.white,
-      //   width: 0.5,
-      //   xValueMapper: (DateValuePoint sales, _) => sales.time,
-      //   yValueMapper: (DateValuePoint sales, _) => sales.value,
-      // ),
+      LineSeries<DateValuePoint, DateTime>(
+        dataSource: points,
+        dashArray: <double>[10, 10],
+        color: Colors.white,
+        width: 0.5,
+        xValueMapper: (DateValuePoint sales, _) => sales.time,
+        yValueMapper: (DateValuePoint sales, _) => sales.tkWMax,
+      ),
+      LineSeries<DateValuePoint, DateTime>(
+        dataSource: points,
+        dashArray: <double>[10, 10],
+        color: Colors.white,
+        width: 0.5,
+        xValueMapper: (DateValuePoint sales, _) => sales.time,
+        yValueMapper: (DateValuePoint sales, _) => sales.waterStageMax,
+        yAxisName: 'water'
+      ),
     ];
   }
 
@@ -630,9 +616,8 @@ class _HistoryPageState extends State<HistoryPage> {
         height: 46,
         color: Colors.transparent,
         child: Align(
-            alignment: Alignment.centerLeft,
-            child: Text('  系统日志',
-                style: TextStyle(fontSize: 16, color: Colors.white))));
+          alignment: Alignment.centerLeft,
+          child: Text('  系统日志',style: TextStyle(fontSize: 16, color: Colors.white))));
   }
 
   Widget eventListView(List<HistoryEvent> events) {
@@ -658,8 +643,10 @@ class DateValuePoint {
   DateTime time;
   num tkW;
   num waterStage;
+  num tkWMax;
+  num waterStageMax;
 
-  DateValuePoint(this.time, {this.tkW,this.waterStage});
+  DateValuePoint(this.time, {this.tkW,this.waterStage,this.tkWMax,this.waterStageMax});
 
   DateValuePoint.fromPoint(HistoryPoint point) {
     final freezDate = point.freezeTime.replaceAll('T', ' ');
@@ -667,6 +654,10 @@ class DateValuePoint {
     time = freeze;
     tkW = point?.tkW ?? 1.0;
     waterStage = point?.waterStage ?? 0.0;
+
+    tkWMax = point?.tkWMax ?? 1.0;
+    waterStageMax = point?.waterStageMax ?? 0.0;
+
     if(point.tkW == 0.0) {
       tkW = 1.0;
     }
