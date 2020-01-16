@@ -18,6 +18,7 @@ import 'package:hsa_app/theme/theme_gradient_background.dart';
 import 'package:native_color/native_color.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:intl/intl.dart';
+import 'package:loading_indicator/loading_indicator.dart';
 
 class HistoryPage extends StatefulWidget {
   final String title;
@@ -42,9 +43,11 @@ class _HistoryPageState extends State<HistoryPage> {
   String ercFlag = '0';
 
   // 是否空视图
-  bool isEmpty = false;
+  bool isEventEmpty = false;
   // 是否首次数据加载完毕
-  bool isLoadFinsh = false;
+  bool isEventLoadFinsh = false;
+
+  bool isChartLoadFinsh = false;
 
   List<EventTypes> evnetTypes = List<EventTypes>();
 
@@ -100,18 +103,18 @@ class _HistoryPageState extends State<HistoryPage> {
   // 获取事件列表
   void requestEventListData() {
 
-    this.isEmpty = false;
-    this.isLoadFinsh = false;
+    this.isEventEmpty = false;
+    this.isEventLoadFinsh = false;
 
     final address = widget.address ?? '';
     var apiStartDateTime = startDateTime + '  00:00:00';
     var apiEndDateTime = endDateTime + '  23:59:59';
 
     API.eventList(address, apiStartDateTime, apiEndDateTime, (events) {
-      isLoadFinsh = true;
+      this.isEventLoadFinsh = true;
 
       if (events.length == 0) {
-        this.isEmpty = true;
+        this.isEventEmpty = true;
       }
       setState(() {
         this.showEvents = events;
@@ -126,11 +129,15 @@ class _HistoryPageState extends State<HistoryPage> {
   // 获取曲线列表图
   void requestChartHistory() {
 
+    this.isChartLoadFinsh = false;
+
     final address = widget.address ?? '';
     var  apiStartDateTime = startDateTime + '  00:00:00';
     var  apiEndDateTime = endDateTime + '  23:59:59';
 
     API.historyPowerAndWater(address, apiStartDateTime, apiEndDateTime,(historyResp) {
+
+      this.isChartLoadFinsh = true;
 
       setState(() {
         this.historyPointResp = historyResp;
@@ -417,6 +424,20 @@ class _HistoryPageState extends State<HistoryPage> {
       padding: EdgeInsets.symmetric(horizontal: 4),
       height: 36,
       child: Stack(children: [
+        Positioned(
+          left: 32,
+          top: 8,
+          child: Align(
+            alignment: Alignment.centerRight,
+            child: SizedBox(
+              height: 20,
+              width: 20,
+              child: this.isChartLoadFinsh ==false ? LoadingIndicator(
+                indicatorType: Indicator.ballPulse, 
+                color: Colors.white70,
+              ) : null),
+          ),
+        ),
         Container(
           child: Align(
               alignment: Alignment.centerRight,
@@ -615,9 +636,9 @@ class _HistoryPageState extends State<HistoryPage> {
   }
 
   Widget eventListView(List<HistoryEvent> events) {
-    if (isLoadFinsh == false)
+    if (this.isEventLoadFinsh == false)
       return Expanded(child: SpinkitIndicator(title: '正在加载', subTitle: '请稍后'));
-    if (isEmpty == true)
+    if (this.isEventEmpty == true)
       return Expanded(child: EmptyPage(title: '暂无数据', subTitle: ''));
     return Expanded(
         child: ListView.builder(

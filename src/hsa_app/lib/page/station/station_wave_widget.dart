@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hsa_app/components/wave_widget.dart';
 import 'package:hsa_app/model/station_info.dart';
+import 'package:native_color/native_color.dart';
 
 class StationWaveWidget extends StatefulWidget {
   
@@ -44,12 +45,11 @@ class _StationWaveWidgetState extends State<StationWaveWidget> {
          waveFrequency: 1.8,
          config: CustomConfig(
            gradients: [
-             [Color.fromRGBO(42,120,250, 0.5),Color.fromRGBO(42,120,250, 0.5)],
-             [Color.fromRGBO(42,120,250, 1),Color.fromRGBO(42,120,250, 1)],
+            [HexColor('ff4296bc'),HexColor('ff4296bc'),HexColor('004296bc')],
+            [HexColor('99147cc1'),HexColor('00147cc1')],
             ],
-          //  blur: MaskFilter.blur(BlurStyle.inner, 2),
            durations: [2000,3000],
-           heightPercentages: [wave,wave+0.05],
+           heightPercentages: [wave,wave],
            gradientBegin: Alignment.topCenter,
            gradientEnd: Alignment.bottomCenter
            ),

@@ -44,6 +44,7 @@ dependencies:
   jpush_flutter: 0.0.13
   syncfusion_flutter_charts: ^17.4.40
   flutter_cupertino_date_picker: ^1.0.12
+  loading_indicator: ^1.1.0
     
 dev_dependencies:
   flutter_test:
