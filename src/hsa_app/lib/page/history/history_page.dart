@@ -289,6 +289,8 @@ class _HistoryPageState extends State<HistoryPage> {
           this.startDateTime = formatDate(selectDate, [yyyy, '-', mm, '-', dd]);
           this.endDateTime = formatDate(selectDate, [yyyy, '-', mm, '-', dd]);
         });
+        requestEventListData();
+        requestChartHistory();
       });
     }
     // 选择 周
@@ -321,6 +323,8 @@ class _HistoryPageState extends State<HistoryPage> {
           this.startDateTime = start;
           this.endDateTime = end;
         });
+        requestEventListData();
+        requestChartHistory();
       });
     }
     // 按月
@@ -356,6 +360,8 @@ class _HistoryPageState extends State<HistoryPage> {
           this.startDateTime = start;
           this.endDateTime = end;
         });
+        requestEventListData();
+        requestChartHistory();
       });
     } else if (segmentIndex == 3) {
       DatePicker.showDatePicker(context,
@@ -387,6 +393,8 @@ class _HistoryPageState extends State<HistoryPage> {
           this.startDateTime = start;
           this.endDateTime = end;
         });
+        requestEventListData();
+        requestChartHistory();
       });
     }
   }
