@@ -7,13 +7,10 @@ import 'package:hsa_app/page/station/station_list_header.dart';
 import 'package:hsa_app/page/station/station_weather_widget.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:hsa_app/api/api.dart';
-import 'package:hsa_app/config/app_config.dart';
 import 'package:hsa_app/model/station_info.dart';
-import 'package:hsa_app/page/framework/webview_page.dart';
 import 'package:hsa_app/service/umeng_analytics.dart';
 import 'package:hsa_app/theme/theme_gradient_background.dart';
 import 'package:hsa_app/components/public_tool.dart';
-import 'package:hsa_app/util/share.dart';
 import 'package:ovprogresshud/progresshud.dart';
 
 class StationPage extends StatefulWidget {
