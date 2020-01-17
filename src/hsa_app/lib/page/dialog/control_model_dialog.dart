@@ -167,9 +167,9 @@ class ControlModelDialog extends Dialog {
             Positioned(
               left: 0,
               right: 0,
-              bottom: 75,
+              bottom: 70,
               child: Container(
-                padding: EdgeInsets.symmetric(horizontal: isIphone5s ? 9 : 10),
+                padding: EdgeInsets.symmetric(horizontal: isIphone5s ? 9 : 5),
                 child: SizedBox(
                   width: double.infinity,
                   height: 280,

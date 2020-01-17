@@ -130,9 +130,9 @@ class DeviceControlDialog extends Dialog {
             Positioned(
               left: 0,
               right: 0,
-              bottom: 10,
+              bottom: 5,
               child: Container(
-                padding: EdgeInsets.symmetric(horizontal: 10),
+                padding: EdgeInsets.symmetric(horizontal: 5),
                 child: SizedBox(
                   width: double.infinity,
                   height: 323,

@@ -362,14 +362,15 @@ class _RunTimeOperationBoardState extends State<RunTimeOperationBoard> {
                                 onTap: () {
                                   Progresshud.showInfoWithStatus('功能未开放,尽请期待');
                                   return;
-                                  // showDialog(
-                                  //     context: context,
-                                  //     barrierDismissible: false,
-                                  //     builder: (_) => DeviceControlDialog((taskName){
-                                  //       if(widget.onSholdRequestRemoteCommand != null) {
-                                  //         widget.onSholdRequestRemoteCommand(taskName,null);
-                                  //       }
-                                  //     }));
+                                  // 暂时屏蔽该项功能
+                                //   showDialog(
+                                //       context: context,
+                                //       barrierDismissible: false,
+                                //       builder: (_) => DeviceControlDialog((taskName){
+                                //         if(widget.onSholdRequestRemoteCommand != null) {
+                                //           widget.onSholdRequestRemoteCommand(taskName,null);
+                                //         }
+                                //       }));
                                 },
                               ),
                                 ],
