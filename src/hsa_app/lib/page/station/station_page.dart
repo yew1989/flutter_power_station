@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hsa_app/components/smart_refresher_style.dart';
+import 'package:hsa_app/model/station.dart';
 import 'package:hsa_app/page/history/history_page.dart';
 import 'package:hsa_app/page/station/device/station_device_list.dart';
 import 'package:hsa_app/page/station/station_big_pool.dart';
@@ -67,6 +68,34 @@ class _StationPageState extends State<StationPage> {
           this.openLive = station.openlive;
         }
       });
+
+    // 演示用假数据 BEGIN
+    /*
+    stationInfo.power.max = stationInfo.power.max + 800;
+
+    stationInfo.devices.add(Devices(
+      address: '',
+      name: '',
+      isMaster: false,
+      status: 'online',
+      eventCount: 3,
+      power: StationItem(max: 400,current: 420),
+      updateTime:stationInfo.devices.first.updateTime
+    ));
+
+    stationInfo.devices.add(Devices(
+      address: '',
+      name: '',
+      isMaster: false,
+      status: 'offline',
+      eventCount: 0,
+      power: StationItem(max: 400,current: 0),
+      updateTime:stationInfo.devices.first.updateTime
+    ));
+    */
+    // 演示用假数据 END
+
+
     }, (String msg) {
       refreshController.refreshFailed();
       Progresshud.showInfoWithStatus('获取电站信息失败');
@@ -92,6 +121,7 @@ class _StationPageState extends State<StationPage> {
 
   @override
   Widget build(BuildContext context) {
+
     return ThemeGradientBackground(
       child: Stack(children: [
         stationInfo?.geo == null

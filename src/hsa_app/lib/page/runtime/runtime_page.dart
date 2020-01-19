@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:hsa_app/api/api.dart';
 import 'package:hsa_app/api/remote_task.dart';
@@ -19,6 +18,7 @@ import 'package:hsa_app/service/umeng_analytics.dart';
 import 'package:hsa_app/theme/theme_gradient_background.dart';
 import 'package:hsa_app/components/public_tool.dart';
 import 'package:ovprogresshud/progresshud.dart';
+import 'package:page_view_indicator/page_view_indicator.dart';
 import 'package:progress_dialog/progress_dialog.dart';
 import 'package:pull_to_refresh/src/smart_refresher.dart';
 
@@ -35,9 +35,9 @@ class RuntimePage extends StatefulWidget {
 }
 
 class _RuntimePageState extends State<RuntimePage> {
+  RefreshController refreshController =
+      RefreshController(initialRefresh: false);
 
-  RefreshController refreshController = RefreshController(initialRefresh: false);
-  
   // 计算宽度
   double barMaxWidth = 0;
 
@@ -58,11 +58,13 @@ class _RuntimePageState extends State<RuntimePage> {
   // 轮询定时器
   Timer runLoopTimer;
 
+  static const pageLength = 4;
+  final pageIndexNotifier = ValueNotifier<int>(0);
+
   // 初始化弹出框
   void initProgressDialog() {
     progressDialog = ProgressDialog(context,
-        type: ProgressDialogType.Normal, 
-        isDismissible: false, showLogs: false);
+        type: ProgressDialogType.Normal, isDismissible: false, showLogs: false);
     progressDialog.style(
         message: '正在操作中...',
         borderRadius: 10.0,
@@ -121,11 +123,13 @@ class _RuntimePageState extends State<RuntimePage> {
 
   // 操作密码输入错误弹窗
   void showOperationPasswordPopWindow() async {
-      progressDialog.update(
+    progressDialog.update(
         message: '操作密码输入不正确',
         progress: 0.0,
         maxProgress: 100.0,
-        progressWidget: Container(child: Icon(Icons.error_outline, color: Colors.redAccent, size: 46)),
+        progressWidget: Container(
+            child:
+                Icon(Icons.error_outline, color: Colors.redAccent, size: 46)),
         progressTextStyle: TextStyle(
             color: Colors.black, fontSize: 13.0, fontWeight: FontWeight.normal),
         messageTextStyle: TextStyle(
@@ -134,13 +138,14 @@ class _RuntimePageState extends State<RuntimePage> {
             fontWeight: FontWeight.normal));
     progressDialog.show();
     await Future.delayed(Duration(seconds: 1));
-    progressDialog.dismiss(); 
+    progressDialog.dismiss();
   }
 
   // 轮询查询
   void startRunLoopTimer(int runLoopSecond) async {
-    await Future.delayed(Duration(seconds:1));
-    runLoopTimer = Timer.periodic(Duration(seconds:runLoopSecond), (_) => requestRunTimeDataInBackground());
+    await Future.delayed(Duration(seconds: 1));
+    runLoopTimer = Timer.periodic(Duration(seconds: runLoopSecond),
+        (_) => requestRunTimeDataInBackground());
   }
 
   @override
@@ -163,25 +168,22 @@ class _RuntimePageState extends State<RuntimePage> {
 
   // 请求实时数据
   void requestRunTimeData() {
-    
     Progresshud.showWithStatus('读取数据中...');
 
     final addressId = widget.address ?? '';
 
-    if(addressId.length == 0) {
+    if (addressId.length == 0) {
       Progresshud.showInfoWithStatus('获取实时机组数据失败');
       return;
     }
 
     API.runtimeData(addressId, (RuntimeDataResponse data) {
-
       Progresshud.dismiss();
       refreshController.refreshCompleted();
       setState(() {
         this.runtimeData = RuntimeDataAdapter.adapter(data, widget.alias);
       });
     }, (String msg) {
-
       Progresshud.showInfoWithStatus('获取实时机组数据失败');
       refreshController.refreshFailed();
     });
@@ -189,27 +191,23 @@ class _RuntimePageState extends State<RuntimePage> {
 
   // 静默任务请求
   void requestRunTimeDataInBackground() async {
-
     final addressId = widget.address ?? '';
-    if(addressId.length == 0) {
+    if (addressId.length == 0) {
       runLoopTimer?.cancel();
       return;
     }
     API.runtimeData(addressId, (RuntimeDataResponse data) {
-
       setState(() {
         this.runtimeData = RuntimeDataAdapter.adapter(data, widget.alias);
       });
-    }, (_) {
-
-    });
+    }, (_) {});
   }
 
   //  设备概要头
   Widget terminalBriefHeader() {
     var deviceWidth = MediaQuery.of(context).size.width;
     var denominator = 3.1;
-    if(deviceWidth == 320.0) {
+    if (deviceWidth == 320.0) {
       denominator = 3.3;
     }
 
@@ -280,8 +278,8 @@ class _RuntimePageState extends State<RuntimePage> {
     );
   }
 
-  void onTapPushToHistoryPage(String navTitle,String address) async {
-    pushToPage(context, HistoryPage(title: navTitle,address: address));
+  void onTapPushToHistoryPage(String navTitle, String address) async {
+    pushToPage(context, HistoryPage(title: navTitle, address: address));
   }
 
   // 仪表盘
@@ -324,9 +322,9 @@ class _RuntimePageState extends State<RuntimePage> {
                             children: <Widget>[
                               Text(freqNowStr,
                                   style: TextStyle(
-                                  color: Colors.white,
-                                  fontFamily: 'ArialNarrow',
-                                  fontSize: 24)),
+                                      color: Colors.white,
+                                      fontFamily: 'ArialNarrow',
+                                      fontSize: 24)),
                               SizedBox(
                                   height: 2,
                                   width: 52,
@@ -334,8 +332,7 @@ class _RuntimePageState extends State<RuntimePage> {
                                       'images/runtime/Time_line1.png')),
                               Text('频率:Hz',
                                   style: TextStyle(
-                                  color: Colors.white30, 
-                                  fontSize: 11)),
+                                      color: Colors.white30, fontSize: 11)),
                             ],
                           ),
                         ),
@@ -417,17 +414,34 @@ class _RuntimePageState extends State<RuntimePage> {
 
   //  设备概要尾
   Widget terminalBriefFooter() {
-
     return Container(
       padding: EdgeInsets.symmetric(vertical: 6),
       child: Center(
-          child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: <Widget>[
-         Expanded(flex:1,child: Container(height: 50,color: Colors.transparent,child: terminalBriefFooterItem(runtimeData?.other?.radial))),
-         Expanded(flex:1,child: Container(height: 50,color: Colors.transparent,child: terminalBriefFooterItem(runtimeData?.other?.thrust))),
-         Expanded(flex:1,child: Container(height: 50,color: Colors.transparent,child: terminalBriefFooterItem(runtimeData?.other?.pressure))),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            Expanded(
+                flex: 1,
+                child: Container(
+                    height: 50,
+                    color: Colors.transparent,
+                    child:
+                        terminalBriefFooterItem(runtimeData?.other?.radial))),
+            Expanded(
+                flex: 1,
+                child: Container(
+                    height: 50,
+                    color: Colors.transparent,
+                    child:
+                        terminalBriefFooterItem(runtimeData?.other?.thrust))),
+            Expanded(
+                flex: 1,
+                child: Container(
+                    height: 50,
+                    color: Colors.transparent,
+                    child:
+                        terminalBriefFooterItem(runtimeData?.other?.pressure))),
           ],
         ),
       ),
@@ -488,17 +502,90 @@ class _RuntimePageState extends State<RuntimePage> {
           backgroundColor: Colors.transparent,
           centerTitle: true,
           title: Text(widget.title,
-          style: TextStyle(color: Colors.white,
-          fontWeight: FontWeight.normal,fontSize: 20)),
+              style: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.normal,
+                  fontSize: 20)),
           actions: <Widget>[
             GestureDetector(
-                onTap: () => onTapPushToHistoryPage(historyNavTitle,widget.address),
+                onTap: () =>
+                    onTapPushToHistoryPage(historyNavTitle, widget.address),
                 child: Center(
                     child: Text('历史曲线',
                         style: TextStyle(color: Colors.white, fontSize: 16)))),
             SizedBox(width: 20),
           ],
         ),
+        // body: Stack(alignment: FractionalOffset.topCenter, children: [
+        //   PageView.builder(
+        //     onPageChanged: (index) => pageIndexNotifier.value = index,
+        //     itemCount: pageLength,
+        //     itemBuilder: (context, index) {
+        //       return Container(
+        //   color: Colors.transparent,
+        //   child: Column(
+        //     mainAxisAlignment: MainAxisAlignment.center,
+        //     crossAxisAlignment: CrossAxisAlignment.center,
+        //     children:[
+        //     Container(
+        //       height: isIphone5S ? 350 : 400,
+        //       child: SmartRefresher(
+        //         header: appRefreshHeader(),
+        //         enablePullDown: true,
+        //         onRefresh: requestRunTimeData,
+        //         controller: refreshController,
+        //         child: ListView(
+        //         children: <Widget>[
+        //           SizedBox(height: 12),
+        //           terminalBriefHeader(),
+        //           RuntimeSqureMasterWidget(
+        //            isMaster: runtimeData?.dashboard?.isMaster ?? false,
+        //             aliasName: runtimeData?.dashboard?.aliasName ?? '',
+        //           ),
+        //           dashBoardWidget(),
+        //           terminalBriefFooter(),
+        //           SizedBox(height: 8),
+        //           ],
+        //         ),
+        //       ),
+        //     ),
+        //     isIphone5S ? Container() :Expanded(child: eventList()),
+        //     RunTimeLightDarkShawdow(),
+        //     RunTimeOperationBoard(runtimeData,widget.address,(taskName,param) => requestRemoteControlCommand(context, taskName, param)),
+
+        //   ]),
+        // );
+        //     },
+        //   ),
+        //   PageViewIndicator(
+        //     indicatorPadding: const EdgeInsets.all(0.0),
+        //     pageIndexNotifier: pageIndexNotifier,
+        //     length: pageLength,
+        //     normalBuilder: (animationController, index) => ScaleTransition(
+        //       child: SizedBox(
+        //           height: 8,
+        //           width: 18,
+        //           child: Image.asset(
+        //               'images/common/Common_list_control2_btn.png')),
+        //       scale: CurvedAnimation(
+        //         parent: animationController,
+        //         curve: Curves.ease,
+        //       ),
+        //     ),
+        //     highlightedBuilder: (animationController, index) => ScaleTransition(
+        //       scale: CurvedAnimation(
+        //         parent: animationController,
+        //         curve: Curves.ease,
+        //       ),
+        //       child: SizedBox(
+        //         height: 8,
+        //         width: 18,
+        //         child:
+        //             Image.asset('images/common/Common_list_control3_btn.png'),
+        //       ),
+        //     ),
+        //   ),
+        // ]),
         body: Container(
           color: Colors.transparent,
           child: Column(
@@ -538,27 +625,31 @@ class _RuntimePageState extends State<RuntimePage> {
   }
 
   // 远程控制
-  void requestRemoteControlCommand(BuildContext context,TaskName taskName,String param) async{
+  void requestRemoteControlCommand(
+      BuildContext context, TaskName taskName, String param) async {
     progressDialog.dismiss();
     // 终端在线状态检测
     final isOnline = widget.isOnline ?? false;
-    if(isOnline == false) {
+    if (isOnline == false) {
       Progresshud.showInfoWithStatus('终端不在线,远程操作被取消');
       return;
     }
     // 远程控制检测
     var isRemoteControl = false;
     // 如果是远程控制模式开关
-    if(taskName == TaskName.switchRemoteOn || taskName == TaskName.switchRemoteOff) {
-      isRemoteControl = runtimeData.status == ControlModelCurrentStatus.remoteOn 
-      || runtimeData.status == ControlModelCurrentStatus.remoteOff;
+    if (taskName == TaskName.switchRemoteOn ||
+        taskName == TaskName.switchRemoteOff) {
+      isRemoteControl =
+          runtimeData.status == ControlModelCurrentStatus.remoteOn ||
+              runtimeData.status == ControlModelCurrentStatus.remoteOff;
     }
     // 其他指令 必须在远程控制模式打开情况下 有效
     else {
-      isRemoteControl = runtimeData.status == ControlModelCurrentStatus.remoteOn;
+      isRemoteControl =
+          runtimeData.status == ControlModelCurrentStatus.remoteOn;
     }
 
-    if(isRemoteControl == false) {
+    if (isRemoteControl == false) {
       Progresshud.showInfoWithStatus('请先切换到远程控制模式');
       return;
     }
@@ -566,15 +657,18 @@ class _RuntimePageState extends State<RuntimePage> {
     updateProgressDialog('正在操作中');
     await Future.delayed(Duration(milliseconds: 600));
 
-    
-    showDialog(context: context,barrierDismissible: false,builder: (BuildContext context) {
+    showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
           return PasswordDialog((String pswd) {
             // 检查操作密码
             API.checkOperationPswd(context, pswd, (String succString) {
               debugPrint('操作密码 🔑 :' + succString);
               // 开始任务
               progressDialog.show();
-              remoteTask.startTask(taskName, widget.address, param,(String succString) {
+              remoteTask.startTask(taskName, widget.address, param,
+                  (String succString) {
                 finishProgressDialog(succString, true);
               }, (String failString) {
                 finishProgressDialog(failString, false);
@@ -585,6 +679,6 @@ class _RuntimePageState extends State<RuntimePage> {
               showOperationPasswordPopWindow();
             });
           });
-    });
+        });
   }
 }
