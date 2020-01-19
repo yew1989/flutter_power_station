@@ -20,9 +20,11 @@ class _RuntimeProgressBarState extends State<RuntimeProgressBar> {
 
   void showText() async {
     await Future.delayed(Duration(milliseconds: 500));
-    setState(() {
-      isShowText = true;
-    });
+    if(mounted) {
+      setState(() {
+        isShowText = true;
+      });
+    }
   }
 
   @override
