@@ -87,9 +87,9 @@ class _RuntimeProgressBarState extends State<RuntimeProgressBar> {
 
                   // 渐变颜色条 红色
                   isBeyond ? AnimatedContainer(
-                      alignment: Alignment.centerRight,
-                         width: isShowText == true ? left : maxWidth,
-                         margin: EdgeInsets.only(left: isShowText == true ? left : 0),
+                        alignment: Alignment.centerRight,
+                        width: isShowText == true ? left : maxWidth,
+                        margin: EdgeInsets.only(left: isShowText == true ? left : 0),
                         curve: Curves.easeOutSine,
                         duration: Duration(milliseconds: 600),
                         decoration: BoxDecoration(
@@ -101,7 +101,6 @@ class _RuntimeProgressBarState extends State<RuntimeProgressBar> {
                         ),
                       ),
                     ): Container(),
-
                   // 渐变颜色条 蓝色
                   AnimatedContainer(
                       width: maxWidth - right,

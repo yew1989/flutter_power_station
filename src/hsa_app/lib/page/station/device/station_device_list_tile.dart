@@ -18,6 +18,99 @@ class StationDeviceListTile extends StatefulWidget {
 
 class _StationDeviceListTileState extends State<StationDeviceListTile> {
 
+  double barRight = 0.0;
+  double barLeft = 0.0;
+  bool isBeyond = false;
+
+  bool isShowCyanComet = false;
+  bool isShowRedComet = false;
+
+  void showProgressCyanBar() async {
+
+    await Future.delayed(Duration(milliseconds: 200 +widget.index *(200)));
+
+    if(mounted) {
+      setState(() {
+      
+      var maxWidth = MediaQuery.of(context).size.width - 20;
+      var ratio = caculatePowerRatio(widget.device);
+
+      if(widget.index == 0) ratio = 1.1;
+      if(widget.index == 1) ratio = 1.05;
+      if(widget.index == 2) ratio = 1.1;
+
+      // if(widget.index == 0) ratio = 0.7;
+      // if(widget.index == 1) ratio = 0.9;
+      // if(widget.index == 2) ratio = 0.8;
+
+
+      // 超发
+      if(ratio > 1.0) {
+        isBeyond = true;
+        var beyond = ratio - 1.0;
+        beyond = beyond * 3;// 为了好看,超发部分放大 3 倍
+        barRight = maxWidth * 1;
+      }
+      // 正常发电
+      else {
+        isBeyond = false;
+        barRight = maxWidth * ratio;
+      }  
+
+      isShowCyanComet = true;
+      isShowRedComet = false;
+
+      });
+    }
+  }
+
+    void showProgressRedBar() async {
+
+    await Future.delayed(Duration(milliseconds: 700 +widget.index *(200)));
+
+    if(mounted) {
+      setState(() {
+      var maxWidth = MediaQuery.of(context).size.width - 20;
+      var ratio = caculatePowerRatio(widget.device);
+
+      if(widget.index == 0) ratio = 1.1;
+      if(widget.index == 1) ratio = 1.05;
+      if(widget.index == 2) ratio = 1.1;
+
+      // if(widget.index == 0) ratio = 0.7;
+      // if(widget.index == 1) ratio = 0.9;
+      // if(widget.index == 2) ratio = 0.8;
+
+      // 超发
+      if(ratio > 1.0) {
+        isBeyond = true;
+        var beyond = ratio - 1.0;
+        beyond = beyond * 3;// 为了好看,超发部分放大 3 倍
+        barLeft  = maxWidth * beyond;
+      
+        isShowCyanComet = false;
+        isShowRedComet = true;
+
+      }
+      // 正常发电
+      else {
+        isBeyond = false;
+        barLeft  = 0;
+
+        isShowCyanComet = true;
+        isShowRedComet = false;
+      }  
+      });
+    }
+  }
+
+
+  @override
+  void initState() {
+    showProgressCyanBar();
+    showProgressRedBar();
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
     final device = widget.device;
@@ -35,14 +128,10 @@ class _StationDeviceListTileState extends State<StationDeviceListTile> {
     final eventStr = buildEventCount(eventCount);
 
     return Container(
-      height: 76,
+      height: 80,
       child: Stack(
         children: <Widget>[
           
-          GestureDetector(
-            onTap: (){
-              pushToPage(context, RuntimePage(device?.name ?? '',device.address,badgeName + '#',isOnline));
-            }),
             Center(
               child: Container(
                 padding: EdgeInsets.symmetric(horizontal: 8),
@@ -102,12 +191,20 @@ class _StationDeviceListTileState extends State<StationDeviceListTile> {
             ),
           ),
 
+
+          // 功率 渐进线
+          gradientPowerLine(device,isOnline,index),
           // 功率 Tag
           gradientPowerLineTag(device,isOnline),
-          // 功率 渐进线
-          gradientPowerLine(device,isOnline),
+
           // 分割线
-          Positioned(left: 0,right: 0,bottom: 0,child: Container(height:1,color: Colors.white10)),
+          Positioned(left: 0,right: 0,bottom: 4,child: Container(height:1,color: Colors.white10)),
+
+           // 点击进入机组详情页
+           GestureDetector(
+            onTap: (){
+              pushToPage(context, RuntimePage(device?.name ?? '',device.address,badgeName + '#',isOnline));
+            }),
         ],
       ),
     );
@@ -131,51 +228,29 @@ class _StationDeviceListTileState extends State<StationDeviceListTile> {
      );
   }
 
-  Widget gradientPowerLine(Devices device,bool isOnline) {
-
-      var maxWidth = MediaQuery.of(context).size.width - 20;
-      var ratio = caculatePowerRatio(device);
-
-      bool isBeyond = false;
-      double right = 0;
-      double left = 0;
-
-      // 超发
-      if(ratio > 1.0) {
-        isBeyond = true;
-        var beyond = ratio - 1.0;
-        // 为了好看,超发部分放大 3 倍
-        beyond = beyond * 3;
-        final rightRatio = 1.0 - beyond;
-        right = maxWidth * (1.0 - rightRatio);
-        left =  maxWidth - (maxWidth *  beyond);
-      }
-      // 正常发电
-      else {
-        isBeyond = false;
-        right = maxWidth * (1 - ratio);
-      }
+  Widget gradientPowerLine(Devices device,bool isOnline,int index) {
 
        return  isOnline ? Stack(
          children: <Widget>[
 
-           // 蓝色正常部分
-           Positioned(
-            left: 0,right: right,bottom: 1,height:2,
-            child: Container(
+          //蓝色正常部分
+          Positioned(bottom: 5,left: 0,height: 2,
+          child: AnimatedContainer(
+              width: barRight,
+              curve: Curves.easeOutSine,
+              duration: Duration(milliseconds: 500),
+              decoration: BoxDecoration(
+              gradient: LinearGradient(
+              colors: [HexColor('4778f7'), HexColor('66f7f9')])))),
+          // 红色超发部分
+          Positioned(bottom: 5,right: 0,height:2,
+            child: AnimatedContainer(
+              width: barLeft,
+              curve: Curves.easeOutSine,
+              duration: Duration(milliseconds: 500),
               decoration: BoxDecoration(
                 gradient: LinearGradient(
-                  colors: [HexColor('4778f7'),HexColor('66f7f9')]
-                )))),
-          
-           // 红色超发部分
-           isBeyond == true ? Positioned(
-            left: left,right: 0,bottom: 1,height:2,
-            child: Container(
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [HexColor('fff8083a'),HexColor('00f8083a'),]
-                )))) : Container(),
+                  colors: [HexColor('fff8083a'),HexColor('ff7A0009')])))),
          ],
        ) : Container();
 
@@ -183,41 +258,26 @@ class _StationDeviceListTileState extends State<StationDeviceListTile> {
 
   // 渐变标签
   Widget gradientPowerLineTag(Devices device,bool isOnline) {
-
-      var maxWidth = MediaQuery.of(context).size.width - 20;
-      var ratio = caculatePowerRatio(device);
-      
-      bool isBeyond = false;
-      double right = 0;
-      double left = 0;
-
-      // 超发
-      if(ratio > 1.0) {
-        isBeyond = true;
-        var beyond = ratio - 1.0;
-        // 为了好看,超发部分放大 3 倍
-        beyond = beyond * 3;
-        final rightRatio = 1.0 - beyond;
-        right = maxWidth * (1.0 - rightRatio);
-        left =  maxWidth - (maxWidth *  beyond);
-      }
-      // 正常发电
-      else {
-        isBeyond = false;
-        right = maxWidth * (1 - ratio);
-      }
-
+      isBeyond = false;
       // 渐变条指示器
       return isOnline ? Stack(
           children: <Widget>[
             // 蓝色正常部分
-            isBeyond == false ? Positioned(
-            right: right,bottom: 0,
-              child: SizedBox(width: 35,height: 19, child: Image.asset('images/station/cyan_comet.png'))) : Container(),
+            Positioned(
+            left: 0,bottom: -3.5,
+            child: AnimatedContainer(
+              transform: Matrix4.translationValues(barRight - 20, 0, 0),
+              curve: Curves.easeOutSine,
+              duration: Duration(milliseconds: 500),
+              child: isShowCyanComet ?SizedBox(width: 35,height: 19, child: Image.asset('images/station/cyan_comet.png')) : Container())),
             // 红色超发部分
-            isBeyond == true ? Positioned(
-                left: left,bottom: 0,
-              child: SizedBox(width: 35,height: 19, child: Image.asset('images/station/red_comet.png'))) : Container(),
+            Positioned(
+                right: 0,bottom: -3.5,
+                child: AnimatedContainer(
+                transform: Matrix4.translationValues(-barLeft + 20, 0, 0),
+                curve: Curves.easeOutSine,
+                duration: Duration(milliseconds: 500),
+                child: isShowRedComet ? SizedBox(width: 35,height: 19, child: Image.asset('images/station/red_comet.png')) : Container())),
           ],
       ) : Container();
   }
