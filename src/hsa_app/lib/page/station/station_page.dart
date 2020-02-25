@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:hsa_app/components/smart_refresher_style.dart';
-import 'package:hsa_app/model/station.dart';
 import 'package:hsa_app/page/history/history_page.dart';
 import 'package:hsa_app/page/station/device/station_device_list.dart';
 import 'package:hsa_app/page/station/station_big_pool.dart';

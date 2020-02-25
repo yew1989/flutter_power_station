@@ -39,13 +39,11 @@ class _StationDeviceListTileState extends State<StationDeviceListTile> {
       child: Stack(
         children: <Widget>[
           
-          // 内容
           GestureDetector(
             onTap: (){
-              pushToPage(context, 
-              RuntimePage(device?.name ?? '',device.address,badgeName + '#',isOnline));
-            },
-            child: Center(
+              pushToPage(context, RuntimePage(device?.name ?? '',device.address,badgeName + '#',isOnline));
+            }),
+            Center(
               child: Container(
                 padding: EdgeInsets.symmetric(horizontal: 8),
                 child: Row(
@@ -101,7 +99,6 @@ class _StationDeviceListTileState extends State<StationDeviceListTile> {
                       )),
                   ],
                 ),
-              ),
             ),
           ),
 
@@ -216,11 +213,11 @@ class _StationDeviceListTileState extends State<StationDeviceListTile> {
             // 蓝色正常部分
             isBeyond == false ? Positioned(
             right: right,bottom: 0,
-              child: SizedBox(width: 30,height: 18, child: Image.asset('images/station/GL_BLight.png'))) : Container(),
+              child: SizedBox(width: 35,height: 19, child: Image.asset('images/station/cyan_comet.png'))) : Container(),
             // 红色超发部分
             isBeyond == true ? Positioned(
                 left: left,bottom: 0,
-              child: SizedBox(width: 30,height: 18, child: Image.asset('images/station/GL_RLight.png'))) : Container(),
+              child: SizedBox(width: 35,height: 19, child: Image.asset('images/station/red_comet.png'))) : Container(),
           ],
       ) : Container();
   }
