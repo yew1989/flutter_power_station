@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:hsa_app/model/runtime_adapter.dart';
 import 'package:native_color/native_color.dart';
@@ -25,7 +27,6 @@ class DashPainter extends CustomPainter {
         beyondPencent = 0.5;
       }
     }
-
 
     // 固定圆环
     Paint paintFix = Paint();
@@ -133,6 +134,27 @@ class DashPainter extends CustomPainter {
     bluePath.addArc(Rect.fromCircle(center: Offset(0, 0), radius: 54.0), -pi, (powerPencent*1.5) * pi);
     canvas.drawPath(dashPath(bluePath,dashArray: CircularIntervalList<double>(<double>[1.0, 2.5])),paintPowerBlue);
 
+    // 真实功率指针
+    Paint paintPowerPoint = Paint();
+    paintPowerPoint
+      ..strokeCap = StrokeCap.butt
+      ..filterQuality = FilterQuality.high
+      ..isAntiAlias = true
+      ..strokeWidth = 24
+      ..maskFilter = MaskFilter.blur(BlurStyle.solid, 2)
+      ..style = PaintingStyle.stroke
+      ..shader = RadialGradient(
+        radius:1,
+        center:Alignment.center,
+        colors: [
+          Colors.white, 
+          HexColor('fff7f1ce'),
+        ],
+      ).createShader(Rect.fromCircle(center: Offset(0, 0), radius: 50.0));
+    Rect rectPowerPoint = Rect.fromCircle(center: Offset(0, 0), radius: 54.0);
+    canvas.drawArc(rectPowerPoint, (-pi + (powerPencent*1.5) * pi), -0.1, false, paintPowerPoint);
+
+
    // 超发
    if(beyondPencent > 0) {
       Paint paintPowerRed = Paint();
@@ -151,11 +173,13 @@ class DashPainter extends CustomPainter {
         ],
       ).createShader(Rect.fromCircle(center: Offset(0, 0), radius: 50.0));
 
+    // 超发进度条
     Path redPath = Path(); 
     // 为了展现好看,超发部分 放大 3倍
     beyondPencent = beyondPencent * 3;
     redPath.addArc(Rect.fromCircle(center: Offset(0, 0), radius: 54.0),pi/2,beyondPencent * 1.0 * pi);
     canvas.drawPath(dashPath(redPath,dashArray: CircularIntervalList<double>(<double>[1.0, 2.5]),),paintPowerRed);
+
    }
    
 
