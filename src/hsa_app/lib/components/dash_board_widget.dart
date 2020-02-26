@@ -9,8 +9,9 @@ import 'dart:math';
 class DashPainter extends CustomPainter {
 
   final DashBoardDataPack dashboardData;
+  final AnimationController controller;
 
-  DashPainter(this.dashboardData);
+  DashPainter(this.dashboardData,this.controller);
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -66,7 +67,7 @@ class DashPainter extends CustomPainter {
         ],
       ).createShader(Rect.fromCircle(center: Offset(0, 0), radius: 100.0));
     Rect rectCircleReal = Rect.fromCircle(center: Offset(0, 0), radius: 100.0);
-    canvas.drawArc(rectCircleReal, -pi / 2, openPencent * pi, false, paintOpenReal);
+    canvas.drawArc(rectCircleReal, -pi / 2,  controller.value * openPencent * pi, false, paintOpenReal);
 
     // 真实频率背景
     Paint paintHzBg = Paint();
@@ -97,7 +98,7 @@ class DashPainter extends CustomPainter {
         ],
       ).createShader(Rect.fromCircle(center: Offset(0, 0), radius: 80.0));
     Rect rectPaintHzReal = Rect.fromCircle(center: Offset(0, 0), radius: 80.0);
-    canvas.drawArc(rectPaintHzReal, -pi, freqPencent * pi, false, paintHzReal);
+    canvas.drawArc(rectPaintHzReal, -pi, controller.value * freqPencent * pi, false, paintHzReal);
 
     // 功率背景
     Paint paintPowerBack = Paint();
@@ -131,7 +132,7 @@ class DashPainter extends CustomPainter {
       ).createShader(Rect.fromCircle(center: Offset(0, 0), radius: 50.0));
 
     Path bluePath = Path();
-    bluePath.addArc(Rect.fromCircle(center: Offset(0, 0), radius: 54.0), -pi, (powerPencent*1.5) * pi);
+    bluePath.addArc(Rect.fromCircle(center: Offset(0, 0), radius: 54.0), -pi, (controller.value * powerPencent*1.5) * pi);
     canvas.drawPath(dashPath(bluePath,dashArray: CircularIntervalList<double>(<double>[1.0, 2.5])),paintPowerBlue);
 
     // 真实功率指针
@@ -152,7 +153,7 @@ class DashPainter extends CustomPainter {
         ],
       ).createShader(Rect.fromCircle(center: Offset(0, 0), radius: 50.0));
     Rect rectPowerPoint = Rect.fromCircle(center: Offset(0, 0), radius: 54.0);
-    canvas.drawArc(rectPowerPoint, (-pi + (powerPencent*1.5) * pi), -0.1, false, paintPowerPoint);
+    canvas.drawArc(rectPowerPoint, (-pi + (controller.value * powerPencent*1.5) * pi), -0.1, false, paintPowerPoint);
 
 
    // 超发
@@ -178,12 +179,9 @@ class DashPainter extends CustomPainter {
     // 为了展现好看,超发部分 放大 3倍
     beyondPencent = beyondPencent * 3;
     redPath.addArc(Rect.fromCircle(center: Offset(0, 0), radius: 54.0),pi/2,beyondPencent * 1.0 * pi);
-    canvas.drawPath(dashPath(redPath,dashArray: CircularIntervalList<double>(<double>[1.0, 2.5]),),paintPowerRed);
-
+    canvas.drawPath(dashPath(redPath,dashArray: CircularIntervalList<double>(<double>[1.0, 2.5])),paintPowerRed);
    }
    
-
-    
   }
 
   @override
@@ -201,10 +199,38 @@ class DashBoardWidget extends StatefulWidget {
   _DashBoardWidgetState createState() => _DashBoardWidgetState();
 }
 
-class _DashBoardWidgetState extends State<DashBoardWidget> {
+class _DashBoardWidgetState extends State<DashBoardWidget> with TickerProviderStateMixin {
+
+  AnimationController controller;
+
+  @override
+  void initState() {
+    initDashAnimtaionController();
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    controller.dispose();
+    super.dispose();
+  }
+
+  void initDashAnimtaionController() {
+    controller  = AnimationController(vsync: this, duration: const Duration(milliseconds: 1200));
+    controller.forward();
+    controller.addStatusListener((status) {
+    if (status == AnimationStatus.completed) {
+      controller.reverse();
+      }
+    else if(status == AnimationStatus.dismissed) {
+      controller.forward();
+    }
+    });
+  }
+
+
   @override
   Widget build(BuildContext context) {
-    
     // 功率 now
     var powerNow = widget?.dashBoardData?.power?.now ?? 0.0;
     var powerNowStr = '0';
@@ -228,8 +254,13 @@ class _DashBoardWidgetState extends State<DashBoardWidget> {
         children: 
         [
           Center(
-            child: CustomPaint(
-              painter: DashPainter(widget?.dashBoardData),
+            child: AnimatedBuilder(
+              animation: controller,
+              builder: (context,child){
+                return CustomPaint(
+                painter: DashPainter(widget?.dashBoardData,controller),
+              );
+              }
             ),
           ),
           Center(
@@ -237,10 +268,10 @@ class _DashBoardWidgetState extends State<DashBoardWidget> {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
-                Text(powerNowStr ??'',style: TextStyle(color: Colors.white,fontSize: 34,fontFamily: 'ArialNarrow')),
-                SizedBox(height: 2,width: 50,child: Image.asset('images/runtime/Time_line1.png')),
+                Text(powerNowStr ?? '',style: TextStyle(color: Colors.white,fontSize: 34,fontFamily: 'ArialNarrow')),
+                SizedBox(height: 2,width:50,child: Image.asset('images/runtime/Time_line1.png')),
                 SizedBox(height: 2),
-                Text(powerMaxStr ??'',style: TextStyle(color: Colors.white38,fontSize: 15,fontFamily: 'ArialNarrow')),
+                Text(powerMaxStr ?? '',style: TextStyle(color: Colors.white38,fontSize: 15,fontFamily: 'ArialNarrow')),
               ],
             ),
           )
