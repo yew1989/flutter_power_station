@@ -267,9 +267,9 @@ class _StationDeviceListTileState extends State<StationDeviceListTile> {
             left: 0,bottom: -3.5,
             child: AnimatedContainer(
               transform: Matrix4.translationValues(barRight - 20, 0, 0),
-              curve: Curves.easeOutSine,
+              curve: Curves.easeOutSine, 
               duration: Duration(milliseconds: 500),
-              child: isShowCyanComet ?SizedBox(width: 35,height: 19, child: Image.asset('images/station/cyan_comet.png')) : Container())),
+              child: isShowCyanComet ? SizedBox(width: 35,height: 19, child: Image.asset('images/station/cyan_comet.png')) : Container())),
             // 红色超发部分
             Positioned(
                 right: 0,bottom: -3.5,
