@@ -20,14 +20,14 @@ class _DashBoardPowerProgressState extends State<DashBoardPowerProgress> with Ti
 
   void initAnimationController(){
     controller  = AnimationController(vsync: this, duration: const Duration(milliseconds: 1600));
-    controller.addStatusListener((status) {
-    if (status == AnimationStatus.completed) {
-      controller.reverse();
-    }
-    else if(status == AnimationStatus.dismissed) {
-      controller.forward();
-     }
-    });
+    // controller.addStatusListener((status) {
+    // if (status == AnimationStatus.completed) {
+    //   controller.reverse();
+    // }
+    // else if(status == AnimationStatus.dismissed) {
+    //   controller.forward();
+    //  }
+    // });
   }
 
   void forwardAnimation() async {
