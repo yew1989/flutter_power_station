@@ -110,6 +110,7 @@ class StationItem {
   StationItem.fromJson(Map<String, dynamic> json) {
     max = json['max'] ?? 0.0;
     current = json['current'] ?? 0.0;
+    if(current <= 0.0) current = 0.0;
   }
 
   Map<String, dynamic> toJson() {

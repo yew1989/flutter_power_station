@@ -27,39 +27,36 @@ class _StationDeviceListTileState extends State<StationDeviceListTile> {
 
   void showProgressCyanBar() async {
 
-    await Future.delayed(Duration(milliseconds: 200 +widget.index *(200)));
+    await Future.delayed(Duration(milliseconds: 200 + widget.index *(200)));
 
     if(mounted) {
       setState(() {
       
       var maxWidth = MediaQuery.of(context).size.width - 20;
       var ratio = caculatePowerRatio(widget.device);
-
-      if(widget.index == 0) ratio = 1.1;
-      if(widget.index == 1) ratio = 1.05;
-      if(widget.index == 2) ratio = 1.1;
-
-      // if(widget.index == 0) ratio = 0.7;
-      // if(widget.index == 1) ratio = 0.9;
-      // if(widget.index == 2) ratio = 0.8;
-
-
       // 超发
       if(ratio > 1.0) {
         isBeyond = true;
         var beyond = ratio - 1.0;
         beyond = beyond * 3;// 为了好看,超发部分放大 3 倍
         barRight = maxWidth * 1;
+        isShowCyanComet = true;
+        isShowRedComet = false;
       }
-      // 正常发电
+      // 无功率
+      else if(ratio < 0.05){
+        isBeyond = false;
+        barRight = 0;
+        isShowCyanComet = false;
+        isShowRedComet = false;
+      }
+      // 正常发电  
       else {
         isBeyond = false;
         barRight = maxWidth * ratio;
-      }  
-
-      isShowCyanComet = true;
-      isShowRedComet = false;
-
+        isShowCyanComet = true;
+        isShowRedComet = false;
+      }
       });
     }
   }
@@ -73,14 +70,6 @@ class _StationDeviceListTileState extends State<StationDeviceListTile> {
       var maxWidth = MediaQuery.of(context).size.width - 20;
       var ratio = caculatePowerRatio(widget.device);
 
-      if(widget.index == 0) ratio = 1.1;
-      if(widget.index == 1) ratio = 1.05;
-      if(widget.index == 2) ratio = 1.1;
-
-      // if(widget.index == 0) ratio = 0.7;
-      // if(widget.index == 1) ratio = 0.9;
-      // if(widget.index == 2) ratio = 0.8;
-
       // 超发
       if(ratio > 1.0) {
         isBeyond = true;
@@ -92,11 +81,17 @@ class _StationDeviceListTileState extends State<StationDeviceListTile> {
         isShowRedComet = true;
 
       }
+      // 无功率
+      else if(ratio < 0.05){
+        isBeyond = false;
+        barRight = 0;
+        isShowCyanComet = false;
+        isShowRedComet = false;
+      }
       // 正常发电
       else {
         isBeyond = false;
         barLeft  = 0;
-
         isShowCyanComet = true;
         isShowRedComet = false;
       }  
