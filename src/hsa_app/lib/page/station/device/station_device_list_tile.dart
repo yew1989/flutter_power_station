@@ -16,7 +16,7 @@ class StationDeviceListTile extends StatefulWidget {
   _StationDeviceListTileState createState() => _StationDeviceListTileState();
 }
 
-class _StationDeviceListTileState extends State<StationDeviceListTile> {
+class _StationDeviceListTileState extends State<StationDeviceListTile> with TickerProviderStateMixin{
 
   double barRight = 0.0;
   double barLeft = 0.0;
@@ -24,6 +24,8 @@ class _StationDeviceListTileState extends State<StationDeviceListTile> {
 
   bool isShowCyanComet = false;
   bool isShowRedComet = false;
+
+  AnimationController fanAnimationController; // 风机页片动画
 
   void showProgressCyanBar() async {
 
@@ -99,12 +101,29 @@ class _StationDeviceListTileState extends State<StationDeviceListTile> {
     }
   }
 
+  void initFanAnimtaionController() {
+    fanAnimationController  = AnimationController(duration: const Duration(seconds: 2), vsync: this);
+    fanAnimationController.forward();
+    fanAnimationController.addStatusListener((status) {
+    if (status == AnimationStatus.completed) {
+      fanAnimationController.reset();
+      fanAnimationController.forward();
+      }
+    });
+  }
 
   @override
   void initState() {
     showProgressCyanBar();
     showProgressRedBar();
+    initFanAnimtaionController();
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    fanAnimationController.dispose();
+    super.dispose();
   }
   @override
   Widget build(BuildContext context) {
@@ -281,7 +300,10 @@ class _StationDeviceListTileState extends State<StationDeviceListTile> {
   Widget fanWidget(bool isMaster) {
     return Center(
       child: SizedBox(height: 34,width: 34,
-      child: isMaster ? Image.asset('images/station/GL_unit_on_icon.png') 
+      child: isMaster ? RotationTransition(
+        alignment: Alignment.center,
+        turns: fanAnimationController,
+        child: Image.asset('images/station/GL_unit_on_icon.png')) 
         : Image.asset('images/station/GL_unit_off_icon.png')
       ),
     );
