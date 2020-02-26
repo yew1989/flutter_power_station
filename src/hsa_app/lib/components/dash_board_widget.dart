@@ -98,7 +98,21 @@ class DashPainter extends CustomPainter {
     Rect rectPaintHzReal = Rect.fromCircle(center: Offset(0, 0), radius: 80.0);
     canvas.drawArc(rectPaintHzReal, -pi, freqPencent * pi, false, paintHzReal);
 
-    // 功率
+    // 功率背景
+    Paint paintPowerBack = Paint();
+    paintPowerBack
+      ..strokeCap = StrokeCap.butt
+      ..color = Colors.white12
+      ..filterQuality = FilterQuality.high
+      ..isAntiAlias = true
+      ..strokeWidth = 24
+      ..style = PaintingStyle.stroke;
+
+    Path white24Path = Path();
+    white24Path.addArc(Rect.fromCircle(center: Offset(0, 0), radius: 54.0), -pi, (1.6) * pi);
+    canvas.drawPath(dashPath(white24Path,dashArray: CircularIntervalList<double>(<double>[1.0, 2.5])),paintPowerBack);
+
+    // 真实功率
     Paint paintPowerBlue = Paint();
     paintPowerBlue
       ..strokeCap = StrokeCap.butt
