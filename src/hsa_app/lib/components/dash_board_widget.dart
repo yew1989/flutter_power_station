@@ -1,194 +1,11 @@
 import 'dart:ui';
-
 import 'package:flutter/material.dart';
+import 'package:hsa_app/components/dash_board/dash_board_opengate_progress.dart';
 import 'package:hsa_app/model/runtime_adapter.dart';
-import 'package:native_color/native_color.dart';
-import 'package:path_drawing/path_drawing.dart';
-import 'dart:math';
-
-class DashPainter extends CustomPainter {
-
-  final DashBoardDataPack dashboardData;
-  final AnimationController controller;
-
-  DashPainter(this.dashboardData,this.controller);
-
-  @override
-  void paint(Canvas canvas, Size size) {
-
-    var openPencent   = dashboardData?.open?.percent ?? 0.0;
-    var freqPencent   = dashboardData?.freq?.percent ?? 0.0;
-    var powerPencent  = dashboardData?.power?.percent ?? 0.0;
-    var beyondPencent = 0.0;
-
-    if(powerPencent > 1.0) {
-      beyondPencent = powerPencent - 1.0;
-      powerPencent = 1.0;
-      if(beyondPencent > 0.5) {
-        beyondPencent = 0.5;
-      }
-    }
-
-    // 固定圆环
-    Paint paintFix = Paint();
-    paintFix
-      ..color = Colors.white24
-      ..strokeCap = StrokeCap.round
-      ..isAntiAlias = true
-      ..strokeWidth = 0.5
-      ..style = PaintingStyle.stroke;
-    canvas.drawArc(Rect.fromCircle(center: Offset(0, 0), radius: 94.0), -pi / 2, 2 * pi, false, paintFix);
-
-    // 开度背景 半圆
-    Paint paintOpenBack = Paint();
-    paintOpenBack
-      ..color = Colors.white24
-      ..strokeCap = StrokeCap.round
-      ..isAntiAlias = true
-      ..filterQuality = FilterQuality.high
-      ..strokeWidth = 2
-      ..style = PaintingStyle.stroke;
-    canvas.drawArc(Rect.fromCircle(center: Offset(0, 0), radius: 100.0), -pi / 2, 1 * pi, false, paintOpenBack);
-
-    // 开度真实
-    Paint paintOpenReal = Paint();
-    paintOpenReal
-      ..strokeCap = StrokeCap.round
-      ..filterQuality = FilterQuality.high
-      ..isAntiAlias = true
-      ..strokeWidth = 2
-      ..style = PaintingStyle.stroke
-      ..shader = LinearGradient(
-        begin: Alignment.topLeft,
-        end: Alignment.bottomRight,
-        colors: [
-          HexColor('4778f7'),
-          HexColor('66f7f9'),
-        ],
-      ).createShader(Rect.fromCircle(center: Offset(0, 0), radius: 100.0));
-    Rect rectCircleReal = Rect.fromCircle(center: Offset(0, 0), radius: 100.0);
-    canvas.drawArc(rectCircleReal, -pi / 2,  controller.value * openPencent * pi, false, paintOpenReal);
-
-    // 真实频率背景
-    Paint paintHzBg = Paint();
-    paintHzBg
-      ..color = Colors.white10
-      ..strokeCap = StrokeCap.butt
-      ..filterQuality = FilterQuality.high
-      ..isAntiAlias = true
-      ..strokeWidth = 12
-      ..style = PaintingStyle.stroke;
-    Rect rectPaintHzBg = Rect.fromCircle(center: Offset(0, 0), radius: 80.0);
-    canvas.drawArc(rectPaintHzBg, -pi, 1.25 * pi, false, paintHzBg);
-
-    // 真实频率
-    Paint paintHzReal = Paint();
-    paintHzReal
-      ..strokeCap = StrokeCap.butt
-      ..filterQuality = FilterQuality.high
-      ..isAntiAlias = true
-      ..strokeWidth = 12
-      ..style = PaintingStyle.stroke
-      ..shader = LinearGradient(
-        begin: Alignment.topLeft,
-        end: Alignment.bottomRight,
-        colors: [
-          HexColor('4778f7'),
-          HexColor('66f7f9'),
-        ],
-      ).createShader(Rect.fromCircle(center: Offset(0, 0), radius: 80.0));
-    Rect rectPaintHzReal = Rect.fromCircle(center: Offset(0, 0), radius: 80.0);
-    canvas.drawArc(rectPaintHzReal, -pi, controller.value * freqPencent * pi, false, paintHzReal);
-
-    // 功率背景
-    Paint paintPowerBack = Paint();
-    paintPowerBack
-      ..strokeCap = StrokeCap.butt
-      ..color = Colors.white12
-      ..filterQuality = FilterQuality.high
-      ..isAntiAlias = true
-      ..strokeWidth = 24
-      ..style = PaintingStyle.stroke;
-
-    Path white24Path = Path();
-    white24Path.addArc(Rect.fromCircle(center: Offset(0, 0), radius: 54.0), -pi, (1.6) * pi);
-    canvas.drawPath(dashPath(white24Path,dashArray: CircularIntervalList<double>(<double>[1.0, 2.5])),paintPowerBack);
-
-    // 真实功率
-    Paint paintPowerBlue = Paint();
-    paintPowerBlue
-      ..strokeCap = StrokeCap.butt
-      ..filterQuality = FilterQuality.high
-      ..isAntiAlias = true
-      ..strokeWidth = 24
-      ..style = PaintingStyle.stroke
-      ..shader = LinearGradient(
-        begin: Alignment.topLeft,
-        end: Alignment.bottomRight,
-        colors: [
-          HexColor('4778f7'),
-          HexColor('66f7f9'),
-        ],
-      ).createShader(Rect.fromCircle(center: Offset(0, 0), radius: 50.0));
-
-    Path bluePath = Path();
-    bluePath.addArc(Rect.fromCircle(center: Offset(0, 0), radius: 54.0), -pi, (controller.value * powerPencent*1.5) * pi);
-    canvas.drawPath(dashPath(bluePath,dashArray: CircularIntervalList<double>(<double>[1.0, 2.5])),paintPowerBlue);
-
-    // 真实功率指针
-    Paint paintPowerPoint = Paint();
-    paintPowerPoint
-      ..strokeCap = StrokeCap.butt
-      ..filterQuality = FilterQuality.high
-      ..isAntiAlias = true
-      ..strokeWidth = 24
-      ..maskFilter = MaskFilter.blur(BlurStyle.solid, 2)
-      ..style = PaintingStyle.stroke
-      ..shader = RadialGradient(
-        radius:1,
-        center:Alignment.center,
-        colors: [
-          Colors.white, 
-          HexColor('fff7f1ce'),
-        ],
-      ).createShader(Rect.fromCircle(center: Offset(0, 0), radius: 50.0));
-    Rect rectPowerPoint = Rect.fromCircle(center: Offset(0, 0), radius: 54.0);
-    canvas.drawArc(rectPowerPoint, (-pi + (controller.value * powerPencent*1.5) * pi), -0.1, false, paintPowerPoint);
-
-
-   // 超发
-   if(beyondPencent > 0) {
-      Paint paintPowerRed = Paint();
-      paintPowerRed
-      ..strokeCap = StrokeCap.butt
-      ..filterQuality = FilterQuality.high
-      ..isAntiAlias = true
-      ..strokeWidth = 24
-      ..style = PaintingStyle.stroke
-      ..shader = LinearGradient(
-        begin: Alignment.topLeft,
-        end: Alignment.bottomRight,
-        colors: [
-          HexColor('f8083a'),
-          HexColor('f8083a'),
-        ],
-      ).createShader(Rect.fromCircle(center: Offset(0, 0), radius: 50.0));
-
-    // 超发进度条
-    Path redPath = Path(); 
-    // 为了展现好看,超发部分 放大 3倍
-    beyondPencent = beyondPencent * 3;
-    redPath.addArc(Rect.fromCircle(center: Offset(0, 0), radius: 54.0),pi/2,beyondPencent * 1.0 * pi);
-    canvas.drawPath(dashPath(redPath,dashArray: CircularIntervalList<double>(<double>[1.0, 2.5])),paintPowerRed);
-   }
-   
-  }
-
-  @override
-  bool shouldRepaint(CustomPainter oldDelegate) {
-    return true;
-  }
-}
+import 'dash_board/dash_board_bg_progress.dart';
+import 'dash_board/dash_board_center_label.dart';
+import 'dash_board/dash_board_freq_progress.dart';
+import 'dash_board/dash_board_power_progress.dart';
 
 class DashBoardWidget extends StatefulWidget {
 
@@ -201,33 +18,15 @@ class DashBoardWidget extends StatefulWidget {
 
 class _DashBoardWidgetState extends State<DashBoardWidget> with TickerProviderStateMixin {
 
-  AnimationController controller;
-
   @override
   void initState() {
-    initDashAnimtaionController();
     super.initState();
   }
 
   @override
   void dispose() {
-    controller.dispose();
     super.dispose();
   }
-
-  void initDashAnimtaionController() {
-    controller  = AnimationController(vsync: this, duration: const Duration(milliseconds: 1200));
-    controller.forward();
-    controller.addStatusListener((status) {
-    if (status == AnimationStatus.completed) {
-      controller.reverse();
-      }
-    else if(status == AnimationStatus.dismissed) {
-      controller.forward();
-    }
-    });
-  }
-
 
   @override
   Widget build(BuildContext context) {
@@ -241,7 +40,6 @@ class _DashBoardWidgetState extends State<DashBoardWidget> with TickerProviderSt
     else {
        powerNowStr = powerNow.toStringAsFixed(0);
     }
-
     // 功率 max
     var powerMax = widget?.dashBoardData?.power?.max ?? 0.0;
     var powerMaxStr = powerMax.toStringAsFixed(0) + 'kW';
@@ -253,28 +51,11 @@ class _DashBoardWidgetState extends State<DashBoardWidget> with TickerProviderSt
         child: Stack(
         children: 
         [
-          Center(
-            child: AnimatedBuilder(
-              animation: controller,
-              builder: (context,child){
-                return CustomPaint(
-                painter: DashPainter(widget?.dashBoardData,controller),
-              );
-              }
-            ),
-          ),
-          Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: <Widget>[
-                Text(powerNowStr ?? '',style: TextStyle(color: Colors.white,fontSize: 34,fontFamily: 'ArialNarrow')),
-                SizedBox(height: 2,width:50,child: Image.asset('images/runtime/Time_line1.png')),
-                SizedBox(height: 2),
-                Text(powerMaxStr ?? '',style: TextStyle(color: Colors.white38,fontSize: 15,fontFamily: 'ArialNarrow')),
-              ],
-            ),
-          )
+          DashBoardPowerProgress(widget?.dashBoardData),
+          DashBoardFreqProgress(widget?.dashBoardData),
+          DashBoardOpenGateProgress(widget?.dashBoardData),
+          DashBoardBgProgress(),
+          DashBoardCenterLabel(powerNowStr,powerMaxStr),
         ]),
       );
   }
