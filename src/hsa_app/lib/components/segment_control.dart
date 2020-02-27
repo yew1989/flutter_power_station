@@ -33,14 +33,9 @@ class SegmentControl extends StatefulWidget {
 		this.borderColor = Colors.blue,
 		this.selectNone = false,
 	});
-	
-	_SegmentControlState state;
-	
-	@override
-	_SegmentControlState createState() {
-		state = _SegmentControlState();
-		return state;
-	}
+
+  @override
+  _SegmentControlState createState() => _SegmentControlState();
 }
 
 class _SegmentControlState extends State<SegmentControl> with SingleTickerProviderStateMixin {

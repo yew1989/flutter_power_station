@@ -18,9 +18,8 @@ import 'package:hsa_app/service/umeng_analytics.dart';
 import 'package:hsa_app/theme/theme_gradient_background.dart';
 import 'package:hsa_app/components/public_tool.dart';
 import 'package:ovprogresshud/progresshud.dart';
-import 'package:page_view_indicator/page_view_indicator.dart';
 import 'package:progress_dialog/progress_dialog.dart';
-import 'package:pull_to_refresh/src/smart_refresher.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class RuntimePage extends StatefulWidget {
   final String title;
@@ -35,16 +34,12 @@ class RuntimePage extends StatefulWidget {
 }
 
 class _RuntimePageState extends State<RuntimePage> {
-  RefreshController refreshController =
-      RefreshController(initialRefresh: false);
+  RefreshController refreshController = RefreshController(initialRefresh: false);
 
   // 计算宽度
   double barMaxWidth = 0;
 
   static const double kHeaderHeight = 44;
-  static const double kDashBoardHeight = 200;
-  static const double kFootHeight = 70;
-  static const double kControlBoardHeight = 126;
 
   // 实时数据
   RuntimeData runtimeData = RuntimeData();
@@ -58,7 +53,6 @@ class _RuntimePageState extends State<RuntimePage> {
   // 轮询定时器
   Timer runLoopTimer;
 
-  static const pageLength = 4;
   final pageIndexNotifier = ValueNotifier<int>(0);
 
   // 初始化弹出框

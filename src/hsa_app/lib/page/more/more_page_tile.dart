@@ -55,6 +55,6 @@ class _MorePageTileState extends State<MorePageTile> {
 
         ]
       ),
-    );;
+    );
   }  
 }

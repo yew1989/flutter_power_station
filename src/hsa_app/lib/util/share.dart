@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ShareManager {
@@ -23,9 +22,8 @@ class ShareManager {
 
   static ShareManager _instance;
 
-    ShareManager._internal() {
-  }
-
+  ShareManager._internal();
+  
   static initConfig() async {
     var token = await ShareManager().loadToken();
     ShareManager._getInstance().token = token;

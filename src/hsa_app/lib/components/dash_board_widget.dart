@@ -1,4 +1,3 @@
-import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:hsa_app/components/dash_board/dash_board_opengate_progress.dart';
 import 'package:hsa_app/model/runtime_adapter.dart';

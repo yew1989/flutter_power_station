@@ -63,6 +63,6 @@ class _StationListHeaderState extends State<StationListHeader> {
         ),
 
       ],
-    ));;
+    ));
   }
 }

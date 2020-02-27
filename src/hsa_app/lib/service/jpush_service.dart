@@ -27,12 +27,15 @@ class JpushService {
     jpush.addEventHandler(
       onOpenNotification: (Map<String, dynamic> message) {
         debugPrint('onOpenNotification' + message.toString());
+        return;
       },
       onReceiveMessage: (Map<String, dynamic> message){
         debugPrint('onReceiveMessage' + message.toString());
+        return;
       },
       onReceiveNotification: (Map<String, dynamic> message){
         debugPrint('onReceiveNotification' + message.toString());
+        return;
       }
     );
     return jpush;

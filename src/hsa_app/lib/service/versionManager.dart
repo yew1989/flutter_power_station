@@ -1,5 +1,4 @@
 import 'package:flutter/cupertino.dart';
-import 'package:package_info/package_info.dart';
 import 'package:url_launcher/url_launcher.dart' as launcher;
 
 enum VersionUpdateState {  
