@@ -1,5 +1,4 @@
 import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:hsa_app/model/runtime_adapter.dart';
 import 'package:native_color/native_color.dart';
@@ -45,6 +44,7 @@ class _DashBoardPowerProgressState extends State<DashBoardPowerProgress> with Ti
   @override
   void dispose() {
     controller.dispose();
+    beyondController.dispose();
     super.dispose();
   }
 
@@ -78,8 +78,6 @@ class DashBoardPowerProgressPainter extends CustomPainter {
 
     var powerPencent  = dashboardData?.power?.percent ?? 0.0;
     var beyondPencent = 0.0;
-
-    // powerPencent = 1.1;
 
     if(powerPencent > 1.0) {
       beyondPencent = powerPencent - 1.0;
@@ -157,7 +155,8 @@ class DashBoardPowerProgressPainter extends CustomPainter {
     redPath.addArc(Rect.fromCircle(center: Offset(0, 0), radius: 54.0), pi/2 ,beyondPencent * 1.0 * pi *  beyondController.value) ;
     canvas.drawPath(dashPath(redPath,dashArray: CircularIntervalList<double>(<double>[1.0, 2.5])),paintPowerRed);
 
-    // 超发功率指针
+    // 超发功率指针  暂停
+    /*
     Paint beyondIndexPaint = Paint();
     beyondIndexPaint
       ..strokeCap = StrokeCap.butt
@@ -175,7 +174,7 @@ class DashBoardPowerProgressPainter extends CustomPainter {
         ],
       ).createShader(Rect.fromCircle(center: Offset(0, 0), radius: 50.0));
       canvas.drawArc(Rect.fromCircle(center: Offset(0, 0), radius: 54.0), (pi/2 + beyondPencent * 1.0 * pi *  beyondController.value), -0.1, false, beyondIndexPaint);
-
+    */
    }
   }
 
