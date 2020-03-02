@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hsa_app/config/app_config.dart';
 import 'package:hsa_app/event/app_event.dart';
 import 'package:hsa_app/event/event_bird.dart';
 
@@ -51,7 +52,7 @@ class _HistoryPopDialogState extends State<HistoryPopDialogTile> {
                                       ? Colors.white
                                       : Colors.white60,
                                   fontSize: 16,
-                                  fontFamily: 'ArialNarrow')),
+                                  fontFamily: AppConfig.getInstance().numberFontName)),
                           SizedBox(
                               height: 22,
                               width: 22,

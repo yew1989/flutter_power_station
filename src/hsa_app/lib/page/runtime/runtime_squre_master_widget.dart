@@ -1,5 +1,6 @@
 // 方形主从机标志.别名
 import 'package:flutter/material.dart';
+import 'package:hsa_app/config/app_config.dart';
 
 class RuntimeSqureMasterWidget extends StatelessWidget {
 
@@ -35,7 +36,7 @@ class RuntimeSqureMasterWidget extends StatelessWidget {
               child: Center(
                 child:Transform.translate(
                   offset: Offset(0, 6),
-                  child: Text(alias,style: TextStyle(color: Colors.white,fontFamily: 'ArialNarrow',fontSize: 30),
+                  child: Text(alias,style: TextStyle(color: Colors.white,fontFamily: AppConfig.getInstance().numberFontName,fontSize: 30),
                     ),
                 ),
                   ),

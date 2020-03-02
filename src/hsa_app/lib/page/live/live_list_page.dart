@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hsa_app/components/public_tool.dart';
+import 'package:hsa_app/config/app_config.dart';
 import 'package:hsa_app/page/live/live_player_page.dart';
 import 'package:hsa_app/service/umeng_analytics.dart';
 import 'package:hsa_app/theme/theme_gradient_background.dart';
@@ -79,7 +80,7 @@ class _LiveListPageState extends State<LiveListPage> {
                        children: <Widget>[
                          SizedBox(height: 32,width: 32,child: Image.asset('images/station/GL_Video_btn.png')),
                          SizedBox(width: 8),
-                         Text('$liveStr',style: TextStyle(color: Colors.white,fontSize: 20,fontFamily: 'ArialNarrow')),
+                         Text('$liveStr',style: TextStyle(color: Colors.white,fontSize: 20,fontFamily: AppConfig.getInstance().numberFontName)),
                        ],
                     )),
                   ),

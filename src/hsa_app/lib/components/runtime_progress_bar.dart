@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hsa_app/config/app_config.dart';
 import 'package:native_color/native_color.dart';
 
 class  RuntimeProgressBar extends StatefulWidget {
@@ -129,7 +130,7 @@ class _RuntimeProgressBarState extends State<RuntimeProgressBar> {
                                         ? Color(0xfff8083a)
                                         : Colors.white,
                                     fontSize: 12,
-                                    fontFamily: 'ArialNarrow'))))),
+                                    fontFamily: AppConfig.getInstance().numberFontName))))),
 
 
 

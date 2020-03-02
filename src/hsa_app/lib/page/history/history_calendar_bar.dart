@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hsa_app/config/app_config.dart';
 import 'package:loading_indicator/loading_indicator.dart';
 
 class HistoryCalendarBar extends StatefulWidget {
@@ -51,7 +52,7 @@ class _HistoryCalendarBarState extends State<HistoryCalendarBar> {
             child: Text(
               '${widget.startDateTime} ～ ${widget.endDateTime}',
               style: TextStyle(
-                  color: Colors.white, fontFamily: 'ArialNarrow', fontSize: 16),
+                  color: Colors.white, fontFamily: AppConfig.getInstance().numberFontName, fontSize: 16),
             ),
           ),
         ),

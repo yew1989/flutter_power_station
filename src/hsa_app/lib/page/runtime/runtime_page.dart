@@ -6,6 +6,7 @@ import 'package:hsa_app/components/dash_board_widget.dart';
 import 'package:hsa_app/components/runtime_progress_bar.dart';
 import 'package:hsa_app/components/shawdow_widget.dart';
 import 'package:hsa_app/components/smart_refresher_style.dart';
+import 'package:hsa_app/config/app_config.dart';
 import 'package:hsa_app/model/runtime_adapter.dart';
 import 'package:hsa_app/model/runtime_data.dart';
 import 'package:hsa_app/page/dialog/control_model_dialog.dart';
@@ -317,7 +318,7 @@ class _RuntimePageState extends State<RuntimePage> {
                               Text(freqNowStr,
                                   style: TextStyle(
                                       color: Colors.white,
-                                      fontFamily: 'ArialNarrow',
+                                      fontFamily: AppConfig.getInstance().numberFontName,
                                       fontSize: 24)),
                               SizedBox(
                                   height: 2,
@@ -368,7 +369,7 @@ class _RuntimePageState extends State<RuntimePage> {
                                 Text(openNowStr,
                                     style: TextStyle(
                                         color: Colors.white,
-                                        fontFamily: 'ArialNarrow',
+                                        fontFamily: AppConfig.getInstance().numberFontName,
                                         fontSize: 24)),
                                 SizedBox(
                                     height: 2,
@@ -455,14 +456,14 @@ class _RuntimePageState extends State<RuntimePage> {
                       style: TextStyle(
                           color: Colors.white,
                           fontSize: 22,
-                          fontFamily: 'ArialNarrow')),
+                          fontFamily: AppConfig.getInstance().numberFontName)),
                 ),
                 Center(
                   child: Text(otherData?.subTitle ?? '',
                       style: TextStyle(
                           color: Colors.grey,
                           fontSize: 15,
-                          fontFamily: 'ArialNarrow')),
+                          fontFamily: AppConfig.getInstance().numberFontName)),
                 ),
               ],
             ),

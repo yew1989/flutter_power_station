@@ -73,6 +73,11 @@ flutter:
     - images/banner/
 
   fonts:
+    
     - family: ArialNarrow
       fonts:
       - asset: fonts/ArialNarrow.ttf
+
+    - family: DINCondensedC
+      fonts:
+      - asset: fonts/DINCondensedC.ttf

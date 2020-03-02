@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hsa_app/config/app_config.dart';
 import 'package:hsa_app/model/runtime_adapter.dart';
 
 class HistoryEventTile extends StatelessWidget {
@@ -31,7 +32,7 @@ class HistoryEventTile extends StatelessWidget {
                         style: TextStyle(
                           fontSize: 14,
                           color: Colors.white,
-                          fontFamily: 'ArialNarrow',
+                          fontFamily: AppConfig.getInstance().numberFontName,
                           fontWeight: FontWeight.normal),
                       )),
                     ]
@@ -40,7 +41,7 @@ class HistoryEventTile extends StatelessWidget {
                       child: Text(event?.rightString ?? '',
                       style: TextStyle(
                       fontSize: 14,
-                      fontFamily: 'ArialNarrow',
+                      fontFamily: AppConfig.getInstance().numberFontName,
                       color: Colors.white,
                     ),
                   )),

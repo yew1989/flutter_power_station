@@ -12,6 +12,8 @@ class AppConfig {
   int    localBuildVersion            = 0;
   TargetPlatform platform;
 
+  String numberFontName = 'DINCondensedC';
+
   static initConfig() async {
     // ⚠️ 环境控制
     AppConfig.getInstance().env     = LeanCloudEnv.product;

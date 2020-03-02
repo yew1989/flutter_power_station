@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hsa_app/config/app_config.dart';
 import 'package:hsa_app/model/more_data.dart';
 
 class MorePageTile extends StatefulWidget { 
@@ -31,14 +32,14 @@ class _MorePageTileState extends State<MorePageTile> {
               Text(item.mItem1 ?? '',
                 style: TextStyle(
                   color: Colors.white,
-                  fontFamily: 'ArialNarrow',
+                  fontFamily: AppConfig.getInstance().numberFontName,
                   fontSize: 16,
                   ),
               ),
               Text(item.mItem2 ?? '',
                 style: TextStyle(
                   color: Colors.white54,
-                  fontFamily: 'ArialNarrow',
+                  fontFamily: AppConfig.getInstance().numberFontName,
                   fontSize: 16,
                   ),
               ),
