@@ -53,8 +53,8 @@ class _RuntimeProgressBarState extends State<RuntimeProgressBar> {
       if(ratio > 1.0) {
         isBeyond = true;
         var beyond = ratio - 1.0;
-        // 为了好看,超量程部分放大5倍
-        beyond = beyond * 5;
+        // 为了好看,超量程部分放大3倍
+        beyond = beyond * 3;
         final rightRatio = 1.0 - beyond;
         right = maxWidth * (1.0 - rightRatio);
         left =  maxWidth - (maxWidth *  beyond);
@@ -118,19 +118,22 @@ class _RuntimeProgressBarState extends State<RuntimeProgressBar> {
                   ),
 
                   // 文字交火动画
-                  AnimatedCrossFade(
-                      crossFadeState: isShowText ?  CrossFadeState .showSecond : CrossFadeState.showFirst,
-                      duration: Duration(milliseconds: 300),
-                      firstChild: Text(''),
-                      secondChild: Container(
-                          child: Center(
-                              child: Text(widget?.valueText ?? '',
-                                  style: TextStyle(
-                                    color: isBeyond
-                                        ? Color(0xfff8083a)
-                                        : Colors.white,
-                                    fontSize: 12,
-                                    fontFamily: AppConfig.getInstance().numberFontName))))),
+                  Positioned(
+                    left: 0,right: 0,bottom: 0,
+                    child: AnimatedCrossFade(
+                        crossFadeState: isShowText ?  CrossFadeState .showSecond : CrossFadeState.showFirst,
+                        duration: Duration(milliseconds: 300),
+                        firstChild: Text(''),
+                        secondChild: Container(
+                            child: Center(
+                                child: Text(widget?.valueText ?? '',
+                                    style: TextStyle(
+                                      color: isBeyond
+                                          ? Color(0xfff8083a)
+                                          : Colors.white,
+                                      fontSize: 12,
+                                      fontFamily: AppConfig.getInstance().numberFontName))))),
+                  ),
 
 
 

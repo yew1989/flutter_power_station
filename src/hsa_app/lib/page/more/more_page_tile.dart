@@ -33,14 +33,14 @@ class _MorePageTileState extends State<MorePageTile> {
                 style: TextStyle(
                   color: Colors.white,
                   fontFamily: AppConfig.getInstance().numberFontName,
-                  fontSize: 16,
+                  fontSize: 18,
                   ),
               ),
               Text(item.mItem2 ?? '',
                 style: TextStyle(
                   color: Colors.white54,
                   fontFamily: AppConfig.getInstance().numberFontName,
-                  fontSize: 16,
+                  fontSize: 18,
                   ),
               ),
             ],

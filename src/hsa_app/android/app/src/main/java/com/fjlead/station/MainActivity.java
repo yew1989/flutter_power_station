@@ -1,9 +1,7 @@
-package com.example.hsa_app;
+package com.fjlead.station;
 
 import android.os.Bundle;
-
 import com.umeng.analytics.MobclickAgent;
-
 import io.flutter.app.FlutterActivity;
 import io.flutter.plugins.GeneratedPluginRegistrant;
 
