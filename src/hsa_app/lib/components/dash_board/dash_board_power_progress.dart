@@ -9,6 +9,7 @@ class DashBoardPowerProgress extends StatefulWidget {
   final DashBoardDataPack dashboardData;
 
   const DashBoardPowerProgress(this.dashboardData,{Key key}) : super(key: key);
+  
   @override
   _DashBoardPowerProgressState createState() => _DashBoardPowerProgressState();
 }
