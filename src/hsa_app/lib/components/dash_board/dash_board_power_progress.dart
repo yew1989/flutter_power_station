@@ -17,17 +17,11 @@ class DashBoardPowerProgress extends StatefulWidget {
 class _DashBoardPowerProgressState extends State<DashBoardPowerProgress> with TickerProviderStateMixin{
 
   AnimationController controller;
+  AnimationController beyondController;
 
-  void initAnimationController(){
-    controller  = AnimationController(vsync: this, duration: const Duration(milliseconds: 1600));
-    // controller.addStatusListener((status) {
-    // if (status == AnimationStatus.completed) {
-    //   controller.reverse();
-    // }
-    // else if(status == AnimationStatus.dismissed) {
-    //   controller.forward();
-    //  }
-    // });
+  void initAnimationController() async {
+    controller       = AnimationController(vsync: this, duration: const Duration(milliseconds: 1400));
+    beyondController = AnimationController(vsync: this, duration: const Duration(milliseconds: 500));
   }
 
   void forwardAnimation() async {
@@ -35,10 +29,16 @@ class _DashBoardPowerProgressState extends State<DashBoardPowerProgress> with Ti
     controller.forward();
   }
 
+  void forwardAnimationBeyond() async {
+    await Future.delayed(Duration(milliseconds:1500));
+    beyondController.forward();
+  }
+
   @override
   void initState() {
     initAnimationController();
     forwardAnimation();
+    forwardAnimationBeyond();
     super.initState();
   }
 
@@ -54,8 +54,11 @@ class _DashBoardPowerProgressState extends State<DashBoardPowerProgress> with Ti
       child: AnimatedBuilder(
         animation: controller,
         builder: (context,child) {
-          return CustomPaint(
-          painter: DashBoardPowerProgressPainter(widget.dashboardData,controller));
+          return AnimatedBuilder(
+            animation: beyondController,
+            builder: (context,child) => CustomPaint(
+            painter: DashBoardPowerProgressPainter(widget.dashboardData,controller,beyondController)),
+          );
         }
       ),
     );
@@ -66,14 +69,17 @@ class DashBoardPowerProgressPainter extends CustomPainter {
 
   final DashBoardDataPack dashboardData;
   final AnimationController controller;
+  final AnimationController beyondController;
 
-  DashBoardPowerProgressPainter(this.dashboardData, this.controller);
+  DashBoardPowerProgressPainter(this.dashboardData, this.controller, this.beyondController);
   
   @override
   void paint(Canvas canvas, Size size) {
 
     var powerPencent  = dashboardData?.power?.percent ?? 0.0;
     var beyondPencent = 0.0;
+
+    // powerPencent = 1.1;
 
     if(powerPencent > 1.0) {
       beyondPencent = powerPencent - 1.0;
@@ -117,7 +123,7 @@ class DashBoardPowerProgressPainter extends CustomPainter {
         radius:1,
         center:Alignment.center,
         colors: [
-          Colors.white, 
+          HexColor('fff7f1ce'),
           HexColor('fff7f1ce'),
         ],
       ).createShader(Rect.fromCircle(center: Offset(0, 0), radius: 50.0));
@@ -143,12 +149,33 @@ class DashBoardPowerProgressPainter extends CustomPainter {
         ],
       ).createShader(Rect.fromCircle(center: Offset(0, 0), radius: 50.0));
 
+
     // 超发进度条
-    Path redPath = Path(); 
+    Path redPath = Path();
     // 为了展现好看,超发部分 放大 3倍
     beyondPencent = beyondPencent * 3;
-    redPath.addArc(Rect.fromCircle(center: Offset(0, 0), radius: 54.0),pi/2,beyondPencent * 1.0 * pi);
+    redPath.addArc(Rect.fromCircle(center: Offset(0, 0), radius: 54.0), pi/2 ,beyondPencent * 1.0 * pi *  beyondController.value) ;
     canvas.drawPath(dashPath(redPath,dashArray: CircularIntervalList<double>(<double>[1.0, 2.5])),paintPowerRed);
+
+    // 超发功率指针
+    Paint beyondIndexPaint = Paint();
+    beyondIndexPaint
+      ..strokeCap = StrokeCap.butt
+      ..filterQuality = FilterQuality.high
+      ..isAntiAlias = true
+      ..strokeWidth = 24
+      ..maskFilter = MaskFilter.blur(BlurStyle.solid, 2)
+      ..style = PaintingStyle.stroke
+      ..shader = RadialGradient(
+        radius:1,
+        center:Alignment.center,
+        colors: [
+          HexColor('fff7f1ce'),
+          HexColor('fff7f1ce'),
+        ],
+      ).createShader(Rect.fromCircle(center: Offset(0, 0), radius: 50.0));
+      canvas.drawArc(Rect.fromCircle(center: Offset(0, 0), radius: 54.0), (pi/2 + beyondPencent * 1.0 * pi *  beyondController.value), -0.1, false, beyondIndexPaint);
+
    }
   }
 
