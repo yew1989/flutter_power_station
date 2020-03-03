@@ -31,8 +31,9 @@ class _StationListHeaderState extends State<StationListHeader> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
-                Text('机组信息',style: TextStyle(color: Colors.white,fontSize: 15)),
-                Text('天气:' + widget.weather,style: TextStyle(color: Colors.white,fontSize: 15)),
+                
+                Text('机组信息',style: TextStyle(color: Colors.white,fontSize: 16)),
+                Text('天气:' + widget.weather,style: TextStyle(color: Colors.white,fontSize: 16)),
 
                 SizedBox(
                   height: 22,

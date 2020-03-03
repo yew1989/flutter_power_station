@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:hsa_app/config/app_config.dart';
+import 'package:hsa_app/config/app_theme.dart';
 
 class StationProfitWidget extends StatefulWidget {
 
@@ -44,7 +44,7 @@ class _StationProfitWidgetState extends State<StationProfitWidget> with TickerPr
           text: TextSpan(
             children: 
             [
-              TextSpan(text:animation.value.toStringAsFixed(2),style: TextStyle(color: Colors.white,fontFamily: AppConfig.getInstance().numberFontName,fontSize: 50)),
+              TextSpan(text:animation.value.toStringAsFixed(2),style: TextStyle(color: Colors.white,fontFamily: AppTheme().numberFontName,fontSize: 50)),
               TextSpan(text:' 元',style: TextStyle(color: Colors.white,fontSize: 13)),
             ]
           ),

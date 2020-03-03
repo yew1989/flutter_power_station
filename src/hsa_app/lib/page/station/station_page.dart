@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hsa_app/components/smart_refresher_style.dart';
+import 'package:hsa_app/config/app_theme.dart';
 import 'package:hsa_app/page/history/history_page.dart';
 import 'package:hsa_app/page/station/device/station_device_list.dart';
 import 'package:hsa_app/page/station/station_big_pool.dart';
@@ -24,11 +25,11 @@ class StationPage extends StatefulWidget {
 }
 
 class _StationPageState extends State<StationPage> {
+  
   StationInfo stationInfo = StationInfo();
   String weather = '晴';
   List<String> openLive = [];
-  RefreshController refreshController =
-      RefreshController(initialRefresh: false);
+  RefreshController refreshController = RefreshController(initialRefresh: false);
 
   @override
   void initState() {
@@ -135,17 +136,11 @@ class _StationPageState extends State<StationPage> {
             elevation: 0,
             centerTitle: true,
             title: Text(widget.title ?? '',
-                style: TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.normal,
-                    fontSize: 20)),
+            style: TextStyle(color: Colors.white,fontWeight: FontWeight.normal,fontSize: AppTheme().navigationAppBarFontSize)),
             actions: <Widget>[
               GestureDetector(
-                  onTap: stationInfo.devices == null ? null : () => onTapPushToHistoryPage(),
-                  child: Center(
-                      child: Text('历史曲线',
-                          style:
-                              TextStyle(color: Colors.white, fontSize: 16)))),
+              onTap: stationInfo.devices == null ? null : () => onTapPushToHistoryPage(),
+              child: Center(child: Text('历史曲线',style:TextStyle(color: Colors.white, fontSize: 16)))),
               SizedBox(width: 20),
             ],
           ),

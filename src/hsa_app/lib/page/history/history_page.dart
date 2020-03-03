@@ -6,7 +6,7 @@ import 'package:hsa_app/api/api.dart';
 import 'package:hsa_app/components/empty_page.dart';
 import 'package:hsa_app/components/segment_control.dart';
 import 'package:hsa_app/components/spinkit_indicator.dart';
-import 'package:hsa_app/config/app_config.dart';
+import 'package:hsa_app/config/app_theme.dart';
 import 'package:hsa_app/event/app_event.dart';
 import 'package:hsa_app/event/event_bird.dart';
 import 'package:hsa_app/model/event_types.dart';
@@ -284,7 +284,7 @@ class _HistoryPageState extends State<HistoryPage> {
                     style: TextStyle(color: Colors.white, fontSize: 18))),
             backgroundColor: Color.fromRGBO(53, 117, 191, 1),
             itemTextStyle: TextStyle(
-                color: Colors.white, fontFamily: AppConfig.getInstance().numberFontName, fontSize: 22),
+                color: Colors.white, fontFamily: AppTheme().numberFontName, fontSize: 22),
           ), onConfirm: (selectDate, _) {
         setState(() {
           this.startDateTime = formatDate(selectDate, [yyyy, '-', mm, '-', dd]);
@@ -310,7 +310,7 @@ class _HistoryPageState extends State<HistoryPage> {
                     style: TextStyle(color: Colors.white, fontSize: 18))),
             backgroundColor: Color.fromRGBO(53, 117, 191, 1),
             itemTextStyle: TextStyle(
-                color: Colors.white, fontFamily: AppConfig.getInstance().numberFontName, fontSize: 22),
+                color: Colors.white, fontFamily: AppTheme().numberFontName, fontSize: 22),
           ), onConfirm: (selectDate, index) {
         final year = selectDate.year;
         final month = selectDate.month;
@@ -344,7 +344,7 @@ class _HistoryPageState extends State<HistoryPage> {
                     style: TextStyle(color: Colors.white, fontSize: 18))),
             backgroundColor: Color.fromRGBO(53, 117, 191, 1),
             itemTextStyle: TextStyle(
-                color: Colors.white, fontFamily: AppConfig.getInstance().numberFontName, fontSize: 22),
+                color: Colors.white, fontFamily: AppTheme().numberFontName, fontSize: 22),
           ), onConfirm: (selectDate, index) {
         final year = selectDate.year;
         final month = selectDate.month;
@@ -379,7 +379,7 @@ class _HistoryPageState extends State<HistoryPage> {
                     style: TextStyle(color: Colors.white, fontSize: 18))),
             backgroundColor: Color.fromRGBO(53, 117, 191, 1),
             itemTextStyle: TextStyle(
-                color: Colors.white, fontFamily: AppConfig.getInstance().numberFontName, fontSize: 22),
+                color: Colors.white, fontFamily: AppTheme().numberFontName, fontSize: 22),
           ), onConfirm: (selectDate, index) {
         final year = selectDate.year;
         final start = formatDate(DateTime(year), [yyyy, '-', mm, '-', dd]);
@@ -427,8 +427,7 @@ class _HistoryPageState extends State<HistoryPage> {
               style: TextStyle(
                   color: Colors.white,
                   fontWeight: FontWeight.normal,
-                  fontFamily: AppConfig.getInstance().numberFontName,
-                  fontSize: 16)),
+                  fontSize: 20)),
           actions: <Widget>[
             filterButton(),
           ],

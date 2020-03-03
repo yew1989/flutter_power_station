@@ -6,7 +6,7 @@ import 'package:hsa_app/components/public_tool.dart';
 import 'package:hsa_app/components/smart_refresher_style.dart';
 import 'package:hsa_app/components/spinkit_indicator.dart';
 import 'package:hsa_app/components/wave_ball.dart';
-import 'package:hsa_app/config/app_config.dart';
+import 'package:hsa_app/config/app_theme.dart';
 import 'package:hsa_app/event/app_event.dart';
 import 'package:hsa_app/event/event_bird.dart';
 import 'package:hsa_app/model/station.dart';
@@ -312,7 +312,7 @@ class _HomeStationListState extends State<HomeStationList> {
             children: <Widget>[
               WaveBall(station:station),
               SizedBox(height: 4),
-              Text(waterStr,style: TextStyle(color: Colors.white,fontFamily: AppConfig.getInstance().numberFontName,fontSize: 16)),
+              Text(waterStr,style: TextStyle(color: Colors.white,fontFamily: AppTheme().numberFontName,fontSize: 16)),
             ],
           ),
 

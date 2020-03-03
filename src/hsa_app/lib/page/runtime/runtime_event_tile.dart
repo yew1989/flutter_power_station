@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:hsa_app/config/app_config.dart';
+import 'package:hsa_app/config/app_theme.dart';
 import 'package:hsa_app/model/runtime_adapter.dart';
 
 class RuntimeEventTile extends StatelessWidget {
@@ -33,7 +33,7 @@ class RuntimeEventTile extends StatelessWidget {
                         style: TextStyle(
                           fontSize: 14,
                           color: Colors.white,
-                          fontFamily: AppConfig.getInstance().numberFontName,
+                          fontFamily: AppTheme().numberFontName,
                           fontWeight: FontWeight.normal),
                       )),
                     ]
@@ -42,7 +42,7 @@ class RuntimeEventTile extends StatelessWidget {
                       child: Text(event?.rightString ?? '',
                       style: TextStyle(
                       fontSize: 14,
-                      fontFamily: AppConfig.getInstance().numberFontName,
+                      fontFamily: AppTheme().numberFontName,
                       color: Colors.white54,
                     ),
                   )),

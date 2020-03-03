@@ -2,7 +2,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:hsa_app/components/circle_indicator.dart';
 import 'package:hsa_app/components/wave_widget.dart';
-import 'package:hsa_app/config/app_config.dart';
+import 'package:hsa_app/config/app_theme.dart';
 import 'package:hsa_app/model/station.dart';
 import 'package:native_color/native_color.dart';
 
@@ -144,10 +144,10 @@ class _WaveBallState extends State<WaveBall> {
             children: <Widget>[
               Center(
                   child: Text(widget.station?.power?.current?.toString() ?? '0.0',
-                      style: TextStyle(color: Colors.white, fontSize: 35,fontFamily: AppConfig.getInstance().numberFontName))),
+                      style: TextStyle(color: Colors.white, fontSize: 35,fontFamily: AppTheme().numberFontName))),
               Center(
                   child: Text('kW',
-                      style: TextStyle(color: Colors.white, fontSize: 15,fontFamily: AppConfig.getInstance().numberFontName))),
+                      style: TextStyle(color: Colors.white, fontSize: 15,fontFamily: AppTheme().numberFontName))),
             ],
           ),
         ],

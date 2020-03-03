@@ -1,10 +1,10 @@
 import 'package:badges/badges.dart';
 import 'package:flutter/material.dart';
 import 'package:hsa_app/components/public_tool.dart';
-import 'package:hsa_app/config/app_config.dart';
 import 'package:hsa_app/model/station_info.dart';
 import 'package:hsa_app/page/runtime/runtime_page.dart';
 import 'package:native_color/native_color.dart';
+import 'package:hsa_app/config/app_theme.dart';
 
 class StationDeviceListTile extends StatefulWidget {
 
@@ -176,9 +176,9 @@ class _StationDeviceListTileState extends State<StationDeviceListTile> with Tick
                       children: <Widget>[
                         SizedBox(height: 8),
                         Text(maxPowerStr,style: TextStyle(color: isOnline ? Colors.white : Colors.white60,
-                        fontFamily: AppConfig.getInstance().numberFontName,fontSize: 20)),
+                        fontFamily: AppTheme().numberFontName,fontSize: 20)),
                         SizedBox(height: 4),
-                        Text(timeStamp,style: TextStyle(color: Colors.white54,fontFamily: AppConfig.getInstance().numberFontName,fontSize: 15)),
+                        Text(timeStamp,style: TextStyle(color: Colors.white54,fontFamily: AppTheme().numberFontName,fontSize: 15)),
                       ],
                     ),
 
@@ -198,7 +198,7 @@ class _StationDeviceListTileState extends State<StationDeviceListTile> with Tick
                         child: Text(currentPowerStr,
                         style: TextStyle(
                         color: isOnline ? Colors.white : Colors.white60,
-                        fontFamily: AppConfig.getInstance().numberFontName,
+                        fontFamily: AppTheme().numberFontName,
                         fontSize: 28)),
                       )),
                   ],

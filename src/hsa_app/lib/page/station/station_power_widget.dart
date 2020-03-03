@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:hsa_app/config/app_config.dart';
+import 'package:hsa_app/config/app_theme.dart';
 import 'package:hsa_app/model/station_info.dart';
 
 class StationPowerWidget extends StatefulWidget {
@@ -23,10 +23,10 @@ class _StationPowerWidgetState extends State<StationPowerWidget> {
        text: TextSpan(
          children: 
             [
-              TextSpan(text:current.toString(),style: TextStyle(color: Colors.white,fontFamily: AppConfig.getInstance().numberFontName,fontSize: 25)),
-              TextSpan(text:'/',style: TextStyle(color: Colors.white,fontFamily: AppConfig.getInstance().numberFontName,fontSize: 18)),
-              TextSpan(text:max.toString(),style: TextStyle(color: Colors.white,fontFamily: AppConfig.getInstance().numberFontName,fontSize: 18)),
-              TextSpan(text:'kW',style: TextStyle(color: Colors.white,fontFamily: AppConfig.getInstance().numberFontName,fontSize: 16)),
+              TextSpan(text:current.toString(),style: TextStyle(color: Colors.white,fontFamily: AppTheme().numberFontName,fontSize: 25)),
+              TextSpan(text:'/',style: TextStyle(color: Colors.white,fontFamily: AppTheme().numberFontName,fontSize: 18)),
+              TextSpan(text:max.toString(),style: TextStyle(color: Colors.white,fontFamily: AppTheme().numberFontName,fontSize: 18)),
+              TextSpan(text:'kW',style: TextStyle(color: Colors.white,fontFamily: AppTheme().numberFontName,fontSize: 16)),
             ]
           ),
         ),
