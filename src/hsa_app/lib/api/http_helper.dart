@@ -14,7 +14,7 @@ typedef HttpFailCallback = void Function(String msg);
 class HttpHelper {
 
   // 开启代理模式,允许抓包
-  static final isProxyModeOpen = false;
+  static final isProxyModeOpen = true;
   // 代理地址
   static final proxyIP = 'PROXY 192.168.31.8:8888';
   // 超时时间
