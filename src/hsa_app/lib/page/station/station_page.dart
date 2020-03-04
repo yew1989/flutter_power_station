@@ -124,11 +124,7 @@ class _StationPageState extends State<StationPage> {
 
     return ThemeGradientBackground(
       child: Stack(children: [
-        stationInfo?.geo == null
-            ? Container()
-            : StationWeatherWidget(
-                geo: stationInfo.geo,
-                onWeahterResponse: (weather) => syncWeaher(weather)),
+        stationInfo?.geo == null ? Container(): StationWeatherWidget(geo: stationInfo.geo,onWeahterResponse: (weather) => syncWeaher(weather)),
         Scaffold(
           backgroundColor: Colors.transparent,
           appBar: AppBar(
@@ -159,6 +155,7 @@ class _StationPageState extends State<StationPage> {
               ),
             ),
           ),
+
         ),
       ]),
     );

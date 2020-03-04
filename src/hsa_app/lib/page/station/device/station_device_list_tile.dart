@@ -141,6 +141,7 @@ class _StationDeviceListTileState extends State<StationDeviceListTile> with Tick
     final maxPowerStr = maxPower.toString() + 'kW';
     final eventCount = device?.eventCount ?? 0;
     final eventStr = buildEventCount(eventCount);
+    final isRotate = (isOnline == true) && (currentPower > 1.0); 
 
     return Container(
       height: 80,
@@ -160,7 +161,7 @@ class _StationDeviceListTileState extends State<StationDeviceListTile> with Tick
                       child: Stack(
                         children:[
                         // 水轮机图标
-                        fanWidget(isOnline),
+                        fanWidget(isRotate,isOnline),
                         // 角标
                         Positioned(right: 2,top: 0,
                           child: badgeRight(isMaster,isOnline,badgeName)
@@ -298,13 +299,14 @@ class _StationDeviceListTileState extends State<StationDeviceListTile> with Tick
   }
   
   // 风机控件
-  Widget fanWidget(bool isMaster) {
+  Widget fanWidget(bool isRotation,bool isOnline) {
     return Center(
       child: SizedBox(height: 34,width: 34,
-      child: isMaster ? RotationTransition(
+      child: isRotation ? RotationTransition(
         alignment: Alignment.center,
         turns: fanAnimationController,
         child: Image.asset('images/station/GL_unit_on_icon.png')) 
+        : isOnline ? Image.asset('images/station/GL_unit_on_icon.png') 
         : Image.asset('images/station/GL_unit_off_icon.png')
       ),
     );
