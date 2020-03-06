@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class AppTheme {
 
   String numberFontName = 'DINCondensedC';
-  double navigationAppBarFontSize = 20;
+  double navigationAppBarFontSize = 18;
 
   AppBar buildAppBar(String title) {
     return AppBar(
@@ -11,6 +11,6 @@ class AppTheme {
       elevation: 0,
       centerTitle: true,
       title: Text(title ?? '',
-      style: TextStyle(color: Colors.white,fontWeight: FontWeight.normal,fontSize: AppTheme().navigationAppBarFontSize)));
+      style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold,fontSize: AppTheme().navigationAppBarFontSize)));
   }
 }

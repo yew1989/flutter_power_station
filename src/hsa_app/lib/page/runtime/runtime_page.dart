@@ -65,7 +65,7 @@ class _RuntimePageState extends State<RuntimePage> {
         borderRadius: 10.0,
         backgroundColor: Colors.white,
         progressWidget: Container(
-            padding: EdgeInsets.all(8.0), child: CircularProgressIndicator()),
+        padding: EdgeInsets.all(8.0), child: CircularProgressIndicator()),
         elevation: 10.0,
         insetAnimCurve: Curves.easeInOut,
         progress: 0.0,
@@ -181,6 +181,7 @@ class _RuntimePageState extends State<RuntimePage> {
     }, (String msg) {
       Progresshud.showInfoWithStatus('获取实时机组数据失败');
       refreshController.refreshFailed();
+      
     });
   }
 
@@ -599,7 +600,7 @@ class _RuntimePageState extends State<RuntimePage> {
                   SizedBox(height: 12),
                   terminalBriefHeader(),
                   RuntimeSqureMasterWidget(
-                   isMaster: runtimeData?.dashboard?.isMaster ?? false,
+                    isMaster: runtimeData?.dashboard?.isMaster ?? false,
                     aliasName: runtimeData?.dashboard?.aliasName ?? '',
                   ),
                   dashBoardWidget(),

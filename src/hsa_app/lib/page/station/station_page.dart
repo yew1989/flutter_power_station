@@ -1,24 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:hsa_app/components/smart_refresher_style.dart';
-import 'package:hsa_app/config/app_theme.dart';
 import 'package:hsa_app/page/history/history_page.dart';
 import 'package:hsa_app/page/station/device/station_device_list.dart';
 import 'package:hsa_app/page/station/station_big_pool.dart';
 import 'package:hsa_app/page/station/station_list_header.dart';
-import 'package:hsa_app/page/station/station_weather_widget.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:hsa_app/api/api.dart';
 import 'package:hsa_app/model/station_info.dart';
-import 'package:hsa_app/service/umeng_analytics.dart';
-import 'package:hsa_app/theme/theme_gradient_background.dart';
 import 'package:hsa_app/components/public_tool.dart';
 import 'package:ovprogresshud/progresshud.dart';
 
 class StationPage extends StatefulWidget {
-  final String title;
+  
   final String stationId;
 
-  StationPage(this.title, this.stationId);
+  StationPage(this.stationId);
 
   @override
   _StationPageState createState() => _StationPageState();
@@ -34,14 +30,12 @@ class _StationPageState extends State<StationPage> {
   @override
   void initState() {
     reqeustStationInfo();
-    UMengAnalyticsService.enterPage('电站概要');
     super.initState();
   }
 
   @override
   void dispose() {
     Progresshud.dismiss();
-    UMengAnalyticsService.exitPage('电站概要');
     super.dispose();
   }
 
@@ -57,6 +51,7 @@ class _StationPageState extends State<StationPage> {
     }
 
     API.stationInfo(stationId, (StationInfo station) {
+      
       Progresshud.dismiss();
       refreshController.refreshCompleted();
 
@@ -68,33 +63,6 @@ class _StationPageState extends State<StationPage> {
           this.openLive = station.openlive;
         }
       });
-
-    // 演示用假数据 BEGIN
-    /*
-    stationInfo.power.max = stationInfo.power.max + 800;
-
-    stationInfo.devices.add(Devices(
-      address: '',
-      name: '',
-      isMaster: false,
-      status: 'online',
-      eventCount: 3,
-      power: StationItem(max: 400,current: 420),
-      updateTime:stationInfo.devices.first.updateTime
-    ));
-
-    stationInfo.devices.add(Devices(
-      address: '',
-      name: '',
-      isMaster: false,
-      status: 'offline',
-      eventCount: 0,
-      power: StationItem(max: 400,current: 0),
-      updateTime:stationInfo.devices.first.updateTime
-    ));
-    */
-    // 演示用假数据 END
-
 
     }, (String msg) {
       refreshController.refreshFailed();
@@ -111,7 +79,6 @@ class _StationPageState extends State<StationPage> {
     pushToPage(context, HistoryPage(title: navTitle,address: addresses));
   }
 
-  // 同步天气数据
   void syncWeaher(String weather) async {
     await Future.delayed(Duration(milliseconds: 500));
     setState(() {
@@ -122,25 +89,7 @@ class _StationPageState extends State<StationPage> {
   @override
   Widget build(BuildContext context) {
 
-    return ThemeGradientBackground(
-      child: Stack(children: [
-        stationInfo?.geo == null ? Container(): StationWeatherWidget(geo: stationInfo.geo,onWeahterResponse: (weather) => syncWeaher(weather)),
-        Scaffold(
-          backgroundColor: Colors.transparent,
-          appBar: AppBar(
-            backgroundColor: Colors.transparent,
-            elevation: 0,
-            centerTitle: true,
-            title: Text(widget.title ?? '',
-            style: TextStyle(color: Colors.white,fontWeight: FontWeight.normal,fontSize: AppTheme().navigationAppBarFontSize)),
-            actions: <Widget>[
-              GestureDetector(
-              onTap: stationInfo.devices == null ? null : () => onTapPushToHistoryPage(),
-              child: Center(child: Text('历史曲线',style:TextStyle(color: Colors.white, fontSize: 16)))),
-              SizedBox(width: 20),
-            ],
-          ),
-          body: Container(
+    return Container(
             child: SmartRefresher(
               header: appRefreshHeader(),
               enablePullDown: true,
@@ -154,10 +103,6 @@ class _StationPageState extends State<StationPage> {
                 ],
               ),
             ),
-          ),
-
-        ),
-      ]),
-    );
+          );
   }
 }

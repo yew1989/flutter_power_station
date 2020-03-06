@@ -11,6 +11,7 @@ import 'package:hsa_app/event/app_event.dart';
 import 'package:hsa_app/event/event_bird.dart';
 import 'package:hsa_app/model/station.dart';
 import 'package:hsa_app/page/station/station_page.dart';
+import 'package:hsa_app/page/station/station_tabbar_page.dart';
 import 'package:ovprogresshud/progresshud.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
@@ -194,7 +195,11 @@ class _HomeStationListState extends State<HomeStationList> {
 
           GestureDetector(
             onTap: (){
-              pushToPage(context, StationPage(station.name,station.id.toString()));
+              
+              // pushToPage(context, StationPage(station.name,station.id.toString()));
+              // 新版电站滑块
+              pushToPage(context,StationTabbarPage(stations: stations,selectIndex: index));
+              
             },
             child: Container(
               child: SizedBox(
@@ -224,6 +229,7 @@ class _HomeStationListState extends State<HomeStationList> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
+
           // 行
           Row(
             mainAxisAlignment: MainAxisAlignment.start,
