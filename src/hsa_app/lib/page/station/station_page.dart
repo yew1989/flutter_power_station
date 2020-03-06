@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hsa_app/components/smart_refresher_style.dart';
+import 'package:hsa_app/event/app_event.dart';
+import 'package:hsa_app/event/event_bird.dart';
 import 'package:hsa_app/page/history/history_page.dart';
 import 'package:hsa_app/page/station/device/station_device_list.dart';
 import 'package:hsa_app/page/station/station_big_pool.dart';
@@ -35,6 +37,8 @@ class _StationPageState extends State<StationPage> {
 
   @override
   void dispose() {
+    
+    refreshController.dispose();
     Progresshud.dismiss();
     super.dispose();
   }
@@ -57,6 +61,8 @@ class _StationPageState extends State<StationPage> {
 
       if (station == null) return;
 
+      EventBird().emit(AppEvent.eventGotStationInfo,station);
+
       setState(() {
         this.stationInfo = station;
         if (station.openlive != null) {
@@ -70,12 +76,12 @@ class _StationPageState extends State<StationPage> {
     });
   }
 
-  void onTapPushToHistoryPage() async {
-   final deviceIdList = stationInfo.devices.map((device) {
+  void onTapPushToHistoryPage(StationInfo info) async {
+   final deviceIdList = info.devices.map((device) {
       return device?.address ?? '';
     }).toList();
     final addresses = deviceIdList.join(',');
-    final navTitle = stationInfo?.name ?? '';
+    final navTitle = info?.name ?? '';
     pushToPage(context, HistoryPage(title: navTitle,address: addresses));
   }
 

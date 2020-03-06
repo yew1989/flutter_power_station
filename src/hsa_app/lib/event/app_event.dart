@@ -5,4 +5,6 @@ class AppEvent {
   static final String  searchKeyWord   = 'EventSearchKeyWord';
   // 筛选框选中
   static final String eventFilterChoose = 'EventFilterChoose';
+  // 获取到电站信息
+  static final String eventGotStationInfo = 'eventGotStationInfo';
 }
