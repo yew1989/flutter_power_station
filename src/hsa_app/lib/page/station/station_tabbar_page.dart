@@ -117,7 +117,7 @@ class _StationTabbarPageState extends State<StationTabbarPage> {
               child: Container(
                 child: Center(
                 child: DotsIndicator(
-                dotsCount: pageLength,position: currentIndex.toDouble(),
+                dotsCount: pageLength > 5 ? 5 : pageLength,position: (currentIndex % 5).toDouble(),
                 decorator: DotsDecorator(
                 size: const Size(6.0, 6.0),
                 activeSize: const Size(15.0, 6.0),
