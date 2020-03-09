@@ -82,7 +82,7 @@ class _StationPageState extends State<StationPage> {
     }).toList();
     final addresses = deviceIdList.join(',');
     final navTitle = info?.name ?? '';
-    pushToPage(context, HistoryPage(title: navTitle,address: addresses));
+    // pushToPage(context, HistoryPage(title: navTitle,address: addresses));
   }
 
   void syncWeaher(String weather) async {

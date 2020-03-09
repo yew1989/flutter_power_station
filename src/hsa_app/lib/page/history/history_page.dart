@@ -22,10 +22,11 @@ import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:intl/intl.dart';
 
 class HistoryPage extends StatefulWidget {
-  final String title;
-  final String address;
 
-  const HistoryPage({Key key, this.title, this.address}) : super(key: key);
+  final String address;
+  final String title;
+
+  const HistoryPage({Key key, this.address, this.title}) : super(key: key);
 
   @override
   _HistoryPageState createState() => _HistoryPageState();
@@ -423,11 +424,11 @@ class _HistoryPageState extends State<HistoryPage> {
           backgroundColor: Colors.transparent,
           elevation: 0,
           centerTitle: true,
-          title: Text(widget?.title ?? '历史曲线',
+          title: Text('历史分析',
               style: TextStyle(
                   color: Colors.white,
                   fontWeight: FontWeight.normal,
-                  fontSize: 20)),
+                  fontSize: AppTheme().navigationAppBarFontSize)),
           actions: <Widget>[
             filterButton(),
           ],

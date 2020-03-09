@@ -29,9 +29,8 @@ class _StationTabbarPageState extends State<StationTabbarPage> {
   int currentIndex;
   Stations currentStation;
   int pageLength;
-  String tabTitle;
+  String title;
   PageController pageController;
-
   StationInfo stationInfo;
 
   @override
@@ -40,7 +39,7 @@ class _StationTabbarPageState extends State<StationTabbarPage> {
     currentIndex = widget?.selectIndex ?? 0;
     currentStation = widget?.stations[currentIndex];
     pageLength = widget?.stations?.length ?? 0;
-    tabTitle = currentStation?.name ?? '';
+    title = currentStation?.name ?? '';
     pageController = PageController(initialPage: currentIndex);
 
     UMengAnalyticsService.enterPage('电站概要');
@@ -72,7 +71,10 @@ class _StationTabbarPageState extends State<StationTabbarPage> {
     }).toList();
     final addresses = deviceIdList.join(',');
     final navTitle = info?.name ?? '';
+
     pushToPage(context, HistoryPage(title: navTitle,address: addresses));
+    
+    // pushToPage(context, HistoryTabPageWithStations(stations: widget.stations,selectIndex: currentIndex));
   
   }
   
@@ -84,11 +86,11 @@ class _StationTabbarPageState extends State<StationTabbarPage> {
         backgroundColor: Colors.transparent,
         appBar: AppBar(
           backgroundColor: Colors.transparent,elevation: 0,centerTitle: true,
-          title: Text(tabTitle,style: TextStyle(color: Colors.white,fontWeight: FontWeight.normal,fontSize: AppTheme().navigationAppBarFontSize)),
+          title: Text(title,style: TextStyle(color: Colors.white,fontWeight: FontWeight.normal,fontSize: AppTheme().navigationAppBarFontSize)),
           actions: <Widget>[
             GestureDetector(
             onTap: stationInfo?.devices == null ? null : () => onTapPushToHistoryPage(stationInfo),
-            child: Center(child: Text('历史曲线',style:TextStyle(color: Colors.white, fontSize: 16)))),
+            child: Center(child: Text('历史分析',style:TextStyle(color: Colors.white, fontSize: 16)))),
             SizedBox(width: 20),
           ],
         ),
@@ -105,13 +107,13 @@ class _StationTabbarPageState extends State<StationTabbarPage> {
                 currentIndex = index;
                 currentStation = widget?.stations[currentIndex];
                 setState(() {
-                  tabTitle = currentStation.name;
+                  title = currentStation.name;
                 });
               },
             ),
 
             Positioned(
-              top: 0.0,left: 0.0,right: 0.0,
+              top: -6.0,left: 0.0,right: 0.0,
               child: Container(
                 child: Center(
                 child: DotsIndicator(

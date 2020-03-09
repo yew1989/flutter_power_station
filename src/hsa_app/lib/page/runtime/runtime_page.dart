@@ -275,7 +275,7 @@ class _RuntimePageState extends State<RuntimePage> {
   }
 
   void onTapPushToHistoryPage(String navTitle, String address) async {
-    pushToPage(context, HistoryPage(title: navTitle, address: address));
+    pushToPage(context, HistoryPage(address: address));
   }
 
   // 仪表盘
@@ -507,7 +507,7 @@ class _RuntimePageState extends State<RuntimePage> {
                 onTap: () =>
                     onTapPushToHistoryPage(historyNavTitle, widget.address),
                 child: Center(
-                    child: Text('历史曲线',
+                    child: Text('历史分析',
                         style: TextStyle(color: Colors.white, fontSize: 16)))),
             SizedBox(width: 20),
           ],
