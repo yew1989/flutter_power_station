@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hsa_app/components/public_tool.dart';
 import 'package:hsa_app/components/smart_refresher_style.dart';
 import 'package:hsa_app/event/app_event.dart';
 import 'package:hsa_app/event/event_bird.dart';
@@ -9,7 +10,6 @@ import 'package:hsa_app/page/station/station_list_header.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:hsa_app/api/api.dart';
 import 'package:hsa_app/model/station_info.dart';
-import 'package:hsa_app/components/public_tool.dart';
 import 'package:ovprogresshud/progresshud.dart';
 
 class StationPage extends StatefulWidget {
@@ -81,8 +81,8 @@ class _StationPageState extends State<StationPage> {
       return device?.address ?? '';
     }).toList();
     final addresses = deviceIdList.join(',');
-    final navTitle = info?.name ?? '';
-    // pushToPage(context, HistoryPage(title: navTitle,address: addresses));
+    // final navTitle = info?.name ?? '';
+    pushToPage(context, HistoryPage(title: '历史分析',address: addresses));
   }
 
   void syncWeaher(String weather) async {
