@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:hsa_app/components/public_tool.dart';
+import 'package:hsa_app/event/app_event.dart';
+import 'package:hsa_app/event/event_bird.dart';
 import 'package:hsa_app/model/station_info.dart';
+import 'package:hsa_app/page/runtime/runtime_tabbar_page.dart';
 import 'package:hsa_app/page/station/device/station_device_list_tile.dart';
 
 class StationDeviceList extends StatefulWidget {
@@ -13,6 +17,19 @@ class StationDeviceList extends StatefulWidget {
 }
 
 class _StationDeviceListState extends State<StationDeviceList> {
+
+  @override
+  void initState() {
+    EventBird().on(AppEvent.onTapDevice, (index) { 
+      pushToPage(context, RuntimeTabbarPage(devices: widget?.stationInfo?.devices,selectIndex: index));
+    });
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
   @override
   Widget build(BuildContext context) {
     final stationInfo = widget.stationInfo;

@@ -14,9 +14,9 @@ typedef HttpFailCallback = void Function(String msg);
 class HttpHelper {
 
   // 开启代理模式,允许抓包
-  static final isProxyModeOpen = false;
-  // 代理地址
-  static final proxyIP = 'PROXY 192.168.31.8:8888';
+  static final isProxyModeOpen = true;
+  // 代理主机地址
+  static final proxyHost = '192.168.31.8:8888';
   // 超时时间
   static final kTimeOutSeconds = 10000;
 
@@ -25,7 +25,7 @@ class HttpHelper {
     var dio = Dio();
     var adapter = dio.httpClientAdapter as DefaultHttpClientAdapter;
     adapter.onHttpClientCreate = (HttpClient client) {
-        client.findProxy = (_) => isProxyModeOpen ? proxyIP : 'DIRECT';
+        client.findProxy = (_) => isProxyModeOpen ? 'PROXY ' + proxyHost : 'DIRECT';
         client.badCertificateCallback = (X509Certificate cert, String host, int port) => true;
     };
     return dio;

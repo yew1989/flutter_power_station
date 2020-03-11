@@ -15,20 +15,19 @@ import 'package:hsa_app/page/history/history_page.dart';
 import 'package:hsa_app/page/runtime/runtime_event_tile.dart';
 import 'package:hsa_app/page/runtime/runtime_operation_board.dart';
 import 'package:hsa_app/page/runtime/runtime_squre_master_widget.dart';
-import 'package:hsa_app/service/umeng_analytics.dart';
-import 'package:hsa_app/theme/theme_gradient_background.dart';
 import 'package:hsa_app/components/public_tool.dart';
 import 'package:ovprogresshud/progresshud.dart';
 import 'package:progress_dialog/progress_dialog.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class RuntimePage extends StatefulWidget {
+
   final String title;
   final String address;
   final String alias;
   final bool isOnline;
 
-  RuntimePage(this.title, this.address, this.alias, this.isOnline);
+  RuntimePage({this.title, this.address, this.alias, this.isOnline});
 
   @override
   _RuntimePageState createState() => _RuntimePageState();
@@ -58,8 +57,7 @@ class _RuntimePageState extends State<RuntimePage> {
 
   // 初始化弹出框
   void initProgressDialog() {
-    progressDialog = ProgressDialog(context,
-        type: ProgressDialogType.Normal, isDismissible: false, showLogs: false);
+    progressDialog = ProgressDialog(context,type: ProgressDialogType.Normal, isDismissible: false, showLogs: false);
     progressDialog.style(
         message: '正在操作中...',
         borderRadius: 10.0,
@@ -70,12 +68,8 @@ class _RuntimePageState extends State<RuntimePage> {
         insetAnimCurve: Curves.easeInOut,
         progress: 0.0,
         maxProgress: 100.0,
-        progressTextStyle: TextStyle(
-            color: Colors.black, fontSize: 13.0, fontWeight: FontWeight.normal),
-        messageTextStyle: TextStyle(
-            color: Colors.black,
-            fontSize: 19.0,
-            fontWeight: FontWeight.normal));
+        progressTextStyle: TextStyle(color: Colors.black, fontSize: 13.0, fontWeight: FontWeight.normal),
+        messageTextStyle: TextStyle(color: Colors.black,fontSize: 19.0,fontWeight: FontWeight.normal));
   }
 
   // 更新弹出框
@@ -147,8 +141,6 @@ class _RuntimePageState extends State<RuntimePage> {
   void initState() {
     initProgressDialog();
     requestRunTimeData();
-    UMengAnalyticsService.enterPage('机组实时');
-    // startRunLoopTimer(5);
     super.initState();
   }
 
@@ -157,7 +149,6 @@ class _RuntimePageState extends State<RuntimePage> {
     runLoopTimer?.cancel();
     remoteTask.cancelTask();
     Progresshud.dismiss();
-    UMengAnalyticsService.exitPage('机组实时');
     super.dispose();
   }
 
@@ -489,133 +480,42 @@ class _RuntimePageState extends State<RuntimePage> {
   Widget build(BuildContext context) {
     final deviceWidth = MediaQuery.of(context).size.width;
     final isIphone5S = deviceWidth == 320.0 ? true : false;
-    final historyNavTitle = widget.title;
-    return ThemeGradientBackground(
-      child: Scaffold(
-        backgroundColor: Colors.transparent,
-        appBar: AppBar(
-          elevation: 0,
-          backgroundColor: Colors.transparent,
-          centerTitle: true,
-          title: Text(widget.title,
-              style: TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.normal,
-                  fontSize: 20)),
-          actions: <Widget>[
-            GestureDetector(
-                onTap: () =>
-                    onTapPushToHistoryPage(historyNavTitle, widget.address),
-                child: Center(
-                    child: Text('历史分析',
-                        style: TextStyle(color: Colors.white, fontSize: 16)))),
-            SizedBox(width: 20),
-          ],
-        ),
-        // body: Stack(alignment: FractionalOffset.topCenter, children: [
-        //   PageView.builder(
-        //     onPageChanged: (index) => pageIndexNotifier.value = index,
-        //     itemCount: pageLength,
-        //     itemBuilder: (context, index) {
-        //       return Container(
-        //   color: Colors.transparent,
-        //   child: Column(
-        //     mainAxisAlignment: MainAxisAlignment.center,
-        //     crossAxisAlignment: CrossAxisAlignment.center,
-        //     children:[
-        //     Container(
-        //       height: isIphone5S ? 350 : 400,
-        //       child: SmartRefresher(
-        //         header: appRefreshHeader(),
-        //         enablePullDown: true,
-        //         onRefresh: requestRunTimeData,
-        //         controller: refreshController,
-        //         child: ListView(
-        //         children: <Widget>[
-        //           SizedBox(height: 12),
-        //           terminalBriefHeader(),
-        //           RuntimeSqureMasterWidget(
-        //            isMaster: runtimeData?.dashboard?.isMaster ?? false,
-        //             aliasName: runtimeData?.dashboard?.aliasName ?? '',
-        //           ),
-        //           dashBoardWidget(),
-        //           terminalBriefFooter(),
-        //           SizedBox(height: 8),
-        //           ],
-        //         ),
-        //       ),
-        //     ),
-        //     isIphone5S ? Container() :Expanded(child: eventList()),
-        //     RunTimeLightDarkShawdow(),
-        //     RunTimeOperationBoard(runtimeData,widget.address,(taskName,param) => requestRemoteControlCommand(context, taskName, param)),
 
-        //   ]),
-        // );
-        //     },
-        //   ),
-        //   PageViewIndicator(
-        //     indicatorPadding: const EdgeInsets.all(0.0),
-        //     pageIndexNotifier: pageIndexNotifier,
-        //     length: pageLength,
-        //     normalBuilder: (animationController, index) => ScaleTransition(
-        //       child: SizedBox(
-        //           height: 8,
-        //           width: 18,
-        //           child: Image.asset(
-        //               'images/common/Common_list_control2_btn.png')),
-        //       scale: CurvedAnimation(
-        //         parent: animationController,
-        //         curve: Curves.ease,
-        //       ),
-        //     ),
-        //     highlightedBuilder: (animationController, index) => ScaleTransition(
-        //       scale: CurvedAnimation(
-        //         parent: animationController,
-        //         curve: Curves.ease,
-        //       ),
-        //       child: SizedBox(
-        //         height: 8,
-        //         width: 18,
-        //         child:
-        //             Image.asset('images/common/Common_list_control3_btn.png'),
-        //       ),
-        //     ),
-        //   ),
-        // ]),
-        body: Container(
-          color: Colors.transparent,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children:[
-            Container(
-              height: isIphone5S ? 350 : 400,
-              child: SmartRefresher(
-                header: appRefreshHeader(),
-                enablePullDown: true,
-                onRefresh: requestRunTimeData,
-                controller: refreshController,
-                child: ListView(
-                children: <Widget>[
-                  SizedBox(height: 12),
-                  terminalBriefHeader(),
-                  RuntimeSqureMasterWidget(
-                    isMaster: runtimeData?.dashboard?.isMaster ?? false,
-                    aliasName: runtimeData?.dashboard?.aliasName ?? '',
-                  ),
-                  dashBoardWidget(),
-                  terminalBriefFooter(),
-                  SizedBox(height: 8),
-                  ],
+    return Scaffold(
+      backgroundColor: Colors.transparent,
+      body: Container(
+        color: Colors.transparent,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children:[
+          Container(
+            height: isIphone5S ? 350 : 400,
+            child: SmartRefresher(
+              header: appRefreshHeader(),
+              enablePullDown: true,
+              onRefresh: requestRunTimeData,
+              controller: refreshController,
+              child: ListView(
+              children: <Widget>[
+                SizedBox(height: 12),
+                terminalBriefHeader(),
+                RuntimeSqureMasterWidget(
+                  isMaster: runtimeData?.dashboard?.isMaster ?? false,
+                  aliasName: runtimeData?.dashboard?.aliasName ?? '',
                 ),
+                dashBoardWidget(),
+                terminalBriefFooter(),
+                SizedBox(height: 8),
+                ],
               ),
             ),
-            isIphone5S ? Container() :Expanded(child: eventList()),
-            RunTimeLightDarkShawdow(),
-            RunTimeOperationBoard(runtimeData,widget.address,(taskName,param) => requestRemoteControlCommand(context, taskName, param)),
+          ),
+          isIphone5S ? Container() :Expanded(child: eventList()),
+          RunTimeLightDarkShawdow(),
+          RunTimeOperationBoard(runtimeData,widget.address,(taskName,param) => requestRemoteControlCommand(context, taskName, param)),
 
-          ]),
-        ),
+        ]),
       ),
     );
   }

@@ -7,4 +7,6 @@ class AppEvent {
   static final String eventFilterChoose = 'EventFilterChoose';
   // 获取到电站信息
   static final String eventGotStationInfo = 'eventGotStationInfo';
+  // 点击了某个机组
+  static final String onTapDevice = 'onTapDevice';
 }

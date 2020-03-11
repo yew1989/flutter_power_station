@@ -10,7 +10,6 @@ import 'package:hsa_app/config/app_theme.dart';
 import 'package:hsa_app/event/app_event.dart';
 import 'package:hsa_app/event/event_bird.dart';
 import 'package:hsa_app/model/station.dart';
-import 'package:hsa_app/page/station/station_page.dart';
 import 'package:hsa_app/page/station/station_tabbar_page.dart';
 import 'package:ovprogresshud/progresshud.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';

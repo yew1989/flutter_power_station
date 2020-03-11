@@ -1,8 +1,8 @@
 import 'package:badges/badges.dart';
 import 'package:flutter/material.dart';
-import 'package:hsa_app/components/public_tool.dart';
+import 'package:hsa_app/event/app_event.dart';
+import 'package:hsa_app/event/event_bird.dart';
 import 'package:hsa_app/model/station_info.dart';
-import 'package:hsa_app/page/runtime/runtime_page.dart';
 import 'package:native_color/native_color.dart';
 import 'package:hsa_app/config/app_theme.dart';
 
@@ -218,9 +218,10 @@ class _StationDeviceListTileState extends State<StationDeviceListTile> with Tick
 
            // 点击进入机组详情页
            GestureDetector(
-            onTap: (){
-              pushToPage(context, RuntimePage(device?.name ?? '',device.address,badgeName + '#',isOnline));
-            }),
+             onTap: (){
+               EventBird().emit(AppEvent.onTapDevice,widget.index);
+             },
+           )
         ],
       ),
     );

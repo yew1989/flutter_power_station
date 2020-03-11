@@ -71,11 +71,8 @@ class _StationTabbarPageState extends State<StationTabbarPage> {
     }).toList();
     final addresses = deviceIdList.join(',');
     final navTitle = info?.name ?? '';
-
     pushToPage(context, HistoryPage(title: navTitle,address: addresses));
     
-    // pushToPage(context, HistoryTabPageWithStations(stations: widget.stations,selectIndex: currentIndex));
-  
   }
   
   @override
@@ -88,9 +85,11 @@ class _StationTabbarPageState extends State<StationTabbarPage> {
           backgroundColor: Colors.transparent,elevation: 0,centerTitle: true,
           title: Text(title,style: TextStyle(color: Colors.white,fontWeight: FontWeight.normal,fontSize: AppTheme().navigationAppBarFontSize)),
           actions: <Widget>[
+
             GestureDetector(
             onTap: stationInfo?.devices == null ? null : () => onTapPushToHistoryPage(stationInfo),
             child: Center(child: Text('历史分析',style:TextStyle(color: Colors.white, fontSize: 16)))),
+            
             SizedBox(width: 20),
           ],
         ),
