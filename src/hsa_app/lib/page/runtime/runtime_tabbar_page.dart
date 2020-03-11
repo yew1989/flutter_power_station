@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:hsa_app/components/page_indicator/dots_decorator.dart';
 import 'package:hsa_app/components/page_indicator/dots_indicator.dart';
+import 'package:hsa_app/components/public_tool.dart';
 import 'package:hsa_app/config/app_theme.dart';
 import 'package:hsa_app/model/station_info.dart';
+import 'package:hsa_app/page/history/history_page.dart';
 import 'package:hsa_app/page/runtime/runtime_page.dart';
 import 'package:hsa_app/service/umeng_analytics.dart';
 import 'package:hsa_app/theme/theme_gradient_background.dart';
@@ -46,6 +48,11 @@ class _RuntimeTabbarPageState extends State<RuntimeTabbarPage> {
     super.dispose();
   }
 
+   void onTapPushToHistoryPage(Devices devices) async {
+    pushToPage(context, HistoryPage(title: '历史分析',address: devices.address));
+  }
+  
+
   @override
   Widget build(BuildContext context) {
     final isOnline = currentDevice?.status == 'online' ? true : false;
@@ -63,8 +70,7 @@ class _RuntimeTabbarPageState extends State<RuntimeTabbarPage> {
                   fontSize: AppTheme().navigationAppBarFontSize)),
           actions: <Widget>[
             GestureDetector(
-                // onTap: () =>
-                // onTapPushToHistoryPage(historyNavTitle, widget.address),
+                onTap: () => onTapPushToHistoryPage(currentDevice),
                 child: Center(child: Text('历史分析',style: TextStyle(color: Colors.white, fontSize: 16)))),
             SizedBox(width: 20),
           ],
