@@ -205,6 +205,7 @@ class _MinePageState extends State<MinePage> {
               itemTile('关于智能电站', 'images/mine/My_about_icon.png', () =>  onTapAbout(context)),
               itemTile('SOS', 'images/mine/My_sos_icon.png', () =>  onTapSOSCall(context)),
               itemTile('搜索电站', 'images/history/History_selt_btn.png', () =>  onTapSearchStations(context)),
+              // 测试一下Git Branch
               // 分割线
               SizedBox(height: 0.3,child: Container(color:Colors.white24)),
             ],
