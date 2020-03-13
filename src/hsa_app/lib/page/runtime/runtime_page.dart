@@ -57,7 +57,9 @@ class _RuntimePageState extends State<RuntimePage> {
 
   // 初始化弹出框
   void initProgressDialog() {
+
     progressDialog = ProgressDialog(context,type: ProgressDialogType.Normal, isDismissible: false, showLogs: false);
+    
     progressDialog.style(
         message: '正在操作中...',
         borderRadius: 10.0,
@@ -133,8 +135,7 @@ class _RuntimePageState extends State<RuntimePage> {
   // 轮询查询
   void startRunLoopTimer(int runLoopSecond) async {
     await Future.delayed(Duration(seconds: 1));
-    runLoopTimer = Timer.periodic(Duration(seconds: runLoopSecond),
-        (_) => requestRunTimeDataInBackground());
+    runLoopTimer = Timer.periodic(Duration(seconds: runLoopSecond),(_) => requestRunTimeDataInBackground());
   }
 
   @override

@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:hsa_app/config/app_config.dart';
 import 'package:hsa_app/service/umeng_analytics.dart';
 import 'package:hsa_app/theme/theme_gradient_background.dart';
-// import 'package:mqtt_client/mqtt_client.dart';
-// import 'package:mqtt_client/mqtt_server_client.dart';
 
 class AboutPage extends StatefulWidget {
   @override
@@ -17,47 +15,18 @@ class _AboutPageState extends State<AboutPage> {
   String desc2   = '2.远程控制:远程控制机组的开关机状态,远程控制旁通阀、主阀、清污机等智能设备;远程调控有功、无功。';
   String desc3   = '3.报警提醒:通过智能电站,第一时间将报警信息发送报给用户。';
 
-  // MqttServerClient client;
 
   @override
   void initState() {
     UMengAnalyticsService.enterPage('关于');
-    // initMQTT();
     super.initState();
   }
 
   @override
   void dispose() {
     UMengAnalyticsService.exitPage('关于');
-    // client.disconnect();
     super.dispose();
   }
-
-  // void initMQTT() async {
-  // // final client = MqttServerClient.withPort('mq.tongxinmao.com', 'FlutterMobile',18830);
-  // client = MqttServerClient.withPort('mq.tongxinmao.com', 'FlutterMobile',18830);
-  // client.logging(on: true);
-  // client.keepAlivePeriod = 20;
-  // final connMess = MqttConnectMessage()
-  //     .withClientIdentifier('FlutterMobile')
-  //     .keepAliveFor(300) 
-  //     .startClean() 
-  //     .withWillQos(MqttQos.atMostOnce);
-  // client.connectionMessage = connMess;
-  //   try {
-  //   await client.connect();
-  // } on Exception catch (e) {
-  //   print('EXAMPLE::client exception - $e');
-  //   client.disconnect();
-  // }
-  // }
-
-
-  // void send(String string) {
-  //   final builder = MqttClientPayloadBuilder();
-  //   builder.addString(string);
-  //   client.publishMessage('/public/TEST/BUGC', MqttQos.atMostOnce, builder.payload);
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -68,8 +37,6 @@ class _AboutPageState extends State<AboutPage> {
 
     return ThemeGradientBackground(
       child:Scaffold(
-        // floatingActionButton: FloatingActionButton(onPressed:buttonPress),
-
           backgroundColor: Colors.transparent,
           appBar: AppBar(
             backgroundColor: Colors.transparent,
@@ -107,47 +74,9 @@ class _AboutPageState extends State<AboutPage> {
                     Text(desc3,style: TextStyle(color: Colors.white54,fontSize: 13)),
                     ],
                   ),
-                  Positioned(bottom: 8,left: 0,right: 0,child: Center(
-                    child: Text('Copyright @ fjlead 2019-2020',style: TextStyle(color: Colors.white70,fontSize: 10)))),
-                  /*
-                  Positioned(
-                    bottom: 90,left: 0,right: 0,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,  
-                      children: <Widget>[
-                      
-                      FlatButton(
-                        color: Colors.redAccent,
-                        onPressed: ()=> send('0'), child: Text('停止',style: TextStyle(color:Colors.white))),
-                      FlatButton(
-                        color: Colors.redAccent,
-                        onPressed: ()=> send('5'), child: Text('顺时针',style: TextStyle(color:Colors.white))),
-                                    FlatButton(
-                        color: Colors.redAccent,
-                        onPressed: ()=> send('6'), child: Text('逆时针',style: TextStyle(color:Colors.white))),
-    
-                    ],),
-                  ),
 
-                   Positioned(
-                    bottom: 30,left: 0,right: 0,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,  
-                      children: <Widget>[
-                      
-                      FlatButton(
-                        color: Colors.redAccent,
-                        onPressed: ()=> send('1'), child: Text('前进',style: TextStyle(color:Colors.white))),
-                      FlatButton(
-                        color: Colors.redAccent,
-                        onPressed: ()=> send('2'), child: Text('后退',style: TextStyle(color:Colors.white))),
-                        //             FlatButton(
-                        // color: Colors.redAccent,
-                        // onPressed: ()=> send('3'), child: Text('转弯',style: TextStyle(color:Colors.white))),
-    
-                    ],),
-                  )
-                  */
+                  Positioned(bottom: 8,left: 0,right: 0,child: Center(child: 
+                  Text('Copyright @ fjlead 2019-2020',style: TextStyle(color: Colors.white70,fontSize: 10)))),
 
                 ],
 

@@ -2,18 +2,20 @@ import 'package:flutter/material.dart';
 import 'package:hsa_app/model/runtime_adapter.dart';
 
 class ControlModelDialogWidget extends StatefulWidget {
+
   final RuntimeData runtimeData;
+
   final void Function(ControlModelCurrentStatus status) onChoose;
 
-  const ControlModelDialogWidget({Key key, this.runtimeData, this.onChoose})
-      : super(key: key);
+  const ControlModelDialogWidget({Key key, this.runtimeData, this.onChoose}) : super(key: key);
 
   @override
-  _ControlModelDialogWidgetState createState() =>
-      _ControlModelDialogWidgetState();
+  _ControlModelDialogWidgetState createState() => _ControlModelDialogWidgetState();
+
 }
 
 class _ControlModelDialogWidgetState extends State<ControlModelDialogWidget> {
+  
   @override
   void initState() {
     super.initState();
@@ -33,6 +35,7 @@ class _ControlModelDialogWidgetState extends State<ControlModelDialogWidget> {
 enum ControlModelCurrentStatus { unknow, manual, auto, remoteOn, remoteOff }
 
 class ControlModelDialog extends Dialog {
+
   final ControlModelCurrentStatus currentStatus;
   final void Function(ControlModelCurrentStatus status) onChoose;
 

@@ -1,4 +1,3 @@
-// 方形主从机标志.别名
 import 'package:flutter/material.dart';
 import 'package:hsa_app/config/app_theme.dart';
 
