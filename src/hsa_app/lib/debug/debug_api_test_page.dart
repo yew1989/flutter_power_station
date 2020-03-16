@@ -17,25 +17,30 @@ class _DebugApiTestPageState extends State<DebugApiTestPage> {
       appBar:AppBar(title: Text('API接口测试')),
       body:ListView.builder(
         itemBuilder: (_, index) => listTile(context,index),
-        itemCount: leftLabels.length
+        itemCount: leftLabels.length,
       ),
     );
   }
-
+    // 列表中的每个行
     Widget listTile(BuildContext context,int index) {
     final String titleText = leftLabels[index];
     return ListTile(title: Text('${(index+1)}、 $titleText'),onTap:()=> onTapTile(index));
+  
   }
 
   void onTapTile(int index) async {
 
-    if(index == 0) {
+    if(index == 0 ) {
       // 登录
       DebugAPI.login(context,name:'admin',pswd: '456',onSucc: (auth,msg){
         showToast(msg + auth);
       },onFail:(msg){
-
+        showToast(msg);
       });
+    }
+    // 获取省份列表
+    else if(index == 1 ) {
+
     }
 
 

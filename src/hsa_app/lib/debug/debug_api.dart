@@ -1,7 +1,5 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:hsa_app/api/api.dart';
-import 'package:hsa_app/api/http_helper.dart';
 import 'package:hsa_app/debug/debug_api_helper.dart';
 import 'package:hsa_app/util/encrypt.dart';
 
@@ -9,8 +7,10 @@ class DebugAPI {
 
   // 主机地址
   static final restHost = 'http://192.168.16.2:8281';
+
   // 固定应用ID AppKey 由平台下发
   static final appKey = '3a769958-098a-46ff-a76a-de6062e079ee'; 
+
   // 登录路径地址
   static final loginPath = restHost + '/v1/Account/AuthenticationToken/Apply/' + appKey;
 
@@ -34,10 +34,8 @@ class DebugAPI {
     // 检测网络
     var isReachable = await DebugHttpHelper.isReachablity();
     if (isReachable == false) {
-      if (onFail != null) {
-        onFail('网络异常,请检查网络');
+        if(onFail != null) onFail('网络异常,请检查网络');
         return;
-      }
     }
     // 发起请求
     var dio = DebugHttpHelper.initDio();
@@ -51,20 +49,23 @@ class DebugAPI {
         data: {'':encrypted},
       );
       if (response == null) {
-        onFail('网络异常,请检查网络');
+        if(onFail != null)  onFail('网络异常,请检查网络');
         return;
       }
       if (response.statusCode != 200) {
-        onFail('登录失败 ( ' + response.statusCode.toString() + ' )');
+        if(onFail != null) onFail('登录失败 ( ' + response.statusCode.toString() + ' )');
         return;
       }
-      var auth = response.headers['set-authorization'];
-      onSucc(auth, '登录成功');
-    } catch (e) {
-      // handleDioError(e,(String msg) => onFail(msg));
-      onFail('请求错误');
+
+      final header = response.headers;
+      final auth = header.value('set-authorization');
+      if(onSucc != null) onSucc(auth,'登录成功');
       return;
-    }    
+
+    } catch (e) {
+      if(onFail != null) onFail('登录失败');
+      return;
+    }
 
   }
 
