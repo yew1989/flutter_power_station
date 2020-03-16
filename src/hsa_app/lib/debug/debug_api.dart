@@ -85,7 +85,23 @@ class DebugAPI {
     
     // 获取帐号信息地址
     final path = restHost + '/v1/Account/' + name;
+    
+    DebugHttpHelper.httpGET(path, null, onSucc, onFail);
 
+  }
+
+  
+  // 获取省份列表信息
+  static void getAreaList({String rangeLevel,DebugHttpSuccMapCallback onSucc,DebugHttpFailCallback onFail}) async {
+        // 输入检查
+    if(rangeLevel == null) {
+      if(onFail != null) onFail('地址范围参数缺失');
+      return;
+    }
+    
+    // 获取帐号信息地址
+    final path = restHost + '/v1/City/CurrentAccountHyStation/' + '$rangeLevel';
+    
     DebugHttpHelper.httpGET(path, null, onSucc, onFail);
   }
 

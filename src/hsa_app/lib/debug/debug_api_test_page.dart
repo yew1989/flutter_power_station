@@ -30,29 +30,37 @@ class _DebugApiTestPageState extends State<DebugApiTestPage> {
 
   void onTapTile(int index) async {
 
+    // 登录 
     if(index == 0 ) {
-      // 登录
+
       DebugAPI.login(context,name:'admin',pswd: '456',onSucc: (auth,msg){
         showToast(msg + auth.toString());
       },onFail:(msg){
         showToast(msg);
       });
     }
+
     // 获取用户信息
     else if(index == 1 ) {
+      
       DebugAPI.getAccountInfo(name:'admin',onSucc: (map,msg){
         showToast(msg + map.toString());
       },onFail:(msg){
         showToast(msg);
       });
+
     }
+
     // 获取省份列表
+
     else if(index == 2 ) {
 
+      DebugAPI.getAreaList(rangeLevel:'Province',onSucc: (map,msg){
+        showToast(msg + map.toString());
+      },onFail: (msg){
+        showToast(msg);
+      });
     }
-
-
-
   }
 
 
