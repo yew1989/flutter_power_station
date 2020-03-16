@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:hsa_app/api/api.dart';
 import 'package:hsa_app/components/shawdow_widget.dart';
 import 'package:hsa_app/config/app_config.dart';
+import 'package:hsa_app/debug/debug_api_test_page.dart';
 import 'package:hsa_app/page/about/about_page.dart';
 import 'package:hsa_app/page/login/login_page.dart';
 import 'package:hsa_app/page/search/search_page.dart';
@@ -186,6 +187,12 @@ class _MinePageState extends State<MinePage> {
     pushToPage(context, SearchPage());
   }
 
+  // 点击了API测试页
+  void onTapAPITestPage(BuildContext context) async {
+    await Future.delayed(Duration(milliseconds: 250));
+    pushToPage(context, DebugApiTestPage());
+  }
+
   // 界面构建
   @override
   Widget build(BuildContext context) {
@@ -200,12 +207,17 @@ class _MinePageState extends State<MinePage> {
           ListView(
             primary: false,
             children: <Widget>[
+
               avatorView(),
+              
               itemTile('修改密码', 'images/mine/My_Change_pwd_icon.png', () => onTapChangePswd(context)),
               itemTile('关于智能电站', 'images/mine/My_about_icon.png', () =>  onTapAbout(context)),
               itemTile('SOS', 'images/mine/My_sos_icon.png', () =>  onTapSOSCall(context)),
               itemTile('搜索电站', 'images/history/History_selt_btn.png', () =>  onTapSearchStations(context)),
+              itemTile('API测试', 'images/mine/My_Change_pwd_icon.png', ()=> onTapAPITestPage(context)),
+              
               // 测试一下Git Branch
+              
               // 分割线
               SizedBox(height: 0.3,child: Container(color:Colors.white24)),
             ],

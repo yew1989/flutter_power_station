@@ -3,22 +3,23 @@ import 'package:connectivity/connectivity.dart';
 import 'package:dio/adapter.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:hsa_app/config/app_config.dart';
 import 'package:hsa_app/event/app_event.dart';
 import 'package:hsa_app/event/event_bird.dart';
 import 'package:hsa_app/util/share.dart';
 
-typedef HttpSuccCallback = void Function(dynamic data, String msg);
-typedef HttpFailCallback = void Function(String msg);
+typedef DebugHttpSuccCallback = void Function(dynamic data, String msg);
+typedef DebugHttpFailCallback = void Function(String msg);
 
-class HttpHelper {
+class DebugHttpHelper {
 
   // 开启代理模式,允许抓包
   static final isProxyModeOpen = true;
   // 代理主机地址
   static final proxyHost = '192.168.31.8:8888';
-  // 超时时间
-  static final kTimeOutSeconds = 10000;
+  // 接受超时时间
+  static final recvTimeOutSeconds = 10000;
+  // 发送超时时间
+  static final sendTimeOutSeconds = 10000;
 
   // 创建 DIO 对象
   static Dio initDio() { 
@@ -43,7 +44,7 @@ class HttpHelper {
   }
 
   // 处理 DioError
-  static void handleDioError(dynamic e,HttpFailCallback onFail) {
+  static void handleDioError(dynamic e,DebugHttpFailCallback onFail) {
 
     // DIO 错误
     if (e is DioError) {
@@ -78,8 +79,8 @@ class HttpHelper {
   static void getHttp(
       String path, 
       Map<String, dynamic> param, 
-      HttpSuccCallback onSucc,
-      HttpFailCallback onFail) async { 
+      DebugHttpSuccCallback onSucc,
+      DebugHttpFailCallback onFail) async { 
 
     // 检测网络
     var isReachable = await isReachablity();
@@ -90,18 +91,17 @@ class HttpHelper {
       }
     }
 
-    var dio = HttpHelper.initDio();
+    var dio = DebugHttpHelper.initDio();
 
-    // 尝试请求
+    // 发求请求
     try {
-      var url = AppConfig.getInstance().remotePackage.hostApi + path;
       Response response = await dio.get(
-        url,
+        path,
         options: Options(
           headers: {'Authorization': ShareManager.instance.token},
           contentType: Headers.formUrlEncodedContentType,
-          receiveTimeout: HttpHelper.kTimeOutSeconds,
-          sendTimeout: HttpHelper.kTimeOutSeconds,
+          receiveTimeout: DebugHttpHelper.recvTimeOutSeconds,
+          sendTimeout: DebugHttpHelper.sendTimeOutSeconds,
         ),
         queryParameters: param,
       );
@@ -124,8 +124,8 @@ class HttpHelper {
   static void postHttp(
       String path, 
       dynamic param, 
-      HttpSuccCallback onSucc,
-      HttpFailCallback onFail ) async {
+      DebugHttpSuccCallback onSucc,
+      DebugHttpFailCallback onFail ) async {
 
     // 检测网络
     var isReachable = await isReachablity();
@@ -136,18 +136,18 @@ class HttpHelper {
       }
     }
 
-    var dio = HttpHelper.initDio();
+    var dio = DebugHttpHelper.initDio();
 
     // 尝试请求
     try {
-      final url = AppConfig.getInstance().remotePackage.hostApi + path;
+
       Response response = await dio.post(
-        url,
+        path,
         options: Options(
           headers: {'Authorization': ShareManager.instance.token},
           contentType: Headers.formUrlEncodedContentType,
-          receiveTimeout: HttpHelper.kTimeOutSeconds,
-          sendTimeout: HttpHelper.kTimeOutSeconds,
+          receiveTimeout: DebugHttpHelper.recvTimeOutSeconds,
+          sendTimeout: DebugHttpHelper.sendTimeOutSeconds,
         ),
         queryParameters: param,
       );
@@ -169,8 +169,8 @@ class HttpHelper {
   static void postHttpForm(
       String path, 
       dynamic param, 
-      HttpSuccCallback onSucc,
-      HttpFailCallback onFail ) async {
+      DebugHttpSuccCallback onSucc,
+      DebugHttpFailCallback onFail ) async {
 
     // 检测网络
     var isReachable = await isReachablity();
@@ -181,18 +181,17 @@ class HttpHelper {
       }
     }
 
-    var dio = HttpHelper.initDio();
+    var dio = DebugHttpHelper.initDio();
 
     // 尝试请求
     try {
-      final url = AppConfig.getInstance().remotePackage.hostApi + path;
       Response response = await dio.post(
-        url,
+        path,
         options: Options(
           headers: {'Authorization': ShareManager.instance.token},
           contentType: Headers.formUrlEncodedContentType,
-          receiveTimeout: HttpHelper.kTimeOutSeconds,
-          sendTimeout: HttpHelper.kTimeOutSeconds,
+          receiveTimeout: DebugHttpHelper.recvTimeOutSeconds,
+          sendTimeout: DebugHttpHelper.sendTimeOutSeconds,
         ),
         data: param,
       );
@@ -216,8 +215,8 @@ class HttpHelper {
   static void getHttpCommon(
       String path, 
       Map<String, dynamic> param, 
-      HttpSuccCallback onSucc,
-      HttpFailCallback onFail) async {
+      DebugHttpSuccCallback onSucc,
+      DebugHttpFailCallback onFail) async {
 
     // 检测网络
     var isReachable = await isReachablity();
@@ -228,7 +227,7 @@ class HttpHelper {
       }
     }
 
-    var dio = HttpHelper.initDio();
+    var dio = DebugHttpHelper.initDio();
 
     // 尝试请求
     try {
@@ -238,8 +237,8 @@ class HttpHelper {
         options: Options(
           headers: {'Authorization': ShareManager.instance.token},
           contentType: Headers.formUrlEncodedContentType,
-          receiveTimeout: HttpHelper.kTimeOutSeconds,
-          sendTimeout: HttpHelper.kTimeOutSeconds,
+          receiveTimeout: DebugHttpHelper.recvTimeOutSeconds,
+          sendTimeout: DebugHttpHelper.sendTimeOutSeconds,
         ),
         queryParameters: param,
       );
@@ -259,7 +258,7 @@ class HttpHelper {
   }
 
   // POST Application/Json 
-  static void postHttpApplicationJson(String path, dynamic param, HttpSuccCallback onSucc,HttpFailCallback onFail)  async  {
+  static void postHttpApplicationJson(String path, dynamic param, DebugHttpSuccCallback onSucc,DebugHttpFailCallback onFail)  async  {
 
     // 检测网络
     var isReachable = await isReachablity();
@@ -270,7 +269,7 @@ class HttpHelper {
       }
     }
 
-    var dio = HttpHelper.initDio();
+    var dio = DebugHttpHelper.initDio();
 
     // 尝试请求
     try {
@@ -280,8 +279,8 @@ class HttpHelper {
         options: Options(
           headers: {'Authorization': ShareManager.instance.token},
           contentType: Headers.jsonContentType,
-          receiveTimeout: HttpHelper.kTimeOutSeconds,
-          sendTimeout: HttpHelper.kTimeOutSeconds,
+          receiveTimeout: DebugHttpHelper.recvTimeOutSeconds,
+          sendTimeout: DebugHttpHelper.sendTimeOutSeconds,
         ),
         data: param,
       );
@@ -305,8 +304,8 @@ class HttpHelper {
   static void postHttpCommonString(
       String path, 
       String string, 
-      HttpSuccCallback onSucc,
-      HttpFailCallback onFail,
+      DebugHttpSuccCallback onSucc,
+      DebugHttpFailCallback onFail,
       ) async {
 
     // 检测网络
@@ -318,7 +317,7 @@ class HttpHelper {
       }
     }
 
-    var dio = HttpHelper.initDio();
+    var dio = DebugHttpHelper.initDio();
 
     // 尝试请求
     try {
@@ -328,8 +327,8 @@ class HttpHelper {
         options: Options(
           headers: {'Authorization': ShareManager.instance.token},
           contentType: Headers.formUrlEncodedContentType,
-          receiveTimeout: HttpHelper.kTimeOutSeconds,
-          sendTimeout: HttpHelper.kTimeOutSeconds,
+          receiveTimeout: DebugHttpHelper.recvTimeOutSeconds,
+          sendTimeout: DebugHttpHelper.sendTimeOutSeconds,
         ),
         data: {'':string},
       );
@@ -352,8 +351,8 @@ class HttpHelper {
   static void getHttpCommonRespList(
       String path, 
       Map<String, dynamic> param, 
-      HttpSuccCallback onSucc,
-      HttpFailCallback onFail) async {
+      DebugHttpSuccCallback onSucc,
+      DebugHttpFailCallback onFail) async {
 
     // 检测网络
     var isReachable = await isReachablity();
@@ -364,7 +363,7 @@ class HttpHelper {
       }
     }
 
-    var dio = HttpHelper.initDio();
+    var dio = DebugHttpHelper.initDio();
 
     // 尝试请求
     try {
@@ -374,8 +373,8 @@ class HttpHelper {
         options: Options(
           headers: {'Authorization': ShareManager.instance.token},
           contentType: Headers.formUrlEncodedContentType,
-          receiveTimeout: HttpHelper.kTimeOutSeconds,
-          sendTimeout: HttpHelper.kTimeOutSeconds,
+          receiveTimeout: DebugHttpHelper.recvTimeOutSeconds,
+          sendTimeout: DebugHttpHelper.sendTimeOutSeconds,
         ),
         queryParameters: param,
       );
@@ -402,7 +401,7 @@ class HttpHelper {
 }
 
 
-class HttpResult {
+class DebugHttpResult {
   String msg;
   bool success;
 }
