@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:hsa_app/debug/debug_api_helper.dart';
+import 'package:hsa_app/debug/debug_share_instance.dart';
 import 'package:hsa_app/util/encrypt.dart';
 
 class DebugAPI {
@@ -57,8 +58,11 @@ class DebugAPI {
         return;
       }
 
+      // 存储 auth 到 全局单例
       final header = response.headers;
       final auth = header.value('set-authorization');
+      DebugShareInstance.getInstance().auth = auth;
+
       if(onSucc != null) onSucc(auth,'登录成功');
       return;
 
@@ -68,5 +72,10 @@ class DebugAPI {
     }
 
   }
+
+
+  
+
+
 
 }

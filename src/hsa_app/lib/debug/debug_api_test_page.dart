@@ -9,7 +9,7 @@ class DebugApiTestPage extends StatefulWidget {
 
 class _DebugApiTestPageState extends State<DebugApiTestPage> {
 
-  final List<String> leftLabels = ['登录','获取省份列表'];
+  final List<String> leftLabels = ['登录','获取用户信息','获取省份列表'];
 
   @override
   Widget build(BuildContext context) {
@@ -38,8 +38,12 @@ class _DebugApiTestPageState extends State<DebugApiTestPage> {
         showToast(msg);
       });
     }
-    // 获取省份列表
+    // 获取用户信息
     else if(index == 1 ) {
+
+    }
+    // 获取省份列表
+    else if(index == 2 ) {
 
     }
 
