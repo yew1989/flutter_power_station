@@ -2,11 +2,17 @@ import 'dart:io';
 import 'package:connectivity/connectivity.dart';
 import 'package:dio/adapter.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter/material.dart';
 import 'package:hsa_app/debug/debug_share_instance.dart';
-import 'package:hsa_app/util/share.dart';
 
-typedef DebugHttpSuccCallback = void Function(dynamic data, String msg);
+// 失败回调
 typedef DebugHttpFailCallback = void Function(String msg);
+// 成功 且 类型 为 Map的回调
+typedef DebugHttpSuccMapCallback = void Function(Map<String, dynamic> data, String msg);
+// 成功 且 类型 为 String 的回调
+typedef DebugHttpSuccStrCallback = void Function(String str, String msg);
+// 成功 且 类型 为 Void 的回调
+typedef DebugHttpSuccVoidCallback = void Function(String msg);
 
 class DebugHttpHelper {
 
@@ -42,7 +48,7 @@ class DebugHttpHelper {
   }
 
   // GET 请求
-  static void httpGET(String path, Map<String, dynamic> param, DebugHttpSuccCallback onSucc,DebugHttpFailCallback onFail) async { 
+  static void httpGET(String path, Map<String, dynamic> param, DebugHttpSuccMapCallback onSucc,DebugHttpFailCallback onFail) async { 
     
     // 网络检测
     final isReachable = await isReachablity();
@@ -85,12 +91,13 @@ class DebugHttpHelper {
       return;
     } catch (e) {
       if(onFail != null) onFail('请求错误');
+      debugPrint(e.toString());
       return;
     }
   }
 
   // POST 请求
-  static void httpPOST(String path, dynamic param, DebugHttpSuccCallback onSucc,DebugHttpFailCallback onFail ) async {
+  static void httpPOST(String path, dynamic param, DebugHttpSuccMapCallback onSucc,DebugHttpFailCallback onFail ) async {
 
     // 网络检测
     final isReachable = await isReachablity();
@@ -132,6 +139,8 @@ class DebugHttpHelper {
       if(onSucc != null) onSucc(response.data, '请求成功');
     } catch (e) {
       if(onFail != null) onFail('请求错误');
+      debugPrint(e.toString());
+      return;
     }
   }
 }
