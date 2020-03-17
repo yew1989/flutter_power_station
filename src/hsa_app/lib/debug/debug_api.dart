@@ -2,7 +2,15 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:hsa_app/debug/debug_api_helper.dart';
 import 'package:hsa_app/debug/debug_share_instance.dart';
+import 'package:hsa_app/debug/model/account_info.dart';
+import 'package:hsa_app/debug/model/area_info.dart';
 import 'package:hsa_app/util/encrypt.dart';
+
+// 返回回调 : 
+// 获取账户信息
+typedef AccountInfoCallback = void Function(AccountInfo account);
+// 地址信息列表
+typedef AreaInfoCallback = void Function(List<AreaInfo> areas);
 
 class DebugAPI {
 
@@ -75,7 +83,7 @@ class DebugAPI {
   }
 
   // 获取帐号信息
-  static void getAccountInfo({String name,DebugHttpSuccMapCallback onSucc,DebugHttpFailCallback onFail}) async {
+  static void getAccountInfo({String name,AccountInfoCallback onSucc,DebugHttpFailCallback onFail}) async {
     
     // 输入检查
     if(name == null || name.length == 0) {
@@ -86,13 +94,18 @@ class DebugAPI {
     // 获取帐号信息地址
     final path = restHost + '/v1/Account/' + name;
     
-    DebugHttpHelper.httpGET(path, null, onSucc, onFail);
+    DebugHttpHelper.httpGET(path, null, (map,_){
+
+      var resp = AccountInfoResp.fromJson(map);
+      if(onSucc != null) onSucc(resp.data);
+
+    }, onFail);
 
   }
 
   
   // 获取省份列表信息
-  static void getAreaList({String rangeLevel,DebugHttpSuccMapCallback onSucc,DebugHttpFailCallback onFail}) async {
+  static void getAreaList({String rangeLevel,AreaInfoCallback onSucc,DebugHttpFailCallback onFail}) async {
         // 输入检查
     if(rangeLevel == null) {
       if(onFail != null) onFail('地址范围参数缺失');
@@ -102,7 +115,12 @@ class DebugAPI {
     // 获取帐号信息地址
     final path = restHost + '/v1/City/CurrentAccountHyStation/' + '$rangeLevel';
     
-    DebugHttpHelper.httpGET(path, null, onSucc, onFail);
+    DebugHttpHelper.httpGET(path, null, (map,_){
+
+      var resp = AreaInfoResp.fromJson(map);
+      if(onSucc != null) onSucc(resp.data);
+      
+    }, onFail);
   }
 
 

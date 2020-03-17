@@ -43,8 +43,14 @@ class _DebugApiTestPageState extends State<DebugApiTestPage> {
     // 获取用户信息
     else if(index == 1 ) {
       
-      DebugAPI.getAccountInfo(name:'admin',onSucc: (map,msg){
-        showToast(msg + map.toString());
+      DebugAPI.getAccountInfo(name:'admin',onSucc: (account){
+
+        var log = '账号名 :' + account.description + '\n';
+        log += '拥有电站数 :' + account.accountStationRelation.length.toString() + '\n';
+        log += '账号ID :' + account.accountId + '\n';
+
+        showToast(log);
+
       },onFail:(msg){
         showToast(msg);
       });
@@ -55,8 +61,13 @@ class _DebugApiTestPageState extends State<DebugApiTestPage> {
 
     else if(index == 2 ) {
 
-      DebugAPI.getAreaList(rangeLevel:'Province',onSucc: (map,msg){
-        showToast(msg + map.toString());
+      DebugAPI.getAreaList(rangeLevel:'Province',onSucc: (areas){
+
+        var log = '省份数量 :' + areas.length.toString() + '\n';
+        log += '省份 :' + areas.map((area) => area.provinceName).toList().toString() + '\n';
+        
+        showToast(log);
+
       },onFail: (msg){
         showToast(msg);
       });
