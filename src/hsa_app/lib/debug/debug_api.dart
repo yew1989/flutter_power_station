@@ -21,7 +21,7 @@ class DebugAPI {
   static final appKey = '3a769958-098a-46ff-a76a-de6062e079ee'; 
 
   // 登录接口
-  static void login(BuildContext context,{String name, String pswd,DebugHttpSuccStrCallback onSucc,DebugHttpFailCallback onFail}) async {
+  static void login(BuildContext context,{@required String name,@required String pswd,DebugHttpSuccStrCallback onSucc,DebugHttpFailCallback onFail}) async {
 
     // 输入检查
     if(name == null || name.length == 0) {
@@ -83,7 +83,7 @@ class DebugAPI {
   }
 
   // 获取帐号信息
-  static void getAccountInfo({String name,AccountInfoCallback onSucc,DebugHttpFailCallback onFail}) async {
+  static void getAccountInfo({@required String name,AccountInfoCallback onSucc,DebugHttpFailCallback onFail}) async {
     
     // 输入检查
     if(name == null || name.length == 0) {
@@ -105,7 +105,7 @@ class DebugAPI {
 
   
   // 获取省份列表信息
-  static void getAreaList({String rangeLevel,AreaInfoCallback onSucc,DebugHttpFailCallback onFail}) async {
+  static void getAreaList({@required String rangeLevel,AreaInfoCallback onSucc,DebugHttpFailCallback onFail}) async {
         // 输入检查
     if(rangeLevel == null) {
       if(onFail != null) onFail('地址范围参数缺失');
