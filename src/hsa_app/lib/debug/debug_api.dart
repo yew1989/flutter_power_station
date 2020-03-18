@@ -4,13 +4,17 @@ import 'package:hsa_app/debug/debug_api_helper.dart';
 import 'package:hsa_app/debug/debug_share_instance.dart';
 import 'package:hsa_app/debug/model/account_info.dart';
 import 'package:hsa_app/debug/model/area_info.dart';
+import 'package:hsa_app/debug/model/erc_flag_type.dart';
 import 'package:hsa_app/util/encrypt.dart';
 
 // 返回回调 : 
+
 // 获取账户信息
 typedef AccountInfoCallback = void Function(AccountInfo account);
 // 地址信息列表
 typedef AreaInfoCallback = void Function(List<AreaInfo> areas);
+// ERCFlag类型列表
+typedef ERCFlagTypeCallback = void Function(List<ERCFlagType> types);
 
 class DebugAPI {
 
@@ -77,6 +81,7 @@ class DebugAPI {
 
     } catch (e) {
       if(onFail != null) onFail('登录失败');
+      debugPrint(e.toString());
       return;
     }
 
@@ -106,7 +111,7 @@ class DebugAPI {
   
   // 获取省份列表信息
   static void getAreaList({@required String rangeLevel,AreaInfoCallback onSucc,DebugHttpFailCallback onFail}) async {
-        // 输入检查
+    // 输入检查
     if(rangeLevel == null) {
       if(onFail != null) onFail('地址范围参数缺失');
       return;
@@ -122,6 +127,31 @@ class DebugAPI {
       
     }, onFail);
   }
+
+  // 获取告警事件类型列表 type = 0 水轮机 1 生态下泄
+  static void getErcFlagTypeList({@required String type,ERCFlagTypeCallback onSucc,DebugHttpFailCallback onFail}) async {
+    // 输入检查
+    if(type == null) {
+      if(onFail != null) onFail('终端告警类型参数缺失');
+      return;
+    }
+    
+    // 获取帐号信息地址
+    final path = restHost + '/v1/EnumAlarmEventERC/' + '$type';
+    
+    DebugHttpHelper.httpGET(path, null, (map,_){
+
+      var resp = ERCFlagTypeResp.fromJson(map);
+      if(onSucc != null) onSucc(resp.data);
+      
+    }, onFail);
+  }
+
+  // 获取告警事件类型列表(生态下泄)
+  
+  // 历史水位
+
+  // 历史有功
 
 
 

@@ -17,7 +17,7 @@ typedef DebugHttpSuccVoidCallback = void Function(String msg);
 class DebugHttpHelper {
 
   // 开启代理模式,允许抓包
-  static final isProxyModeOpen = true;
+  static final isProxyModeOpen = false;
   // 代理主机地址
   static final proxyHost = '192.168.31.8:8888';
   // 接受超时时间
