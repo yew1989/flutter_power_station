@@ -12,6 +12,10 @@ class _DebugApiTestPageState2 extends State<DebugApiTestPage2> {
   final List<String> leftLabels = ['登录','获取用户信息','获取省份列表',
   
   '获取告警事件类型列表(水轮机)','获取告警事件类型列表(生态下泄)',
+  '获取告警事件列表(电站)',
+  '获取告警事件列表(终端)',
+  '获取告警详情'
+  '终端告警确认(单条)'
   '历史水位','历史有功',
 
   ];
@@ -104,6 +108,42 @@ class _DebugApiTestPageState2 extends State<DebugApiTestPage2> {
         showToast(log);
 
       },onFail: (msg){
+        showToast(msg);
+      });
+    }
+    
+    // 获取告警事件(电站)
+    else if(index == 5 ) {
+      DebugAPI.getTerminalAlertList(
+        searchDirection: 'Forward',
+        startDateTime: '2019-09-26 01:00:00',
+        endDateTime: '2019-09-27 01:39:00',
+        stationNos: '0002001',
+        onSucc: (events){
+
+          var log = '告警数量 :' + events.length.toString() + '\n';
+          log += '告警列表 :' + events.map((f) => 'ERC' + f.eventFlag.toString() + ' ' + f.eventTitle + '\n').toList().toString() + '\n';
+          showToast(log);
+
+        },onFail: (msg){
+        showToast(msg);
+      });
+    }
+    // 获取告警事件(终端)
+    else if(index == 6 ) {
+      DebugAPI.getTerminalAlertList(
+        searchDirection: 'Forward',
+        startDateTime: '2019-09-26 01:00:00',
+        endDateTime: '2019-09-27 01:39:00',
+        terminalAddress: '00020013',
+
+        onSucc: (events){
+
+          var log = '告警数量 :' + events.length.toString() + '\n';
+          log += '告警列表 :' + events.map((f) => 'ERC' + f.eventFlag.toString() + ' ' + f.eventTitle + '\n').toList().toString() + '\n';
+          showToast(log);
+
+        },onFail: (msg){
         showToast(msg);
       });
     }
