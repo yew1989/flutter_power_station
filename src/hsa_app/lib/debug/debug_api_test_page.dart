@@ -9,7 +9,7 @@ class DebugApiTestPage extends StatefulWidget {
 
 class _DebugApiTestPageState extends State<DebugApiTestPage> {
 
-  final List<String> leftLabels = ['登录','获取用户信息','获取省份列表'];
+  final List<String> leftLabels = ['登录','获取用户信息','修改密码','获取省份列表','电站列表','机组列表','实时参数','关注与取消','告警时间','实时运行参数'];
 
   @override
   Widget build(BuildContext context) {
@@ -57,14 +57,60 @@ class _DebugApiTestPageState extends State<DebugApiTestPage> {
 
     }
 
+    // 获取用户信息
+    else if(index == 2 ) {
+      
+      DebugAPI.resetLoginPassword(context,accountName:'admin' , oldLoginPwd: '123' ,newLoginPwd:'456',onSucc: (account,msg){
+
+        var log = '密码修改成功!';
+
+        showToast(log);
+
+      },onFail:(msg){
+        showToast(msg);
+      });
+
+    }
+
     // 获取省份列表
 
-    else if(index == 2 ) {
+    else if(index == 3 ) {
 
       DebugAPI.getAreaList(rangeLevel:'Province',onSucc: (areas){
 
         var log = '省份数量 :' + areas.length.toString() + '\n';
         log += '省份 :' + areas.map((area) => area.provinceName).toList().toString() + '\n';
+        
+        showToast(log);
+
+      },onFail: (msg){
+        showToast(msg);
+      });
+    }
+
+
+    //电站列表
+
+    else if(index == 4 ) {
+      List<String> srtlist = ['0137001','0001001'];
+      DebugAPI.getStationList(isIncludeCustomer:true,isIncludeLiveLink:true,arrayOfStationNoOptAny:srtlist,page:1,pageSize:10,onSucc: (msg){
+
+        var log = '电站总数:'+ msg.total.toString();
+        
+        showToast(log);
+
+      },onFail: (msg){
+        showToast(msg);
+      });
+    }
+
+    //电站列表(单)/水轮机组信息
+
+    else if(index == 5 ) {
+
+      DebugAPI.getWaterTurbineList(stationNo: "0001001",isIncludeCustomer:true,isIncludeLiveLink:true,onSucc: (msg){
+
+        var log = '电站名称:'+ msg.stationName;
         
         showToast(log);
 

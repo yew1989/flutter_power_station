@@ -1,4 +1,6 @@
 // 地址信息返回数据体
+import 'package:hsa_app/debug/model/area.dart';
+
 class AreaInfoResp {
   int code;
   int httpCode;
@@ -24,29 +26,6 @@ class AreaInfoResp {
     if (this.data != null) {
       data['data'] = this.data.map((v) => v.toJson()).toList();
     }
-    return data;
-  }
-}
-
-// 地理信息
-class AreaInfo {
-  String cityName;
-  String areaName;
-  String provinceName;
-
-  AreaInfo({this.cityName, this.areaName, this.provinceName});
-
-  AreaInfo.fromJson(Map<String, dynamic> json) {
-    cityName = json['cityName'] ?? '';
-    areaName = json['areaName'] ?? '';
-    provinceName = json['provinceName'] ?? '';
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = Map<String, dynamic>();
-    data['cityName'] = this.cityName ?? '';
-    data['areaName'] = this.areaName ?? '';
-    data['provinceName'] = this.provinceName ?? '';
     return data;
   }
 }

@@ -19,7 +19,7 @@ class DebugHttpHelper {
   // 开启代理模式,允许抓包
   static final isProxyModeOpen = true;
   // 代理主机地址
-  static final proxyHost = '192.168.31.8:8888';
+  static final proxyHost = '192.168.31.208:8888';
   // 接受超时时间
   static final recvTimeOutSeconds = 10000;
   // 发送超时时间
@@ -119,6 +119,102 @@ class DebugHttpHelper {
 
     try {
       Response response = await dio.post(
+        path,
+        options: Options(
+          headers: {'Authorization': DebugShareInstance.getInstance().auth},
+          contentType: Headers.formUrlEncodedContentType,
+          receiveTimeout: DebugHttpHelper.recvTimeOutSeconds,
+          sendTimeout: DebugHttpHelper.sendTimeOutSeconds,
+        ),
+        data: param,
+      );
+      if (response == null) {
+        if(onFail != null) onFail('网络异常,请检查网络');
+        return;
+      }
+      if (response.statusCode != 200) {
+        if(onFail != null) onFail('请求错误 ( ' + response.statusCode.toString() + ' )');
+        return;
+      }
+      if(onSucc != null) onSucc(response.data, '请求成功');
+    } catch (e) {
+      if(onFail != null) onFail('请求错误');
+      debugPrint(e.toString());
+      return;
+    }
+  }
+
+  // Patch 请求
+  static void httpPATCH(String path, dynamic param, DebugHttpSuccMapCallback onSucc,DebugHttpFailCallback onFail ) async {
+
+    // 网络检测
+    final isReachable = await isReachablity();
+    if (isReachable == false) {
+      if (onFail != null) {
+        if(onFail != null)onFail('网络异常,请检查网络');
+        return;
+      }
+    }
+
+    // Auth检测
+    if(DebugShareInstance.getInstance().auth.length == null || DebugShareInstance.getInstance().auth.length == 0) {
+      if(onFail != null) onFail('Auth为空,请先登录');
+      return;
+    }
+
+    // 发起请求
+    final dio = DebugHttpHelper.initDio();
+
+    try {
+      Response response = await dio.patch(
+        path,
+        options: Options(
+          headers: {'Authorization': DebugShareInstance.getInstance().auth},
+          contentType: Headers.formUrlEncodedContentType,
+          receiveTimeout: DebugHttpHelper.recvTimeOutSeconds,
+          sendTimeout: DebugHttpHelper.sendTimeOutSeconds,
+        ),
+        data: param,
+      );
+      if (response == null) {
+        if(onFail != null) onFail('网络异常,请检查网络');
+        return;
+      }
+      if (response.statusCode != 200) {
+        if(onFail != null) onFail('请求错误 ( ' + response.statusCode.toString() + ' )');
+        return;
+      }
+      if(onSucc != null) onSucc(response.data, '请求成功');
+    } catch (e) {
+      if(onFail != null) onFail('请求错误');
+      debugPrint(e.toString());
+      return;
+    }
+  }
+
+  // Put 请求
+  static void httpPUT(String path, dynamic param, DebugHttpSuccMapCallback onSucc,DebugHttpFailCallback onFail ) async {
+
+    // 网络检测
+    final isReachable = await isReachablity();
+    if (isReachable == false) {
+      if (onFail != null) {
+        if(onFail != null)onFail('网络异常,请检查网络');
+        return;
+      }
+    }
+
+    // Auth检测
+    if(DebugShareInstance.getInstance().auth.length == null || DebugShareInstance.getInstance().auth.length == 0) {
+      if(onFail != null) onFail('Auth为空,请先登录');
+      return;
+    }
+
+    // 发起请求
+    final dio = DebugHttpHelper.initDio();
+
+    try {
+      Response response = await dio.put(
         path,
         options: Options(
           headers: {'Authorization': DebugShareInstance.getInstance().auth},
