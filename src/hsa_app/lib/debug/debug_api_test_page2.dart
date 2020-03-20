@@ -14,9 +14,8 @@ class _DebugApiTestPageState2 extends State<DebugApiTestPage2> {
   '获取告警事件类型列表(水轮机)','获取告警事件类型列表(生态下泄)',
   '获取告警事件列表(电站)',
   '获取告警事件列表(终端)',
-  '获取告警详情'
-  '终端告警确认(单条)'
-  '历史水位','历史有功',
+  '历史水位',
+  '历史有功',
 
   ];
 
@@ -122,7 +121,7 @@ class _DebugApiTestPageState2 extends State<DebugApiTestPage2> {
         onSucc: (events){
 
           var log = '告警数量 :' + events.length.toString() + '\n';
-          log += '告警列表 :' + events.map((f) => 'ERC' + f.eventFlag.toString() + ' ' + f.eventTitle + '\n').toList().toString() + '\n';
+          log += '告警列表 :' + events.map((f) => f.eventTime + ' ' +'ERC' + f.eventFlag.toString() + ' ' + f.eventTitle + '\n').toList().toString() + '\n';
           showToast(log);
 
         },onFail: (msg){
@@ -140,13 +139,28 @@ class _DebugApiTestPageState2 extends State<DebugApiTestPage2> {
         onSucc: (events){
 
           var log = '告警数量 :' + events.length.toString() + '\n';
-          log += '告警列表 :' + events.map((f) => 'ERC' + f.eventFlag.toString() + ' ' + f.eventTitle + '\n').toList().toString() + '\n';
+          log += '告警列表 :' + events.map((f) => f.eventTime + ' ' + 'ERC' + f.eventFlag.toString() + ' ' + f.eventTitle + '\n').toList().toString() + '\n';
           showToast(log);
 
         },onFail: (msg){
         showToast(msg);
       });
     }
+
+    // 获取历史水库水位
+    else if(index == 7) {
+      DebugAPI.waterLevelPoints(
+        address: '00310011', 
+      startDate: '2018-06-01', 
+      endDate: '2018-06-01', 
+      minuteInterval: 2, 
+      hyStationWaterStageType: '积水井水位');
+    }
+    // 获取历史有功
+    else if(index == 8) {
+
+    }
+
   
   }
 

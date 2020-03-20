@@ -232,8 +232,81 @@ DebugHttpHelper.httpGET(path, param, (map,_){
 }
   
 
-  // 历史有功
+  // 历史水位
+  static void waterLevelPoints({
+    @required String address,
+    @required String startDate,
+    @required String endDate,
+    @required int minuteInterval,
+    @required String hyStationWaterStageType,
+  
+  
+  ERCFlagTypeListCallback onSucc,DebugHttpFailCallback onFail}) async {
+    // 输入检查
+    if(address == null) {
+      if(onFail != null) onFail('参数缺失');
+      return;
+    }
 
+    if(startDate == null) {
+      if(onFail != null) onFail('参数缺失');
+      return;
+    }
+
+    if(endDate == null) {
+      if(onFail != null) onFail('参数缺失');
+      return;
+    }
+
+    if(hyStationWaterStageType == null) {
+      if(onFail != null) onFail('参数缺失');
+      return;
+    }
+    
+    // 获取帐号信息地址
+    final path = liveDataHost + '/v1/HyStationWaterStage/' + address;
+    
+    var param = Map<String, dynamic>();
+
+    if(startDate != null) {
+      param['startDate'] = startDate;
+    }
+    if(endDate != null) {
+      param['endDate'] = endDate;
+    }
+    if(minuteInterval != null) {
+      param['minuteInterval'] = minuteInterval.toString();
+    }
+    if(hyStationWaterStageType != null) {
+      param['hyStationWaterStageType'] = hyStationWaterStageType;
+    }
+
+    DebugHttpHelper.httpGET(path, param, (map,_){
+
+      // var resp = ERCFlagTypeResp.fromJson(map);
+      // if(onSucc != null) onSucc(resp.data);
+      
+    }, onFail);
+  }
+
+  // 历史有功
+  static void activePowerPoints({@required String type,ERCFlagTypeListCallback onSucc,DebugHttpFailCallback onFail}) async {
+    // 输入检查
+    if(type == null) {
+      if(onFail != null) onFail('终端告警类型参数缺失');
+      return;
+    }
+    
+    // 获取帐号信息地址
+    final path = restHost + '/v1/EnumAlarmEventERC/' + '$type';
+    
+    DebugHttpHelper.httpGET(path, null, (map,_){
+
+      var resp = ERCFlagTypeResp.fromJson(map);
+      if(onSucc != null) onSucc(resp.data);
+      
+    }, onFail);
+  }
 
 
 
