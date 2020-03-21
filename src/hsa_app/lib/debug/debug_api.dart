@@ -294,21 +294,45 @@ DebugHttpHelper.httpGET(path, param, (map,_){
     }, onFail);
   }
 
-  // 历史有功列表
-  static void activePowerPoints({@required String type,ActivePowerListCallback onSucc,DebugHttpFailCallback onFail}) async {
+  // 历史电能列表
+  static void activePowerPoints({
+    @required String address,
+    @required String startDate,
+    @required String endDate,
+    ActivePowerListCallback onSucc,DebugHttpFailCallback onFail}) async {
+
     // 输入检查
-    if(type == null) {
-      if(onFail != null) onFail('终端告警类型参数缺失');
+    if(address == null) {
+      if(onFail != null) onFail('参数缺失');
       return;
     }
-    
-    // 获取帐号信息地址
-    final path = restHost + '/v1/EnumAlarmEventERC/' + '$type';
-    
-    DebugHttpHelper.httpGET(path, null, (map,_){
 
-      // var resp = ERCFlagTypeResp.fromJson(map);
-      // if(onSucc != null) onSucc(resp.data);
+    if(startDate == null) {
+      if(onFail != null) onFail('参数缺失');
+      return;
+    }
+
+    if(endDate == null) {
+      if(onFail != null) onFail('参数缺失');
+      return;
+    }
+
+    // 获取帐号信息地址
+    final path = liveDataHost + '/v1/StatisticalPower/TurbineTotal/' + address;
+    
+    var param = Map<String, dynamic>();
+
+    if(startDate != null) {
+      param['startDate'] = startDate;
+    }
+    if(endDate != null) {
+      param['endDate'] = endDate;
+    }
+
+    DebugHttpHelper.httpGET(path, param, (map,_){
+
+      final resp = ActivePowerResp.fromJson(map);
+      if(onSucc != null) onSucc(resp.data.rows);
       
     }, onFail);
   }

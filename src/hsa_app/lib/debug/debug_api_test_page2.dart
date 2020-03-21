@@ -156,6 +156,7 @@ class _DebugApiTestPageState2 extends State<DebugApiTestPage2> {
       minuteInterval: 2, 
       hyStationWaterStageType: '积水井水位',
       onSucc: (points){
+
           var log = '水位点数 :' + points.length.toString() + '\n';
           log += '水位列表 :'  +  '\n' + points.map((f) => f.freezeTime + '测量水位: ' + f.measureLevel.toString() + '\n').toList().toString() + '\n';
 
@@ -166,9 +167,25 @@ class _DebugApiTestPageState2 extends State<DebugApiTestPage2> {
       },
       );
     }
+
     // 获取历史有功
     else if(index == 8) {
+      DebugAPI.activePowerPoints(
+        address: '0016001', 
+        startDate: '2018-08-30',
+        endDate: '2018-08-30', 
+        onSucc: (points){
 
+          var log = '有功点数 :' + points.length.toString() + '\n';
+          log += '有功列表 :'  +  '\n' + points.map((f) => f.freezeTime + '有功值: ' + f.activePower.toString() + '\n').toList().toString() + '\n';
+
+          showToast(log);
+      },
+      onFail: (msg){
+        showToast(msg);
+      },
+
+      );
     }
 
   
