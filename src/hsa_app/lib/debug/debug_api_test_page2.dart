@@ -150,11 +150,21 @@ class _DebugApiTestPageState2 extends State<DebugApiTestPage2> {
     // 获取历史水库水位
     else if(index == 7) {
       DebugAPI.waterLevelPoints(
-        address: '00310011', 
+      address: '00310011', 
       startDate: '2018-06-01', 
       endDate: '2018-06-01', 
       minuteInterval: 2, 
-      hyStationWaterStageType: '积水井水位');
+      hyStationWaterStageType: '积水井水位',
+      onSucc: (points){
+          var log = '水位点数 :' + points.length.toString() + '\n';
+          log += '水位列表 :'  +  '\n' + points.map((f) => f.freezeTime + '测量水位: ' + f.measureLevel.toString() + '\n').toList().toString() + '\n';
+
+          showToast(log);
+      },
+      onFail: (msg){
+        showToast(msg);
+      },
+      );
     }
     // 获取历史有功
     else if(index == 8) {

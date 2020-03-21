@@ -61,7 +61,7 @@ class WaterLevel {
   String waterType;
   double measureLevel;
   double relativeLevel;
-  int baseLevel;
+  double baseLevel;
 
   WaterLevel(
       {this.id,
@@ -82,10 +82,10 @@ class WaterLevel {
     deviceTerminalType = json['deviceTerminalType'];
     deviceTerminalHardware = json['deviceTerminalHardware'];
     freezeTime = json['freezeTime'];
-    waterType = json['waterType'];
-    measureLevel = json['measureLevel'];
-    relativeLevel = json['relativeLevel'];
-    baseLevel = json['baseLevel'];
+    waterType = json['水位类型'];
+    measureLevel = json['测量水位'];
+    relativeLevel = json['相对水位'];
+    baseLevel = json['基础海拔'];
   }
 
   Map<String, dynamic> toJson() {
@@ -96,10 +96,10 @@ class WaterLevel {
     data['deviceTerminalType'] = this.deviceTerminalType;
     data['deviceTerminalHardware'] = this.deviceTerminalHardware;
     data['freezeTime'] = this.freezeTime;
-    data['waterType'] = this.waterType;
-    data['measureLevel'] = this.measureLevel;
-    data['relativeLevel'] = this.relativeLevel;
-    data['baseLevel'] = this.baseLevel;
+    data['水位类型'] = this.waterType;
+    data['测量水位'] = this.measureLevel;
+    data['相对水位'] = this.relativeLevel;
+    data['基础海拔'] = this.baseLevel;
     return data;
   }
 }

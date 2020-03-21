@@ -3,9 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:hsa_app/debug/debug_api_helper.dart';
 import 'package:hsa_app/debug/debug_share_instance.dart';
 import 'package:hsa_app/debug/model/account_info.dart';
+import 'package:hsa_app/debug/model/active_power.dart';
 import 'package:hsa_app/debug/model/area_info.dart';
 import 'package:hsa_app/debug/model/erc_flag_type.dart';
 import 'package:hsa_app/debug/model/terminal_alarm_event.dart';
+import 'package:hsa_app/debug/model/water_level.dart';
 import 'package:hsa_app/util/encrypt.dart';
 
 // 返回回调 : 
@@ -18,6 +20,10 @@ typedef AreaInfoCallback = void Function(List<AreaInfo> areas);
 typedef ERCFlagTypeListCallback = void Function(List<ERCFlagType> types);
 // 告警事件列表
 typedef AlertEventListCallback = void Function(List<TerminalAlarmEvent> events);
+// 水位曲线列表
+typedef WaterLevelListCallback = void Function(List<WaterLevel> waterlevels);
+// 有功曲线列表
+typedef ActivePowerListCallback = void Function(List<ActivePower> waterlevels);
 
 class DebugAPI {
 
@@ -239,9 +245,8 @@ DebugHttpHelper.httpGET(path, param, (map,_){
     @required String endDate,
     @required int minuteInterval,
     @required String hyStationWaterStageType,
-  
-  
-  ERCFlagTypeListCallback onSucc,DebugHttpFailCallback onFail}) async {
+    WaterLevelListCallback onSucc,DebugHttpFailCallback onFail}) async {
+
     // 输入检查
     if(address == null) {
       if(onFail != null) onFail('参数缺失');
@@ -283,14 +288,14 @@ DebugHttpHelper.httpGET(path, param, (map,_){
 
     DebugHttpHelper.httpGET(path, param, (map,_){
 
-      // var resp = ERCFlagTypeResp.fromJson(map);
-      // if(onSucc != null) onSucc(resp.data);
+      final resp = WaterLevelResp.fromJson(map);
+      if(onSucc != null) onSucc(resp.data.rows);
       
     }, onFail);
   }
 
-  // 历史有功
-  static void activePowerPoints({@required String type,ERCFlagTypeListCallback onSucc,DebugHttpFailCallback onFail}) async {
+  // 历史有功列表
+  static void activePowerPoints({@required String type,ActivePowerListCallback onSucc,DebugHttpFailCallback onFail}) async {
     // 输入检查
     if(type == null) {
       if(onFail != null) onFail('终端告警类型参数缺失');
@@ -302,8 +307,8 @@ DebugHttpHelper.httpGET(path, param, (map,_){
     
     DebugHttpHelper.httpGET(path, null, (map,_){
 
-      var resp = ERCFlagTypeResp.fromJson(map);
-      if(onSucc != null) onSucc(resp.data);
+      // var resp = ERCFlagTypeResp.fromJson(map);
+      // if(onSucc != null) onSucc(resp.data);
       
     }, onFail);
   }
