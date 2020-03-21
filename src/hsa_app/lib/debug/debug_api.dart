@@ -21,9 +21,9 @@ typedef ERCFlagTypeListCallback = void Function(List<ERCFlagType> types);
 // 告警事件列表
 typedef AlertEventListCallback = void Function(List<TerminalAlarmEvent> events);
 // 水位曲线列表
-typedef WaterLevelListCallback = void Function(List<WaterLevel> waterlevels);
+typedef WaterLevelListCallback = void Function(List<WaterLevel> points);
 // 有功曲线列表
-typedef ActivePowerListCallback = void Function(List<ActivePower> waterlevels);
+typedef ActivePowerListCallback = void Function(List<ActivePower> points);
 
 class DebugAPI {
 
