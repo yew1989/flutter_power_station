@@ -93,7 +93,7 @@ class _DebugApiTestPageState extends State<DebugApiTestPage> {
 
     else if(index == 4 ) {
       List<String> srtlist = ['0137001','0001001'];
-      DebugAPI.getStationList(isIncludeCustomer:true,isIncludeLiveLink:true,arrayOfStationNoOptAny:srtlist,page:1,pageSize:10,onSucc: (msg){
+      DebugAPI.getStationList(isIncludeCustomer:true,isIncludeLiveLink:true,/*arrayOfStationNoOptAny:srtlist,*/page:1,pageSize:10,onSucc: (msg){
 
         var log = '电站总数:'+ msg.total.toString();
         
@@ -113,6 +113,22 @@ class _DebugApiTestPageState extends State<DebugApiTestPage> {
         var log = '电站名称:'+ msg.stationName;
         
         showToast(log);
+
+      },onFail: (msg){
+        showToast(msg);
+      });
+    }
+
+    //取终端最近运行时通讯的数据(多)
+
+    else if(index == 6 ) {
+      List<String> paramList = ['terminalconnectedstate','AFN0C.F7.p0','AFN0C.F9.p0','AFN0C.F10.p0','AFN0C.F11.p0','AFN0C.F13.p0',
+                  'AFN0C.F24.p0','AFN0C.F20.p0','AFN0C.F21.p0','AFN0C.F22.p0'];
+      DebugAPI.getMultipleAFNFnpn(terminalAddress: '03740001',paramList:paramList,onSucc: (msg){
+
+        
+        
+        showToast(msg.current.toString());
 
       },onFail: (msg){
         showToast(msg);

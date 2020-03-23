@@ -1,9 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:hsa_app/api/api.dart';
+//import 'package:hsa_app/api/api.dart';
 import 'package:hsa_app/components/shawdow_widget.dart';
 import 'package:hsa_app/config/app_config.dart';
+import 'package:hsa_app/debug/debug_api.dart';
 import 'package:hsa_app/debug/debug_api_test_page.dart';
 import 'package:hsa_app/page/about/about_page.dart';
 import 'package:hsa_app/page/login/login_page.dart';
@@ -43,13 +44,21 @@ class _MinePageState extends State<MinePage> {
 
   void requestStationCount() {
     
-    API.stationsCount((int count) {
-      setState(() {
-        this.stationCount = count;
-      });
-    },(String msg){
+    // API.stationsCount((int count) {
+    //   setState(() {
+    //     this.stationCount = count;
+    //   });
+    // },(String msg){
 
+    // });
+    DebugAPI.getStationList(onSucc: (msg){
+      setState(() {
+        this.stationCount = msg.total;
+      });
+    },onFail: (msg){
+      
     });
+
   }
 
   // 我的页面头部

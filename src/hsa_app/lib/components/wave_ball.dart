@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:hsa_app/components/circle_indicator.dart';
 import 'package:hsa_app/components/wave_widget.dart';
 import 'package:hsa_app/config/app_theme.dart';
-import 'package:hsa_app/model/station.dart';
+import 'package:hsa_app/debug/model/all_model.dart';
+//import 'package:hsa_app/model/station.dart';
+//import 'package:hsa_app/model/station_info.dart';
 import 'package:native_color/native_color.dart';
 
 class WaveValuePack {
@@ -13,10 +15,10 @@ class WaveValuePack {
   
   WaveValuePack({this.wava1,this.wave2});
 
-  static double caculateWaveRatio(Stations station) {
+  static double caculateWaveRatio(StationInfo station) {
 
-    var waterMax = station?.water?.max ?? 0.0;
-    var waterCurrent = station?.water?.current ?? 0.0;
+    var waterMax = station?.reservoirAlarmWaterStage ?? 0.0;
+    var waterCurrent = station?.reservoirCurrentWaterStage ?? 0.0;
     if( waterMax == 0 ) return 0.0;
     if( waterCurrent == 0 ) return 0.0; 
     if( waterCurrent > waterMax) return 1;
@@ -41,10 +43,11 @@ class PowerValuePack {
   double powerRatio;
   PowerValuePack(this.powerRatio);
 
-  static double caculateWaveRatio(Stations station) {
+  static double caculateWaveRatio(StationInfo station) {
 
-    var powerMax = station?.power?.max ?? 0.0;
-    var powerCurrent = station?.power?.current ?? 0.0;
+    var powerMax = station?.totalEquippedKW ?? 0.0;
+    var powerCurrent = //station?.power?.current ?? 
+          0.0;
     if( powerMax == 0 ) return 0.0;
     if( powerCurrent == 0 ) return 0.0; 
     if( powerCurrent > powerMax) return 1;
@@ -57,7 +60,7 @@ class PowerValuePack {
 
 class WaveBall extends StatefulWidget {
 
-  final Stations station;
+  final StationInfo station;
   const WaveBall({Key key, this.station}) : super(key: key);
 
   @override
@@ -143,7 +146,8 @@ class _WaveBallState extends State<WaveBall> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
               Center(
-                  child: Text(widget.station?.power?.current?.toString() ?? '0.0',
+                  child: Text(//widget.station?.power?.current?.toString() ??
+                       '0.0',
                       style: TextStyle(color: Colors.white, fontSize: 35,fontFamily: AppTheme().numberFontName))),
               Center(
                   child: Text('kW',

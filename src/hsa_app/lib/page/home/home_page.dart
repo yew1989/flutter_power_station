@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hsa_app/api/api.dart';
 import 'package:hsa_app/components/shawdow_widget.dart';
+import 'package:hsa_app/debug/debug_api.dart';
 import 'package:hsa_app/model/banner_item.dart';
 import 'package:hsa_app/page/home/home_station_list.dart';
 import 'package:hsa_app/page/home/view/home_banner.dart';
@@ -27,28 +28,43 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
   // 获取广告条
   void requestBanner() {
 
-    API.banners((List<BannerItem> banners) {
-      setState(() {
-        this.banners = banners;
-      });
-    }, (_){
-      progressShowError('广告信息获取失败');
-    });
+    // API.banners((List<BannerItem> banners) {
+    //   setState(() {
+    //     this.banners = banners;
+    //   });
+    // }, (_){
+    //   progressShowError('广告信息获取失败');
+    // });
 
   }
 
   // 省份列表
-  void requestProvinces() {
+  // void requestProvinces() {
 
-    API.provinces((List<String> provinces){
+  //   API.provinces((List<String> provinces){
+  //     setState(() {
+  //       this.provinces = provinces;
+  //       this.sections.addAll(provinces.map((name)=>name+'省').toList());
+  //     });
+  //   }, (_){
+  //     progressShowError('省份信息获取失败');
+  //   });
+
+  // }
+
+  //省份列表(新)
+  void requestProvinces(){
+    DebugAPI.getAreaList(rangeLevel:'Province',onSucc: (areas){
+
       setState(() {
-        this.provinces = provinces;
-        this.sections.addAll(provinces.map((name)=>name+'省').toList());
+        this.provinces = areas.map((area) => area.provinceName).toList();
+        this.sections.addAll(provinces.map((name) => name == '北京'? name +'市':name+'省').toList());
       });
-    }, (_){
+
+    },onFail: (msg){
+      showToast(msg);
       progressShowError('省份信息获取失败');
     });
-
   }
 
   @override

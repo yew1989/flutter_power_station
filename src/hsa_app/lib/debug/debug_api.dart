@@ -16,11 +16,18 @@ typedef AreaInfoCallback = void Function(List<AreaInfo> areas);
 typedef StationListCallback = void Function(Data stations);
 // 地址信息列表
 typedef StationInfoCallback = void Function(StationInfo stationInfo);
+// 地址信息列表
+typedef NearestRunningDataCallback = void Function(NearestRunningData nearestRunningData);
+//List
+typedef ListCallback = void Function(List<String> list);
 
 class DebugAPI {
 
   // 主机地址
   static final restHost = 'http://192.168.16.2:8281';
+
+  // 动态数据地址
+  static final liveDataHost = 'http://192.168.16.2:8282';
 
   // 固定应用ID AppKey 由平台下发
   static final appKey = '3a769958-098a-46ff-a76a-de6062e079ee'; 
@@ -102,6 +109,8 @@ class DebugAPI {
     DebugHttpHelper.httpGET(path, null, (map,_){
 
       var resp = AccountInfoResp.fromJson(map);
+      DebugShareInstance.getInstance().accountName = resp.data.accountName;
+      
       if(onSucc != null) onSucc(resp.data);
 
     }, onFail);
@@ -149,7 +158,7 @@ class DebugAPI {
     
     DebugHttpHelper.httpPATCH(path, param, (map,_){
 
-      if(onSucc != null) onSucc('','密码修改成功');
+      if(onSucc != null) onSucc('','密码修改成功!');
       
     }, onFail);
   }
@@ -188,27 +197,27 @@ class DebugAPI {
     }
 
     //部分电站拼音 模糊匹配
-    if(partStationNamePinYin != null){
+    if(partStationNamePinYin != null ){
       param['partStationNamePinYin'] = partStationNamePinYin;
     }
 
     //用.号分隔的电站所在地（省.地区.市）（三段模式匹配,*为通配符)
-    if(proviceAreaCityNameOfDotSeparated != null){
+    if(proviceAreaCityNameOfDotSeparated != '' && proviceAreaCityNameOfDotSeparated != null){
       param['proviceAreaCityNameOfDotSeparated'] = proviceAreaCityNameOfDotSeparated;
     }
 
     //客户号数组 匹配数组中的任一值
-    if(arrayOfCustomerNoOptAny != null){
+    if(arrayOfCustomerNoOptAny != [] && arrayOfCustomerNoOptAny != null){
       param['arrayOfCustomerNoOptAny'] = arrayOfCustomerNoOptAny;
     }
 
     //电站号数组 匹配数组中的任一值
-    if(arrayOfStationNoOptAny != null){
+    if(arrayOfStationNoOptAny != [] && arrayOfStationNoOptAny != null){
       param['arrayOfStationNoOptAny'] = arrayOfStationNoOptAny;
     }
 
     param['page'] = (page != null ? page : 1 );
-    param['pageSize'] = (pageSize != null ? pageSize : 10 );
+    param['pageSize'] = (pageSize != null ? pageSize : 20 );
 
     // 获取电站列表信息地址
     final path = restHost + '/v1/HydropowerStation';
@@ -293,4 +302,33 @@ class DebugAPI {
       
     }, onFail);
   }
+
+  //取终端最近运行时通讯的数据(多)
+  static void getMultipleAFNFnpn({String terminalAddress,List<String> paramList,NearestRunningDataCallback onSucc,DebugHttpFailCallback onFail}) async {
+    
+    final path = liveDataHost + '/v1/NearestRunningData/'+'$terminalAddress'+'/MultipleAFNFnpn';
+    
+    var param = {'':paramList};
+
+    DebugHttpHelper.httpPOST(path, param, (map,_){
+
+      var resp = NearestRunningDataResp.fromJson(map,terminalAddress);
+      if(onSucc != null) onSucc(resp.data);
+      
+    }, onFail);
+  }
+
+  static void getFavoriteStationNos({ListCallback onSucc,DebugHttpFailCallback onFail}) async {
+
+    final path = restHost + '/v1/HydropowerStation/CurrentAccountFavoriteStationNos';
+    
+    DebugHttpHelper.httpGET(path, null, (map,_){
+      //List<String> list = [];
+      var resp =  map['data'].cast<String>();
+      if(onSucc != null) onSucc(resp);
+      
+    }, onFail);
+  }
+
+  
 }

@@ -7,6 +7,8 @@ import 'package:hsa_app/components/smart_refresher_style.dart';
 import 'package:hsa_app/components/spinkit_indicator.dart';
 import 'package:hsa_app/components/wave_ball.dart';
 import 'package:hsa_app/config/app_theme.dart';
+import 'package:hsa_app/debug/debug_api.dart';
+import 'package:hsa_app/debug/model/all_model.dart';
 import 'package:hsa_app/event/app_event.dart';
 import 'package:hsa_app/event/event_bird.dart';
 import 'package:hsa_app/model/station.dart';
@@ -29,13 +31,15 @@ class HomeStationList extends StatefulWidget {
 class _HomeStationListState extends State<HomeStationList> {
   
   int pageRowsMax = 20;
-  List<Stations> stations = [];
+  //List<Stations> stations = [];
+  List<StationInfo> stations = [];
   RefreshController refreshController = RefreshController(initialRefresh: false);
   int currentPage = 1;
   // 0 全部电站, 1 关注电站 , 2 省份电站
   int type = 0; 
   String provinceName = '';
   String keyWord = '';
+  List<String> favoriteStations = [];
 
   // 是否空视图
   bool isEmpty = false;
@@ -43,79 +47,96 @@ class _HomeStationListState extends State<HomeStationList> {
   bool isLoadFinsh = false;
 
   // 按省获取电站列表 加载首页
-  void loadFirst() async {
+  void loadFirst(List<String> list) async {
     
     this.currentPage = 1;
     this.isEmpty = false;
 
-    API.stationsList((List<Stations> stations,int total){
+    DebugAPI.getStationList(onSucc: (msg){
       
       isLoadFinsh = true;
       refreshController.refreshCompleted();
       
+      if(mounted) {
+        setState(() {
+          this.stations = msg.rows;
+        });
+      }
+
       if(stations.length == 0) {
         this.isEmpty = true;
       }
 
-      setState(() {
-        this.stations = stations;
-      });
-
       if(widget.onFirstLoadFinish != null) widget.onFirstLoadFinish();
-
-    }, (String msg){
-      
+    },onFail: (msg){
       isLoadFinsh = true;
       refreshController.refreshFailed();
 
       if(widget.onFirstLoadFinish != null) widget.onFirstLoadFinish();
     },
-    // 页码
+    isIncludeWaterTurbine:true,
     page:currentPage,
-    rows:pageRowsMax,
-    province:provinceName,
-    keyword: keyWord,
-    isfocus: this.type == 1 ? true : false,
+    pageSize:pageRowsMax,
+    proviceAreaCityNameOfDotSeparated:provinceName,
+    arrayOfStationNoOptAny: list,
     );
+
   }
 
+
   // 刷新下一页
-  void loadNext() async {
+  void loadNext(List<String> list) async {
 
-      currentPage++ ;
+    currentPage++ ;
 
-      API.stationsList((List<Stations> stations,int total){
-
-        isLoadFinsh = true;
-        setState(() {
-        
+    DebugAPI.getStationList(onSucc: (msg){
+      
+      isLoadFinsh = true;
+      
+      setState(() {
         if(stations == null || stations?.length == 0) {
-            refreshController.loadNoData();
+          refreshController.loadNoData();
         }
         else{
-          this.stations.addAll(stations);
+          this.stations.addAll(msg.rows);
           refreshController.loadComplete();
         }
       });
-    }, (String msg){
 
+      if(widget.onFirstLoadFinish != null) widget.onFirstLoadFinish();
+    },onFail: (msg){
       isLoadFinsh = true;
-      refreshController.loadFailed();
+      refreshController.refreshFailed();
+
+      if(widget.onFirstLoadFinish != null) widget.onFirstLoadFinish();
     },
-    // 页码
+    isIncludeWaterTurbine:true,
     page:currentPage,
-    rows:pageRowsMax,
-    province:provinceName,
-    keyword: keyWord,
-    isfocus: this.type == 1 ? true : false,
+    pageSize:pageRowsMax,
+    proviceAreaCityNameOfDotSeparated:provinceName,
+    arrayOfStationNoOptAny: list,
     );
+  }
+
+  //获取关注列表
+  void getFavoriteStations(){
+    
+    DebugAPI.getFavoriteStationNos(onSucc :(msg){
+      this.favoriteStations = msg;
+    },onFail: (msg){
+      
+    });
   }
 
   // 计算类型和省份
   void caculateType(String homeParam) {
     var isProvince = homeParam.endsWith('省');
+    var isCentral = homeParam.endsWith('市');
     if(isProvince == true) {
       this.provinceName = homeParam.split('省').first;
+      this.type = 2;
+    }else if(isCentral == true){
+      this.provinceName = homeParam.split('市').first;
       this.type = 2;
     }
     if(homeParam == '全部电站') {
@@ -143,7 +164,13 @@ class _HomeStationListState extends State<HomeStationList> {
   void initPage() {
     isLoadFinsh = false;
     caculateType(widget.homeParam);
-    loadFirst();
+    //loadFirst();
+    if(this.type == 1){
+      getFavoriteStations();
+      loadFirst(favoriteStations);
+    }else{
+      loadFirst(null);
+    }
   }
 
   @override
@@ -164,16 +191,17 @@ class _HomeStationListState extends State<HomeStationList> {
 
   // 电站列表
   Widget stationListView(BuildContext context) {
+    
     return SmartRefresher(
       header: appRefreshHeader(),
       footer: appRefreshFooter(),
       enablePullDown: true,
       enablePullUp: true,
-      onLoading: loadNext,
-      onRefresh: loadFirst,
+      onLoading: ()=> loadNext(this.favoriteStations),
+      onRefresh: ()=> loadFirst(this.favoriteStations),
       controller: refreshController,
       child: ListView.builder(
-        itemCount: stations?.length ?? 0,
+        itemCount: this.stations?.length ?? 0,
         itemBuilder: (BuildContext context, int index) => stationTile(context,index),
       ),
     );
@@ -221,7 +249,7 @@ class _HomeStationListState extends State<HomeStationList> {
     );
   }
 
-  Widget stationTileTop(Stations station) {
+  Widget stationTileTop(StationInfo station) {
     return SizedBox(
       height: 56,
       child: Row(
@@ -242,7 +270,7 @@ class _HomeStationListState extends State<HomeStationList> {
                 ),
               ),
               SizedBox(width: 10),
-              Text(station.name,style: TextStyle(color: Colors.white, fontSize: 16)),
+              Text(station.stationName,style: TextStyle(color: Colors.white, fontSize: 16)),
             ],
           ),
 
@@ -253,7 +281,7 @@ class _HomeStationListState extends State<HomeStationList> {
               child: CircleAvatar(
                   radius: 12,
                   backgroundColor: Colors.transparent,
-                  backgroundImage: station.isFocus
+                  backgroundImage: station.isCurrentAccountFavorite
                   ? AssetImage('images/home/Home_keep_btn.png')
                   : AssetImage('images/home/Home_keep_no_btn.png'),
               ),
@@ -267,18 +295,18 @@ class _HomeStationListState extends State<HomeStationList> {
 
 
   // 请求关注
-  void requestFocus(Stations station) async {
+  void requestFocus(StationInfo station) async {
 
-    API.focusStation(station.id.toString(), !station.isFocus, (String msg){
-      final msg = !station.isFocus ? '关注成功' : '取消关注成功'; 
+    API.focusStation(station.isCurrentAccountFavorite.toString(), !station.isCurrentAccountFavorite, (String msg){
+      final msg = !station.isCurrentAccountFavorite ? '关注成功' : '取消关注成功'; 
       Progresshud.showSuccessWithStatus(msg);
       setState(() {
-        station.isFocus = !station.isFocus;
+        station.isCurrentAccountFavorite = !station.isCurrentAccountFavorite;
       });
     }, (String msg){
       Progresshud.showSuccessWithStatus('请检查网络');
       setState(() {
-        station.isFocus = !station.isFocus;
+        station.isCurrentAccountFavorite = !station.isCurrentAccountFavorite;
       });
     });
   }
@@ -292,15 +320,15 @@ class _HomeStationListState extends State<HomeStationList> {
     return eventCount.toString();
   }
 
-  Widget stationTileBody(Stations station) {
+  Widget stationTileBody(StationInfo station) {
     // 水位标签
-    var waterStr = station?.water?.current.toString() ?? '0.0';
+    var waterStr = station?.reservoirCurrentWaterStage.toString() ?? '0.0';
     waterStr += 'm';
     // 告警标签
-    var eventCount = station?.eventCount ?? 0;
+    var eventCount = station?.undisposedAlarmEventCount ?? 0;
     var eventStr = buildEventCount(eventCount);
     // 离线在线状态
-    var isOnline = station?.status == 'online' ? true : false;
+    var isOnline = station?.terminalOnLineCount == 0 ? false : true  ;
 
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 30),

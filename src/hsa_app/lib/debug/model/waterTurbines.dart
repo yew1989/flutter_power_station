@@ -5,14 +5,14 @@ class WaterTurbine {
   String stationNo;  //所属电站号
   int turbineInStationSeqNum;  //机组站内序号
   double ratedVoltageV;  //额定电压
-  int ratedCurrentA;
+  double ratedCurrentA;
   double ratedPowerKW;  //额定功率
   double ratedPowerKVA;
   double ratedSpeedRPM;
   double ratedExcitationCurrentA;
   int waterGateValveCount;
-  int waterGateOpeningPercentum;
-  int turbineSpeedRPM;
+  double waterGateOpeningPercentum;
+  double turbineSpeedRPM;
   DeviceTerminal deviceTerminal;
   int undisposedAlarmEventCount;
   bool enabledDoubleWaterGateValveControl;

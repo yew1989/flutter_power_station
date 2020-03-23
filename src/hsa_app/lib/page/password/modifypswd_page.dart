@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hsa_app/api/api.dart';
+import 'package:hsa_app/debug/debug_api.dart';
+import 'package:hsa_app/debug/debug_share_instance.dart';
 import 'package:hsa_app/service/umeng_analytics.dart';
 import 'package:hsa_app/theme/theme_gradient_background.dart';
 import 'package:hsa_app/components/public_tool.dart';
@@ -140,14 +142,21 @@ class _ModifyPswdPageState extends State<ModifyPswdPage> {
       return;
     }
 
-    httpModifyLoginPswd();
+    httpModifyLoginPswd(context);
   }
 
   //  修改登录密码请求
-  void httpModifyLoginPswd() async {
+  void httpModifyLoginPswd(BuildContext context) async {
     var oldWord = oldController.text;
     var newWord = againController.text;
-    var result = await API.modifyPswd(oldWord, newWord);
+    //var result = await API.modifyPswd(oldWord, newWord);
+    var result;
+    var accountName = DebugShareInstance.getInstance().accountName;
+    DebugAPI.resetLoginPassword(context,accountName:accountName , oldLoginPwd: oldWord ,newLoginPwd:newWord,onSucc: (account,msg){
+      var log = '密码修改成功!';
+    },onFail:(msg){
+    });
+
     if (result.success) {
       // showToast('密码修改成功');
       Future.delayed(Duration(seconds: 1), () {

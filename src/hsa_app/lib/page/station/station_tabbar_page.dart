@@ -3,10 +3,10 @@ import 'package:hsa_app/components/page_indicator/dots_decorator.dart';
 import 'package:hsa_app/components/page_indicator/dots_indicator.dart';
 import 'package:hsa_app/components/public_tool.dart';
 import 'package:hsa_app/config/app_theme.dart';
+import 'package:hsa_app/debug/model/all_model.dart';
 import 'package:hsa_app/event/app_event.dart';
 import 'package:hsa_app/event/event_bird.dart';
 import 'package:hsa_app/model/station.dart';
-import 'package:hsa_app/model/station_info.dart';
 import 'package:hsa_app/page/history/history_page.dart';
 import 'package:hsa_app/page/station/station_page.dart';
 import 'package:hsa_app/service/umeng_analytics.dart';
@@ -14,7 +14,7 @@ import 'package:hsa_app/theme/theme_gradient_background.dart';
 
 class StationTabbarPage extends StatefulWidget {
 
-  final List<Stations> stations;
+  final List<StationInfo> stations;
   final int selectIndex;
 
   const StationTabbarPage({Key key, this.stations, this.selectIndex}) : super(key: key);
@@ -27,7 +27,7 @@ class StationTabbarPage extends StatefulWidget {
 class _StationTabbarPageState extends State<StationTabbarPage> {
 
   int currentIndex;
-  Stations currentStation;
+  StationInfo currentStation;
   int pageLength;
   String title;
   PageController pageController;
@@ -39,7 +39,7 @@ class _StationTabbarPageState extends State<StationTabbarPage> {
     currentIndex = widget?.selectIndex ?? 0;
     currentStation = widget?.stations[currentIndex];
     pageLength = widget?.stations?.length ?? 0;
-    title = currentStation?.name ?? '';
+    title = currentStation?.stationName ?? '';
     pageController = PageController(initialPage: currentIndex);
 
     UMengAnalyticsService.enterPage('电站概要');
@@ -66,11 +66,11 @@ class _StationTabbarPageState extends State<StationTabbarPage> {
 
   void onTapPushToHistoryPage(StationInfo info) async {
 
-   final deviceIdList = info.devices.map((device) {
-      return device?.address ?? '';
+   final deviceIdList = info.deviceTerminalsOfFMD.map((deviceTerminal) {
+      return deviceTerminal?.terminalAddress ?? '';
     }).toList();
     final addresses = deviceIdList.join(',');
-    final navTitle = info?.name ?? '';
+    final navTitle = info?.stationName ?? '';
     pushToPage(context, HistoryPage(title: navTitle,address: addresses));
     
   }
@@ -87,7 +87,7 @@ class _StationTabbarPageState extends State<StationTabbarPage> {
           actions: <Widget>[
 
             GestureDetector(
-            onTap: stationInfo?.devices == null ? null : () => onTapPushToHistoryPage(stationInfo),
+            onTap: stationInfo?.deviceTerminalsOfFMD == null ? null : () => onTapPushToHistoryPage(stationInfo),
             child: Center(child: Text('历史分析',style:TextStyle(color: Colors.white, fontSize: 16)))),
             
             SizedBox(width: 20),
@@ -101,12 +101,12 @@ class _StationTabbarPageState extends State<StationTabbarPage> {
               physics: AlwaysScrollableScrollPhysics(),
               controller: pageController,
               itemCount: widget.stations.length,
-              itemBuilder: (BuildContext context, int index) => StationPage(widget.stations[index].id.toString()),
+              itemBuilder: (BuildContext context, int index) => StationPage(widget.stations[index].stationNo.toString()),
               onPageChanged: (int index) {
                 currentIndex = index;
                 currentStation = widget?.stations[currentIndex];
                 setState(() {
-                  title = currentStation.name;
+                  title = currentStation.stationName;
                 });
               },
             ),
