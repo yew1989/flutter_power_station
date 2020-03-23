@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hsa_app/components/public_tool.dart';
+import 'package:hsa_app/debug/API/debug_api_login.dart';
 import 'package:hsa_app/debug/debug_api.dart';
 
 class DebugApiTestPage2 extends StatefulWidget {
@@ -41,7 +42,7 @@ class _DebugApiTestPageState2 extends State<DebugApiTestPage2> {
     // 登录 
     if(index == 0 ) {
 
-      DebugAPI.login(context,name:'admin',pswd: '456',onSucc: (auth,msg){
+      DebugAPILogin.login(context,name:'admin',pswd: '456',onSucc: (auth,msg){
         showToast(msg + auth.toString());
       },onFail:(msg){
         showToast(msg);
@@ -51,7 +52,7 @@ class _DebugApiTestPageState2 extends State<DebugApiTestPage2> {
     // 获取用户信息
     else if(index == 1 ) {
       
-      DebugAPI.getAccountInfo(name:'admin',onSucc: (account){
+      DebugAPILogin.getAccountInfo(name:'admin',onSucc: (account){
 
         var log = '账号名 :' + account.description + '\n';
         log += '拥有电站数 :' + account.accountStationRelation.length.toString() + '\n';

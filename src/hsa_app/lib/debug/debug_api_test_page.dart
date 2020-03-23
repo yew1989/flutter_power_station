@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hsa_app/components/public_tool.dart';
+import 'package:hsa_app/debug/API/debug_api_login.dart';
 import 'package:hsa_app/debug/debug_api.dart';
 
 class DebugApiTestPage extends StatefulWidget {
@@ -33,7 +34,7 @@ class _DebugApiTestPageState extends State<DebugApiTestPage> {
     // 登录 
     if(index == 0 ) {
 
-      DebugAPI.login(context,name:'admin',pswd: '456',onSucc: (auth,msg){
+      DebugAPILogin.login(context,name:'admin',pswd: '456',onSucc: (auth,msg){
         showToast(msg + auth.toString());
       },onFail:(msg){
         showToast(msg);
@@ -43,7 +44,7 @@ class _DebugApiTestPageState extends State<DebugApiTestPage> {
     // 获取用户信息
     else if(index == 1 ) {
       
-      DebugAPI.getAccountInfo(name:'admin',onSucc: (account){
+      DebugAPILogin.getAccountInfo(name:'admin',onSucc: (account){
 
         var log = '账号名 :' + account.description + '\n';
         log += '拥有电站数 :' + account.accountStationRelation.length.toString() + '\n';
@@ -60,7 +61,7 @@ class _DebugApiTestPageState extends State<DebugApiTestPage> {
     // 获取用户信息
     else if(index == 2 ) {
       
-      DebugAPI.resetLoginPassword(context,accountName:'admin' , oldLoginPwd: '123' ,newLoginPwd:'456',onSucc: (account,msg){
+      DebugAPILogin.resetLoginPassword(context,accountName:'admin' , oldLoginPwd: '123' ,newLoginPwd:'456',onSucc: (account,msg){
 
         var log = '密码修改成功!';
 

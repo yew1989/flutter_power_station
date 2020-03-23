@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:hsa_app/api/api.dart';
+import 'package:hsa_app/debug/API/debug_api_login.dart';
 import 'package:hsa_app/debug/debug_api.dart';
 import 'package:hsa_app/debug/debug_share_instance.dart';
 import 'package:hsa_app/service/umeng_analytics.dart';
@@ -152,7 +152,7 @@ class _ModifyPswdPageState extends State<ModifyPswdPage> {
     //var result = await API.modifyPswd(oldWord, newWord);
     var result;
     var accountName = DebugShareInstance.getInstance().accountName;
-    DebugAPI.resetLoginPassword(context,accountName:accountName , oldLoginPwd: oldWord ,newLoginPwd:newWord,onSucc: (account,msg){
+    DebugAPILogin.resetLoginPassword(context,accountName:accountName , oldLoginPwd: oldWord ,newLoginPwd:newWord,onSucc: (account,msg){
       var log = '密码修改成功!';
     },onFail:(msg){
     });

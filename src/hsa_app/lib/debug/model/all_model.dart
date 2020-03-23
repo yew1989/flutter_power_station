@@ -5,3 +5,7 @@ export 'package:hsa_app/debug/model/waterTurbines.dart';
 export 'package:hsa_app/debug/model/account.dart';
 export 'package:hsa_app/debug/model/station.dart';
 export 'package:hsa_app/debug/model/nearestRunningData.dart';
+export 'package:hsa_app/debug/model/active_power.dart';
+export 'package:hsa_app/debug/model/erc_flag_type.dart';
+export 'package:hsa_app/debug/model/terminal_alarm_event.dart';
+export 'package:hsa_app/debug/model/water_level.dart';

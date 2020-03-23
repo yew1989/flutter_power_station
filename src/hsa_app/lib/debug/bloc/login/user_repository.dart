@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:hsa_app/components/public_tool.dart';
-import 'package:hsa_app/debug/debug_api.dart';
+import 'package:hsa_app/debug/API/debug_api_login.dart';
 import 'package:meta/meta.dart';
 
 class UserRepository {
@@ -14,7 +14,7 @@ class UserRepository {
     @required String password,
     @required BuildContext context,
   }) async {
-    DebugAPI.login(context,name:username,pswd:password,onSucc: (auth,msg){
+    DebugAPILogin.login(context,name:username,pswd:password,onSucc: (auth,msg){
       showToast(msg + auth.toString());
     },onFail:(msg){
       showToast(msg);

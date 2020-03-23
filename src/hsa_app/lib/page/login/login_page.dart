@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:hsa_app/api/api.dart';
+import 'package:hsa_app/debug/API/debug_api_login.dart';
 import 'package:hsa_app/debug/debug_api.dart';
 import 'package:hsa_app/debug/debug_share_instance.dart';
 import 'package:hsa_app/page/framework/root_page.dart';
@@ -54,7 +55,7 @@ class LoginPageState extends State<LoginPage> {
 
     Progresshud.showWithStatus('正在登录...');
     //var token = await API.getLoginToken(usrCtrl.text, pwdCtrl.text);
-    DebugAPI.login(context,name:usrCtrl.text, pswd:pwdCtrl.text);
+    DebugAPILogin.login(context,name:usrCtrl.text, pswd:pwdCtrl.text);
     var token = DebugShareInstance.getInstance().auth;
     if (token.length > 0) {
 
