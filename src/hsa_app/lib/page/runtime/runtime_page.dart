@@ -7,10 +7,10 @@ import 'package:hsa_app/components/runtime_progress_bar.dart';
 import 'package:hsa_app/components/shawdow_widget.dart';
 import 'package:hsa_app/components/smart_refresher_style.dart';
 import 'package:hsa_app/config/app_theme.dart';
+import 'package:hsa_app/debug/API/debug_api_station.dart';
 import 'package:hsa_app/debug/debug_api.dart';
 import 'package:hsa_app/debug/model/all_model.dart';
 import 'package:hsa_app/model/runtime_adapter.dart';
-import 'package:hsa_app/model/runtime_data.dart';
 import 'package:hsa_app/page/dialog/control_model_dialog.dart';
 import 'package:hsa_app/page/dialog/password_dialog.dart';
 import 'package:hsa_app/page/history/history_page.dart';
@@ -168,7 +168,7 @@ class _RuntimePageState extends State<RuntimePage> {
       Progresshud.showInfoWithStatus('获取实时机组数据失败');
       return;
     }
-    DebugAPI.getWaterTurbinesInfo(terminalAddress: addressId,onSucc: (dt){
+    DebugAPIStation.getDeviceTerminalInfo(terminalAddress: addressId,onSucc: (dt){
       //this.runtimeData = RuntimeDataAdapter.adapter(dt, widget.alias);
       this.deviceTerminal = dt;
     },onFail: (msg){
@@ -185,7 +185,7 @@ class _RuntimePageState extends State<RuntimePage> {
                 "AFN0C.F13.p0", "AFN0C.F24.p0", "AFN0C.F20.p0", "AFN0C.F21.p0", "AFN0C.F22.p0"] ;
       break;
     }
-    DebugAPI.getMultipleAFNFnpn(terminalAddress:addressId,paramList: param,onSucc: (nearestRunningData){
+    DebugAPIStation.getMultipleAFNFnpn(terminalAddress:addressId,paramList: param,onSucc: (nearestRunningData){
       Progresshud.dismiss();
       refreshController.refreshCompleted();
       setState(() {
@@ -217,7 +217,7 @@ class _RuntimePageState extends State<RuntimePage> {
       runLoopTimer?.cancel();
       return;
     }
-    DebugAPI.getWaterTurbinesInfo(terminalAddress: addressId,onSucc: (dt){
+    DebugAPIStation.getDeviceTerminalInfo(terminalAddress: addressId,onSucc: (dt){
       //this.runtimeData = RuntimeDataAdapter.adapter(dt, widget.alias);
       this.deviceTerminal = dt;
     },onFail: (msg){
@@ -234,7 +234,7 @@ class _RuntimePageState extends State<RuntimePage> {
                 "AFN0C.F13.p0", "AFN0C.F24.p0", "AFN0C.F20.p0", "AFN0C.F21.p0", "AFN0C.F22.p0"] ;
       break;
     }
-    DebugAPI.getMultipleAFNFnpn(terminalAddress:addressId,paramList: param,onSucc: (nearestRunningData){
+    DebugAPIStation.getMultipleAFNFnpn(terminalAddress:addressId,paramList: param,onSucc: (nearestRunningData){
       setState(() {
         this.deviceTerminal.nearestRunningData = nearestRunningData;
         this.runtimeData = RuntimeDataAdapter.adapter(deviceTerminal, widget.alias);

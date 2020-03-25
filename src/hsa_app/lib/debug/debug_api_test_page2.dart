@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hsa_app/components/public_tool.dart';
+import 'package:hsa_app/debug/API/debug_api_history.dart';
 import 'package:hsa_app/debug/API/debug_api_login.dart';
 import 'package:hsa_app/debug/debug_api.dart';
 
@@ -150,7 +151,7 @@ class _DebugApiTestPageState2 extends State<DebugApiTestPage2> {
 
     // 获取历史水库水位
     else if(index == 7) {
-      DebugAPI.waterLevelPoints(
+      DebugAPIHistory.waterLevelPoints(
       address: '00310011', 
       startDate: '2018-06-01', 
       endDate: '2018-06-01', 
@@ -171,7 +172,7 @@ class _DebugApiTestPageState2 extends State<DebugApiTestPage2> {
 
     // 获取历史有功
     else if(index == 8) {
-      DebugAPI.activePowerPoints(
+      DebugAPIHistory.activePowerPoints(
         address: '0016001', 
         startDate: '2018-08-30',
         endDate: '2018-08-30', 
