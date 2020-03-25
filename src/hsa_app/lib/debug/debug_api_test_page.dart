@@ -135,6 +135,17 @@ class _DebugApiTestPageState extends State<DebugApiTestPage> {
         showToast(msg);
       });
     }
+
+     else if(index == 7 ) {
+      
+      DebugAPI.setFavorite(stationNo: '0339001',isFavorite:true,onSucc: (msg,_){
+
+        showToast(msg);
+
+      },onFail: (msg){
+        showToast(msg);
+      });
+    }
   }
 
 

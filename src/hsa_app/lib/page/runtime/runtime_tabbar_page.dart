@@ -3,6 +3,8 @@ import 'package:hsa_app/components/page_indicator/dots_decorator.dart';
 import 'package:hsa_app/components/page_indicator/dots_indicator.dart';
 import 'package:hsa_app/components/public_tool.dart';
 import 'package:hsa_app/config/app_theme.dart';
+import 'package:hsa_app/debug/model/all_model.dart';
+import 'package:hsa_app/debug/model/deviceTerminal.dart';
 import 'package:hsa_app/model/station_info.dart';
 import 'package:hsa_app/page/history/history_page.dart';
 import 'package:hsa_app/page/runtime/runtime_page.dart';
@@ -11,10 +13,10 @@ import 'package:hsa_app/theme/theme_gradient_background.dart';
 
 class RuntimeTabbarPage extends StatefulWidget {
 
-  final List<Devices> devices;
+  final List<WaterTurbine> waterTurbines;
   final int selectIndex;
 
-  const RuntimeTabbarPage({Key key, this.devices, this.selectIndex}) : super(key: key);
+  const RuntimeTabbarPage({Key key, this.waterTurbines, this.selectIndex}) : super(key: key);
   @override
   _RuntimeTabbarPageState createState() => _RuntimeTabbarPageState();
 }
@@ -22,7 +24,7 @@ class RuntimeTabbarPage extends StatefulWidget {
 class _RuntimeTabbarPageState extends State<RuntimeTabbarPage> {
 
   int currentIndex;
-  Devices currentDevice;
+  DeviceTerminal currentDevice;
   int pageLength;
   String title;
   PageController pageController;
@@ -32,9 +34,9 @@ class _RuntimeTabbarPageState extends State<RuntimeTabbarPage> {
   void initState() {
 
     currentIndex = widget?.selectIndex ?? 0;
-    currentDevice = widget?.devices[currentIndex];
-    pageLength = widget?.devices?.length ?? 0;
-    title = currentDevice?.name ?? '';
+    currentDevice = widget?.waterTurbines[currentIndex].deviceTerminal;
+    pageLength = widget?.waterTurbines?.length ?? 0;
+    title = currentDevice?.deviceName ?? '';
     pageController = PageController(initialPage: currentIndex);
     badgeName = (currentIndex + 1).toString() + '#';
     UMengAnalyticsService.enterPage('机组实时');
@@ -48,14 +50,14 @@ class _RuntimeTabbarPageState extends State<RuntimeTabbarPage> {
     super.dispose();
   }
 
-   void onTapPushToHistoryPage(Devices devices) async {
-    pushToPage(context, HistoryPage(title: '历史分析',address: devices.address));
+   void onTapPushToHistoryPage(DeviceTerminal devices) async {
+    pushToPage(context, HistoryPage(title: '历史分析',address: devices.terminalAddress));
   }
   
 
   @override
   Widget build(BuildContext context) {
-    final isOnline = currentDevice?.status == 'online' ? true : false;
+    final isOnline = currentDevice?.isOnLine;
     return ThemeGradientBackground(
       child: Scaffold(
         backgroundColor: Colors.transparent,
@@ -81,20 +83,20 @@ class _RuntimeTabbarPageState extends State<RuntimeTabbarPage> {
             PageView.builder(
               physics: AlwaysScrollableScrollPhysics(),
               controller: pageController,
-              itemCount: widget.devices.length,
+              itemCount: widget.waterTurbines.length,
               itemBuilder: (BuildContext context, int index) => 
               RuntimePage(
-                title: currentDevice.name,
-                address:currentDevice.address,
+                title: currentDevice.deviceName,
+                address:currentDevice.terminalAddress,
                 alias:(index+1).toString() + '#',
                 isOnline:isOnline,
               ),
               onPageChanged: (int index) {
                 currentIndex = index;
-                currentDevice = widget?.devices[currentIndex];
+                currentDevice = widget?.waterTurbines[currentIndex].deviceTerminal;
                 badgeName = (currentIndex + 1).toString() + '#';
                 setState(() {
-                  title = currentDevice.name;
+                  title = currentDevice.deviceName;
                 });
               },
             ),

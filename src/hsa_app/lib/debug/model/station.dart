@@ -18,10 +18,10 @@ class StationInfo {
   double hyStationLatitude;
   double waterSourceLongtitude;
   double waterSourceLatitude;
-  int totalEquippedKW;
-  int totalEquippedKVA;
+  double totalEquippedKW;
+  double totalEquippedKVA;
   String stationNamePinYin;
-  int reservoirCurrentWaterStage;
+  double reservoirCurrentWaterStage;
   double reservoirAlarmWaterStage;
   double reservoirBasicWaterStage;
   double reservoirArea;
@@ -33,6 +33,7 @@ class StationInfo {
   double flatElectricityPrice;
   double valleyElectricityPrice;
   bool isCurrentAccountFavorite;
+  
 
   StationInfo(
       {this.stationNo,
@@ -63,7 +64,8 @@ class StationInfo {
       this.spikeElectricityPrice,
       this.flatElectricityPrice,
       this.valleyElectricityPrice,
-      this.isCurrentAccountFavorite});
+      this.isCurrentAccountFavorite,
+      });
 
   StationInfo.fromJson(Map<String, dynamic> json) {
     stationNo = json['stationNo'];
@@ -95,10 +97,10 @@ class StationInfo {
     hyStationLatitude = json['hyStationLatitude'];
     waterSourceLongtitude = json['waterSourceLongtitude'];
     waterSourceLatitude = json['waterSourceLatitude'];
-    totalEquippedKW = json['totalEquippedKW'];
-    totalEquippedKVA = json['totalEquippedKVA'];
+    totalEquippedKW = json['totalEquippedKW'].toDouble();
+    totalEquippedKVA = json['totalEquippedKVA'].toDouble();
     stationNamePinYin = json['stationNamePinYin'];
-    reservoirCurrentWaterStage = json['reservoirCurrentWaterStage'];
+    reservoirCurrentWaterStage = json['reservoirCurrentWaterStage'].toDouble();
     reservoirAlarmWaterStage = json['reservoirAlarmWaterStage'];
     reservoirBasicWaterStage = json['reservoirBasicWaterStage'];
     reservoirArea = json['reservoirArea'];
@@ -155,4 +157,6 @@ class StationInfo {
     data['isCurrentAccountFavorite'] = this.isCurrentAccountFavorite;
     return data;
   }
+
+
 }

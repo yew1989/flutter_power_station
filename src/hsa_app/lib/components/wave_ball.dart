@@ -46,8 +46,13 @@ class PowerValuePack {
   static double caculateWaveRatio(StationInfo station) {
 
     var powerMax = station?.totalEquippedKW ?? 0.0;
-    var powerCurrent = //station?.power?.current ?? 
-          0.0;
+    var powerCurrent = 0.0;
+    if(station.waterTurbines != null){
+      station.waterTurbines.map((wt){
+        powerCurrent += wt.deviceTerminal?.nearestRunningData?.current ?? 0.0 ;
+      }).toList();
+    }
+   
     if( powerMax == 0 ) return 0.0;
     if( powerCurrent == 0 ) return 0.0; 
     if( powerCurrent > powerMax) return 1;

@@ -6,6 +6,9 @@ class LiveLink {
   String deviceName;  //设备名称
   String liveLinkName;  //在线名字
   String liveLinkUrl;  //在线地址url）
+  String m3u8Url;
+  String rtmpUrl;
+  String ezopenUrl;
 
   LiveLink(
       {this.liveLinkId,
@@ -14,7 +17,10 @@ class LiveLink {
       this.deviceVersion,
       this.deviceName,
       this.liveLinkName,
-      this.liveLinkUrl});
+      this.liveLinkUrl,
+      this.m3u8Url,
+      this.rtmpUrl,
+      this.ezopenUrl});
 
   LiveLink.fromJson(Map<String, dynamic> json) {
     liveLinkId = json['liveLinkId'];
@@ -24,6 +30,9 @@ class LiveLink {
     deviceName = json['deviceName'];
     liveLinkName = json['liveLinkName'];
     liveLinkUrl = json['liveLinkUrl'];
+    m3u8Url = json['m3u8Url'];
+    rtmpUrl = json['rtmpUrl'];
+    ezopenUrl = json['ezopenUrl'];
   }
 
   Map<String, dynamic> toJson() {
@@ -35,6 +44,9 @@ class LiveLink {
     data['deviceName'] = this.deviceName;
     data['liveLinkName'] = this.liveLinkName;
     data['liveLinkUrl'] = this.liveLinkUrl;
+    data['m3u8Url'] = this.m3u8Url;
+    data['rtmpUrl'] = this.rtmpUrl;
+    data['ezopenUrl'] = this.ezopenUrl;
     return data;
   }
 }

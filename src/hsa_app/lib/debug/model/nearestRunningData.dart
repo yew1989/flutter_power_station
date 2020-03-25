@@ -31,15 +31,15 @@ class NearestRunningData{
     });
 
   NearestRunningData.fromJson(Map<String,dynamic> json,String terminalAddress){
-    voltage = json['terminal-'+'$terminalAddress'+'.afn0c.f9.p0']['发电机A相电压'] ?? 0.0;
-    current = json['terminal-'+'$terminalAddress'+'.afn0c.f9.p0']['发电机A相电流'] ?? 0.0;
-    fieldCurrent = json['terminal-'+'$terminalAddress'+'.afn0c.f10.p0']['励磁电流'] ?? 0.0;
-    powerFactor = json['terminal-'+'$terminalAddress'+'.afn0c.f9.p0']['发电机总功率因数'] ?? 0.0;
-    frequency = json['terminal-'+'$terminalAddress'+'.afn0c.f9.p0']['电网电压频率'] ?? 0.0;
-    openAngle = json['terminal-'+'$terminalAddress'+'.afn0c.f10.p0']['开度1'] ?? 0.0;
-    thrust = json['terminal-'+'$terminalAddress'+'.afn0c.f9.p0'][''] ?? 0.0;
-    waterPressure = json['terminal-'+'$terminalAddress'+'.afn0c.f9.p0'][''] ?? 0.0;
-    power = json['terminal-'+'$terminalAddress'+'.afn0c.f9.p0']['发电机总有功功率'] ?? 0.0;
+    voltage = json['terminal-'+'$terminalAddress'+'.afn0c.f9.p0'] != null ? json['terminal-'+'$terminalAddress'+'.afn0c.f9.p0']['发电机A相电压'].toDouble() ?? 0.0 : 0.0;
+    current = json['terminal-'+'$terminalAddress'+'.afn0c.f9.p0'] != null ? json['terminal-'+'$terminalAddress'+'.afn0c.f9.p0']['发电机A相电流'] ?? 0.0 : 0.0;
+    fieldCurrent = json['terminal-'+'$terminalAddress'+'.afn0c.f10.p0'] != null ? json['terminal-'+'$terminalAddress'+'.afn0c.f10.p0']['励磁电流'] ?? 0.0 : 0.0;
+    powerFactor = json['terminal-'+'$terminalAddress'+'.afn0c.f9.p0'] != null ? json['terminal-'+'$terminalAddress'+'.afn0c.f9.p0']['发电机总功率因数'] ?? 0.0 : 0.0;
+    frequency = json['terminal-'+'$terminalAddress'+'.afn0c.f9.p0'] != null ? json['terminal-'+'$terminalAddress'+'.afn0c.f9.p0']['电网电压频率'] ?? 0.0 : 0.0;
+    openAngle = json['terminal-'+'$terminalAddress'+'.afn0c.f10.p0'] != null ? json['terminal-'+'$terminalAddress'+'.afn0c.f10.p0']['开度1'] ?? 0.0 : 0.0;
+    //thrust = json['terminal-'+'$terminalAddress'+'.afn0c.f9.p0'] != null ? ['terminal-'+'$terminalAddress'+'.afn0c.f9.p0'][''] ?? 0.0 : 0.0;
+    //waterPressure = json['terminal-'+'$terminalAddress'+'.afn0c.f9.p0'] != null ? [''] ?? 0.0 : 0.0;
+    power = json['terminal-'+'$terminalAddress'+'.afn0c.f9.p0'] != null ? json['terminal-'+'$terminalAddress'+'.afn0c.f9.p0']['发电机总有功功率'] ?? 0.0 : 0.0;
 
   }
 

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hsa_app/components/wave_widget.dart';
-import 'package:hsa_app/model/station_info.dart';
+import 'package:hsa_app/debug/model/station.dart';
+//import 'package:hsa_app/model/station_info.dart';
 import 'package:native_color/native_color.dart';
 
 class StationWaveWidget extends StatefulWidget {
@@ -17,8 +18,8 @@ class _StationWaveWidgetState extends State<StationWaveWidget> {
 
 
   double caculateWaveRatio(StationInfo station) {
-    var waterMax = station?.water?.max ?? 0.0;
-    var waterCurrent = station?.water?.current ?? 0.0;
+    var waterMax = station?.reservoirAlarmWaterStage ?? 0.0;
+    var waterCurrent = station?.reservoirCurrentWaterStage ?? 0.0;
     if( waterMax == 0 ) return 0.0;
     if( waterCurrent == 0 ) return 0.0; 
     if( waterCurrent > waterMax) return 1;

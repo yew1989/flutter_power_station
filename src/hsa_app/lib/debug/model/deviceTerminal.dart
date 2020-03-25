@@ -1,3 +1,7 @@
+import 'package:hsa_app/debug/model/nearestRunningData.dart';
+import 'package:hsa_app/debug/model/station.dart';
+import 'package:hsa_app/debug/model/waterTurbines.dart';
+
 class DeviceTerminal {
   String terminalId;  //终端Id
   String stationNo;  	//所属电站号
@@ -12,6 +16,11 @@ class DeviceTerminal {
   bool isMaster;
   bool isAllowRemoteControl;
   String controlType;
+  String sessionStartupTime;
+  String sessionCloseTime;
+  NearestRunningData nearestRunningData;
+  StationInfo stationInfo;
+  WaterTurbine waterTurbine;
 
   DeviceTerminal(
       {this.terminalId,
@@ -26,7 +35,13 @@ class DeviceTerminal {
       this.isLinkSDU,
       this.isMaster,
       this.isAllowRemoteControl,
-      this.controlType});
+      this.controlType,
+      this.nearestRunningData,
+      this.sessionCloseTime,
+      this.sessionStartupTime,
+      this.stationInfo,
+      this.waterTurbine
+      });
 
   DeviceTerminal.fromJson(Map<String, dynamic> json) {
     terminalId = json['terminalId'];
@@ -42,6 +57,11 @@ class DeviceTerminal {
     isMaster = json['isMaster'];
     isAllowRemoteControl = json['isAllowRemoteControl'];
     controlType = json['controlType'];
+    nearestRunningData = json['nearestRunningData'];
+    sessionStartupTime = json['sessionStartupTime'];
+    sessionCloseTime = json['sessionCloseTime'];
+    stationInfo = json['hydropowerStation'];
+    waterTurbine = json['waterTurbine'];
   }
 
   Map<String, dynamic> toJson() {
@@ -59,6 +79,11 @@ class DeviceTerminal {
     data['isMaster'] = this.isMaster;
     data['isAllowRemoteControl'] = this.isAllowRemoteControl;
     data['controlType'] = this.controlType;
+    data['nearestRunningData'] = this.nearestRunningData;
+    data['sessionStartupTime'] = this.sessionStartupTime;
+    data['sessionCloseTime'] = this.sessionCloseTime;
+    data['hydropowerStation'] = this.stationInfo;
+    data['waterTurbine'] = this.waterTurbine;
     return data;
   }
 }

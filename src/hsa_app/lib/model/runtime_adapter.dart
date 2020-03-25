@@ -1,3 +1,5 @@
+import 'package:hsa_app/debug/model/all_model.dart';
+import 'package:hsa_app/debug/model/waterTurbines.dart';
 import 'package:hsa_app/model/runtime_data.dart';
 import 'package:hsa_app/page/dialog/control_model_dialog.dart';
 
@@ -68,33 +70,33 @@ class RuntimeDataAdapter {
  }
 
  // 机组开关机状态
- static bool motorPowerBool(RuntimeDataResponse data) {
+//  static bool motorPowerBool(RuntimeDataResponse data) {
 
-   var statusString = data?.terminalInfo?.waterTurbineStartStopState ?? '未定义';
-   if(statusString.compareTo('正在开机') == 0 || statusString.compareTo('并网运行') == 0) {
-      var isAvailable = isDataAvailable(data);
-      return isAvailable;
-   }
-   else if(statusString.compareTo('正在关机') == 0 || statusString.compareTo('机组关机') == 0) {
-     return false;
-   }
-   else if(statusString.compareTo('未定义') == 0) {
-      var volt = data?.voltageAndCurrent?.aV?.toDouble() ?? 0.0;
-      if(volt <= 50) {
-        return false;
-      }
-      else if (volt > 50){
-        var isAvailable = isDataAvailable(data);
-        return isAvailable;
-      }
-      return false;
-   }
-   return false;
- }
+//    var statusString = data?.terminalInfo?.waterTurbineStartStopState ?? '未定义';
+//    if(statusString.compareTo('正在开机') == 0 || statusString.compareTo('并网运行') == 0) {
+//       var isAvailable = isDataAvailable(data);
+//       return isAvailable;
+//    }
+//    else if(statusString.compareTo('正在关机') == 0 || statusString.compareTo('机组关机') == 0) {
+//      return false;
+//    }
+//    else if(statusString.compareTo('未定义') == 0) {
+//       var volt = data?.voltageAndCurrent?.aV?.toDouble() ?? 0.0;
+//       if(volt <= 50) {
+//         return false;
+//       }
+//       else if (volt > 50){
+//         var isAvailable = isDataAvailable(data);
+//         return isAvailable;
+//       }
+//       return false;
+//    }
+//    return false;
+//  }
 
 
 
- static RuntimeData adapter(RuntimeDataResponse data,String alias) {
+ static RuntimeData adapter(DeviceTerminal data,String alias) {
    // 运行参数
    var runtimeData = RuntimeData();
    
@@ -102,16 +104,16 @@ class RuntimeDataAdapter {
    runtimeData.electrical = ElectricalPack();
 
    // 获取最大值
-   var voltageMax     = data?.terminalInfo?.waterTurbineRatedV?.toDouble() ?? 0.0;
-   var currentMax     = data?.terminalInfo?.waterTurbineRatedA?.toDouble() ?? 0.0;
-   var excitationMax  = data?.terminalInfo?.waterTurbineExcitationCurrentA?.toDouble() ?? 0.0;
+   var voltageMax     = data?.waterTurbine?.ratedVoltageV?.toDouble() ?? 0.0;
+   var currentMax     = data?.waterTurbine?.ratedCurrentA?.toDouble() ?? 0.0;
+   var excitationMax  = data?.waterTurbine?.ratedExcitationCurrentA?.toDouble() ?? 0.0;
    var powerFactorMax = 1.0;
    
    // 获取当前值
-   var voltageNow     = data?.voltageAndCurrent?.aV?.toDouble() ?? 0.0;
-   var currentNow     = data?.voltageAndCurrent?.aA?.toDouble() ?? 0.0;
-   var excitationNow  = data?.workSupportData?.excitationCurrentA?.toDouble() ?? 0.0;
-   var powerFactorNow = data?.power?.tPf?.toDouble() ?? 0.0;
+   var voltageNow     = data?.nearestRunningData?.voltage?.toDouble() ?? 0.0;
+   var currentNow     = data?.nearestRunningData?.current?.toDouble() ?? 0.0;
+   var excitationNow  = data?.nearestRunningData?.fieldCurrent?.toDouble() ?? 0.0;
+   var powerFactorNow = data?.nearestRunningData?.power?.toDouble() ?? 0.0;
 
    // 获取比例值
    var voltagePercent     = RuntimeDataAdapter.caclulatePencent(voltageNow,voltageMax);
@@ -129,27 +131,28 @@ class RuntimeDataAdapter {
    runtimeData.electrical.powerFactor = ValueItem(now: powerFactorNow,max: powerFactorMax,percent: powerFactorPercent);
    
    // 最大装机功率
-   runtimeData.equippedCapacitor =  data?.terminalInfo?.waterTurbineEquippedCapacitor ?? 0.0;
+   runtimeData.equippedCapacitor =  data?.waterTurbine?.ratedPowerKW ?? 0.0;
    
    // 功率面板
    runtimeData.dashboard = DashBoardDataPack();
     
    // 主机与别名
-   var workModel = data?.terminalInfo?.workModel ?? '';
-   var isMaster = workModel == '主机' ? true :false;
+   //var workModel = data?.terminalInfo?.workModel ?? '';
+   //var isMaster = workModel == '主机' ? true :false;
+   var isMaster = data.isMaster;
    var aliasName =  alias ?? '';
    
    runtimeData.dashboard.isMaster = isMaster;
    runtimeData.dashboard.aliasName = aliasName;
 
    // 额定有功☑️ / 视在功率 ❌ 
-   var powerMax = data?.terminalInfo?.waterTurbineRatedActivePower?.toDouble() ?? 0.0;
+   var powerMax = data?.waterTurbine?.ratedPowerKW?.toDouble() ?? 0.0;
    var openMax  = 1.0;
    var freqMax  = 50.0;
 
-   var powerNow = data?.power?.tkW?.toDouble() ?? 0.0;
-   var openNow  = data?.workSupportData?.gateOpening?.toDouble() ?? 0.0;
-   var freqNow  = data?.voltageAndCurrent?.vHz?.toDouble() ?? 0.0;
+   var powerNow = data?.nearestRunningData?.power?.toDouble() ?? 0.0;
+   var openNow  = data?.nearestRunningData?.openAngle?.toDouble() ?? 0.0;
+   var freqNow  = data?.nearestRunningData?.frequency?.toDouble() ?? 0.0;
 
    var powerPercent   = RuntimeDataAdapter.caclulatePencent(powerNow,powerMax);
    var openPercent    = RuntimeDataAdapter.caclulatePencent(openNow,openMax);
@@ -163,40 +166,40 @@ class RuntimeDataAdapter {
    runtimeData.other = OtherDataPack();
 
    // 温度数组
-   var temperatures  = data?.workSupportData?.temperatures ?? [];
+   //var temperatures  = data?.waterTurbine?.temperatureMeasuringAliasName ?? [];
    
    // 首项
-   var radialName  = getFirstItemName(temperatures);
-   var radialValue = getFirstItemValue(temperatures);
+   var radialName  = '径向';//getFirstItemName(temperatures);
+   var radialValue = 0.0;//data?.nearestRunningData?.;//getFirstItemValue(temperatures);
    // 推力
-   var thrustStr = getThrust(temperatures);
+   var thrustStr = data?.nearestRunningData?.thrust ?? 0.0;//getThrust(temperatures);
 
    // 水压
-   var waterPressures = data?.workSupportData?.waterPressures ?? [0.0];
-   var pressure = waterPressures?.first?.toDouble() ?? 0.0;
+   var waterPressures = data?.nearestRunningData?.waterPressure ?? 0.0;
+   var pressure = waterPressures ?? 0.0;
 
-   runtimeData.other.radial   = OtherData(title: radialValue,subTitle: radialName);
-   runtimeData.other.thrust   = OtherData(title: thrustStr ,subTitle: '推力:N');
+   runtimeData.other.radial   = OtherData(title: radialValue.toString(),subTitle: radialName);
+   runtimeData.other.thrust   = OtherData(title: thrustStr.toString() ,subTitle: '推力:N');
    runtimeData.other.pressure = OtherData(title: pressure.toString(),subTitle: '水压:MPa');
 
 
    // 事件列表
    runtimeData.events = List<EventTileData>();
    // 记录
-   var records = data?.workSupportData?.recentAlarmEventRecord;
-   if(records!=null) {
-     for (var record in records) {
-       var right = record?.freezeTime ?? '';
-       right = right.replaceAll('T', ' ');// 替换 C# 时间戳中的 T
-       var left  = 'ERC' + record?.eRCFlag.toString() + '--' +  record?.eRCTitle;
-       var event = EventTileData(left,right);
-       runtimeData.events.add(event);
-     }
-   }
+  //  var records = data?.workSupportData?.recentAlarmEventRecord;
+  //  if(records!=null) {
+  //    for (var record in records) {
+  //      var right = record?.freezeTime ?? '';
+  //      right = right.replaceAll('T', ' ');// 替换 C# 时间戳中的 T
+  //      var left  = 'ERC' + record?.eRCFlag.toString() + '--' +  record?.eRCTitle;
+  //      var event = EventTileData(left,right);
+  //      runtimeData.events.add(event);
+  //    }
+  //  }
 
    // 当前状态
-   var modelString = data?.terminalInfo?.controlModel ?? '未知';
-   var isRemoteControl = data?.terminalInfo?.isRemoteControl ?? false;
+   var modelString = data?.controlType ?? '未知';
+   var isAllowRemoteControl = data?.isAllowRemoteControl ?? false;
    if(modelString.compareTo('未知') == 0) {
      runtimeData.status = ControlModelCurrentStatus.unknow;
    }
@@ -207,10 +210,10 @@ class RuntimeDataAdapter {
      runtimeData.status = ControlModelCurrentStatus.auto;
    }
    else if(modelString.compareTo('智能') == 0) {
-     runtimeData.status = isRemoteControl ? ControlModelCurrentStatus.remoteOn : ControlModelCurrentStatus.remoteOff;
+     runtimeData.status = isAllowRemoteControl ? ControlModelCurrentStatus.remoteOn : ControlModelCurrentStatus.remoteOff;
    }
    // 开关机状态
-   runtimeData.isMotorPowerOn = motorPowerBool(data);
+   runtimeData.isMotorPowerOn = true;//motorPowerBool(data);
 
    return runtimeData;
  }

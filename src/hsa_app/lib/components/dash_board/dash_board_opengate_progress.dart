@@ -30,6 +30,7 @@ class _DashBoardOpenGateProgressState extends State<DashBoardOpenGateProgress> w
 
   void forwardAnimation() async {
     await Future.delayed(Duration(milliseconds:800));
+    if(controller == null) return;
     controller.forward();
   }
 

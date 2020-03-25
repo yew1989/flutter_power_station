@@ -39,7 +39,7 @@ class _HomeStationListState extends State<HomeStationList> {
   int type = 0; 
   String provinceName = '';
   String keyWord = '';
-  List<String> favoriteStations = [];
+  List<String> favoriteStations ;
 
   // 是否空视图
   bool isEmpty = false;
@@ -51,7 +51,7 @@ class _HomeStationListState extends State<HomeStationList> {
     
     this.currentPage = 1;
     this.isEmpty = false;
-
+    
     DebugAPI.getStationList(onSucc: (msg){
       
       isLoadFinsh = true;
@@ -60,6 +60,7 @@ class _HomeStationListState extends State<HomeStationList> {
       if(mounted) {
         setState(() {
           this.stations = msg.rows;
+
         });
       }
 
@@ -80,7 +81,6 @@ class _HomeStationListState extends State<HomeStationList> {
     proviceAreaCityNameOfDotSeparated:provinceName,
     arrayOfStationNoOptAny: list,
     );
-
   }
 
 
@@ -120,9 +120,16 @@ class _HomeStationListState extends State<HomeStationList> {
 
   //获取关注列表
   void getFavoriteStations(){
-    
     DebugAPI.getFavoriteStationNos(onSucc :(msg){
       this.favoriteStations = msg;
+      
+      initPage();
+      if(this.widget.isFromSearch == true) {
+        EventBird().on(AppEvent.searchKeyWord, (text){
+            this.keyWord = text;
+            initPage();
+        });
+      }
     },onFail: (msg){
       
     });
@@ -152,21 +159,13 @@ class _HomeStationListState extends State<HomeStationList> {
   @override
   void initState() {
     super.initState();
-    initPage();
-    if(this.widget.isFromSearch == true) {
-      EventBird().on(AppEvent.searchKeyWord, (text){
-          this.keyWord = text;
-          initPage();
-      });
-    }
+    getFavoriteStations();
   }
 
   void initPage() {
     isLoadFinsh = false;
     caculateType(widget.homeParam);
-    //loadFirst();
     if(this.type == 1){
-      getFavoriteStations();
       loadFirst(favoriteStations);
     }else{
       loadFirst(null);
@@ -197,8 +196,8 @@ class _HomeStationListState extends State<HomeStationList> {
       footer: appRefreshFooter(),
       enablePullDown: true,
       enablePullUp: true,
-      onLoading: ()=> loadNext(this.favoriteStations),
-      onRefresh: ()=> loadFirst(this.favoriteStations),
+      onLoading: ()=> type == 1 ? loadNext(this.favoriteStations) : loadNext(null),
+      onRefresh: ()=> type == 1 ? loadFirst(this.favoriteStations) : loadFirst(null),
       controller: refreshController,
       child: ListView.builder(
         itemCount: this.stations?.length ?? 0,
@@ -222,7 +221,6 @@ class _HomeStationListState extends State<HomeStationList> {
 
           GestureDetector(
             onTap: (){
-              
               // pushToPage(context, StationPage(station.name,station.id.toString()));
               // 新版电站滑块
               pushToPage(context,StationTabbarPage(stations: stations,selectIndex: index));
@@ -296,19 +294,31 @@ class _HomeStationListState extends State<HomeStationList> {
 
   // 请求关注
   void requestFocus(StationInfo station) async {
-
-    API.focusStation(station.isCurrentAccountFavorite.toString(), !station.isCurrentAccountFavorite, (String msg){
-      final msg = !station.isCurrentAccountFavorite ? '关注成功' : '取消关注成功'; 
-      Progresshud.showSuccessWithStatus(msg);
+    DebugAPI.setFavorite(stationNo: station.stationNo,isFavorite:!station.isCurrentAccountFavorite,onSucc: (msg,_){
+      Progresshud.showSuccessWithStatus(!station.isCurrentAccountFavorite ? '关注成功':'取消成功' );
       setState(() {
         station.isCurrentAccountFavorite = !station.isCurrentAccountFavorite;
       });
-    }, (String msg){
+    },onFail: (msg){
       Progresshud.showSuccessWithStatus('请检查网络');
       setState(() {
         station.isCurrentAccountFavorite = !station.isCurrentAccountFavorite;
       });
     });
+
+
+    // API.focusStation(station.isCurrentAccountFavorite.toString(), !station.isCurrentAccountFavorite, (String msg){
+    //   final msg = !station.isCurrentAccountFavorite ? '关注成功' : '取消关注成功'; 
+    //   Progresshud.showSuccessWithStatus(msg);
+    //   setState(() {
+    //     station.isCurrentAccountFavorite = !station.isCurrentAccountFavorite;
+    //   });
+    // }, (String msg){
+    //   Progresshud.showSuccessWithStatus('请检查网络');
+    //   setState(() {
+    //     station.isCurrentAccountFavorite = !station.isCurrentAccountFavorite;
+    //   });
+    // });
   }
 
 

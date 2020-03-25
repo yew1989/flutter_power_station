@@ -30,6 +30,11 @@ typedef AlertEventListCallback = void Function(List<TerminalAlarmEvent> events);
 typedef WaterLevelListCallback = void Function(List<WaterLevel> points);
 // 有功曲线列表
 typedef ActivePowerListCallback = void Function(List<ActivePower> points);
+// 水轮机信息
+typedef WaterTurbineCallback = void Function(WaterTurbine waterTurbines);
+// 终端信息
+typedef DeviceTerminalCallback = void Function(DeviceTerminal deviceTerminal);
+
 
 class DebugAPI {
 
@@ -146,6 +151,45 @@ class DebugAPI {
       if(onSucc != null) onSucc(resp.data);
     }, onFail);
   }
+
+  //单条电站信息
+  static void getStationInfo({String stationNo,
+    bool isIncludeCustomer,bool isIncludeWaterTurbine,bool isIncludeFMD,bool isIncludeLiveLink,
+    StationInfoCallback onSucc,DebugHttpFailCallback onFail})async {
+
+    Map<String, dynamic> param = new Map<String, dynamic>();
+
+    //结果中是否要包含客户信息
+    if(isIncludeCustomer != null){
+      param['isIncludeCustomer'] = isIncludeCustomer;
+    }
+    
+    //结果中是否要包含机组信息
+    if(isIncludeWaterTurbine != null){
+      param['isIncludeWaterTurbine'] = isIncludeWaterTurbine;
+    }
+
+    //结果中是否要包含生态下泄信息
+    if(isIncludeFMD != null){
+      param['isIncludeFMD'] = isIncludeFMD;
+    }
+
+    //结果中是否要包含监控地址
+    if(isIncludeLiveLink != null){
+      param['isIncludeLiveLink'] = isIncludeLiveLink;
+    }
+
+
+    // 获取电站列表信息地址
+    final path = restHost + '/v1/HydropowerStation/' + '$stationNo';
+    
+    DebugHttpHelper.httpGET(path, param, (map,_){
+
+      var resp = StationInfoResp.fromJson(map);
+      if(onSucc != null) onSucc(resp.data);
+    }, onFail);
+  }
+
   
   // 获取终端告警列表
   static void getTerminalAlertList({
@@ -332,8 +376,6 @@ class DebugAPI {
       if(onFail != null) onFail('错误电站');
       return;
     }
-    
-   
     final path = restHost + '/v1/HydropowerStation/' + '$stationNo'+'/SetFavorite/'+'$isFavorite';
     
     DebugHttpHelper.httpPUT(path, null, (map,_){
@@ -342,6 +384,8 @@ class DebugAPI {
       
     }, onFail);
   }
+
+
   // 历史电能列表
   static void activePowerPoints({
     @required String address,
@@ -427,5 +471,36 @@ class DebugAPI {
     }, onFail);
   }
 
+  static void getWaterTurbinesInfo({String terminalAddress,
+    bool isIncludeCustomer,bool isIncludeWaterTurbine,bool isIncludeHydropowerStation,
+    DeviceTerminalCallback onSucc,DebugHttpFailCallback onFail})async {
+
+    Map<String, dynamic> param = new Map<String, dynamic>();
+
+    //结果中是否要包含客户信息
+    if(isIncludeCustomer != null){
+      param['isIncludeCustomer'] = isIncludeCustomer;
+    }
+    
+    //结果中是否要包含机组信息
+    if(isIncludeWaterTurbine != null){
+      param['isIncludeWaterTurbine'] = isIncludeWaterTurbine;
+    }
+
+    //结果中是否含有电站信息
+    if(isIncludeHydropowerStation != null){
+      param['isIncludeHydropowerStation'] = isIncludeHydropowerStation;
+    }
+
+
+    // 获取电站列表信息地址
+    final path = restHost + '/v1/DeviceTerminal/' + '$terminalAddress';
+    
+    DebugHttpHelper.httpGET(path, param, (map,_){
+
+      var resp =  DeviceTerminal.fromJson(map);
+      if(onSucc != null) onSucc(resp);
+    }, onFail);
+  }
   
 }

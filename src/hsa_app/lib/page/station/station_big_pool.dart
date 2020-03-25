@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:hsa_app/model/station_info.dart';
+import 'package:hsa_app/debug/model/station.dart';
+//import 'package:hsa_app/model/station_info.dart';
 import 'package:hsa_app/page/station/station_power_widget.dart';
 import 'package:hsa_app/page/station/station_profit_widget.dart';
 import 'package:hsa_app/page/station/station_wave_widget.dart';
@@ -18,7 +19,9 @@ class _StationBigPoolState extends State<StationBigPool> {
 
   @override
   Widget build(BuildContext context) {
-    final stationInfo = widget.stationInfo;
+    final stationInfo = widget?.stationInfo;
+
+    final profit = (stationInfo?.peakElectricityPrice ?? 0.0) + (stationInfo?.spikeElectricityPrice ?? 0.0)+ (stationInfo?.flatElectricityPrice ?? 0.0) + (stationInfo?.valleyElectricityPrice ?? 0.0);
     return Container(
       height: 266,
       color: Colors.transparent,
@@ -28,7 +31,7 @@ class _StationBigPoolState extends State<StationBigPool> {
           // 波浪组件
           StationWaveWidget(stationInfo),
           // 富文本收益值
-          StationProfitWidget(profit:stationInfo.profit),
+          StationProfitWidget(profit:profit),
           // 当前功率 / 总功率
           Positioned(
             right: 10,bottom: 15,

@@ -7,6 +7,8 @@ import 'package:hsa_app/components/runtime_progress_bar.dart';
 import 'package:hsa_app/components/shawdow_widget.dart';
 import 'package:hsa_app/components/smart_refresher_style.dart';
 import 'package:hsa_app/config/app_theme.dart';
+import 'package:hsa_app/debug/debug_api.dart';
+import 'package:hsa_app/debug/model/all_model.dart';
 import 'package:hsa_app/model/runtime_adapter.dart';
 import 'package:hsa_app/model/runtime_data.dart';
 import 'package:hsa_app/page/dialog/control_model_dialog.dart';
@@ -43,6 +45,9 @@ class _RuntimePageState extends State<RuntimePage> {
 
   // 实时数据
   RuntimeData runtimeData = RuntimeData();
+
+  //水轮机信息
+  DeviceTerminal deviceTerminal = DeviceTerminal();
 
   // 远程控制任务
   RemoteControlTask remoteTask = RemoteControlTask();
@@ -158,37 +163,92 @@ class _RuntimePageState extends State<RuntimePage> {
     Progresshud.showWithStatus('读取数据中...');
 
     final addressId = widget.address ?? '';
-
+    List<String> param ;
     if (addressId.length == 0) {
       Progresshud.showInfoWithStatus('获取实时机组数据失败');
       return;
     }
-
-    API.runtimeData(addressId, (RuntimeDataResponse data) {
+    DebugAPI.getWaterTurbinesInfo(terminalAddress: addressId,onSucc: (dt){
+      //this.runtimeData = RuntimeDataAdapter.adapter(dt, widget.alias);
+      this.deviceTerminal = dt;
+    },onFail: (msg){
+      
+    });
+    switch(deviceTerminal.deviceVersion){
+      case 'S1-Base': 
+        param =  ["AFN0C.F7.p0", "AFN0C.F9.p0", "AFN0C.F10.p0", "AFN0C.F11.p0", 
+                  "AFN0C.F13.p0", "AFN0C.F24.p0", "AFN0C.F20.p0", "AFN0C.F21.p0", "AFN0C.F22.p0"] ;
+      break;
+      
+      case 'S1-Pro':
+        param = ["AFN0C.F28.p0", "AFN0C.F30.p0", "AFN0C.F10.p0", "AFN0C.F11.p0", 
+                "AFN0C.F13.p0", "AFN0C.F24.p0", "AFN0C.F20.p0", "AFN0C.F21.p0", "AFN0C.F22.p0"] ;
+      break;
+    }
+    DebugAPI.getMultipleAFNFnpn(terminalAddress:addressId,paramList: param,onSucc: (nearestRunningData){
       Progresshud.dismiss();
       refreshController.refreshCompleted();
       setState(() {
-        this.runtimeData = RuntimeDataAdapter.adapter(data, widget.alias);
+        this.deviceTerminal.nearestRunningData = nearestRunningData;
+        this.runtimeData = RuntimeDataAdapter.adapter(deviceTerminal, widget.alias);
       });
-    }, (String msg) {
+    },onFail: (msg){
       Progresshud.showInfoWithStatus('获取实时机组数据失败');
       refreshController.refreshFailed();
-      
     });
+    // API.runtimeData(addressId, (RuntimeDataResponse data) {
+    //   Progresshud.dismiss();
+    //   refreshController.refreshCompleted();
+    //   setState(() {
+    //     this.runtimeData = RuntimeDataAdapter.adapter(data, widget.alias);
+    //   });
+    // }, (String msg) {
+    //   Progresshud.showInfoWithStatus('获取实时机组数据失败');
+    //   refreshController.refreshFailed();
+      
+    // });
   }
 
   // 静默任务请求
   void requestRunTimeDataInBackground() async {
     final addressId = widget.address ?? '';
+    List<String> param ;
     if (addressId.length == 0) {
       runLoopTimer?.cancel();
       return;
     }
-    API.runtimeData(addressId, (RuntimeDataResponse data) {
+    DebugAPI.getWaterTurbinesInfo(terminalAddress: addressId,onSucc: (dt){
+      //this.runtimeData = RuntimeDataAdapter.adapter(dt, widget.alias);
+      this.deviceTerminal = dt;
+    },onFail: (msg){
+      
+    });
+    switch(deviceTerminal.deviceVersion){
+      case 'S1-Base': 
+        param =  ["AFN0C.F7.p0", "AFN0C.F9.p0", "AFN0C.F10.p0", "AFN0C.F11.p0", 
+                  "AFN0C.F13.p0", "AFN0C.F24.p0", "AFN0C.F20.p0", "AFN0C.F21.p0", "AFN0C.F22.p0"] ;
+      break;
+      
+      case 'S1-Pro':
+        param = ["AFN0C.F28.p0", "AFN0C.F30.p0", "AFN0C.F10.p0", "AFN0C.F11.p0", 
+                "AFN0C.F13.p0", "AFN0C.F24.p0", "AFN0C.F20.p0", "AFN0C.F21.p0", "AFN0C.F22.p0"] ;
+      break;
+    }
+    DebugAPI.getMultipleAFNFnpn(terminalAddress:addressId,paramList: param,onSucc: (nearestRunningData){
       setState(() {
-        this.runtimeData = RuntimeDataAdapter.adapter(data, widget.alias);
+        this.deviceTerminal.nearestRunningData = nearestRunningData;
+        this.runtimeData = RuntimeDataAdapter.adapter(deviceTerminal, widget.alias);
       });
-    }, (_) {});
+    },onFail: (msg){
+     
+    });
+
+
+    // API.runtimeData(addressId, (RuntimeDataResponse data) {
+    //   setState(() {
+    //     this.runtimeData = RuntimeDataAdapter.adapter(data, widget.alias);
+    //   });
+    // }, (_) {});
   }
 
   //  设备概要头

@@ -1,17 +1,19 @@
 import 'package:badges/badges.dart';
 import 'package:flutter/material.dart';
+import 'package:hsa_app/debug/model/all_model.dart';
+import 'package:hsa_app/debug/model/deviceTerminal.dart';
 import 'package:hsa_app/event/app_event.dart';
 import 'package:hsa_app/event/event_bird.dart';
-import 'package:hsa_app/model/station_info.dart';
+//import 'package:hsa_app/model/station_info.dart';
 import 'package:native_color/native_color.dart';
 import 'package:hsa_app/config/app_theme.dart';
 
 class StationDeviceListTile extends StatefulWidget {
 
-  final Devices device;
+  final WaterTurbine waterTurbine;
   final int index;
 
-  const StationDeviceListTile(this.device, this.index,{Key key}) : super(key: key);
+  const StationDeviceListTile(this.waterTurbine, this.index,{Key key}) : super(key: key);
 
   @override
   _StationDeviceListTileState createState() => _StationDeviceListTileState();
@@ -36,7 +38,7 @@ class _StationDeviceListTileState extends State<StationDeviceListTile> with Tick
       setState(() {
       
       var maxWidth = MediaQuery.of(context).size.width - 20;
-      var ratio = caculatePowerRatio(widget.device);
+      var ratio = caculatePowerRatio(widget.waterTurbine);
       // 超发
       if(ratio > 1.0) {
         isBeyond = true;
@@ -71,7 +73,7 @@ class _StationDeviceListTileState extends State<StationDeviceListTile> with Tick
     if(mounted) {
       setState(() {
       var maxWidth = MediaQuery.of(context).size.width - 20;
-      var ratio = caculatePowerRatio(widget.device);
+      var ratio = caculatePowerRatio(widget?.waterTurbine);
 
       // 超发
       if(ratio > 1.0) {
@@ -128,18 +130,19 @@ class _StationDeviceListTileState extends State<StationDeviceListTile> with Tick
   }
   @override
   Widget build(BuildContext context) {
-    final device = widget.device;
+    final waterTurbine = widget.waterTurbine;
     final index = widget.index;
     final badgeName = (index + 1).toString();
-    final isMaster = device?.isMaster ?? false;
-    final isOnline = device?.status == 'online' ? true : false;
-    final currentPower = device?.power?.current ?? 0.0;
+    final isMaster = waterTurbine?.deviceTerminal?.isMaster ?? false;
+    final isOnline =  waterTurbine?.deviceTerminal?.isOnLine ?? false;
+    final currentPower =  waterTurbine?.deviceTerminal?.nearestRunningData?.power ?? 0.0; 
     final currentPowerStr = currentPower.toStringAsFixed(0) + '';
-    var timeStamp = device?.updateTime ?? '';
-    timeStamp += isOnline ? '         ' : ' 离线';
-    final maxPower = device?.power?.max ?? 0;
+    var startTimeStamp =  waterTurbine?.deviceTerminal?.sessionStartupTime ?? '';
+    var closeTimeStamp =  waterTurbine?.deviceTerminal?.sessionStartupTime ?? '';
+    var timeStamp = isOnline ? startTimeStamp + '         ' : closeTimeStamp + ' 离线';
+    final maxPower = waterTurbine?.ratedPowerKW ?? 0;
     final maxPowerStr = maxPower.toString() + 'kW';
-    final eventCount = device?.eventCount ?? 0;
+    final eventCount = waterTurbine?.undisposedAlarmEventCount ?? 0;
     final eventStr = buildEventCount(eventCount);
     final isRotate = (isOnline == true) && (currentPower > 1.0); 
 
@@ -209,9 +212,9 @@ class _StationDeviceListTileState extends State<StationDeviceListTile> with Tick
 
 
           // 功率 渐进线
-          gradientPowerLine(device,isOnline,index),
+          gradientPowerLine(waterTurbine.deviceTerminal,isOnline,index),
           // 功率 Tag
-          gradientPowerLineTag(device,isOnline),
+          gradientPowerLineTag(waterTurbine.deviceTerminal,isOnline),
 
           // 分割线
           Positioned(left: 0,right: 0,bottom: 4,child: Container(height:1,color: Colors.white10)),
@@ -245,7 +248,7 @@ class _StationDeviceListTileState extends State<StationDeviceListTile> with Tick
      );
   }
 
-  Widget gradientPowerLine(Devices device,bool isOnline,int index) {
+  Widget gradientPowerLine(DeviceTerminal device,bool isOnline,int index) {
 
        return  isOnline ? Stack(
          children: <Widget>[
@@ -274,7 +277,7 @@ class _StationDeviceListTileState extends State<StationDeviceListTile> with Tick
   }
 
   // 渐变标签
-  Widget gradientPowerLineTag(Devices device,bool isOnline) {
+  Widget gradientPowerLineTag(DeviceTerminal device,bool isOnline) {
       isBeyond = false;
       // 渐变条指示器
       return isOnline ? Stack(
@@ -322,10 +325,10 @@ class _StationDeviceListTileState extends State<StationDeviceListTile> with Tick
   }
 
   // 计算 功率比率
-  static double caculatePowerRatio(Devices devices) {
+  static double caculatePowerRatio(WaterTurbine waterTurbine) {
 
-    var powerMax = devices?.power?.max ?? 0.0;
-    var powerCurrent = devices?.power?.current ?? 0.0;
+    var powerMax = waterTurbine?.ratedPowerKW ?? 0.0;
+    var powerCurrent = waterTurbine?.deviceTerminal?.nearestRunningData?.power ?? 0.0;
     if( powerMax == 0 ) return 0.0;
     if( powerCurrent == 0 ) return 0.0; 
     var ratio =  powerCurrent / powerMax;

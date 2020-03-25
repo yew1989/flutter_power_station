@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hsa_app/config/app_theme.dart';
-import 'package:hsa_app/model/station_info.dart';
+import 'package:hsa_app/debug/model/station.dart';
+//import 'package:hsa_app/model/station_info.dart';
 
 class StationPowerWidget extends StatefulWidget {
   
@@ -15,8 +16,17 @@ class _StationPowerWidgetState extends State<StationPowerWidget> {
   @override
   Widget build(BuildContext context) {
     
-   final current = widget?.stationInfo?.power?.current ?? 0.0;
-   final max = widget?.stationInfo?.power?.max ?? 0.0;
+    StationInfo info = widget?.stationInfo ?? new StationInfo();
+    double cur = 0.0;
+    if(info.waterTurbines != null){
+      info.waterTurbines.map((wt){ 
+        cur += wt?.deviceTerminal?.nearestRunningData?.current ?? 0.0;
+      }).toList();
+    }
+    
+
+   final current = cur ?? 0.0;
+   final max = widget?.stationInfo?.totalEquippedKW ?? 0.0;
 
    return Center(
      child: RichText(
