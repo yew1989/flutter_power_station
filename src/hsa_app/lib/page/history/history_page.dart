@@ -28,13 +28,13 @@ import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:intl/intl.dart';
 
 class HistoryPage extends StatefulWidget {
-
+  @required final StationInfo stationInfo;
   final String address;
   final String title;
-  final double ratedActivePower;
-  final double waterStageAlarmValue;
+  //final double ratedActivePower;
+  //final double waterStageAlarmValue;
 
-  const HistoryPage({Key key, this.address, this.title,this.ratedActivePower,this.waterStageAlarmValue}) : super(key: key);
+  const HistoryPage({Key key, this.address,this.stationInfo, this.title}) : super(key: key);
 
   @override
   _HistoryPageState createState() => _HistoryPageState();
@@ -44,6 +44,7 @@ class _HistoryPageState extends State<HistoryPage> {
 
   List<TerminalAlarmEvent> showEvents = List<TerminalAlarmEvent>();
   List<WaterLevel> waterLevelList = List<WaterLevel>();
+  List<Turbine> turbinelList = List<Turbine>();
   int segmentIndex = 0;
 
   // 时间
@@ -59,7 +60,7 @@ class _HistoryPageState extends State<HistoryPage> {
 
   bool isChartLoadFinsh = false;
 
-  List<EventTypes> evnetTypes = List<EventTypes>();
+  List<ERCFlagType> evnetTypes = List<ERCFlagType>();
 
   // 曲线点
   List<DateValuePoint> points = List<DateValuePoint>();
@@ -75,9 +76,15 @@ class _HistoryPageState extends State<HistoryPage> {
 
   // 获取事件类型
   void reqeustGetEventTypes() {
-    API.eventTypes((types) {
+    DebugAPI.getErcFlagTypeList(type: '0',onSucc: (types){
       this.evnetTypes = types;
-    }, (_) {});
+    },onFail: (msg){
+
+    });
+
+    // API.eventTypes((types) {
+    //   this.evnetTypes = types;
+    // }, (_) {});
   }
 
   @override
@@ -124,27 +131,29 @@ class _HistoryPageState extends State<HistoryPage> {
 
     this.isEventEmpty = false;
     this.isEventLoadFinsh = false;
-
-    final address = widget.address ?? '';
+    final stationNos = widget?.stationInfo?.stationNo ?? '';
+    final address = widget?.address ?? '';
     var apiStartDateTime = startDateTime + '  00:00:00';
     var apiEndDateTime = endDateTime + '  23:59:59';
     
-    DebugAPI.getTerminalAlertList(onSucc: (events){
-      this.isEventLoadFinsh = true;
+    DebugAPI.getTerminalAlertList(
+      onSucc: (events){
+        this.isEventLoadFinsh = true;
 
-      if (events.length == 0) {
-        this.isEventEmpty = true;
-      }
-      setState(() {
-        this.showEvents = events;
-      });
-    },onFail: (msg){
+        if (events.length == 0) {
+          this.isEventEmpty = true;
+        }
+        setState(() {
+          this.showEvents = events;
+        });
+      },onFail: (msg){
 
-    },
-    searchDirection : 'Backward',
-    endDateTime : apiEndDateTime,
-    terminalAddress : address,
-    limitSize : 10,
+      },
+      searchDirection : 'Backward',
+      endDateTime : apiEndDateTime,
+      stationNos : stationNos,
+      terminalAddress : address,
+      limitSize : 10,
     );
     
 
@@ -168,8 +177,8 @@ class _HistoryPageState extends State<HistoryPage> {
   void requestChartHistory() {
 
     this.isChartLoadFinsh = false;
-
-    final address = widget.address ?? '';
+    final stationInfo = widget.stationInfo;
+    //final address = widget.address ?? '';
     var  apiStartDateTime = startDateTime + ' 00:00:00';
     var  apiEndDateTime = endDateTime + ' 23:59:59';
 
@@ -180,56 +189,63 @@ class _HistoryPageState extends State<HistoryPage> {
       apiEndDateTime = formatDate(now, [yyyy, '-', mm, '-', dd,' ',hh, ':', nn, ':', ss]);
     }
 
-    DebugAPIHistory.waterLevelPoints(onSucc: (historyResp){
+    DebugAPI.getTurbineWaterAndPowerAndState(stationNo: stationInfo.stationNo,
+      startDateTime:apiStartDateTime,endDateTime:apiEndDateTime,
+      onSucc: (turbinelist){
+      
       this.isChartLoadFinsh = true;
 
       setState(() {
-        this.waterLevelList = historyResp;
+        this.turbinelList = turbinelist;
         
-        final tkWMax = widget?.ratedActivePower ?? 0.0;
-        final waterStageMax = widget?.waterStageAlarmValue ?? 0.0;
+        final tkWMax = stationInfo.totalEquippedKW;
+        final waterStageMax = stationInfo.reservoirAlarmWaterStage;
 
         List<DateValuePoint> originalPoints = [];
-        for(var p in this.waterLevelList) {
-          //p.tkWMax = tkWMax;
-          //p.waterStageMax = waterStageMax;
-          //originalPoints.add(DateValuePoint.fromPoint(p));
+        if(turbinelList != null){
+          for(var t in this.turbinelList) {
+            var p = HistoryPoint();
+            p.tkWMax = tkWMax;
+            p.waterStageMax = waterStageMax;
+            p.freezeTime = t.freezeTime;
+            p.tkW = t.turbineElectricalPower.generatorActivePowerAll;
+            p.waterStage = t.turbineRuningStage.measuringWaterLevel;
+            originalPoints.add(DateValuePoint.fromPoint(p));
+          }
         }
+        
         this.points = filterPoint(originalPoints);
       });
     },onFail: (msg){
-      debugPrint(msg);
-    },
-    address:address,
-    startDate:apiStartDateTime,
-    endDate:apiEndDateTime,
-    minuteInterval:2,
-    hyStationWaterStageType:'积水井水位',
-    );
+      debugPrint(msg);    
+    });
 
 
-    // API.historyPowerAndWater(address, apiStartDateTime, apiEndDateTime,(historyResp) {
+    
 
-    //   this.isChartLoadFinsh = true;
 
-    //   setState(() {
-    //     this.historyPointResp = historyResp;
+  //   API.historyPowerAndWater(address, apiStartDateTime, apiEndDateTime,(historyResp) {
+
+  //     this.isChartLoadFinsh = true;
+
+  //     setState(() {
+  //       this.historyPointResp = historyResp;
         
-    //     final tkWMax = this.historyPointResp.ratedActivePower;
-    //     final waterStageMax = this.historyPointResp.waterStageAlarmValue;
+  //       final tkWMax = this.historyPointResp.ratedActivePower;
+  //       final waterStageMax = this.historyPointResp.waterStageAlarmValue;
 
-    //     List<DateValuePoint> originalPoints = [];
-    //     for(var p in this.historyPointResp.data) {
-    //       p.tkWMax = tkWMax;
-    //       p.waterStageMax = waterStageMax;
-    //       originalPoints.add(DateValuePoint.fromPoint(p));
-    //     }
-    //     this.points = filterPoint(originalPoints);
-    //   });
+  //       List<DateValuePoint> originalPoints = [];
+  //       for(var p in this.historyPointResp.data) {
+  //         p.tkWMax = tkWMax;
+  //         p.waterStageMax = waterStageMax;
+  //         originalPoints.add(DateValuePoint.fromPoint(p));
+  //       }
+  //       this.points = filterPoint(originalPoints);
+  //     });
 
-    // }, (msg) {
-    //   debugPrint(msg);
-    // });
+  //   }, (msg) {
+  //     debugPrint(msg);
+  //   });
   }
 
   // 点过滤
@@ -691,15 +707,17 @@ class _HistoryPageState extends State<HistoryPage> {
     if (this.isEventEmpty == true)
       return Expanded(child: EmptyPage(title: '暂无数据', subTitle: ''));
     return Expanded(
-        child: ListView.builder(
-            itemBuilder: (ctx, index) {
-              final event = events[index];
-              final left = 'ERC${event.eventFlag}--${event.eventTitle}';
-              var right = event.eventTime.replaceAll('T', ' ');
-              right = right.split(' ').last ?? '';
-              return HistoryEventTile(event: EventTileData(left, right));
-            },
-            itemCount: events.length ?? 0));
+      child: ListView.builder(
+        itemBuilder: (ctx, index) {
+          final event = events[index];
+          final left = 'ERC${event.eventFlag}--${event.eventTitle}';
+          var right = event.eventTime.replaceAll('T', ' ');
+          right = right.split(' ').last ?? '';
+          return HistoryEventTile(event: EventTileData(left, right));
+        },
+        itemCount: events.length ?? 0
+      )
+    );
   }
 }
 

@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:hsa_app/model/event_types.dart';
+import 'package:hsa_app/debug/model/all_model.dart';
 import 'package:hsa_app/page/history/history_pop_dialog_tile.dart';
 
 class HistoryEventDialogWidget extends StatefulWidget {
 
-  final List<EventTypes> eventTypes;
+  final List<ERCFlagType> eventTypes;
   final String ercFlag;
 
   const HistoryEventDialogWidget({Key key, this.eventTypes, this.ercFlag}): super(key: key);
@@ -28,19 +28,19 @@ class _ControlModelDialogWidgetState extends State<HistoryEventDialogWidget> {
   @override
   Widget build(BuildContext context) {
     
-    final ercFlag = widget?.ercFlag ?? '0';
+    final ercFlag = widget?.ercFlag ?? '-1';
     final isTickAll = ercFlag.compareTo('0');
 
     List<HistoryPopDialogTile> tiles = [
        HistoryPopDialogTile('图表筛选', false,false),
        HistoryPopDialogTile('水位&功率图', true,true),
        HistoryPopDialogTile('日志筛选', false,false),
-       HistoryPopDialogTile('全部', true,(isTickAll == 0 ? true : false),ercFlag: '0'),
+       HistoryPopDialogTile('全部', true,(isTickAll == 0 ? true : false),ercFlag: '-1'),
     ];
     for (var type in widget.eventTypes) {
-      final isTickERCFlag = ercFlag.compareTo('${type.eRCFlag}');
-      tiles.add(HistoryPopDialogTile('ERC${type.eRCFlag}${type.eRCTitle}', 
-      true,(isTickERCFlag == 0 ? true : false),ercFlag:'${type.eRCFlag}'));
+      final isTickERCFlag = ercFlag.compareTo('${type.ercFlag}');
+      tiles.add(HistoryPopDialogTile('ERC${type.ercFlag}${type.ercTitle}', 
+      true,(isTickERCFlag == 0 ? true : false),ercFlag:'${type.ercFlag}'));
     }
      return HistoryEventDialog(tiles);
   }

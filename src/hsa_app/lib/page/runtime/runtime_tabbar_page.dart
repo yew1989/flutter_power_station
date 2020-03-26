@@ -4,24 +4,23 @@ import 'package:hsa_app/components/page_indicator/dots_indicator.dart';
 import 'package:hsa_app/components/public_tool.dart';
 import 'package:hsa_app/config/app_theme.dart';
 import 'package:hsa_app/debug/model/all_model.dart';
-import 'package:hsa_app/model/station_info.dart';
 import 'package:hsa_app/page/history/history_page.dart';
 import 'package:hsa_app/page/runtime/runtime_page.dart';
 import 'package:hsa_app/service/umeng_analytics.dart';
 import 'package:hsa_app/theme/theme_gradient_background.dart';
 
 class RuntimeTabbarPage extends StatefulWidget {
-
+  final StationInfo stationInfo;
   final List<WaterTurbine> waterTurbines;
   final int selectIndex;
 
-  const RuntimeTabbarPage({Key key, this.waterTurbines, this.selectIndex}) : super(key: key);
+  const RuntimeTabbarPage({Key key, this.waterTurbines, this.selectIndex,this.stationInfo}) : super(key: key);
   @override
   _RuntimeTabbarPageState createState() => _RuntimeTabbarPageState();
 }
 
 class _RuntimeTabbarPageState extends State<RuntimeTabbarPage> {
-
+  StationInfo stationInfo;
   int currentIndex;
   DeviceTerminal currentDevice;
   int pageLength;
@@ -31,7 +30,7 @@ class _RuntimeTabbarPageState extends State<RuntimeTabbarPage> {
 
   @override
   void initState() {
-
+    stationInfo = widget.stationInfo;
     currentIndex = widget?.selectIndex ?? 0;
     currentDevice = widget?.waterTurbines[currentIndex].deviceTerminal;
     pageLength = widget?.waterTurbines?.length ?? 0;
@@ -49,8 +48,8 @@ class _RuntimeTabbarPageState extends State<RuntimeTabbarPage> {
     super.dispose();
   }
 
-   void onTapPushToHistoryPage(DeviceTerminal devices) async {
-    pushToPage(context, HistoryPage(title: '历史分析',address: devices.terminalAddress));
+   void onTapPushToHistoryPage(DeviceTerminal devices,StationInfo stationInfo) async {
+    pushToPage(context, HistoryPage(title: '历史分析',address: devices.terminalAddress,stationInfo:stationInfo));
   }
   
 
@@ -71,7 +70,7 @@ class _RuntimeTabbarPageState extends State<RuntimeTabbarPage> {
                   fontSize: AppTheme().navigationAppBarFontSize)),
           actions: <Widget>[
             GestureDetector(
-                onTap: () => onTapPushToHistoryPage(currentDevice),
+                onTap: () => onTapPushToHistoryPage(currentDevice,stationInfo),
                 child: Center(child: Text('历史分析',style: TextStyle(color: Colors.white, fontSize: 16)))),
             SizedBox(width: 20),
           ],
@@ -82,7 +81,7 @@ class _RuntimeTabbarPageState extends State<RuntimeTabbarPage> {
             PageView.builder(
               physics: AlwaysScrollableScrollPhysics(),
               controller: pageController,
-              itemCount: widget.waterTurbines.length,
+              itemCount: widget?.waterTurbines?.length ?? 0,
               itemBuilder: (BuildContext context, int index) => 
               RuntimePage(
                 title: currentDevice.deviceName,

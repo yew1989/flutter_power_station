@@ -326,8 +326,8 @@ class _RuntimePageState extends State<RuntimePage> {
     );
   }
 
-  void onTapPushToHistoryPage(String navTitle, String address) async {
-    pushToPage(context, HistoryPage(address: address));
+  void onTapPushToHistoryPage(String navTitle, String address, StationInfo stationInfo) async {
+    pushToPage(context, HistoryPage(address:address,stationInfo: stationInfo));
   }
 
   // 仪表盘

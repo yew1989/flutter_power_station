@@ -27,8 +27,8 @@ class Data {
         turbine.add(new Turbine.fromJson(v));
       });
     }
-    reservoirAlarmWaterStage = json['reservoirAlarmWaterStage'].cast<double>();
-    reservoirBasicWaterStage = json['reservoirBasicWaterStage'].cast<double>();
+    reservoirAlarmWaterStage = json['reservoirAlarmWaterStage'] != null ? (json['reservoirAlarmWaterStage'] is double ? json['reservoirAlarmWaterStage']: json['reservoirAlarmWaterStage'].cast<double>()): 0.0 ;
+    reservoirBasicWaterStage = json['reservoirBasicWaterStage'] != null ? (json['reservoirBasicWaterStage'] is double ? json['reservoirBasicWaterStage'] : json['reservoirBasicWaterStage'].cast<double>() ): 0.0 ;
 
   }
 

@@ -29,10 +29,12 @@ class _HistoryCalendarBarState extends State<HistoryCalendarBar> {
             child: SizedBox(
               height: 20,
               width: 20,
-              child: widget.isLoading == false ? LoadingIndicator(
-                indicatorType: Indicator.ballPulse, 
-                color: Colors.white70,
-              ) : null),
+              child: widget.isLoading == false ? null
+              // LoadingIndicator(
+              //   indicatorType: Indicator.ballPulse, 
+              //   color: Colors.white70,
+              // ) 
+              : null),
           ),
         ),
         Container(

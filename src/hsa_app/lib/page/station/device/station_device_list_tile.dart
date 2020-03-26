@@ -6,6 +6,7 @@ import 'package:hsa_app/event/event_bird.dart';
 //import 'package:hsa_app/model/station_info.dart';
 import 'package:native_color/native_color.dart';
 import 'package:hsa_app/config/app_theme.dart';
+import 'package:date_format/date_format.dart';
 
 class StationDeviceListTile extends StatefulWidget {
 
@@ -136,8 +137,16 @@ class _StationDeviceListTileState extends State<StationDeviceListTile> with Tick
     final isOnline =  waterTurbine?.deviceTerminal?.isOnLine ?? false;
     final currentPower =  waterTurbine?.deviceTerminal?.nearestRunningData?.power ?? 0.0; 
     final currentPowerStr = currentPower.toStringAsFixed(0) + '';
-    var startTimeStamp =  waterTurbine?.deviceTerminal?.sessionStartupTime ?? '';
-    var closeTimeStamp =  waterTurbine?.deviceTerminal?.sessionStartupTime ?? '';
+    var now = DateTime.now();
+    final year = now.year;
+    final month = now.month;
+    final day = now.day;
+    final hour = now.hour;
+    final minute = now.minute;
+    final second = now.second;
+    final start = formatDate(DateTime(year, month, day,hour, minute, second,),[yyyy, '-', mm, '-', dd,' ',hh,':',nn,':',ss]);
+    var startTimeStamp =  waterTurbine?.deviceTerminal?.sessionStartupTime ?? start;
+    var closeTimeStamp =  waterTurbine?.deviceTerminal?.sessionStartupTime ?? '0000-00-00 00:00:00';
     var timeStamp = isOnline ? startTimeStamp + '         ' : closeTimeStamp + ' 离线';
     final maxPower = waterTurbine?.ratedPowerKW ?? 0;
     final maxPowerStr = maxPower.toString() + 'kW';

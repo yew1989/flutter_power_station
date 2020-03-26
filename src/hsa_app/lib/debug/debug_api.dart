@@ -34,6 +34,8 @@ typedef ActivePowerListCallback = void Function(List<ActivePower> points);
 typedef WaterTurbineCallback = void Function(WaterTurbine waterTurbines);
 // 终端信息
 typedef DeviceTerminalCallback = void Function(DeviceTerminal deviceTerminal);
+// 终端信息
+typedef TurbineCallback = void Function(List<Turbine> turbines);
 
 
 class DebugAPI {
@@ -172,7 +174,7 @@ class DebugAPI {
   
 
   static void getTurbineWaterAndPowerAndState({
-    String stationNo,
+    @required String stationNo,
     String seachAnchorDateTime,
     String searchDirection,
     String startDateTime,
@@ -180,7 +182,7 @@ class DebugAPI {
     String minuteInterval,
     String terminalAddress,
     String limitSize,
-    AlertEventListCallback onSucc,DebugHttpFailCallback onFail}) async {
+    TurbineCallback onSucc,DebugHttpFailCallback onFail}) async {
 
     var param = Map<String, dynamic>();
 
@@ -213,6 +215,8 @@ class DebugAPI {
 
     DebugHttpHelper.httpGET(path,param, (map,_){
       
+      var resp = TurbineResp.fromJson(map);
+      if(onSucc != null) onSucc(resp.data.turbine);
 
     },onFail);
   }

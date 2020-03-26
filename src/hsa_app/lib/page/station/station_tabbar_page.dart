@@ -71,7 +71,7 @@ class _StationTabbarPageState extends State<StationTabbarPage> {
     }).toList();
     final addresses = deviceIdList.join(',');
     final navTitle = info?.stationName ?? '';
-    pushToPage(context, HistoryPage(title: navTitle,address: addresses));
+    pushToPage(context, HistoryPage(title: navTitle,stationInfo: info));
     
   }
   
@@ -87,7 +87,7 @@ class _StationTabbarPageState extends State<StationTabbarPage> {
           actions: <Widget>[
 
             GestureDetector(
-            onTap: stationInfo?.deviceTerminalsOfFMD == null ? null : () => onTapPushToHistoryPage(stationInfo),
+            onTap: stationInfo?.waterTurbines == null ? null : () => onTapPushToHistoryPage(stationInfo),
             child: Center(child: Text('历史分析',style:TextStyle(color: Colors.white, fontSize: 16)))),
             
             SizedBox(width: 20),

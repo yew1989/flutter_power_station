@@ -24,7 +24,7 @@ class _StationDeviceListState extends State<StationDeviceList> {
   @override
   void initState() {
     EventBird().on(AppEvent.onTapDevice, (index) { 
-      pushToPage(context, RuntimeTabbarPage(waterTurbines: widget?.stationInfo?.waterTurbines ?? null,selectIndex: index));
+      pushToPage(context, RuntimeTabbarPage(waterTurbines: widget?.stationInfo?.waterTurbines ?? null,selectIndex: index,stationInfo:widget?.stationInfo));
     });
     super.initState();
   }
