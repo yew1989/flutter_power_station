@@ -1,6 +1,6 @@
-import 'package:hsa_app/debug/model/nearestRunningData.dart';
+import 'package:hsa_app/debug/model/nearest_running_data.dart';
 import 'package:hsa_app/debug/model/station.dart';
-import 'package:hsa_app/debug/model/waterTurbines.dart';
+import 'package:hsa_app/debug/model/water_turbines.dart';
 
 class DeviceTerminal {
   String terminalId;  //终端Id

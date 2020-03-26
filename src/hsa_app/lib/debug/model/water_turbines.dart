@@ -1,4 +1,4 @@
-import 'package:hsa_app/debug/model/deviceTerminal.dart';
+import 'package:hsa_app/debug/model/device_terminal.dart';
 
 class WaterTurbine {
   String turbineId;  //水轮机组Id

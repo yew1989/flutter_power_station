@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:date_format/date_format.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -7,6 +9,10 @@ import 'package:hsa_app/components/empty_page.dart';
 import 'package:hsa_app/components/segment_control.dart';
 import 'package:hsa_app/components/spinkit_indicator.dart';
 import 'package:hsa_app/config/app_theme.dart';
+import 'package:hsa_app/debug/API/debug_api_history.dart';
+import 'package:hsa_app/debug/debug_api.dart';
+import 'package:hsa_app/debug/model/all_model.dart';
+import 'package:hsa_app/debug/response/all_resp.dart';
 import 'package:hsa_app/event/app_event.dart';
 import 'package:hsa_app/event/event_bird.dart';
 import 'package:hsa_app/model/event_types.dart';
@@ -25,8 +31,10 @@ class HistoryPage extends StatefulWidget {
 
   final String address;
   final String title;
+  final double ratedActivePower;
+  final double waterStageAlarmValue;
 
-  const HistoryPage({Key key, this.address, this.title}) : super(key: key);
+  const HistoryPage({Key key, this.address, this.title,this.ratedActivePower,this.waterStageAlarmValue}) : super(key: key);
 
   @override
   _HistoryPageState createState() => _HistoryPageState();
@@ -34,8 +42,8 @@ class HistoryPage extends StatefulWidget {
 
 class _HistoryPageState extends State<HistoryPage> {
 
-  List<HistoryEvent> showEvents = List<HistoryEvent>();
-  HistoryPointResp historyPointResp = HistoryPointResp();
+  List<TerminalAlarmEvent> showEvents = List<TerminalAlarmEvent>();
+  List<WaterLevel> waterLevelList = List<WaterLevel>();
   int segmentIndex = 0;
 
   // 时间
@@ -120,8 +128,8 @@ class _HistoryPageState extends State<HistoryPage> {
     final address = widget.address ?? '';
     var apiStartDateTime = startDateTime + '  00:00:00';
     var apiEndDateTime = endDateTime + '  23:59:59';
-
-    API.eventList(address, apiStartDateTime, apiEndDateTime, (events) {
+    
+    DebugAPI.getTerminalAlertList(onSucc: (events){
       this.isEventLoadFinsh = true;
 
       if (events.length == 0) {
@@ -130,9 +138,28 @@ class _HistoryPageState extends State<HistoryPage> {
       setState(() {
         this.showEvents = events;
       });
-    }, (msg) {
-      debugPrint(msg);
-    },ercFlag: this.ercFlag);
+    },onFail: (msg){
+
+    },
+    searchDirection : 'Backward',
+    endDateTime : apiEndDateTime,
+    terminalAddress : address,
+    limitSize : 10,
+    );
+    
+
+    // API.eventList(address, apiStartDateTime, apiEndDateTime, (events) {
+    //   this.isEventLoadFinsh = true;
+
+    //   if (events.length == 0) {
+    //     this.isEventEmpty = true;
+    //   }
+    //   setState(() {
+    //     this.showEvents = events;
+    //   });
+    // }, (msg) {
+    //   debugPrint(msg);
+    // },ercFlag: this.ercFlag);
 
 
   }
@@ -153,28 +180,56 @@ class _HistoryPageState extends State<HistoryPage> {
       apiEndDateTime = formatDate(now, [yyyy, '-', mm, '-', dd,' ',hh, ':', nn, ':', ss]);
     }
 
-    API.historyPowerAndWater(address, apiStartDateTime, apiEndDateTime,(historyResp) {
-
+    DebugAPIHistory.waterLevelPoints(onSucc: (historyResp){
       this.isChartLoadFinsh = true;
 
       setState(() {
-        this.historyPointResp = historyResp;
+        this.waterLevelList = historyResp;
         
-        final tkWMax = this.historyPointResp.ratedActivePower;
-        final waterStageMax = this.historyPointResp.waterStageAlarmValue;
+        final tkWMax = widget?.ratedActivePower ?? 0.0;
+        final waterStageMax = widget?.waterStageAlarmValue ?? 0.0;
 
         List<DateValuePoint> originalPoints = [];
-        for(var p in this.historyPointResp.data) {
-          p.tkWMax = tkWMax;
-          p.waterStageMax = waterStageMax;
-          originalPoints.add(DateValuePoint.fromPoint(p));
+        for(var p in this.waterLevelList) {
+          //p.tkWMax = tkWMax;
+          //p.waterStageMax = waterStageMax;
+          //originalPoints.add(DateValuePoint.fromPoint(p));
         }
         this.points = filterPoint(originalPoints);
       });
-
-    }, (msg) {
+    },onFail: (msg){
       debugPrint(msg);
-    });
+    },
+    address:address,
+    startDate:apiStartDateTime,
+    endDate:apiEndDateTime,
+    minuteInterval:2,
+    hyStationWaterStageType:'积水井水位',
+    );
+
+
+    // API.historyPowerAndWater(address, apiStartDateTime, apiEndDateTime,(historyResp) {
+
+    //   this.isChartLoadFinsh = true;
+
+    //   setState(() {
+    //     this.historyPointResp = historyResp;
+        
+    //     final tkWMax = this.historyPointResp.ratedActivePower;
+    //     final waterStageMax = this.historyPointResp.waterStageAlarmValue;
+
+    //     List<DateValuePoint> originalPoints = [];
+    //     for(var p in this.historyPointResp.data) {
+    //       p.tkWMax = tkWMax;
+    //       p.waterStageMax = waterStageMax;
+    //       originalPoints.add(DateValuePoint.fromPoint(p));
+    //     }
+    //     this.points = filterPoint(originalPoints);
+    //   });
+
+    // }, (msg) {
+    //   debugPrint(msg);
+    // });
   }
 
   // 点过滤
@@ -630,7 +685,7 @@ class _HistoryPageState extends State<HistoryPage> {
           child: Text('  系统日志',style: TextStyle(fontSize: 16, color: Colors.white))));
   }
 
-  Widget eventListView(List<HistoryEvent> events) {
+  Widget eventListView(List<TerminalAlarmEvent> events) {
     if (this.isEventLoadFinsh == false)
       return Expanded(child: SpinkitIndicator(title: '正在加载', subTitle: '请稍后'));
     if (this.isEventEmpty == true)
@@ -639,8 +694,8 @@ class _HistoryPageState extends State<HistoryPage> {
         child: ListView.builder(
             itemBuilder: (ctx, index) {
               final event = events[index];
-              final left = 'ERC${event.eRCFlag}--${event.eRCTitle}';
-              var right = event.freezeTime.replaceAll('T', ' ');
+              final left = 'ERC${event.eventFlag}--${event.eventTitle}';
+              var right = event.eventTime.replaceAll('T', ' ');
               right = right.split(' ').last ?? '';
               return HistoryEventTile(event: EventTileData(left, right));
             },

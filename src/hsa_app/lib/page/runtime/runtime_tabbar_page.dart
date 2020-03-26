@@ -4,7 +4,6 @@ import 'package:hsa_app/components/page_indicator/dots_indicator.dart';
 import 'package:hsa_app/components/public_tool.dart';
 import 'package:hsa_app/config/app_theme.dart';
 import 'package:hsa_app/debug/model/all_model.dart';
-import 'package:hsa_app/debug/model/deviceTerminal.dart';
 import 'package:hsa_app/model/station_info.dart';
 import 'package:hsa_app/page/history/history_page.dart';
 import 'package:hsa_app/page/runtime/runtime_page.dart';

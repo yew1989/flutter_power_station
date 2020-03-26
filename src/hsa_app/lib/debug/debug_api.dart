@@ -66,6 +66,7 @@ class DebugAPI {
       
     }, onFail);
   }
+  
 
   // 获取告警事件类型列表 type = 0 水轮机 1 生态下泄
   static void getErcFlagTypeList({@required String type,ERCFlagTypeListCallback onSucc,DebugHttpFailCallback onFail}) async {
@@ -103,7 +104,7 @@ class DebugAPI {
         String deviceTerminalType,
         String deviceTerminalHardware,
         String terminalAddress,
-        String limitSize,
+        int limitSize,
         bool isIncludedDetail, 
         AlertEventListCallback onSucc,DebugHttpFailCallback onFail}) async {
 
@@ -170,7 +171,46 @@ class DebugAPI {
   }
   
 
+  static void getWaterAndPower({
+    String stationNo,
+    String seachAnchorDateTime,
+    String searchDirection,
+    String startDateTime,
+    String endDateTime,
+    String minuteInterval,
+    String terminalAddress,
+    String limitSize,
+    AlertEventListCallback onSucc,DebugHttpFailCallback onFail}) async {
 
+    var param = Map<String, dynamic>();
+
+    // SeachAnchorDateTime	string	否	时间锚点
+    if(seachAnchorDateTime != null) {
+      param['seachAnchorDateTime'] = seachAnchorDateTime;
+    }
+    // SearchDirection	string	否	Backward(上一页)或Forward(下一页) 依赖于时间锚点，默认Forward
+    if(searchDirection != null) {
+      param['searchDirection'] = searchDirection;
+    }
+    // StartDateTime	DateTime	否	起始时间
+    if(startDateTime != null) {
+      param['startDateTime'] = startDateTime;
+    }
+    // EndDateTime	DateTime	否	结束时间
+    if(endDateTime != null) {
+      param['endDateTime'] = endDateTime;
+    }
+    // TerminalAddress	string	否	终端地址
+    if(terminalAddress != null) {
+      param['terminalAddress'] = terminalAddress;
+    }
+    // LimitSize	int	否	查询条数，默认20
+    if(limitSize != null) {
+      param['limitSize'] = limitSize;
+    }
+
+    final path = liveDataHost + '/v1/TurbineWaterAndPowerAndState/'+'$stationNo';
+  }
      
 
 }

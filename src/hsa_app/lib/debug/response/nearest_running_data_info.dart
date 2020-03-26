@@ -1,4 +1,4 @@
-import 'package:hsa_app/debug/model/nearestRunningData.dart';
+import 'package:hsa_app/debug/model/nearest_running_data.dart';
 
 class NearestRunningDataResp {
   int code;

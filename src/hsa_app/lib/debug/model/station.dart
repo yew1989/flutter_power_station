@@ -1,7 +1,7 @@
 import 'package:hsa_app/debug/model/area.dart';
-import 'package:hsa_app/debug/model/deviceTerminal.dart';
-import 'package:hsa_app/debug/model/liveLink.dart';
-import 'package:hsa_app/debug/model/waterTurbines.dart';
+import 'package:hsa_app/debug/model/device_terminal.dart';
+import 'package:hsa_app/debug/model/live_link.dart';
+import 'package:hsa_app/debug/model/water_turbines.dart';
 
 class StationInfo {
   String stationNo; //电站号
