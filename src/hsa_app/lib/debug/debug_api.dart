@@ -171,7 +171,7 @@ class DebugAPI {
   }
   
 
-  static void getWaterAndPower({
+  static void getTurbineWaterAndPowerAndState({
     String stationNo,
     String seachAnchorDateTime,
     String searchDirection,
@@ -210,6 +210,11 @@ class DebugAPI {
     }
 
     final path = liveDataHost + '/v1/TurbineWaterAndPowerAndState/'+'$stationNo';
+
+    DebugHttpHelper.httpGET(path,param, (map,_){
+      
+
+    },onFail);
   }
      
 

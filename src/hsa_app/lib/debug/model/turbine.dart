@@ -130,66 +130,66 @@ class TurbineElectricalPower {
       this.phaseDifference});
 
   TurbineElectricalPower.fromJson(Map<String, dynamic> json) {
-    generatorVoltageA = json['generatorVoltageA'].cast<double>();
-    generatorVoltageB = json['generatorVoltageB'].cast<double>();
-    generatorVoltageC = json['generatorVoltageC'].cast<double>();
-    generatorCurrentA = json['generatorCurrentA'].cast<double>();
-    generatorCurrentB = json['generatorCurrentB'].cast<double>();
-    generatorCurrentC = json['generatorCurrentC'].cast<double>();
-    generatorActivePowerAll = json['generatorActivePowerAll'].cast<double>();
-    generatorActivePowerA = json['generatorActivePowerA'].cast<double>();
-    generatorActivePowerB = json['generatorActivePowerB'].cast<double>();
-    generatorActivePowerC = json['generatorActivePowerC'].cast<double>();
-    generatorReactivePowerAll = json['generatorReactivePowerAll'].cast<double>();
-    generatorReactivePowerA = json['generatorReactivePowerA'].cast<double>();
-    generatorReactivePowerB = json['generatorReactivePowerB'].cast<double>();
-    generatorReactivePowerC = json['generatorReactivePowerC'].cast<double>();
-    generatorApparentPowerAll = json['generatorApparentPowerAll'].cast<double>();
-    generatorApparentPowerA = json['generatorApparentPowerA'].cast<double>();
-    generatorApparentPowerB = json['generatorApparentPowerB'].cast<double>();
-    generatorApparentPowerC = json['generatorApparentPowerC'].cast<double>();
-    generatorPowerFactorAll = json['generatorPowerFactorAll'].cast<double>();
-    generatorPowerFactorA = json['generatorPowerFactorA'].cast<double>();
-    generatorPowerFactorB = json['generatorPowerFactorB'].cast<double>();
-    generatorPowerFactorC = json['generatorPowerFactorC'].cast<double>();
-    generatorVoltageFreq = json['generatorVoltageFreq'].cast<double>();
-    gridVoltageA = json['gridVoltageA'].cast<double>();
-    gridVoltageB = json['gridVoltageB'].cast<double>();
-    gridVoltageC = json['gridVoltageC'].cast<double>();
-    gridVoltageFreq = json['gridVoltageFreq'].cast<double>();
-    phaseDifference = json['phaseDifference'];
+    generatorVoltageA = json['发电机A相电压'].cast<double>();
+    generatorVoltageB = json['发电机B相电压'].cast<double>();
+    generatorVoltageC = json['发电机C相电压'].cast<double>();
+    generatorCurrentA = json['发电机A相电流'].cast<double>();
+    generatorCurrentB = json['发电机B相电流'].cast<double>();
+    generatorCurrentC = json['发电机C相电流'].cast<double>();
+    generatorActivePowerAll = json['发电机总有功功率'].cast<double>();
+    generatorActivePowerA = json['发电机A相有功功率'].cast<double>();
+    generatorActivePowerB = json['发电机B相有功功率'].cast<double>();
+    generatorActivePowerC = json['发电机C相有功功率'].cast<double>();
+    generatorReactivePowerAll = json['发电机总无功功率'].cast<double>();
+    generatorReactivePowerA = json['发电机A相无功功率'].cast<double>();
+    generatorReactivePowerB = json['发电机B相无功功率'].cast<double>();
+    generatorReactivePowerC = json['发电机C相无功功率'].cast<double>();
+    generatorApparentPowerAll = json['发电机总视在功率'].cast<double>();
+    generatorApparentPowerA = json['发电机A相视在功率'].cast<double>();
+    generatorApparentPowerB = json['发电机B相视在功率'].cast<double>();
+    generatorApparentPowerC = json['发电机C相视在功率'].cast<double>();
+    generatorPowerFactorAll = json['发电机总功率因数'].cast<double>();
+    generatorPowerFactorA = json['发电机A相功率因数'].cast<double>();
+    generatorPowerFactorB = json['发电机B相功率因数'].cast<double>();
+    generatorPowerFactorC = json['发电机C相功率因数'].cast<double>();
+    generatorVoltageFreq = json['发电机电压频率'].cast<double>();
+    gridVoltageA = json['电网A相电压'].cast<double>();
+    gridVoltageB = json['电网B相电压'].cast<double>();
+    gridVoltageC = json['电网C相电压'].cast<double>();
+    gridVoltageFreq = json['电网电压频率'].cast<double>();
+    phaseDifference = json['发电机与电网电压相位差'];
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['generatorVoltageA'] = this.generatorVoltageA;
-    data['generatorVoltageB'] = this.generatorVoltageB;
-    data['generatorVoltageC'] = this.generatorVoltageC;
-    data['generatorCurrentA'] = this.generatorCurrentA;
-    data['generatorCurrentB'] = this.generatorCurrentB;
-    data['generatorCurrentC'] = this.generatorCurrentC;
-    data['generatorActivePowerAll'] = this.generatorActivePowerAll;
-    data['generatorActivePowerA'] = this.generatorActivePowerA;
-    data['generatorActivePowerB'] = this.generatorActivePowerB;
-    data['generatorActivePowerC'] = this.generatorActivePowerC;
-    data['generatorReactivePowerAll'] = this.generatorReactivePowerAll;
-    data['generatorReactivePowerA'] = this.generatorReactivePowerA;
-    data['generatorReactivePowerB'] = this.generatorReactivePowerB;
-    data['generatorReactivePowerC'] = this.generatorReactivePowerC;
-    data['generatorApparentPowerAll'] = this.generatorApparentPowerAll;
-    data['generatorApparentPowerA'] = this.generatorApparentPowerA;
-    data['generatorApparentPowerB'] = this.generatorApparentPowerB;
-    data['generatorApparentPowerC'] = this.generatorApparentPowerC;
-    data['generatorPowerFactorAll'] = this.generatorPowerFactorAll;
-    data['generatorPowerFactorA'] = this.generatorPowerFactorA;
-    data['generatorPowerFactorB'] = this.generatorPowerFactorB;
-    data['generatorPowerFactorC'] = this.generatorPowerFactorC;
-    data['generatorVoltageFreq'] = this.generatorVoltageFreq;
-    data['gridVoltageA'] = this.gridVoltageA;
-    data['gridVoltageB'] = this.gridVoltageB;
-    data['gridVoltageC'] = this.gridVoltageC;
-    data['gridVoltageFreq'] = this.gridVoltageFreq;
-    data['phaseDifference'] = this.phaseDifference;
+    data['发电机A相电压'] = this.generatorVoltageA;
+    data['发电机B相电压'] = this.generatorVoltageB;
+    data['发电机C相电压'] = this.generatorVoltageC;
+    data['发电机A相电流'] = this.generatorCurrentA;
+    data['发电机B相电流'] = this.generatorCurrentB;
+    data['发电机C相电流'] = this.generatorCurrentC;
+    data['发电机总有功功率'] = this.generatorActivePowerAll;
+    data['发电机A相有功功率'] = this.generatorActivePowerA;
+    data['发电机B相有功功率'] = this.generatorActivePowerB;
+    data['发电机C相有功功率'] = this.generatorActivePowerC;
+    data['发电机总无功功率'] = this.generatorReactivePowerAll;
+    data['发电机A相无功功率'] = this.generatorReactivePowerA;
+    data['发电机B相无功功率'] = this.generatorReactivePowerB;
+    data['发电机C相无功功率'] = this.generatorReactivePowerC;
+    data['发电机总视在功率'] = this.generatorApparentPowerAll;
+    data['发电机A相视在功率'] = this.generatorApparentPowerA;
+    data['发电机B相视在功率'] = this.generatorApparentPowerB;
+    data['发电机C相视在功率'] = this.generatorApparentPowerC;
+    data['发电机总功率因数'] = this.generatorPowerFactorAll;
+    data['发电机A相功率因数'] = this.generatorPowerFactorA;
+    data['发电机B相功率因数'] = this.generatorPowerFactorB;
+    data['发电机C相功率因数'] = this.generatorPowerFactorC;
+    data['发电机电压频率'] = this.generatorVoltageFreq;
+    data['电网A相电压'] = this.gridVoltageA;
+    data['电网B相电压'] = this.gridVoltageB;
+    data['电网C相电压'] = this.gridVoltageC;
+    data['电网电压频率'] = this.gridVoltageFreq;
+    data['发电机与电网电压相位差'] = this.phaseDifference;
     return data;
   }
 }
@@ -237,7 +237,7 @@ class TrubineExcitationComponent {
       {this.fieldCurrent, this.freq, this.setPoint, this.controlAngle});
 
   TrubineExcitationComponent.fromJson(Map<String, dynamic> json) {
-    fieldCurrent = json['fieldCurrent'];
+    fieldCurrent = json['励磁电流'];
     freq = json['freq'];
     setPoint = json['setPoint'];
     controlAngle = json['controlAngle'];
@@ -245,7 +245,7 @@ class TrubineExcitationComponent {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['fieldCurrent'] = this.fieldCurrent;
+    data['励磁电流'] = this.fieldCurrent;
     data['freq'] = this.freq;
     data['setPoint'] = this.setPoint;
     data['controlAngle'] = this.controlAngle;
@@ -256,7 +256,7 @@ class TrubineExcitationComponent {
 class TurbineRuningStage {
   int measuringWaterLevel;
   int dropWaterLevel;
-  List<int> openAngle;
+  List<double> openAngle;
   int speed;
 
   TurbineRuningStage(
@@ -266,18 +266,18 @@ class TurbineRuningStage {
       this.speed});
 
   TurbineRuningStage.fromJson(Map<String, dynamic> json) {
-    measuringWaterLevel = json['measuringWaterLevel'];
-    dropWaterLevel = json['dropWaterLevel'];
-    openAngle = json['openAngle'].cast<int>();
-    speed = json['speed'];
+    measuringWaterLevel = json['测量水位'];
+    dropWaterLevel = json['落差水位'];
+    openAngle = json['开度'].cast<double>();
+    speed = json['转速'];
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['measuringWaterLevel'] = this.measuringWaterLevel;
-    data['dropWaterLevel'] = this.dropWaterLevel;
-    data['openAngle'] = this.openAngle;
-    data['speed'] = this.speed;
+    data['测量水位'] = this.measuringWaterLevel;
+    data['落差水位'] = this.dropWaterLevel;
+    data['开度'] = this.openAngle;
+    data['转速'] = this.speed;
     return data;
   }
 }

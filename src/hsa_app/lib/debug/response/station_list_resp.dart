@@ -1,16 +1,17 @@
 import 'package:hsa_app/debug/model/data.dart';
 
-class TurbineResp {
+class StationListResp {
   int code;
   int httpCode;
   Data data;
 
-  TurbineResp({this.code, this.httpCode, this.data});
+  StationListResp({this.code, this.httpCode, this.data});
 
-  TurbineResp.fromJson(Map<String, dynamic> json) {
+  StationListResp.fromJson(Map<String, dynamic> json) {
+    String str = 'station';
     code = json['code'];
     httpCode = json['httpCode'];
-    data = json['data'] != null ? new Data.fromJson(json['data'],'turbine') : null;
+    data = json['data'] != null ? new Data.fromJson(json['data'],str) : null;
   }
 
   Map<String, dynamic> toJson() {
@@ -23,3 +24,8 @@ class TurbineResp {
     return data;
   }
 }
+
+
+
+
+

@@ -58,7 +58,7 @@ class _HomeStationListState extends State<HomeStationList> {
       
       if(mounted) {
         setState(() {
-          this.stations = msg.rows;
+          this.stations = msg.stationInfo;
 
         });
       }
@@ -97,7 +97,7 @@ class _HomeStationListState extends State<HomeStationList> {
           refreshController.loadNoData();
         }
         else{
-          this.stations.addAll(msg.rows);
+          this.stations.addAll(msg.stationInfo);
           refreshController.loadComplete();
         }
       });
