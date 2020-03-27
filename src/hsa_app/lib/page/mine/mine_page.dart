@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-//import 'package:hsa_app/api/api.dart';
+import 'package:hsa_app/agent/agent_test_page.dart';
 import 'package:hsa_app/components/shawdow_widget.dart';
 import 'package:hsa_app/config/app_config.dart';
 import 'package:hsa_app/debug/debug_api.dart';
@@ -209,6 +209,10 @@ class _MinePageState extends State<MinePage> {
     pushToPage(context, DebugApiTestPage2());
   }
 
+  void onTapSocketPage(BuildContext context) async {
+    await Future.delayed(Duration(milliseconds: 250));
+    pushToPage(context, AgentTestPage());
+  }
 
   // 界面构建
   @override
@@ -233,7 +237,7 @@ class _MinePageState extends State<MinePage> {
               itemTile('搜索电站', 'images/history/History_selt_btn.png', () =>  onTapSearchStations(context)),
               itemTile('API测试', 'images/mine/My_Change_pwd_icon.png', ()=> onTapAPITestPage(context)),
               itemTile('API测试2', 'images/history/History_selt_btn.png', ()=> onTapAPITestPage2(context)),
-              // 测试一下Git Branch
+              itemTile('召测测试', 'images/mine/My_about_icon.png', ()=> onTapSocketPage(context)),
               
               // 分割线
               SizedBox(height: 0.3,child: Container(color:Colors.white24)),
