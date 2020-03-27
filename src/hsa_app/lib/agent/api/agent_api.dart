@@ -8,6 +8,7 @@ import 'package:hsa_app/util/encrypt.dart';
 // 发送远程指令
 typedef AgentReplyUnitCallback = void Function(AgentReplyUnitResp resp);
 
+// 发送远程指令 - 基础API
 class AgentAPI {
   
   // 获取操作票

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:hsa_app/agent/agent_api.dart';
-import 'package:hsa_app/agent/agent_task.dart';
+import 'agent.dart';
 import 'package:hsa_app/components/public_tool.dart';
 import 'package:hsa_app/debug/API/debug_api_login.dart';
 

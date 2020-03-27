@@ -1,9 +1,8 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:hsa_app/agent/agent_api.dart';
 import 'package:hsa_app/api/api.dart';
 import 'package:hsa_app/api/http_helper.dart';
-import 'package:hsa_app/debug/debug_api.dart';
+import 'api/agent_api.dart';
 
 class AgentTask {
 
