@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=100%, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Stomp测试</title>
+    <script src="https://cdn.bootcss.com/stomp.js/2.3.3/stomp.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+</head>
+
+<body>
+    <script src="http://passport.cnblogs.com/scripts/jsencrypt.min.js"></script>
+    <script>
+        var publicKey = "-----BEGIN PUBLIC KEY-----\
+MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDE8qyY4gZcM81hmR49BupWxtAE\
+NBY9nzYWhoEYVLi0uopA2LsPdETMDT1cPDk/n20nRqFB4cuWYMwB1WsHWqhH4kIH\
+xqeUJ6KyrdFFjj+Yx1AQgnXlJIftDQB+5Bfw5uJt1eqKeD5HzM4IAvEUIr6wVrzN\
+xn1XIjtfePXfkF1drQIDAQAB\
+-----END PUBLIC KEY-----\
+";
+        var encrypt = new JSEncrypt();
+        encrypt.setPublicKey(publicKey);
+        var v_str = encrypt.encrypt("admin:3a769958-098a-46ff-a76a-de6062e079ee:456"); //需要加密的内容
+        console.log(v_str);
+        
+        axios.post('http://192.168.16.2:8281/v1/Account/AuthenticationToken/Apply/3a769958-098a-46ff-a76a-de6062e079ee',`=${v_str}`)
+            .then(response => {
+                console.log('ajax response.data:', response.data);
+                console.log('ajax response authorization:', response.headers['set-authorization']);
+                axios.defaults.headers.common['Authorization'] = response.headers['set-authorization'];
+            }).then(function(){
+                axios.get('http://192.168.16.2:8281/v1/Customer').then(response => {console.log('ajax response.data:', response.data);});        
+            });
+    </script>
+    <script>
+        var ws = new WebSocket('ws://192.168.16.2:15674/ws');
+        var client = Stomp.over(ws);
+        var on_connect = function (x) {
+            console.log('connect success');
+            // 默认主动 ACK，手动 ACK
+            // client.subscribe("/exchange/PDataUnitDiversionExchange.JSON/*.*.*.AFN0C.#", function (d) {
+            //     console.log('routingkey:', d.headers.destination.split('/').pop());
+            //     if (d.body.includes('00000000000000000000')) {
+            //         console.log('body:', d.body, new Date().toJSON());
+            //     } else {
+            //         console.warn('body:', d.body, new Date().toJSON());
+            //     }
+            //     d.ack();
+            // }, { ack: 'client' });
+            // client.subscribe("/exchange/PDataUnitDiversionExchange.JSON/*.*.*.AFN0A.#", function (d) {
+            //     console.log('routingkey:', d.headers.destination.split('/').pop());
+            //     console.log('body:', d.body);
+            // });
+            // client.subscribe("/exchange/PDataUnitDiversionExchange.JSON/*.*.*.AFN0E.#", function (d) {
+            //     console.log('routingkey:', d.headers.destination.split('/').pop());
+            //     console.log('body:', d.body);
+            // });
+            // client.subscribe("/exchange/PDataUnitDiversionExchange.JSON/*.*.*.AFN0C.#", function (d) {
+            //     console.log('routingkey:', d.headers.destination.split('/').pop());
+            //     console.log('body:', d.body);
+            // });
+            //client.debug=function(){};
+            // var  subscription =  client.subscribe("/exchange/TerminalStatusDiversionExchange.JSON/0002.001.*.TerminalConnectedState", function (d) {
+            //     console.log('routingkey:', d.headers.destination.split('/').pop());
+            //     console.log('body:', d.body);
+            // });
+            // subscription.unsubscribe();
+            client.subscribe("/exchange/PDataUnitDiversionExchange.JSON/*.*.*.AFN0C.#", function (d) {
+                console.log('routingkey:', d.headers.destination.split('/').pop());
+                console.log('body:', d.body);
+            });
+            client.subscribe("/exchange/PDataUnitDiversionExchange.JSON/*.*.*.TerminalAlarmEvent", function (d) {
+                console.log('routingkey:', d.headers.destination.split('/').pop());
+                console.log('body:', d.body);
+            });
+            // client.subscribe("/exchange/TerminalStatusDiversionExchange.JSON/#", function (d) {//#可以指定某具体终端地址
+            //     console.log('routingkey:', d.headers.destination.split('/').pop());
+            //     console.log('body:', d.body);
+            // });
+        };
+        // Declare on_error
+        var on_error = function () {
+            console.log('error');
+        };
+        // Conect to RabbitMQ
+        client.connect('QGDW3761ApplicationWeb', '87802781', on_connect, on_error, 'HSA_Host');
+
+    </script>
+    <script>
+        
+        function callupAFN0CF1() {
+            var cmdId = '';
+            axios.post('http://192.168.16.2:8280/v1/Cmd/Send/00020013/AFN0C_F1/0'
+                // , { "Address": "03740001", "AFN": 0x0A, "Fn": 7, "pn": 1 }
+            )
+                .then(response => {
+                    console.log('ajax response.data:', response.data);
+                    cmdId = response.data.cmdId;
+                    return response.data.currentState;
+                }).then(currentState => {
+                    console.log(currentState);
+                    
+                    var poll = setInterval(() => {
+                        axios.get(`http://192.168.16.2:8280/v1/Cmd/${cmdId}`).then(response => {
+                            if (response.data == null) {
+                                console.log('目标无响应');
+                                clearInterval(poll);
+                            } else {
+                                var currentState = response.data.currentState;
+                                console.log(currentState);
+                                if (currentState =='ResponseSuccess') {
+                                    console.log(response.data);
+                                    alert(JSON.stringify( response.data));
+                                    clearInterval(poll);
+                                }
+                            }
+                        });
+                    }, 1000);
+                });
+        }
+        function callupAFN04F1() {
+            var cmdId = '';
+            axios.post('http://192.168.16.2:8280/v1/Cmd/Send/00020013/AFN04_F1/0'
+                 , { "Address": "00020013", "AFN": 0x04, "Fn":1, "pn": 0,
+                    终端数传机延时时间:0,
+                    终端作为启动站允许发送传输延时时间:1,
+                    终端等待从动站响应的超时时间:40,
+                    终端等待从动站响应超时重发次数:1,
+                    心跳周期:2,
+                    一类数据主动上报需要主站确认的通信服务:true,
+                    二类数据主动上报需要主站确认的通信服务:true,
+                    三类数据主动上报需要主站确认的通信服务:false
+                 }
+            )
+                .then(response => {
+                    console.log('ajax response.data:', response.data);
+                    cmdId = response.data.cmdId;
+                    return response.data.currentState;
+                }).then(currentState => {
+                    console.log(currentState);
+                   
+                    var poll = setInterval(() => {
+                        axios.get(`http://192.168.16.2:8280/v1/Cmd/${cmdId}`).then(response => {
+                            
+                            if (response.data == null) {
+                                console.log('目标无响应');
+                                clearInterval(poll);
+                            } else {
+                                var currentState = response.data.currentState;
+                                console.log(currentState);
+                                if (currentState =='ResponseSuccess') {
+                                    console.log(response.data);
+                                    clearInterval(poll);
+                                }
+                            }
+                        });
+                    }, 1000);
+                });
+        }
+        function callupHyStationList(){
+            axios.get('http://192.168.16.2:8281/v1/HydropowerStation/RelationAccount',{isIncludeCustomer:true,IsIncludeWaterTurbine:true,IsIncludeFMD:true})
+                .then(response => {
+                    console.log('ajax response.data:', response.data);
+                    alert(JSON.stringify(response.data.data));
+                });
+        }
+        function memcachedGetTerminalNearstRunningData() {
+            axios.get('http://192.168.16.2:8282/v1/NearestRunningData/00020013/AFN0C.F1.p0')
+                .then(response => {
+                    console.log('ajax response.data:', response.data);
+                    alert(JSON.stringify(response.data.data));
+                });
+            
+        }
+    </script>
+    <button onclick="callupAFN0CF1.call(this)">召afn0cf1</button>
+    <button onclick="callupAFN04F1.call(this)">设afn04f1</button>
+    <button onclick="callupHyStationList.call(this)">取电站列表</button>
+    <button onclick="client.disconnect()">disconnect socket</button>
+    <button onclick="memcachedGetTerminalNearstRunningData()">memcached get AFN0CF1</button>
+</body>
+
+</html>
