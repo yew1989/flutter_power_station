@@ -241,7 +241,7 @@ class DebugAPIStation{
 
     DebugHttpHelper.httpPOST(path, param, (map,_){
 
-      var resp = NearestRunningDataResp.fromJson(map,terminalAddress);
+      var resp = NearestRunningDataResp.fromJson(map,terminalAddress,true);
       if(onSucc != null) onSucc(resp.data);
       
     }, onFail);
