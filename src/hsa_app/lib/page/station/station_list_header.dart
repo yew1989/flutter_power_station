@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hsa_app/components/public_tool.dart';
+import 'package:hsa_app/debug/model/weather.dart';
+import 'package:hsa_app/event/event_bird.dart';
 import 'package:hsa_app/page/live/live_list_page.dart';
 
 class StationListHeader extends StatefulWidget {
@@ -14,7 +16,28 @@ class StationListHeader extends StatefulWidget {
   _StationListHeaderState createState() => _StationListHeaderState();
 }
 
+
 class _StationListHeaderState extends State<StationListHeader> {
+  String weather;
+
+  @override
+  void initState() {
+    weather = widget?.weather ?? '晴';
+    EventBird().on('REFRESH_WEATHER' , (weather){
+      setState(() {
+        this.weather =  weather;
+      });
+    });
+    super.initState();
+  }
+  
+  @override
+  void dispose() {
+    EventBird().off('REFRESH_WEATHER');
+    super.dispose();
+  }
+
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -33,7 +56,7 @@ class _StationListHeaderState extends State<StationListHeader> {
               children: <Widget>[
                 
                 Text('机组信息',style: TextStyle(color: Colors.white,fontSize: 16)),
-                Text('天气:' + widget.weather,style: TextStyle(color: Colors.white,fontSize: 16)),
+                Text('天气:' + weather,style: TextStyle(color: Colors.white,fontSize: 16)),
 
                 SizedBox(
                   height: 22,

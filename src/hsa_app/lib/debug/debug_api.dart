@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hsa_app/api/http_helper.dart';
 import 'package:hsa_app/debug/debug_api_helper.dart';
 import 'package:hsa_app/debug/model/active_power.dart';
 import 'package:hsa_app/debug/model/erc_flag_type.dart';
@@ -36,6 +37,11 @@ typedef WaterTurbineCallback = void Function(WaterTurbine waterTurbines);
 typedef DeviceTerminalCallback = void Function(DeviceTerminal deviceTerminal);
 // 终端信息
 typedef TurbineCallback = void Function(List<Turbine> turbines);
+//广告
+typedef BannerListCallback = void Function(List<BannerModel> turbines);
+//天气
+typedef WeatherCallback = void Function(Weather weather);
+
 
 
 class DebugAPI {
@@ -49,6 +55,11 @@ class DebugAPI {
   // 固定应用ID AppKey 由平台下发
   static final appKey = '3a769958-098a-46ff-a76a-de6062e079ee'; 
 
+  //天气接口的版本
+  static final wVersion = 'v2.5';
+
+  //天气接口token
+  static final wToken = 'TAkhjf8d1nlSlspN';
 
   // 获取省份列表信息
   static void getAreaList({@required String rangeLevel,AreaInfoCallback onSucc,DebugHttpFailCallback onFail}) async {
@@ -222,4 +233,32 @@ class DebugAPI {
   }
      
 
+  //获取平台广告牌信息
+  static void getAdvertisingBoard({BannerListCallback onSucc,DebugHttpFailCallback onFail}) async {
+
+    final path = restHost + '/v1/SystemExtendInfo/AdvertisingBoard';
+
+    DebugHttpHelper.httpGET(path,null, (map,_){
+      
+      var resp = BannerResp.fromJson(map);
+      if(onSucc != null) onSucc(resp.data.banners);
+
+    },onFail);
+  }
+
+
+  //彩云天气
+  static void getWeather({num longitude, num latitude,WeatherCallback onSucc,DebugHttpFailCallback onFail}) async { 
+
+    final long = longitude ?? 0.0;
+    final lat  = latitude ?? 0.0;
+
+    final path = 'https://api.caiyunapp.com/'+wVersion+'/'+wToken+'/'+long.toString()+','+lat.toString()+'/realtime.json';
+    
+    HttpHelper.getHttpCommon(path, null, (map,_) {
+
+      var resp = WeatherResp.fromJson(map);
+      if(onSucc != null) onSucc(resp.result.realtime);
+    },onFail);
+  }
 }

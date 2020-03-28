@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:hsa_app/api/api.dart';
 import 'package:hsa_app/components/shawdow_widget.dart';
 import 'package:hsa_app/debug/debug_api.dart';
-import 'package:hsa_app/model/banner_item.dart';
+import 'package:hsa_app/debug/model/banner.dart';
 import 'package:hsa_app/page/home/home_station_list.dart';
 import 'package:hsa_app/page/home/view/home_banner.dart';
 import 'package:hsa_app/service/umeng_analytics.dart';
@@ -17,7 +17,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin {
 
   // 广告条
-  List<BannerItem> banners = [];
+  List<BannerModel> banners = [];
   
   // 省份列表
   List<String> provinces = [];
@@ -27,6 +27,16 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
 
   // 获取广告条
   void requestBanner() {
+    DebugAPI.getAdvertisingBoard(
+      onSucc:(banners){
+        setState(() {
+          this.banners = banners;
+        });
+      },onFail:(_){
+        progressShowError('广告信息获取失败');    
+      }
+    );
+
 
     // API.banners((List<BannerItem> banners) {
     //   setState(() {

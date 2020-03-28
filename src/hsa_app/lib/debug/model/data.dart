@@ -9,7 +9,7 @@ class Data {
   double reservoirAlarmWaterStage;
   double reservoirBasicWaterStage;
   List<Turbine> turbine;
-
+  List<BannerModel> banners;
 
   Data({this.total, this.stationInfo});
 
@@ -27,9 +27,17 @@ class Data {
         turbine.add(new Turbine.fromJson(v));
       });
     }
-    reservoirAlarmWaterStage = json['reservoirAlarmWaterStage'] != null ? (json['reservoirAlarmWaterStage'] is double ? json['reservoirAlarmWaterStage']: json['reservoirAlarmWaterStage'].cast<double>()): 0.0 ;
-    reservoirBasicWaterStage = json['reservoirBasicWaterStage'] != null ? (json['reservoirBasicWaterStage'] is double ? json['reservoirBasicWaterStage'] : json['reservoirBasicWaterStage'].cast<double>() ): 0.0 ;
+    reservoirAlarmWaterStage = json['reservoirAlarmWaterStage'] != null ? 
+        (json['reservoirAlarmWaterStage'] is double ? json['reservoirAlarmWaterStage']: json['reservoirAlarmWaterStage'].cast<double>()): 0.0 ;
+    reservoirBasicWaterStage = json['reservoirBasicWaterStage'] != null ? 
+        (json['reservoirBasicWaterStage'] is double ? json['reservoirBasicWaterStage'] : json['reservoirBasicWaterStage'].cast<double>() ): 0.0 ;
 
+    if (json['banner'] != null && state == 'banner') {
+      banners = new List<BannerModel>();
+      json['banner'].forEach((v) {
+        banners.add(new BannerModel.fromJson(v));
+      });
+    }
   }
 
   Map<String, dynamic> toJson() {
@@ -44,6 +52,10 @@ class Data {
 
     data['reservoirAlarmWaterStage'] = this.reservoirAlarmWaterStage;
     data['reservoirBasicWaterStage'] = this.reservoirBasicWaterStage;
+    
+    if (this.banners != null) {
+      data['banner'] = this.banners.map((v) => v.toJson()).toList();
+    }
     return data;
   }
 }

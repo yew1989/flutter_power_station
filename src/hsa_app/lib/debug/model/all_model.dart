@@ -11,4 +11,5 @@ export 'package:hsa_app/debug/model/terminal_alarm_event.dart';
 export 'package:hsa_app/debug/model/water_level.dart';
 export 'package:hsa_app/debug/model/turbine.dart';
 export 'package:hsa_app/debug/model/data.dart';
-
+export 'package:hsa_app/debug/model/banner.dart';
+export 'package:hsa_app/debug/model/weather.dart';

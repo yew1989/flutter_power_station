@@ -8,3 +8,5 @@ export 'package:hsa_app/debug/response/terminal_alarm_event_resp.dart';
 export 'package:hsa_app/debug/response/erc_flag_type_resp.dart';
 export 'package:hsa_app/debug/response/active_power_resp.dart';
 export 'package:hsa_app/debug/response/turbine_resp.dart';
+export 'package:hsa_app/debug/response/banner_resp.dart';
+export 'package:hsa_app/debug/response/weather_resp.dart';

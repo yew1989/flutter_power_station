@@ -115,12 +115,6 @@ class _StationPageState extends State<StationPage> {
     pushToPage(context, HistoryPage(title: '历史分析',stationInfo:info));
   }
 
-  void syncWeaher(String weather) async {
-    await Future.delayed(Duration(milliseconds: 500));
-    setState(() {
-      this.weather = weather;
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
