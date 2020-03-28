@@ -5,7 +5,6 @@ import 'package:hsa_app/debug/model/active_power.dart';
 import 'package:hsa_app/debug/model/erc_flag_type.dart';
 import 'package:hsa_app/debug/model/terminal_alarm_event.dart';
 import 'package:hsa_app/debug/model/water_level.dart';
-
 import 'model/all_model.dart';
 import 'response/all_resp.dart';
 
@@ -45,6 +44,9 @@ typedef WeatherCallback = void Function(Weather weather);
 
 
 class DebugAPI {
+
+  // 通讯代理地址
+  static final agentHost = 'http://192.168.16.2:8280';
 
   // 基础信息地址
   static final restHost = 'http://192.168.16.2:8281';
@@ -262,3 +264,8 @@ class DebugAPI {
     },onFail);
   }
 }
+  
+
+  
+
+

@@ -97,7 +97,7 @@ class DebugHttpHelper {
   }
 
   // POST 请求
-  static void httpPOST(String path, dynamic param, DebugHttpSuccMapCallback onSucc,DebugHttpFailCallback onFail ) async {
+  static void httpPOST(String path, dynamic param, DebugHttpSuccMapCallback onSucc,DebugHttpFailCallback onFail ,{Map<String,dynamic> header}) async {
 
     // 网络检测
     final isReachable = await isReachablity();
@@ -114,6 +114,18 @@ class DebugHttpHelper {
       return;
     }
 
+    var headers = Map<String, dynamic> ();
+    // Authorization 拼接
+    if(DebugShareInstance.getInstance().auth.length > 0) {
+      headers['Authorization'] = DebugShareInstance.getInstance().auth;
+    }
+    // 外部 header  拼接
+    if(header != null) {
+      for (String key in header.keys) {
+        headers[key] = header[key];
+      }
+    }
+
     // 发起请求
     final dio = DebugHttpHelper.initDio();
 
@@ -121,7 +133,7 @@ class DebugHttpHelper {
       Response response = await dio.post(
         path,
         options: Options(
-          headers: {'Authorization': DebugShareInstance.getInstance().auth},
+          headers: headers,
           contentType: Headers.formUrlEncodedContentType,
           receiveTimeout: DebugHttpHelper.recvTimeOutSeconds,
           sendTimeout: DebugHttpHelper.sendTimeOutSeconds,

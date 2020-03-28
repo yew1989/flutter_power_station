@@ -14,7 +14,7 @@ dependencies:
   webview_flutter: ^0.3.15+1
   cached_network_image: ^2.0.0
   flutter_cache_manager: ^1.1.3
-  shared_preferences: ^0.5.6+2
+  shared_preferences: any
   event_bus: ^1.1.0
   date_format: ^1.0.8
   #equatable: ^0.4.0
@@ -52,7 +52,7 @@ dependencies:
   meta: ^1.1.6
   equatable: ^1.0.0
   wave: ^0.0.8
-
+  
 dev_dependencies:
   flutter_test:
     sdk: flutter

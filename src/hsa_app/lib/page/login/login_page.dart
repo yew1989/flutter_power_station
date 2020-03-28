@@ -54,10 +54,10 @@ class LoginPageState extends State<LoginPage> {
   void login(BuildContext context) async {
 
     Progresshud.showWithStatus('正在登录...');
-    //var token = await API.getLoginToken(usrCtrl.text, pwdCtrl.text);
-    DebugAPILogin.login(context,name:usrCtrl.text, pswd:pwdCtrl.text);
-    var token = DebugShareInstance.getInstance().auth;
-    if (token.length > 0) {
+
+    DebugAPILogin.login(context,name:usrCtrl.text, pswd:pwdCtrl.text,onSucc: (s,msg){
+      var token = DebugShareInstance.getInstance().auth;
+      if (token.length > 0) {
 
       debugPrint('🎉 登录成功:' + token);
 
@@ -81,6 +81,12 @@ class LoginPageState extends State<LoginPage> {
     debugPrint('❌:登录失败');
     Progresshud.dismiss();
     Progresshud.showInfoWithStatus('登录失败,请检查您的信息');
+    },onFail: (msg){
+      debugPrint('❌:登录失败');
+      Progresshud.dismiss();
+      Progresshud.showInfoWithStatus('登录失败,请检查网络');
+    });
+
   }
 
   @override
