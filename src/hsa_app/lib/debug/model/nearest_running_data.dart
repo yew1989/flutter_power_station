@@ -3,28 +3,28 @@ import 'package:flutter/material.dart';
 
 class NearestRunningData{
 
-  //电压
+  // 电压
   double voltage;
-  //电流
+  // 电流
   double current;
-  //励磁电流
+  // 励磁电流
   double fieldCurrent;
-  //功率因数
+  // 功率因数
   double powerFactor;
-  //频率
+  // 频率
   double frequency;
-  //开度
+  // 开度
   double openAngle;
-  //功率
+  // 功率
   double power;
   // 水位
   double waterStage;
 
   // 温度
   double temperature;
-  //推力
+  // 推力
   double thrust;
-  //水压
+  // 水压
   double waterPressure;
 
   // 是否允许远程控制
@@ -50,33 +50,43 @@ class NearestRunningData{
       this.waterStage
     });
 
+
   NearestRunningData.fromJson(Map<String,dynamic> json,String terminalAddress,{bool isBase = true}) {
 
     // 电气量 BASE
     if(isBase == true) {
-      voltage = json['terminal-'+'$terminalAddress'+'.afn0c.f9.p0'] != null ? json['terminal-'+'$terminalAddress'+'.afn0c.f9.p0']['发电机A相电压'] ?? 0.0 : 0.0;
-      current = json['terminal-'+'$terminalAddress'+'.afn0c.f9.p0'] != null ? json['terminal-'+'$terminalAddress'+'.afn0c.f9.p0']['发电机A相电流'] ?? 0.0 : 0.0;
-      frequency = json['terminal-'+'$terminalAddress'+'.afn0c.f9.p0'] != null ? json['terminal-'+'$terminalAddress'+'.afn0c.f9.p0']['电网电压频率'] ?? 0.0 : 0.0;
-      power = json['terminal-'+'$terminalAddress'+'.afn0c.f9.p0'] != null ? json['terminal-'+'$terminalAddress'+'.afn0c.f9.p0']['发电机总有功功率'] ?? 0.0 : 0.0;
-      powerFactor = json['terminal-'+'$terminalAddress'+'.afn0c.f9.p0'] != null ? json['terminal-'+'$terminalAddress'+'.afn0c.f9.p0']['发电机总功率因数'] ?? 0.0 : 0.0;
+      voltage       = json['terminal-'+'$terminalAddress'+'.afn0c.f9.p0'] != null ? json['terminal-'+'$terminalAddress'+'.afn0c.f9.p0']['发电机A相电压'] ?? 0.0 : 0.0;
+      current       = json['terminal-'+'$terminalAddress'+'.afn0c.f9.p0'] != null ? json['terminal-'+'$terminalAddress'+'.afn0c.f9.p0']['发电机A相电流'] ?? 0.0 : 0.0;
+      frequency     = json['terminal-'+'$terminalAddress'+'.afn0c.f9.p0'] != null ? json['terminal-'+'$terminalAddress'+'.afn0c.f9.p0']['电网电压频率'] ?? 0.0 : 0.0;
+      power         = json['terminal-'+'$terminalAddress'+'.afn0c.f9.p0'] != null ? json['terminal-'+'$terminalAddress'+'.afn0c.f9.p0']['发电机总有功功率'] ?? 0.0 : 0.0;
+      powerFactor   = json['terminal-'+'$terminalAddress'+'.afn0c.f9.p0'] != null ? json['terminal-'+'$terminalAddress'+'.afn0c.f9.p0']['发电机总功率因数'] ?? 0.0 : 0.0;
     }
     // 电气量 PRO
     else {
-      voltage = json['terminal-'+'$terminalAddress'+'.afn0c.f30.p0'] != null ? json['terminal-'+'$terminalAddress'+'.afn0c.f30.p0']['发电机A相电压'] ?? 0.0 : 0.0;
-      current = json['terminal-'+'$terminalAddress'+'.afn0c.f30.p0'] != null ? json['terminal-'+'$terminalAddress'+'.afn0c.f30.p0']['发电机A相电流'] ?? 0.0 : 0.0;
-      frequency = json['terminal-'+'$terminalAddress'+'.afn0c.f30.p0'] != null ? json['terminal-'+'$terminalAddress'+'.afn0c.f30.p0']['电网电压频率'] ?? 0.0 : 0.0;
-      power = json['terminal-'+'$terminalAddress'+'.afn0c.f30.p0'] != null ? json['terminal-'+'$terminalAddress'+'.afn0c.f30.p0']['发电机总有功功率'] ?? 0.0 : 0.0;
-      powerFactor = json['terminal-'+'$terminalAddress'+'.afn0c.f30.p0'] != null ? json['terminal-'+'$terminalAddress'+'.afn0c.f30.p0']['发电机总功率因数'] ?? 0.0 : 0.0;
+      voltage       = json['terminal-'+'$terminalAddress'+'.afn0c.f30.p0'] != null ? json['terminal-'+'$terminalAddress'+'.afn0c.f30.p0']['发电机A相电压'] ?? 0.0 : 0.0;
+      current       = json['terminal-'+'$terminalAddress'+'.afn0c.f30.p0'] != null ? json['terminal-'+'$terminalAddress'+'.afn0c.f30.p0']['发电机A相电流'] ?? 0.0 : 0.0;
+      frequency     = json['terminal-'+'$terminalAddress'+'.afn0c.f30.p0'] != null ? json['terminal-'+'$terminalAddress'+'.afn0c.f30.p0']['电网电压频率'] ?? 0.0 : 0.0;
+      power         = json['terminal-'+'$terminalAddress'+'.afn0c.f30.p0'] != null ? json['terminal-'+'$terminalAddress'+'.afn0c.f30.p0']['发电机总有功功率'] ?? 0.0 : 0.0;
+      powerFactor   = json['terminal-'+'$terminalAddress'+'.afn0c.f30.p0'] != null ? json['terminal-'+'$terminalAddress'+'.afn0c.f30.p0']['发电机总功率因数'] ?? 0.0 : 0.0;
     }
 
-    // 通用参数
-    fieldCurrent = json['terminal-'+'$terminalAddress'+'.afn0c.f10.p0'] != null ? json['terminal-'+'$terminalAddress'+'.afn0c.f10.p0']['励磁电流'] ?? 0.0 : 0.0;
-    openAngle = json['terminal-'+'$terminalAddress'+'.afn0c.f11.p0'] != null ? json['terminal-'+'$terminalAddress'+'.afn0c.f11.p0']['开度1'] ?? 0.0 : 0.0;
-    waterStage = json['terminal-'+'$terminalAddress'+'.afn0c.f11.p0'] != null ? json['terminal-'+'$terminalAddress'+'.afn0c.f11.p0']['水位'] ?? 0.0 : 0.0;
+    // 通用参数 : 
     
+    // 励磁电流
+    fieldCurrent   = json['terminal-'+'$terminalAddress'+'.afn0c.f10.p0'] != null ? json['terminal-'+'$terminalAddress'+'.afn0c.f10.p0']['励磁电流'] ?? 0.0 : 0.0;
+    // 水门与水位
+    openAngle      = json['terminal-'+'$terminalAddress'+'.afn0c.f11.p0'] != null ? json['terminal-'+'$terminalAddress'+'.afn0c.f11.p0']['开度1'] ?? 0.0 : 0.0;
+    waterStage     = json['terminal-'+'$terminalAddress'+'.afn0c.f11.p0'] != null ? json['terminal-'+'$terminalAddress'+'.afn0c.f11.p0']['水位'] ?? 0.0 : 0.0;
+    
+    // 控制方案与开关机状态
+    isAllowRemoteControl = json['terminal-'+'$terminalAddress'+'.afn0c.f24.p0'] != null ? json['terminal-'+'$terminalAddress'+'.afn0c.f24.p0']['isAllowRemoteControl'] ?? false : false;
+    controlType = json['terminal-'+'$terminalAddress'+'.afn0c.f24.p0'] != null ? json['terminal-'+'$terminalAddress'+'.afn0c.f24.p0']['controlType'] ?? '手动' : '手动';
+    powerStatus = json['terminal-'+'$terminalAddress'+'.afn0c.f24.p0'] != null ? json['terminal-'+'$terminalAddress'+'.afn0c.f24.p0']['机组开关机状态'] ?? '未定义' : '未定义';
+    intelligentControlProgram = json['terminal-'+'$terminalAddress'+'.afn0c.f24.p0'] != null ? json['terminal-'+'$terminalAddress'+'.afn0c.f24.p0']['智能控制方案'] ?? '水位智能调节方案' : '水位智能调节方案';
+
     // 温度值获取
     final tempCount = json['terminal-'+'$terminalAddress'+'.afn0c.f13.p0'] != null ? json['terminal-'+'$terminalAddress'+'.afn0c.f13.p0']['温度路数'] ?? 0 : 0;
-
+    // 温度 为 0
     if(tempCount == 0) {
        temperature = 0.0;
     }
@@ -98,9 +108,8 @@ class NearestRunningData{
       temperature = tempDatas[findIndex];
     }
 
-
-
     // 非法数据容错与修正 , 因为有时候 服务器会返回负数
+
     voltage         = fix(voltage);
     current         = fix(current);
     frequency       = fix(frequency);
