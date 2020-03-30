@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:hsa_app/debug/debug_api.dart';
 import 'package:hsa_app/debug/debug_api_helper.dart';
 import 'package:hsa_app/debug/model/all_model.dart';
+import 'package:hsa_app/debug/model/electricity_price.dart';
 import 'package:hsa_app/debug/response/all_resp.dart';
 
 // 查询成功返回
@@ -41,7 +42,12 @@ class AgentQueryAPI {
 
         DebugHttpHelper.httpPOST(path, { '' : param }, (map,msg){
           
-          var resp = NearestRunningDataResp.fromJson(map, address, isBase);
+          var resp = NearestRunningDataResp.fromJson(map, address, isBase: true,price: ElectricityPrice(
+            peakElectricityPrice:1.0,
+            spikeElectricityPrice: 2.0,
+            flatElectricityPrice: 3.0,
+            valleyElectricityPrice: 4.0,
+          ));
           if(onSucc != null) onSucc(resp.data,msg);
           
         }, onFail);
