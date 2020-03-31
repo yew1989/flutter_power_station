@@ -1,5 +1,4 @@
 // 运行时数据
-import 'package:flutter/material.dart';
 import 'package:hsa_app/debug/model/electricity_price.dart';
 
 class NearestRunningData{
@@ -20,13 +19,11 @@ class NearestRunningData{
   double power;
   // 水位
   double waterStage;
-
   // 温度
   double temperature;
-  // 推力
-  double thrust;
-  // 水压
-  double waterPressure;
+  // 转速
+  double speed;
+
 
   // 是否允许远程控制
   bool isAllowRemoteControl;
@@ -37,7 +34,7 @@ class NearestRunningData{
   // 智能控制方案
   String intelligentControlProgram;
   
-  // 预计收入 - 单位元
+  // 预计收入 - 单位元 - 单水轮机收益
   double money;
 
   NearestRunningData(
@@ -47,10 +44,9 @@ class NearestRunningData{
       this.powerFactor,
       this.frequency,
       this.openAngle,
-      this.thrust,
-      this.waterPressure,
       this.power,
       this.temperature,
+      this.speed,
       this.waterStage
     });
 
@@ -78,9 +74,12 @@ class NearestRunningData{
 
     // 励磁电流
     fieldCurrent   = json['terminal-'+'$terminalAddress'+'.afn0c.f10.p0'] != null ? json['terminal-'+'$terminalAddress'+'.afn0c.f10.p0']['励磁电流'] ?? 0.0 : 0.0;
-    // 水门与水位
+    // 水门开度
     openAngle      = json['terminal-'+'$terminalAddress'+'.afn0c.f11.p0'] != null ? json['terminal-'+'$terminalAddress'+'.afn0c.f11.p0']['开度1'] ?? 0.0 : 0.0;
+    // 水位
     waterStage     = json['terminal-'+'$terminalAddress'+'.afn0c.f11.p0'] != null ? json['terminal-'+'$terminalAddress'+'.afn0c.f11.p0']['水位'] ?? 0.0 : 0.0;
+    // 转速
+    speed          = json['terminal-'+'$terminalAddress'+'.afn0c.f11.p0'] != null ? json['terminal-'+'$terminalAddress'+'.afn0c.f11.p0']['转速'] ?? 0.0 : 0.0;
     
     // 控制方案与开关机状态
     isAllowRemoteControl = json['terminal-'+'$terminalAddress'+'.afn0c.f24.p0'] != null ? json['terminal-'+'$terminalAddress'+'.afn0c.f24.p0']['isAllowRemoteControl'] ?? false : false;
@@ -110,6 +109,7 @@ class NearestRunningData{
     waterStage      = fix(waterStage);
     temperature     = fix(temperature);
     money           = fix(money);
+    speed           = fix(speed);
 
   }
 

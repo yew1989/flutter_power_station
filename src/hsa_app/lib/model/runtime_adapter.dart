@@ -164,23 +164,16 @@ class RuntimeDataAdapter {
    // 其他信息
    runtimeData.other = OtherDataPack();
 
-   // 温度数组
-   //var temperatures  = data?.waterTurbine?.temperatureMeasuringAliasName ?? [];
-   
-   // 首项
-   var radialName  = '径向';//getFirstItemName(temperatures);
-   var radialValue = 0.0;//data?.nearestRunningData?.;//getFirstItemValue(temperatures);
-   // 推力
-   var thrustStr = data?.nearestRunningData?.thrust ?? 0.0;//getThrust(temperatures);
+   // 温度
+   var temperature  =  data?.nearestRunningData?.temperature ?? 0.0 ;
+   // 转速
+   var speed = data?.nearestRunningData?.speed ?? 0.0;
+   // 水位
+   var waterStage = data?.nearestRunningData?.waterStage ?? 0.0;
 
-   // 水压
-   var waterPressures = data?.nearestRunningData?.waterPressure ?? 0.0;
-   var pressure = waterPressures ?? 0.0;
-
-   runtimeData.other.radial   = OtherData(title: radialValue.toString(),subTitle: radialName);
-   runtimeData.other.thrust   = OtherData(title: thrustStr.toString() ,subTitle: '推力:N');
-   runtimeData.other.pressure = OtherData(title: pressure.toString(),subTitle: '水压:MPa');
-
+   runtimeData.other.temperature   = OtherData(title: temperature.toString(),subTitle: '温度');
+   runtimeData.other.speed   = OtherData(title: speed.toString() ,subTitle: '转速');
+   runtimeData.other.waterStage = OtherData(title: waterStage.toString(),subTitle: '水位');
 
    // 事件列表
    runtimeData.events = List<EventTileData>();
@@ -242,9 +235,9 @@ class DashBoardDataPack {
 }
 
 class OtherDataPack {
-  OtherData radial;
-  OtherData thrust;
-  OtherData pressure;
+  OtherData temperature;
+  OtherData speed;
+  OtherData waterStage;
 }
 
 class OtherData {
