@@ -4,17 +4,16 @@ import 'package:date_format/date_format.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_cupertino_date_picker/flutter_cupertino_date_picker.dart';
-import 'package:hsa_app/api/api.dart';
 import 'package:hsa_app/components/empty_page.dart';
 import 'package:hsa_app/components/segment_control.dart';
 import 'package:hsa_app/components/spinkit_indicator.dart';
 import 'package:hsa_app/config/app_theme.dart';
-import 'package:hsa_app/debug/debug_api.dart';
-import 'package:hsa_app/debug/model/all_model.dart';
+import 'package:hsa_app/api/api.dart';
+import 'package:hsa_app/model/model/all_model.dart';
 import 'package:hsa_app/event/app_event.dart';
 import 'package:hsa_app/event/event_bird.dart';
-import 'package:hsa_app/model/history_point.dart';
-import 'package:hsa_app/model/runtime_adapter.dart';
+import 'package:hsa_app/model/model/history_point.dart';
+import 'package:hsa_app/model/model/runtime_adapter.dart';
 import 'package:hsa_app/page/history/history_calendar_bar.dart';
 import 'package:hsa_app/page/history/history_event_tile.dart';
 import 'package:hsa_app/page/history/history_pop_dialog.dart';
@@ -72,7 +71,7 @@ class _HistoryPageState extends State<HistoryPage> {
 
   // 获取事件类型
   void reqeustGetEventTypes() {
-    DebugAPI.getErcFlagTypeList(type: '0',onSucc: (types){
+    API.getErcFlagTypeList(type: '0',onSucc: (types){
       this.evnetTypes = types;
     },onFail: (msg){
 
@@ -132,7 +131,7 @@ class _HistoryPageState extends State<HistoryPage> {
     var apiStartDateTime = startDateTime + '  00:00:00';
     var apiEndDateTime = endDateTime + '  23:59:59';
     
-    DebugAPI.getTerminalAlertList(
+    API.getTerminalAlertList(
       onSucc: (events){
         this.isEventLoadFinsh = true;
 
@@ -185,7 +184,7 @@ class _HistoryPageState extends State<HistoryPage> {
       apiEndDateTime = formatDate(now, [yyyy, '-', mm, '-', dd,' ',hh, ':', nn, ':', ss]);
     }
 
-    DebugAPI.getTurbineWaterAndPowerAndState(stationNo: stationInfo.stationNo,
+    API.getTurbineWaterAndPowerAndState(stationNo: stationInfo.stationNo,
       startDateTime:apiStartDateTime,endDateTime:apiEndDateTime,
       onSucc: (turbinelist){
       

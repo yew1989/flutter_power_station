@@ -1,10 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:hsa_app/agent/agent_test_page.dart';
+import 'package:hsa_app/api/agent/agent_test_page.dart';
 import 'package:hsa_app/components/shawdow_widget.dart';
 import 'package:hsa_app/config/app_config.dart';
-import 'package:hsa_app/debug/API/debug_api_station.dart';
+import 'package:hsa_app/api/apis/api_station.dart';
 import 'package:hsa_app/debug/debug_api_test_page.dart';
 import 'package:hsa_app/debug/debug_api_test_page2.dart';
 import 'package:hsa_app/page/about/about_page.dart';
@@ -52,7 +52,7 @@ class _MinePageState extends State<MinePage> {
     // },(String msg){
 
     // });
-    DebugAPIStation.getStationList(onSucc: (msg){
+    APIStation.getStationList(onSucc: (msg){
       setState(() {
         this.stationCount = msg.total;
       });

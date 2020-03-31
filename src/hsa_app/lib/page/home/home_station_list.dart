@@ -6,9 +6,9 @@ import 'package:hsa_app/components/smart_refresher_style.dart';
 import 'package:hsa_app/components/spinkit_indicator.dart';
 import 'package:hsa_app/components/wave_ball.dart';
 import 'package:hsa_app/config/app_theme.dart';
-import 'package:hsa_app/debug/API/debug_api_station.dart';
-import 'package:hsa_app/debug/debug_api.dart';
-import 'package:hsa_app/debug/model/all_model.dart';
+import 'package:hsa_app/api/apis/api_station.dart';
+import 'package:hsa_app/api/api.dart';
+import 'package:hsa_app/model/model/all_model.dart';
 import 'package:hsa_app/event/app_event.dart';
 import 'package:hsa_app/event/event_bird.dart';
 import 'package:hsa_app/page/station/station_tabbar_page.dart';
@@ -51,7 +51,7 @@ class _HomeStationListState extends State<HomeStationList> {
     this.currentPage = 1;
     this.isEmpty = false;
     
-    DebugAPIStation.getStationList(onSucc: (msg){
+    APIStation.getStationList(onSucc: (msg){
       
       isLoadFinsh = true;
       refreshController.refreshCompleted();
@@ -88,7 +88,7 @@ class _HomeStationListState extends State<HomeStationList> {
 
     currentPage++ ;
 
-    DebugAPIStation.getStationList(onSucc: (msg){
+    APIStation.getStationList(onSucc: (msg){
       
       isLoadFinsh = true;
       
@@ -119,7 +119,7 @@ class _HomeStationListState extends State<HomeStationList> {
 
   //获取关注列表
   void getFavoriteStations(){
-    DebugAPIStation.getFavoriteStationNos(onSucc :(msg){
+    APIStation.getFavoriteStationNos(onSucc :(msg){
       this.favoriteStations = msg;
       
       initPage();
@@ -293,7 +293,7 @@ class _HomeStationListState extends State<HomeStationList> {
 
   // 请求关注
   void requestFocus(StationInfo station) async {
-    DebugAPIStation.setFavorite(stationNo: station.stationNo,isFavorite:!station.isCurrentAccountFavorite,onSucc: (msg,_){
+    APIStation.setFavorite(stationNo: station.stationNo,isFavorite:!station.isCurrentAccountFavorite,onSucc: (msg,_){
       Progresshud.showSuccessWithStatus(!station.isCurrentAccountFavorite ? '关注成功':'取消成功' );
       setState(() {
         station.isCurrentAccountFavorite = !station.isCurrentAccountFavorite;

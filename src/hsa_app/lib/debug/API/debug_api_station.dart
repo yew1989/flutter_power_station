@@ -1,7 +1,7 @@
 import 'package:hsa_app/debug/debug_api.dart';
 import 'package:hsa_app/debug/debug_api_helper.dart';
-import 'package:hsa_app/debug/model/all_model.dart';
-import 'package:hsa_app/debug/response/all_resp.dart';
+import 'package:hsa_app/model/model/all_model.dart';
+import 'package:hsa_app/model/response/all_resp.dart';
 
 class DebugAPIStation{
 

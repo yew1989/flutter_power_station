@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:hsa_app/api/api.dart';
-import 'package:hsa_app/debug/API/debug_api_login.dart';
-import 'package:hsa_app/debug/debug_api.dart';
-import 'package:hsa_app/debug/debug_share_instance.dart';
+import 'package:hsa_app/api/apis/api_login.dart';
+import 'package:hsa_app/api/share_instance.dart';
 import 'package:hsa_app/page/framework/root_page.dart';
 import 'package:hsa_app/service/umeng_analytics.dart';
 import 'package:hsa_app/theme/theme_gradient_background.dart';
@@ -55,8 +53,8 @@ class LoginPageState extends State<LoginPage> {
 
     Progresshud.showWithStatus('正在登录...');
 
-    DebugAPILogin.login(context,name:usrCtrl.text, pswd:pwdCtrl.text,onSucc: (s,msg){
-      var token = DebugShareInstance.getInstance().auth;
+    APILogin.login(context,name:usrCtrl.text, pswd:pwdCtrl.text,onSucc: (s,msg){
+      var token = ShareInstance.getInstance().auth;
       if (token.length > 0) {
 
       debugPrint('🎉 登录成功:' + token);

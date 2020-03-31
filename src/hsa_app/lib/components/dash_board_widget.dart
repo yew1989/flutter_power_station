@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hsa_app/components/dash_board/dash_board_opengate_progress.dart';
-import 'package:hsa_app/model/runtime_adapter.dart';
+import 'package:hsa_app/model/model/runtime_adapter.dart';
 import 'dash_board/dash_board_bg_progress.dart';
 import 'dash_board/dash_board_center_label.dart';
 import 'dash_board/dash_board_freq_progress.dart';

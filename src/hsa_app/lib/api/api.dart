@@ -1,557 +1,266 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:hsa_app/api/http_helper.dart';
-import 'package:hsa_app/config/app_config.dart';
-import 'package:hsa_app/model/caiyun.dart';
-import 'package:hsa_app/model/event_types.dart';
-import 'package:hsa_app/model/follow_command.dart';
-import 'package:hsa_app/model/history_event.dart';
-import 'package:hsa_app/model/history_point.dart';
-import 'package:hsa_app/model/more_data.dart';
-import 'package:hsa_app/model/pageConfig.dart';
-import 'package:hsa_app/model/province.dart';
-import 'package:hsa_app/model/runtime_data.dart';
-import 'package:hsa_app/model/station.dart';
-import 'package:hsa_app/model/station_info.dart';
-import 'package:hsa_app/model/version.dart';
-import 'package:hsa_app/util/encrypt.dart';
-import 'package:hsa_app/util/share.dart';
-import 'package:ovprogresshud/progresshud.dart';
-import 'package:hsa_app/model/banner_item.dart';
+import 'package:hsa_app/api/api_helper.dart';
+import 'package:hsa_app/model/model/all_model.dart';
+import 'package:hsa_app/model/response/all_resp.dart';
 
+
+
+// 返回回调 : 
 typedef HttpSuccMsgCallback = void Function(String msg);
+// 获取账户信息
+typedef AccountInfoCallback = void Function(AccountInfo account);
+// 地址信息列表
+typedef AreaInfoCallback = void Function(List<AreaInfo> areas);
+// 地址信息列表
+typedef StationListCallback = void Function(Data stations);
+// 地址信息列表
+typedef StationInfoCallback = void Function(StationInfo stationInfo);
+// 地址信息列表
+typedef NearestRunningDataCallback = void Function(NearestRunningData nearestRunningData);
+//List
+typedef ListCallback = void Function(List<String> list);
+// ERCFlag类型列表
+typedef ERCFlagTypeListCallback = void Function(List<ERCFlagType> types);
+// 告警事件列表
+typedef AlertEventListCallback = void Function(List<TerminalAlarmEvent> events);
+// 水位曲线列表
+typedef WaterLevelListCallback = void Function(List<WaterLevel> points);
+// 有功曲线列表
+typedef ActivePowerListCallback = void Function(List<ActivePower> points);
+// 水轮机信息
+typedef WaterTurbineCallback = void Function(WaterTurbine waterTurbines);
+// 终端信息
+typedef DeviceTerminalCallback = void Function(DeviceTerminal deviceTerminal);
+// 终端信息
+typedef TurbineCallback = void Function(List<Turbine> turbines);
+//广告
+typedef BannerListCallback = void Function(List<BannerModel> turbines);
+//天气
+typedef WeatherCallback = void Function(Weather weather);
 
-// 获取广告栏列表
-typedef BannerResponseCallBack = void Function(List<BannerItem> banners);
-// 获取省份列表
-typedef ProvinceResponseCallBack = void Function(List<String> provinces);
-// 获取电站数量
-typedef StationCountResponseCallBack = void Function(int count);
-// 获取电站列表
-typedef StationsListResponseCallBack = void Function(List<Stations> stations,int total);
-// 获取电站详情
-typedef StationInfoResponeseCallBack = void Function(StationInfo stationInfo);
-// 获取天气类型 0 晴 1 阴 2 雨
-typedef WeatherTypeResponseCallBack = void Function(int type);
-// 获取实时参数
-typedef RuntimeDataResponseCallBack = void Function(RuntimeDataResponse data);
-// 获取更多参数
-typedef MoreDataResponseCallBack = void Function(List<MoreItem> items);
-// 跟踪指令
-typedef FollowCommandResponseCallBack = void Function(FollowCommandResp commandResp);
-// 历史事件列表
-typedef HistoryEventResponseCallBack = void Function(List<HistoryEvent> events);
-// 事件类型
-typedef EventTypesResponseCallBack = void Function(List<EventTypes> types);
-// 历史有功和历史水位
-typedef HistoryPowerAndWaterResponseCallBack = void Function(HistoryPointResp resp);
+
 
 class API {
 
-  // 开发环境主机
-  // static final host = 'http://192.168.16.120:18081/';
-  // 生产环境主机
-  // static final host = 'http://hsa.fjlead.com/';
-  
-  // 动态主机
-  static final host = AppConfig.getInstance().remotePackage.hostApi;
+  // 通讯代理地址
+  static final agentHost = 'http://192.168.16.2:8280';
 
-  // API 接口地址
-  static final loginPath = 'Account/Login';
-  static final pswdPath = 'api/Account/ChangePassword';
-  static final customStationInfoPath = 'api/General/CustomerStationInfo';
-  static final terminalInfoPath = '/api/General/TerminalInfo';
-  static final treeNodePath = 'CustomerHydropowerStation/TreeNodeJSON';
+  // 基础信息地址
+  static final restHost = 'http://192.168.16.2:8281';
 
-  // 上传文件
-  static final uploadFilePath = 'Api/Account/UploadMobileAccountCfg';
-  // 下载文件
-  static final downloadFilePath = 'Api/Account/DownloadMobileAccountCfg';
+  // 动态数据地址
+  static final liveDataHost = 'http://192.168.16.2:8282';
 
-  // 广告栏
-  static final bannerListPath = 'app/GetBannerList';
-  // 省份列表
-  static final provinceListPath = 'app/GetProvinceList';
-  // 电站列表
-  static final stationListPath = 'app/GetStationList';
-  
-  // 关注,取消关注电站
-  static final focusStationPath = 'app/FocusStation';
+  // 固定应用ID AppKey 由平台下发
+  static final appKey = '3a769958-098a-46ff-a76a-de6062e079ee'; 
 
-  // 电站详情
-  static final stationInfoPath  = 'app/GetStationInfo';
+  //天气接口的版本
+  static final wVersion = 'v2.5';
 
-  // 彩云天气 url
-  // static final caiyunWeatherPath = 'https://api.caiyunapp.com/v2/iAKlQ99dfiDclxut/';
-  static final apiWeatherPath = AppConfig.getInstance().remotePackage.apiWeather;
+  //天气接口token
+  static final wToken = 'TAkhjf8d1nlSlspN';
 
-  // 实时运行参数
-  static final runtimeDataPath = 'api/General/RuntimeData';
-
-  // 更多数据
-  static final moreDataPath = host + 'api/General/TerminalOverViewData';
-
-  // 操作密码检查
-  static final operationCheckPath = host + 'api/Account/CheckOperationTicket';
-
-  // 历史有功和历史水位
-  static final historyPowerAndWaterPath = 'api/History/PowerAndWaterStage';
-
-  // 历史事件列表
-  static final eventsListPath = 'api/History/AlarmEventLogs';
-
-  // 事件类型接口
-  static final eventsTypePath = 'api/ERC/AlarmEventERCFlags';
-
-  // 跟踪指令执行情况
-  static final followCommandPath = host + 'Api/Cmd';
-  // 远程指令下发
-  static final remoteCommandPath = host + 'Api/Cmd/Send';
-
-  // 文件路径 与 地址
-  static final filePath = 'HsaApp2.0/Native/';
-  static final fileVersionInfo = 'appVersion.json';
-  static final fileWebRoute = 'pageConfig.json';
-
-  // 远程开机
-  static void remotePowerOn(String address,HttpSuccMsgCallback onSucc,HttpFailCallback onFail) {
-    API.remoteCommandBase(address, 'AFN05_F1', {'远程开停机':true}, onSucc, onFail);
-  }
-  // 远程关机
-  static void remotePowerOff(String address,HttpSuccMsgCallback onSucc,HttpFailCallback onFail) {
-    API.remoteCommandBase(address, 'AFN05_F1', {'远程开停机':false}, onSucc, onFail);
-  }
-  // 远程开主阀门
-  static void remoteMainValveOn(String address,HttpSuccMsgCallback onSucc,HttpFailCallback onFail) {
-    API.remoteCommandBase(address, 'AFN05_F2', {'远程主阀开关':true}, onSucc, onFail);
-  }
-  // 远程关主阀门
-  static void remoteMainValveOff(String address,HttpSuccMsgCallback onSucc,HttpFailCallback onFail) {
-    API.remoteCommandBase(address, 'AFN05_F2', {'远程主阀开关':false}, onSucc, onFail);
-  }
-  // 远程设定目标有功功率
-  static void remoteSettingActivePower(String address,String power,HttpSuccMsgCallback onSucc,HttpFailCallback onFail) {
-    API.remoteCommandBase(address, 'AFN05_F3', {'目标有功功率':power}, onSucc, onFail);
-  }
-  // 远程设定目标功率因数
-  static void remoteSettingPowerFactor(String address,String factor,HttpSuccMsgCallback onSucc,HttpFailCallback onFail) {
-    API.remoteCommandBase(address, 'AFN05_F4', {'目标功率因数':factor}, onSucc, onFail);
-  }
-  // 远程开旁通阀
-  static void remoteSideValveOn(String address,HttpSuccMsgCallback onSucc,HttpFailCallback onFail) {
-    API.remoteCommandBase(address, 'AFN05_F16', {'开关旁通阀':1}, onSucc, onFail);
-  }
-  // 远程关旁通阀
-  static void remoteSideValveOff(String address,HttpSuccMsgCallback onSucc,HttpFailCallback onFail) {
-    API.remoteCommandBase(address, 'AFN05_F16', {'开关旁通阀':0}, onSucc, onFail);
-  }
-  // 远程切换智能控制方案 - 打开远程控制
-  static void remoteSwitchRemoteModeOn(String address,HttpSuccMsgCallback onSucc,HttpFailCallback onFail) {
-    API.remoteCommandBase(address, 'AFN05_F13', {'智能控制方案标识':1}, onSucc, onFail);
-  }
-  // 远程切换智能控制方案 - 关闭远程控制
-  static void remoteSwitchRemoteModeOff(String address,HttpSuccMsgCallback onSucc,HttpFailCallback onFail) {
-    API.remoteCommandBase(address, 'AFN05_F13', {'智能控制方案标识':0}, onSucc, onFail);
-  }
-  // 远程控制垃圾清扫 - 开
-  static void remoteClearRubbishOn(String address,HttpSuccMsgCallback onSucc,HttpFailCallback onFail) {
-    API.remoteCommandBase(address, 'AFN05_F21', {'清理垃圾开启或关停':1}, onSucc, onFail);
-  }
-  // 远程控制垃圾清扫 - 关
-  static void remoteClearRubbishOff(String address,HttpSuccMsgCallback onSucc,HttpFailCallback onFail) {
-    API.remoteCommandBase(address, 'AFN05_F21', {'清理垃圾开启或关停':0}, onSucc, onFail);
-  }
-
-  // 远程指令下发 - 基础接口
-  static void remoteCommandBase(String address,String afnCmd,dynamic param,HttpSuccMsgCallback onSucc,HttpFailCallback onFail) {
-
-    if(address == null) return;
-    if(afnCmd == null) return;
-    var totalPath = remoteCommandPath + '/' + address + '/' + afnCmd + '/' + '0';
-
-    HttpHelper.postHttpApplicationJson(totalPath, param, (dynamic data,String msg){
-      var map  = data as Map<String,dynamic>;
-      var resp = FollowCommandResp.fromJson(map);
-      var cmdId = resp?.cmdId ?? '';
-      if(cmdId.length ==0 ) {
-        if(onFail != null) onFail('远程指令下发失败');
-      }
-      else {
-        if(onSucc != null) onSucc(cmdId);
-      }
-    }, onFail);
-
-  }
-
-  // 跟踪指令执行情况
-  static void followCommand(String cmdId,FollowCommandResponseCallBack onSucc,HttpFailCallback onFail) {
-
-    if(cmdId == null) return;
-    
-    var totalPath = followCommandPath + '/' + cmdId;
-    
-    HttpHelper.getHttpCommon(totalPath, null, (dynamic data,String string) {
-      var map  = data as Map<String,dynamic>;
-      var resp = FollowCommandResp.fromJson(map);
-      if(onSucc != null) onSucc(resp);
-    }, onFail);
-  }
-
-  // 操作密码检查
-  static void checkOperationPswd(BuildContext context,String pswd,HttpSuccMsgCallback onSucc,HttpFailCallback onFail) async {
-
-    if(pswd == null) return;
-    if(pswd.length == 0) return;
-    var rsaPswd = await LDEncrypt.encryptedRSAWithOldAppKey(context, pswd);
-
-    HttpHelper.postHttpCommonString(operationCheckPath, rsaPswd, (dynamic data,String msg){
-       var map  = data as Map<String,dynamic>;
-       var isSuccess = map['Success'] ?? false;
-       if(isSuccess == true){
-         if(onSucc != null) onSucc('操作密码正确');
-       }
-       else {
-         var msg = map['Msg']?? '操作密码错误';
-         if(onFail != null) onFail(msg);
-       }
-    }, onFail);
-  }
-
-  // 获取实时运行参数
-  static void runtimeData(String address,RuntimeDataResponseCallBack onSucc,HttpFailCallback onFail) {
-
-    var addressId = address??'';
-    var totalPath = runtimeDataPath + '/' + addressId;
-
-    HttpHelper.postHttpForm(totalPath, null, (dynamic data,String msg){
-        var map  = data as Map<String,dynamic>;
-        var resp = RuntimeDataResponse.fromJson(map);
-        if(onSucc != null) onSucc(resp);
-    }, onFail);
-
-  }
-
-  // 获取更多参数
-  static void moreData(String address,MoreDataResponseCallBack onSucc,HttpFailCallback onFail) {
-    
-    var addressId = address??'';
-    var totalPath = moreDataPath + '/' + addressId;
-
-    HttpHelper.getHttpCommonRespList(totalPath, null, (dynamic data,String msg){
-        var list  = data as List;
-        var items = List<MoreItem>();
-        for(var str in list) {
-          items.add(MoreItem.fromJson(str));
-        }
-        if(onSucc != null) onSucc(items);
-    }, onFail);
-
-  }
-
-  // 历史有功和历史水位
-  static void historyPowerAndWater(String address,String startDateTime,String endDateTime,HistoryPowerAndWaterResponseCallBack onSucc,HttpFailCallback onFail) {
-    var addressId = address ?? '';
-    var totalPath = historyPowerAndWaterPath + '/' + addressId;
-
-    Map<String,String> param = {};
-    if(startDateTime != null && startDateTime.length > 0 ) {
-      param['StartDateTime'] = startDateTime;
-    }
-    if(endDateTime != null && endDateTime.length > 0 ) {
-      param['EndDateTime'] = endDateTime;
-    }
-
-    HttpHelper.postHttpForm(totalPath, param, (dynamic data,String msg){
-        var map  = data as Map<String,dynamic>;
-        var resp = HistoryPointResp.fromJson(map);
-        if(onSucc != null) onSucc(resp);
-    }, onFail);
-
-  }
-
-  // 事件列表
-  static void eventList(String address,String startDateTime,String endDateTime,HistoryEventResponseCallBack onSucc,HttpFailCallback onFail,{String ercFlag}) {
-
-    final addressId = address ?? '';
-    var totalPath = eventsListPath + '/' + addressId;
-    if(ercFlag != null && ercFlag.compareTo('0') != 0) {
-      totalPath += '/' + ercFlag;
-    }
-    Map<String,String> param = {};
-    if(startDateTime != null && startDateTime.length > 0 ) {
-      param['StartDateTime'] = startDateTime;
-    }
-    if(endDateTime != null && endDateTime.length > 0 ) {
-      param['EndDateTime'] = endDateTime;
-    }
-    
-    HttpHelper.postHttpForm(totalPath, param, (dynamic data,String msg){
-        final list  = data as List;
-        final events = List<HistoryEvent>();
-        for(var str in list) {
-          events.add(HistoryEvent.fromJson(str));
-        }
-        if(onSucc != null) onSucc(events);
-    }, onFail);
-  }
-
-  // 事件类型
-  static void eventTypes(EventTypesResponseCallBack onSucc,HttpFailCallback onFail) {
-
-    HttpHelper.getHttp(eventsTypePath, null, (dynamic data,String msg){
-        final list  = data as List;
-        final types = List<EventTypes>();
-        for(var str in list) {
-          types.add(EventTypes.fromJson(str));
-        }
-        if(onSucc != null) onSucc(types);
-    }, onFail);
-  }
-
-
-  // 彩云天气
-  static void weatherCaiyun(Geo geo,WeatherTypeResponseCallBack onSucc,HttpFailCallback onFail) {
-
-    final longitude = geo?.longitude ?? 0.0;
-    final latitude  = geo?.latitude ?? 0.0;
-
-    debugPrint('🌍 🌍 🌍 经纬度 🌍 🌍 🌍 : $longitude,$latitude ');
-
-    if(longitude == 0){
-      onSucc(0);
-      return;
-    } 
-    if(latitude == 0) {
-      onSucc(0);
+  // 获取省份列表信息
+  static void getAreaList({@required String rangeLevel,AreaInfoCallback onSucc,HttpFailCallback onFail}) async {
+    // 输入检查
+    if(rangeLevel == null) {
+      if(onFail != null) onFail('地址范围参数缺失');
       return;
     }
-
-    var totalPath = apiWeatherPath + longitude.toString() + ',' + latitude.toString() + '/realtime.json';
     
-    HttpHelper.getHttpCommon(totalPath, null, (dynamic data,String msg) {
-        var map  = data as Map<String,dynamic>;
-        var resp = CaiyuWeatherResponse.fromJson(map);
-        if(onSucc != null){
-          var status = resp.status;
-          if(status != 'ok') {
-            onSucc(0);
-            return;
-          }
-          // 获取天气情况
-          var sky = resp?.result?.skycon ?? '';
-          debugPrint('🌞 🌞 🌞 天气 🌞 🌞 🌞: $sky');
-          // 晴天
-          if(sky == 'CLEAR_DAY' || sky == 'CLEAR_NIGHT' || sky == '') {
-            onSucc(0);
-            return;
-          }
-          // 多云或阴
-          else if (sky == 'PARTLY_CLOUDY_DAY' || sky == 'PARTLY_CLOUDY_NIGHT' || sky == 'CLOUDY') {
-            onSucc(1);
-            return;
-          }
-          // 雨天
-          else if (sky == 'WIND' || sky == 'HAZE' || sky == 'RAIN' || sky == 'SNOW') {
-            onSucc(2);
-            return;
-          }
-        }
-    },
-    onFail);
-
-  }
-
-  // 电站详情
-  static void stationInfo(String statinId,StationInfoResponeseCallBack onSucc,HttpFailCallback onFail) {
-   
-    HttpHelper.getHttp(
-      stationInfoPath, {
-        'id': statinId ?? '',
-      }, 
-      (dynamic data,String msg) {
-        var map  = data as Map<String,dynamic>;
-        var resp = StationInfoResponse.fromJson(map);
-        if(onSucc != null) onSucc(resp.data.station);
-      }, 
-      onFail);
-  }
-
-  // 关注电站 / 取消关注电站
-  static void focusStation(String stationId,bool isFocus,HttpSuccMsgCallback onSucc,HttpFailCallback onFail) {
+    // 获取帐号信息地址
+    final path = restHost + '/v1/City/CurrentAccountHyStation/' + '$rangeLevel';
     
-    // 参数
-    Map<String,String> param = {};
-    if(stationId != null && stationId.length > 0 ) {
-      param['id'] = stationId;
-    }
-    if(isFocus != null) {
-      param['isfocus'] = isFocus.toString();
-    }
-    HttpHelper.postHttp(focusStationPath, param,(dynamic data,String msg) {
-        var map  = data as Map<String,dynamic>;
-        var msg = map['msg'] ?? '';
-        if(onSucc != null) onSucc(msg);
-      }, 
-      onFail);
+    HttpHelper.httpGET(path, null, (map,_){
+
+      var resp = AreaInfoResp.fromJson(map);
+      if(onSucc != null) onSucc(resp.data);
+      
+    }, onFail);
   }
+  
 
-  // 广告栏
-  static void banners(BannerResponseCallBack onSucc,HttpFailCallback onFail) {
-
-    HttpHelper.getHttp(
-      bannerListPath, null, 
-      (dynamic data,String msg) {
-        var map  = data as Map<String,dynamic>;
-        var resp = BannerResponse.fromJson(map);
-        if(onSucc != null) onSucc(resp.data.banner);
-      }, 
-      onFail);
-  }
-
-  // 省份列表
-  static void provinces(ProvinceResponseCallBack onSucc,HttpFailCallback onFail) {
-
-    HttpHelper.getHttp(
-      provinceListPath, null, 
-      (dynamic data,String msg) {
-        var map  = data as Map<String,dynamic>;
-        var resp = ProviceResponse.fromJson(map);
-        if(onSucc != null) onSucc(resp.data.province);
-      }, 
-      onFail);
-  }
-
-  // 获取电站数量
-  static void stationsCount(
-    StationCountResponseCallBack onSucc,
-    HttpFailCallback onFail) {
-
-    HttpHelper.getHttp(
-      stationListPath, {
-      'page':'1',
-      'rows':'1',
-    },
-    (dynamic data,String msg) {
-        var map  = data as Map<String,dynamic>;
-        var resp = StationsResponse.fromJson(map);
-        if(onSucc != null) onSucc(resp.data?.total ?? 0);
-      }, 
-      onFail);
-  }
-
-  // 获取电站列表
-  static void stationsList(
-    StationsListResponseCallBack onSucc,
-    HttpFailCallback onFail,
-    {int page,int rows,String province,String keyword,bool isfocus}) {
-
-    // 参数
-    Map<String,String> param = {};
-    // 页码
-    if( page != null ) {
-      if(page == 0) {
-        param['page'] = '1';
-      } else {
-        param['page'] = page.toString();
-      }
+  // 获取告警事件类型列表 type = 0 水轮机 1 生态下泄
+  static void getErcFlagTypeList({@required String type,ERCFlagTypeListCallback onSucc,HttpFailCallback onFail}) async {
+    // 输入检查
+    if(type == null) {
+      if(onFail != null) onFail('终端告警类型参数缺失');
+      return;
     }
-    // 行数
-    if( rows != null ) {
-      if(rows == 0) {
-        param['rows'] = '1';
-      } else {
-        param['rows'] = rows.toString();
-      }
-    }
-    // 省份
-    if( province != null ) {
-      if(province.length > 0) {
-        param['provincename'] = province;
-      }
-    }
-    // 关键词
-    if( keyword != null ) {
-      if(keyword.length > 0) {
-        param['keyword'] = keyword;
-      }
-    }
-    // 关注
-    if ( isfocus == true ) {
-      param['isfocus'] = 'true';
-    }
-
-    HttpHelper.getHttp(stationListPath, param,(dynamic data,String msg) {
-        var map  = data as Map<String,dynamic>;
-        var resp = StationsResponse.fromJson(map);
-        if(onSucc != null) onSucc(resp.data.stations,resp.data.total ?? 0);
-      }, onFail);
     
+    // 获取帐号信息地址
+    final path = restHost + '/v1/EnumAlarmEventERC/' + '$type';
+    
+    HttpHelper.httpGET(path, null, (map,_){
+
+      var resp = ERCFlagTypeResp.fromJson(map);
+      if(onSucc != null) onSucc(resp.data);
+      
+    }, onFail);
   }
 
-  // 更改登录密码
-  static Future<HttpResult> modifyPswd(String oldWord, String newWord) async {
-    if (oldWord == null || newWord == null) return null;
-    if (oldWord.length == 0 || newWord.length == 0) return null;
+  
 
-    var secOld = LDEncrypt.encryptedMd5Pwd(oldWord);
-    var secNew = LDEncrypt.encryptedMd5Pwd(newWord);
+  
 
-    debugPrint('🔑旧密码:' + secOld);
-    debugPrint('🔑新密码:' + secNew);
+  
+  // 获取终端告警列表
+  static void getTerminalAlertList({
+        String seachAnchorDateTime,
+        String searchDirection,
+        String startDateTime,
+        String endDateTime,
+        String stationNos,
+        String ercVersions,
+        String eventFlags,
+        String deviceTerminalType,
+        String deviceTerminalHardware,
+        String terminalAddress,
+        int limitSize,
+        bool isIncludedDetail, 
+        AlertEventListCallback onSucc,HttpFailCallback onFail}) async {
 
-    HttpResult result = HttpResult();
-    result.success = false;
-    result.msg = '请求错误.';
+    var param = Map<String, dynamic>();
 
-    Progresshud.showWithStatus('密码修改中...');
-
-    try {
-      final path = host + pswdPath;
-      Response response = await Dio().post(
-        path,
-        options: Options(
-          headers: {
-            'Authorization': ShareManager.instance.token,
-          },
-          contentType: Headers.formUrlEncodedContentType,
-        ),
-        data: {
-          'oldPassword': secOld,
-          'newPassword': secNew,
-        },
-      );
-      if (response.statusCode != 200) {
-        Progresshud.dismiss();
-        Progresshud.showSuccessWithStatus('修改失败');
-        return result;
-      }
-      if (response.data is! Map) {
-        Progresshud.dismiss();
-        Progresshud.showSuccessWithStatus('修改失败');
-        return result;
-      }
-      var map = response.data as Map<String, dynamic>;
-      var pass = map['Success'];
-      if (pass) {
-        result.success = true;
-        result.msg = '';
-        Progresshud.dismiss();
-        Progresshud.showSuccessWithStatus('修改成功');
-      } else {
-        result.success = false;
-        result.msg = map['Msg'] ?? '';
-        Progresshud.dismiss();
-        Progresshud.showInfoWithStatus(result.msg);
-      }
-      return result;
-    } catch (e) {
-      Progresshud.dismiss();
-      Progresshud.showInfoWithStatus('网络错误');
-      print(e);
-      return result;
+    // SeachAnchorDateTime	string	否	时间锚点
+    if(seachAnchorDateTime != null) {
+      param['seachAnchorDateTime'] = seachAnchorDateTime;
     }
+    // SearchDirection	string	否	Backward(上一页)或Forward(下一页) 依赖于时间锚点，默认Forward
+    if(searchDirection != null) {
+      param['searchDirection'] = searchDirection;
+    }
+    // StartDateTime	DateTime	否	起始时间
+    if(startDateTime != null) {
+      param['startDateTime'] = startDateTime;
+    }
+    // EndDateTime	DateTime	否	结束时间
+    if(endDateTime != null) {
+      param['endDateTime'] = endDateTime;
+    }
+    // StationNos	string[]	否	电站号
+    if(stationNos != null) {
+      param['stationNos'] = stationNos;
+    }
+    // ErcVersions	byte[]	否	告警版本号
+    if(ercVersions != null) {
+      param['ercVersions'] = ercVersions;
+    }
+    // EventFlags	ushort[]	否	告警标识，前置条件：ErcVersions
+    if(eventFlags != null) {
+      param['eventFlags'] = eventFlags;
+    }
+    // DeviceTerminalType	DeviceTerminalTypeEnum	否	设备类型
+    if(deviceTerminalType != null) {
+      param['deviceTerminalType'] = deviceTerminalType;
+    }
+    // DeviceTerminalHardware	string	否	设备版本
+    if(deviceTerminalHardware != null) {
+      param['deviceTerminalHardware'] = deviceTerminalHardware;
+    }
+    // TerminalAddress	string	否	终端地址
+    if(terminalAddress != null) {
+      param['terminalAddress'] = terminalAddress;
+    }
+    // LimitSize	int	否	查询条数，默认20
+    if(limitSize != null) {
+      param['limitSize'] = limitSize;
+    }
+    // IsIncludedDetail	bool	否	是否包含详情数据，默认false
+    if(isIncludedDetail != null) {
+      param['isIncludedDetail'] = isIncludedDetail;
+    }
+        
+    // 获取帐号信息地址
+    final path = liveDataHost + '/v1/TerminalAlarmEvent';
+
+    HttpHelper.httpGET(path, param, (map,_){
+    
+      var resp = TerminalAlarmEventResp.fromJson(map);
+      if(onSucc != null) onSucc(resp.data.rows);
+        
+    }, onFail);
+  }
+  
+
+  static void getTurbineWaterAndPowerAndState({
+    @required String stationNo,
+    String seachAnchorDateTime,
+    String searchDirection,
+    String startDateTime,
+    String endDateTime,
+    String minuteInterval,
+    String terminalAddress,
+    String limitSize,
+    TurbineCallback onSucc,HttpFailCallback onFail}) async {
+
+    var param = Map<String, dynamic>();
+
+    // SeachAnchorDateTime	string	否	时间锚点
+    if(seachAnchorDateTime != null) {
+      param['seachAnchorDateTime'] = seachAnchorDateTime;
+    }
+    // SearchDirection	string	否	Backward(上一页)或Forward(下一页) 依赖于时间锚点，默认Forward
+    if(searchDirection != null) {
+      param['searchDirection'] = searchDirection;
+    }
+    // StartDateTime	DateTime	否	起始时间
+    if(startDateTime != null) {
+      param['startDateTime'] = startDateTime;
+    }
+    // EndDateTime	DateTime	否	结束时间
+    if(endDateTime != null) {
+      param['endDateTime'] = endDateTime;
+    }
+    // TerminalAddress	string	否	终端地址
+    if(terminalAddress != null) {
+      param['terminalAddress'] = terminalAddress;
+    }
+    // LimitSize	int	否	查询条数，默认20
+    if(limitSize != null) {
+      param['limitSize'] = limitSize;
+    }
+
+    final path = liveDataHost + '/v1/TurbineWaterAndPowerAndState/'+'$stationNo';
+
+    HttpHelper.httpGET(path,param, (map,_){
+      
+      var resp = TurbineResp.fromJson(map);
+      if(onSucc != null) onSucc(resp.data.turbine);
+
+    },onFail);
+  }
+     
+
+  //获取平台广告牌信息
+  static void getAdvertisingBoard({BannerListCallback onSucc,HttpFailCallback onFail}) async {
+
+    final path = restHost + '/v1/SystemExtendInfo/AdvertisingBoard';
+
+    HttpHelper.httpGET(path,null, (map,_){
+      
+      var resp = BannerResp.fromJson(map);
+      if(onSucc != null) onSucc(resp.data.banners);
+
+    },onFail);
   }
 
+
+  //彩云天气
+  static void getWeather({num longitude, num latitude,WeatherCallback onSucc,HttpFailCallback onFail}) async { 
+
+    final long = longitude ?? 0.0;
+    final lat  = latitude ?? 0.0;
+
+    final path = 'https://api.caiyunapp.com/'+wVersion+'/'+wToken+'/'+long.toString()+','+lat.toString()+'/realtime.json';
+    
+    HttpHelper.getHttpCommon(path, null, (map,_) {
+
+      var resp = WeatherResp.fromJson(map);
+      if(onSucc != null) onSucc(resp.result.realtime);
+    },onFail);
+  }
   // Touch 外部环境
   static Future<String> touchNetWork() async {
     try {
@@ -565,71 +274,10 @@ class API {
       print(e);
       return null;
     }
-  }
-  
-  // 获取远端版本信息接口(文件)
-  static Future<Version> getAppVersionRemote() async {
-    try {
-      final path = host + filePath + fileVersionInfo;
-      Response response = await Dio().get(path);
-      if (response.statusCode != 200) {
-        return null;
-      }
-      var map = response.data;
-      var version = Version.fromJson(map);
-      return version;
-    } catch (e) {
-      print(e);
-      return null;
-    }
-  }
-
-  // 获取web路由接口(文件)
-  static Future<PageConfig> getWebRoute() async {
-    try {
-      final path = host + filePath + fileWebRoute;
-      Response response = await Dio().get(path);
-      if (response.statusCode != 200) {
-        return null;
-      }
-      var map = response.data;
-      var webRoute = PageConfig.fromJson(map);
-      return webRoute;
-    } catch (e) {
-      print(e);
-      return null;
-    }
-  }
-  // 登录获取 Token
-  static Future<String> getLoginToken(String name, String pwd) async {
-    try {
-      final path = host + loginPath;
-      Response response = await Dio().post(
-        path,
-        queryParameters: {
-          'accountName': name,
-          'accountPwd': LDEncrypt.encryptedMd5Pwd(pwd)
-        },
-      );
-      if (response.statusCode != 200) {
-        return '';
-      }
-      var map = response.data;
-      bool loginSucc = map['Success'];
-      if (loginSucc) {
-        var authorizationList = response.headers['set-authorization'];
-        if (authorizationList is List<String>) {
-          List<String> list = authorizationList;
-          var token = list.first;
-          return token;
-        }
-        return '';
-      } else {
-        return '';
-      }
-    } catch (e) {
-      print(e);
-      return '';
-    }
-  }
 }
+  
+}
+  
+
+
+

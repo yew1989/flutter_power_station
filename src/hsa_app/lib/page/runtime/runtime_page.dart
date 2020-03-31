@@ -1,16 +1,15 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:hsa_app/api/api.dart';
-import 'package:hsa_app/api/remote_task.dart';
+import 'package:hsa_app/api/agent/agent.dart';
+import 'package:hsa_app/api/agent/agent_task.dart';
+import 'package:hsa_app/api/apis/api_station.dart';
 import 'package:hsa_app/components/dash_board_widget.dart';
 import 'package:hsa_app/components/runtime_progress_bar.dart';
 import 'package:hsa_app/components/shawdow_widget.dart';
 import 'package:hsa_app/components/smart_refresher_style.dart';
 import 'package:hsa_app/config/app_theme.dart';
-import 'package:hsa_app/debug/API/debug_api_station.dart';
-import 'package:hsa_app/debug/debug_api.dart';
-import 'package:hsa_app/debug/model/all_model.dart';
-import 'package:hsa_app/model/runtime_adapter.dart';
+import 'package:hsa_app/model/model/all_model.dart';
+import 'package:hsa_app/model/model/runtime_adapter.dart';
 import 'package:hsa_app/page/dialog/control_model_dialog.dart';
 import 'package:hsa_app/page/dialog/password_dialog.dart';
 import 'package:hsa_app/page/history/history_page.dart';
@@ -50,7 +49,7 @@ class _RuntimePageState extends State<RuntimePage> {
   DeviceTerminal deviceTerminal = DeviceTerminal();
 
   // 远程控制任务
-  RemoteControlTask remoteTask = RemoteControlTask();
+  AgentTask agentTask = AgentTask();
 
   // 弹出进度对话框
   ProgressDialog progressDialog;
@@ -153,7 +152,7 @@ class _RuntimePageState extends State<RuntimePage> {
   @override
   void dispose() {
     runLoopTimer?.cancel();
-    remoteTask.cancelTask();
+    agentTask.resetTimer();
     Progresshud.dismiss();
     super.dispose();
   }
@@ -168,7 +167,7 @@ class _RuntimePageState extends State<RuntimePage> {
       Progresshud.showInfoWithStatus('获取实时机组数据失败');
       return;
     }
-    DebugAPIStation.getDeviceTerminalInfo(terminalAddress: addressId,onSucc: (dt){
+    APIStation.getDeviceTerminalInfo(terminalAddress: addressId,onSucc: (dt){
       //this.runtimeData = RuntimeDataAdapter.adapter(dt, widget.alias);
       this.deviceTerminal = dt;
     },onFail: (msg){
@@ -185,7 +184,7 @@ class _RuntimePageState extends State<RuntimePage> {
                 "AFN0C.F13.p0", "AFN0C.F24.p0", "AFN0C.F20.p0", "AFN0C.F21.p0", "AFN0C.F22.p0"] ;
       break;
     }
-    DebugAPIStation.getMultipleAFNFnpn(terminalAddress:addressId,paramList: param,onSucc: (nearestRunningData){
+    APIStation.getMultipleAFNFnpn(terminalAddress:addressId,paramList: param,onSucc: (nearestRunningData){
       Progresshud.dismiss();
       refreshController.refreshCompleted();
       setState(() {
@@ -217,7 +216,7 @@ class _RuntimePageState extends State<RuntimePage> {
       runLoopTimer?.cancel();
       return;
     }
-    DebugAPIStation.getDeviceTerminalInfo(terminalAddress: addressId,onSucc: (dt){
+    APIStation.getDeviceTerminalInfo(terminalAddress: addressId,onSucc: (dt){
       //this.runtimeData = RuntimeDataAdapter.adapter(dt, widget.alias);
       this.deviceTerminal = dt;
     },onFail: (msg){
@@ -234,7 +233,7 @@ class _RuntimePageState extends State<RuntimePage> {
                 "AFN0C.F13.p0", "AFN0C.F24.p0", "AFN0C.F20.p0", "AFN0C.F21.p0", "AFN0C.F22.p0"] ;
       break;
     }
-    DebugAPIStation.getMultipleAFNFnpn(terminalAddress:addressId,paramList: param,onSucc: (nearestRunningData){
+    APIStation.getMultipleAFNFnpn(terminalAddress:addressId,paramList: param,onSucc: (nearestRunningData){
       setState(() {
         this.deviceTerminal.nearestRunningData = nearestRunningData;
         this.runtimeData = RuntimeDataAdapter.adapter(deviceTerminal, widget.alias);
@@ -594,8 +593,8 @@ class _RuntimePageState extends State<RuntimePage> {
     // 远程控制检测
     var isRemoteControl = false;
     // 如果是远程控制模式开关
-    if (taskName == TaskName.switchRemoteOn ||
-        taskName == TaskName.switchRemoteOff) {
+    if (taskName == TaskName.remoteSwitchRemoteModeOn ||
+        taskName == TaskName.remoteSwitchRemoteModeOff) {
       isRemoteControl =
           runtimeData.status == ControlModelCurrentStatus.remoteOn ||
               runtimeData.status == ControlModelCurrentStatus.remoteOff;
@@ -619,22 +618,33 @@ class _RuntimePageState extends State<RuntimePage> {
         barrierDismissible: false,
         builder: (BuildContext context) {
           return PasswordDialog((String pswd) {
-            // 检查操作密码
-            API.checkOperationPswd(context, pswd, (String succString) {
-              debugPrint('操作密码 🔑 :' + succString);
-              // 开始任务
-              progressDialog.show();
-              remoteTask.startTask(taskName, widget.address, param,
-                  (String succString) {
+            
+            AgentControlAPI.startTask(context,taskName,widget.address,pswd,
+              (String succString) {
                 finishProgressDialog(succString, true);
               }, (String failString) {
                 finishProgressDialog(failString, false);
               }, (String loadingString) {
                 updateProgressDialog(loadingString);
-              });
-            }, (_) {
-              showOperationPasswordPopWindow();
-            });
+              }
+            );
+
+            //检查操作密码
+            // API.checkOperationPswd(context, pswd, (String succString) {
+            //   debugPrint('操作密码 🔑 :' + succString);
+            //   // 开始任务
+            //   progressDialog.show();
+            //   agentTask.startTask(taskName, widget.address, param,
+            //       (String succString) {
+            //     finishProgressDialog(succString, true);
+            //   }, (String failString) {
+            //     finishProgressDialog(failString, false);
+            //   }, (String loadingString) {
+            //     updateProgressDialog(loadingString);
+            //   });
+            // }, (_) {
+            //   showOperationPasswordPopWindow();
+            // });
           });
         });
   }

@@ -3,7 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hsa_app/api/leancloud/leancloud_api.dart';
 import 'package:hsa_app/config/app_config.dart';
-import 'package:hsa_app/model/package.dart';
+import 'package:hsa_app/model/model/package.dart';
 import 'package:hsa_app/page/login/login_page.dart';
 import 'package:hsa_app/service/jpush_service.dart';
 import 'package:hsa_app/service/umeng_analytics.dart';

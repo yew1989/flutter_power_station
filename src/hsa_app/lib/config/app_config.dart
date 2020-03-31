@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:hsa_app/api/leancloud/leancloud_api.dart';
-import 'package:hsa_app/model/package.dart';
+import 'package:hsa_app/model/model/package.dart';
 import 'package:package_info/package_info.dart';
 
 class AppConfig {

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:hsa_app/model/runtime_adapter.dart';
+import 'package:hsa_app/model/model/runtime_adapter.dart';
 
 class ControlModelDialogWidget extends StatefulWidget {
 

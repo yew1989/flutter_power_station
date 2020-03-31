@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:hsa_app/agent/agent_operation_ticket.dart';
-import 'package:hsa_app/agent/agent_replay_unit.dart';
+import 'package:hsa_app/api/agent/agent_operation_ticket.dart';
+import 'package:hsa_app/api/agent/agent_replay_unit.dart';
 import 'package:hsa_app/debug/debug_api.dart';
 import 'package:hsa_app/debug/debug_api_helper.dart';
 import 'package:hsa_app/util/encrypt.dart';
@@ -110,7 +110,7 @@ class AgentAPI {
       }
 
       if(state == 'ResponseOutTime') {
-        if(onFail != null) onFail('等待响应');
+        if(onFail != null) onFail('响应超时');
         return ;
       }
 

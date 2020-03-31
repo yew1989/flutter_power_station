@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:hsa_app/components/public_tool.dart';
 import 'package:hsa_app/components/smart_refresher_style.dart';
-import 'package:hsa_app/debug/API/debug_api_station.dart';
-import 'package:hsa_app/debug/debug_api.dart';
-import 'package:hsa_app/debug/model/all_model.dart';
-import 'package:hsa_app/debug/model/station.dart';
+import 'package:hsa_app/api/apis/api_station.dart';
+import 'package:hsa_app/model/model/all_model.dart';
+import 'package:hsa_app/model/model/station.dart';
 import 'package:hsa_app/event/app_event.dart';
 import 'package:hsa_app/event/event_bird.dart';
 import 'package:hsa_app/page/history/history_page.dart';
@@ -56,7 +55,7 @@ class _StationPageState extends State<StationPage> {
       return;
     }
     List<String> param;
-    DebugAPIStation.getStationInfo(stationNo:stationId,
+    APIStation.getStationInfo(stationNo:stationId,
       isIncludeCustomer:true,isIncludeWaterTurbine:true,isIncludeFMD:true,isIncludeLiveLink:true,onSucc: (StationInfo station) {
       
       Progresshud.dismiss();
@@ -82,7 +81,7 @@ class _StationPageState extends State<StationPage> {
               break;
             }
             if(terminalAddress != ''){
-              DebugAPIStation.getMultipleAFNFnpn(terminalAddress:terminalAddress,
+              APIStation.getMultipleAFNFnpn(terminalAddress:terminalAddress,
               paramList:param,
               onSucc: (nearestRunningData){
                 stationInfo.waterTurbines[i].deviceTerminal.nearestRunningData = nearestRunningData;

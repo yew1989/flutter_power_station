@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:hsa_app/api/leancloud/leancloud_http_helper.dart';
-import 'package:hsa_app/model/package.dart';
+import 'package:hsa_app/model/model/package.dart';
 
 typedef PackageSuccCallback = void Function(Package data, String msg);
 

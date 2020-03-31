@@ -1,6 +1,6 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
-import 'package:hsa_app/model/runtime_adapter.dart';
+import 'package:hsa_app/model/model/runtime_adapter.dart';
 import 'package:native_color/native_color.dart';
 import 'package:path_drawing/path_drawing.dart';
 

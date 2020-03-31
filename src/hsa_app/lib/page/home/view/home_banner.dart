@@ -2,7 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_banner_swiper/flutter_banner_swiper.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
-import 'package:hsa_app/debug/model/banner.dart';
+import 'package:hsa_app/model/model/banner.dart';
 import 'package:hsa_app/page/framework/webview_page.dart';
 import 'package:hsa_app/components/public_tool.dart';
 import 'package:hsa_app/util/cache_manager.dart';

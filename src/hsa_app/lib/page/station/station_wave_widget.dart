@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hsa_app/components/wave_widget.dart';
-import 'package:hsa_app/debug/model/station.dart';
-//import 'package:hsa_app/model/station_info.dart';
+import 'package:hsa_app/model/model/station.dart';
 import 'package:native_color/native_color.dart';
 
 class StationWaveWidget extends StatefulWidget {

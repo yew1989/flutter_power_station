@@ -1,5 +1,5 @@
-import 'package:hsa_app/debug/model/all_model.dart';
-import 'package:hsa_app/model/runtime_data.dart';
+import 'package:hsa_app/model/model/all_model.dart';
+import 'package:hsa_app/model/model/runtime_data.dart';
 import 'package:hsa_app/page/dialog/control_model_dialog.dart';
 
 class EventTileData {

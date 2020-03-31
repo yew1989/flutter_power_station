@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hsa_app/config/app_theme.dart';
-import 'package:hsa_app/model/runtime_adapter.dart';
+import 'package:hsa_app/model/model/runtime_adapter.dart';
 
 class HistoryEventTile extends StatelessWidget {
 

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:hsa_app/api/remote_task.dart';
+import 'package:hsa_app/api/agent/agent_task.dart';
 
 class DeviceControlDialog extends Dialog {
   final void Function(TaskName taskName) onSelectTask;
@@ -152,32 +152,32 @@ class DeviceControlDialog extends Dialog {
                         children: <Widget>[
                           controlTile(context, '主      阀', '开', () {
                             if (onSelectTask != null)
-                              onSelectTask(TaskName.mainValveOn);
+                              onSelectTask(TaskName.remoteMainValveOn);
                           }),
                           dividerLine(),
                           controlTile(context, '主      阀', '关', () {
                             if (onSelectTask != null)
-                              onSelectTask(TaskName.mainValveOff);
+                              onSelectTask(TaskName.remoteMainValveOff);
                           }),
                           dividerLine(),
                           controlTile(context, '旁通阀', '开', () {
                             if (onSelectTask != null)
-                              onSelectTask(TaskName.sideValveOn);
+                              onSelectTask(TaskName.remoteSideValveOn);
                           }),
                           dividerLine(),
                           controlTile(context, '旁通阀', '关', () {
                             if (onSelectTask != null)
-                              onSelectTask(TaskName.sideValveOff);
+                              onSelectTask(TaskName.remoteSideValveOff);
                           }),
                           dividerLine(),
                           controlTile(context, '清污机', '开', () {
                             if (onSelectTask != null)
-                              onSelectTask(TaskName.clearRubbishOn);
+                              onSelectTask(TaskName.remoteClearRubbishOn);
                           }),
                           dividerLine(),
                           controlTile(context, '清污机', '关', () {
                             if (onSelectTask != null)
-                              onSelectTask(TaskName.clearRubbishOff);
+                              onSelectTask(TaskName.remoteClearRubbishOff);
                           }),
                           dividerLine(),
                           bottomTile(context),

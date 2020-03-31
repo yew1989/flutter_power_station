@@ -1,9 +1,8 @@
 import 'package:badges/badges.dart';
 import 'package:flutter/material.dart';
-import 'package:hsa_app/debug/model/all_model.dart';
+import 'package:hsa_app/model/model/all_model.dart';
 import 'package:hsa_app/event/app_event.dart';
 import 'package:hsa_app/event/event_bird.dart';
-//import 'package:hsa_app/model/station_info.dart';
 import 'package:native_color/native_color.dart';
 import 'package:hsa_app/config/app_theme.dart';
 import 'package:date_format/date_format.dart';

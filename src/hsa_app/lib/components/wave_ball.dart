@@ -3,9 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:hsa_app/components/circle_indicator.dart';
 import 'package:hsa_app/components/wave_widget.dart';
 import 'package:hsa_app/config/app_theme.dart';
-import 'package:hsa_app/debug/model/all_model.dart';
-//import 'package:hsa_app/model/station.dart';
-//import 'package:hsa_app/model/station_info.dart';
+import 'package:hsa_app/model/model/all_model.dart';
 import 'package:native_color/native_color.dart';
 
 class WaveValuePack {

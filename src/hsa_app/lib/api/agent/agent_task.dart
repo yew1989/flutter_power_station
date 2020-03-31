@@ -4,6 +4,21 @@ import 'package:hsa_app/api/api.dart';
 import 'package:hsa_app/api/http_helper.dart';
 import 'api/agent_api.dart';
 
+enum TaskName {
+  remotePowerOn,// 远程开机
+  remotePowerOff,// 远程关机
+  remoteMainValveOn,// 远程开主阀门
+  remoteMainValveOff,// 远程关主阀门
+  remoteSideValveOn, // 远程开旁通阀
+  remoteSideValveOff,// 远程关旁通阀
+  remoteSwitchRemoteModeOn,// 远程切换智能控制方案 - 打开远程控制
+  remoteSwitchRemoteModeOff, // 远程切换智能控制方案 - 关闭远程控制
+  remoteClearRubbishOn,// 远程控制垃圾清扫 - 开
+  remoteClearRubbishOff,// 远程控制垃圾清扫 - 关
+  remoteSettingActivePower,// 远程设定目标有功功率
+  remoteSettingPowerFactor,// 远程设定目标功率因数
+}
+
 class AgentTask {
 
   AgentTask({this.maxRetryTimes = 10,this.loopInterval = 1});
@@ -76,11 +91,11 @@ class AgentTask {
           if(onFail != null) onFail('命令发送失败');
           return;
         },onSucc: (cmdId,msg){
-        pollingTask(cmdId:cmdId,isControl: isControlCmd,onFail:onFail,onLoading: onLoading,onSucc:onSucc);
-       }); 
+          pollingTask(cmdId:cmdId,isControl: isControlCmd,onFail:onFail,onLoading: onLoading,onSucc:onSucc);
+        }); 
       }
 
-  }
+    }
 
     // 判断是否是控制指令
     bool isControl(String afn){
@@ -109,33 +124,33 @@ class AgentTask {
         // 一秒一个周期查询
       timer = Timer.periodic(Duration(seconds: loopInterval), (timer) {
 
-          retryTime ++;
+        retryTime ++;
 
-          if(retryTime > maxRetryTimes) {
+        if(retryTime > maxRetryTimes) {
 
+          resetTimer();
+
+          if(onFail != null) onFail('操作超时');
+          return;
+        }
+
+        AgentAPI.followCommandId(cmdId,isControl,onSucc:(msg){
+            
             resetTimer();
-
-            if(onFail != null) onFail('操作超时');
-            return;
-          }
-
-          AgentAPI.followCommandId(cmdId,isControl,onSucc:(msg){
-             
-             resetTimer();
-             if(onSucc != null) onSucc(msg);
+            if(onSucc != null) onSucc(msg);
 
           },
           onLoading: (msg){
 
-             if(onSucc != null) onSucc(msg);
+            if(onSucc != null) onSucc(msg);
           },
           onFail: (msg){
 
-             resetTimer();
-             if(onFail != null) onFail(msg);
-             
+            resetTimer();
+            if(onFail != null) onFail(msg);
+              
           },
-          );
+        );
 
       });
     }

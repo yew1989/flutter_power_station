@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:hsa_app/debug/model/all_model.dart';
+import 'package:hsa_app/model/model/all_model.dart';
 import 'package:hsa_app/page/history/history_pop_dialog_tile.dart';
 
 class HistoryEventDialogWidget extends StatefulWidget {

@@ -1,4 +1,4 @@
-import 'package:hsa_app/debug/debug_api_helper.dart';
+import 'package:hsa_app/api/api_helper.dart';
 import 'package:hsa_app/debug/debug_api.dart';
 import 'package:hsa_app/debug/response/all_resp.dart';
 import 'package:meta/meta.dart';
@@ -12,7 +12,7 @@ class DebugAPIHistory{
     @required String endDate,
     @required int minuteInterval,
     @required String hyStationWaterStageType,
-    WaterLevelListCallback onSucc,DebugHttpFailCallback onFail}) async {
+    WaterLevelListCallback onSucc,HttpFailCallback onFail}) async {
 
     // 输入检查
     if(address == null) {
@@ -53,7 +53,7 @@ class DebugAPIHistory{
       param['hyStationWaterStageType'] = hyStationWaterStageType;
     }
 
-    DebugHttpHelper.httpGET(path, param, (map,_){
+    HttpHelper.httpGET(path, param, (map,_){
 
       final resp = WaterLevelResp.fromJson(map);
       if(onSucc != null) onSucc(resp.data.rows);
@@ -67,7 +67,7 @@ class DebugAPIHistory{
     @required String address,
     @required String startDate,
     @required String endDate,
-    ActivePowerListCallback onSucc,DebugHttpFailCallback onFail}) async {
+    ActivePowerListCallback onSucc,HttpFailCallback onFail}) async {
 
     // 输入检查
     if(address == null) {
@@ -97,7 +97,7 @@ class DebugAPIHistory{
       param['endDate'] = endDate;
     }
 
-    DebugHttpHelper.httpGET(path, param, (map,_){
+    HttpHelper.httpGET(path, param, (map,_){
 
       final resp = ActivePowerResp.fromJson(map);
       if(onSucc != null) onSucc(resp.data.rows);

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:hsa_app/model/more_data.dart';
+import 'package:hsa_app/model/model/more_data.dart';
 import 'package:hsa_app/config/app_theme.dart';
 
 class MorePageTile extends StatefulWidget { 

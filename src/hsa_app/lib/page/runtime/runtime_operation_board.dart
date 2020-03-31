@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:hsa_app/api/remote_task.dart';
+import 'package:hsa_app/api/agent/agent_task.dart';
 import 'package:hsa_app/components/public_tool.dart';
-import 'package:hsa_app/model/runtime_adapter.dart';
+import 'package:hsa_app/model/model/runtime_adapter.dart';
 import 'package:hsa_app/page/dialog/control_model_dialog.dart';
 import 'package:hsa_app/page/dialog/power_control_dialog.dart';
 import 'package:hsa_app/page/more/more_page.dart';
@@ -206,7 +206,7 @@ class _RunTimeOperationBoardState extends State<RunTimeOperationBoard> {
                       GestureDetector(
                         onTap: () {
                           if(widget.onSholdRequestRemoteCommand != null) {
-                             widget.onSholdRequestRemoteCommand(isMotorPowerOn ? TaskName.powerOff : TaskName.powerOn,null);
+                             widget.onSholdRequestRemoteCommand(isMotorPowerOn ? TaskName.remotePowerOff : TaskName.remotePowerOn,null);
                           }
                         },
                       ),
@@ -242,12 +242,12 @@ class _RunTimeOperationBoardState extends State<RunTimeOperationBoard> {
                                           debugPrint(status.toString());
                                           if(status == ControlModelCurrentStatus.remoteOn) {
                                             if(widget.onSholdRequestRemoteCommand != null) {
-                                            widget.onSholdRequestRemoteCommand(TaskName.switchRemoteOn,null);
+                                            widget.onSholdRequestRemoteCommand(TaskName.remoteSwitchRemoteModeOn,null);
                                             }
                                           }
                                           else if(status == ControlModelCurrentStatus.remoteOff) {
                                             if(widget.onSholdRequestRemoteCommand != null) {
-                                            widget.onSholdRequestRemoteCommand(TaskName.switchRemoteOff,null);
+                                            widget.onSholdRequestRemoteCommand(TaskName.remoteSwitchRemoteModeOff,null);
                                             }
                                           }
                                           
@@ -306,7 +306,7 @@ class _RunTimeOperationBoardState extends State<RunTimeOperationBoard> {
                                         powerMax: runtimeData?.equippedCapacitor?.toInt() ?? 0,
                                           onConfirmActivePower:(String activePower) {
                                              if(widget.onSholdRequestRemoteCommand != null) {
-                                              widget.onSholdRequestRemoteCommand(TaskName.setttingActivePower,activePower);
+                                              widget.onSholdRequestRemoteCommand(TaskName.remoteSettingActivePower,activePower);
                                              }
                                           },
                                           onConfirmPowerFactor:(String powerFactor) {
@@ -314,7 +314,7 @@ class _RunTimeOperationBoardState extends State<RunTimeOperationBoard> {
                                                 var hundred = double.parse(powerFactor) * 100;
                                                 var hundredStr = hundred.toStringAsFixed(0);
                                              if(widget.onSholdRequestRemoteCommand != null) {
-                                              widget.onSholdRequestRemoteCommand(TaskName.settingPowerFactor,hundredStr);
+                                              widget.onSholdRequestRemoteCommand(TaskName.remoteSettingPowerFactor,hundredStr);
                                              }
                                           }));
                                   },

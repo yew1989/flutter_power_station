@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:hsa_app/api/api.dart';
-import 'package:hsa_app/model/more_data.dart';
+import 'package:hsa_app/model/model/more_data.dart';
 import 'package:hsa_app/page/more/more_page_tile.dart';
 import 'package:hsa_app/service/umeng_analytics.dart';
 import 'package:hsa_app/theme/theme_gradient_background.dart';
@@ -41,15 +40,15 @@ class _MorePageState extends State<MorePage> {
       Progresshud.showInfoWithStatus('获取更多信息失败');
       return;
     }
-    API.moreData(address,(List<MoreItem> items){
-      Progresshud.dismiss();
-      setState(() {
-        this.moreItems = items;
-      });
-    }, (String msg){
-      Progresshud.showInfoWithStatus('获取更多信息失败');
-      debugPrint(msg);
-    });
+    // API.moreData(address,(List<MoreItem> items){
+    //   Progresshud.dismiss();
+    //   setState(() {
+    //     this.moreItems = items;
+    //   });
+    // }, (String msg){
+    //   Progresshud.showInfoWithStatus('获取更多信息失败');
+    //   debugPrint(msg);
+    // });
 
   }
 

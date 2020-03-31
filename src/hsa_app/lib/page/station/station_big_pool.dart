@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:hsa_app/debug/model/station.dart';
-//import 'package:hsa_app/model/station_info.dart';
+import 'package:hsa_app/model/model/station.dart';
 import 'package:hsa_app/page/station/station_power_widget.dart';
 import 'package:hsa_app/page/station/station_profit_widget.dart';
 import 'package:hsa_app/page/station/station_wave_widget.dart';

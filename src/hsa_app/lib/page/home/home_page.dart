@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:hsa_app/api/api.dart';
 import 'package:hsa_app/components/shawdow_widget.dart';
-import 'package:hsa_app/debug/debug_api.dart';
-import 'package:hsa_app/debug/model/banner.dart';
+import 'package:hsa_app/api/api.dart';
+import 'package:hsa_app/model/model/banner.dart';
 import 'package:hsa_app/page/home/home_station_list.dart';
 import 'package:hsa_app/page/home/view/home_banner.dart';
 import 'package:hsa_app/service/umeng_analytics.dart';
@@ -27,7 +26,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
 
   // 获取广告条
   void requestBanner() {
-    DebugAPI.getAdvertisingBoard(
+    API.getAdvertisingBoard(
       onSucc:(banners){
         setState(() {
           this.banners = banners;
@@ -64,7 +63,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
 
   //省份列表(新)
   void requestProvinces(){
-    DebugAPI.getAreaList(rangeLevel:'Province',onSucc: (areas){
+    API.getAreaList(rangeLevel:'Province',onSucc: (areas){
 
       setState(() {
         this.provinces = areas.map((area) => area.provinceName).toList();
