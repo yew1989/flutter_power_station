@@ -333,7 +333,7 @@ class _DebugAgentTestPageState extends State<AgentTestPage> {
     // BASE
     else if(index == 18) {
 
-        AgentQueryAPI.qureryTerminalNearestRunningData(context,address: teminalBase,isBase:true,onSucc: (data,msg){
+        AgentQueryAPI.qureryTerminalNearestRunningData(address: teminalBase,isBase:true,onSucc: (data,msg){
           
           showToast(data.toString());
 
@@ -346,7 +346,7 @@ class _DebugAgentTestPageState extends State<AgentTestPage> {
     // PRO
     else if(index == 19) {
 
-        AgentQueryAPI.qureryTerminalNearestRunningData(context, address: teminalPro,isBase:false,onSucc: (data,msg){
+        AgentQueryAPI.qureryTerminalNearestRunningData(address: teminalPro,isBase:false,onSucc: (data,msg){
 
           showToast(data.toString());
 

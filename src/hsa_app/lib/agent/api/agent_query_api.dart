@@ -13,8 +13,44 @@ typedef AgentQueryFailCallback = void Function(String msg);
 
 class AgentQueryAPI {
 
-  // 单条查询 终端最近数据 
-  static void qureryTerminalNearestRunningData(BuildContext context, { 
+  // 召测试在线终端的实时运行数据
+  static void remoteMeasuringRunTimeData(String terminalAddress,bool isBase) {
+
+    DebugHttpHelper.httpPOST(AgentQueryAPI.createPath(terminalAddress,'AFN0C_F1'), null, null, null);
+    DebugHttpHelper.httpPOST(AgentQueryAPI.createPath(terminalAddress,'AFN0C_F10'), null, null, null);
+    DebugHttpHelper.httpPOST(AgentQueryAPI.createPath(terminalAddress,'AFN0C_F11'), null, null, null);
+    DebugHttpHelper.httpPOST(AgentQueryAPI.createPath(terminalAddress,'AFN0C_F13'), null, null, null);
+    DebugHttpHelper.httpPOST(AgentQueryAPI.createPath(terminalAddress,'AFN0C_F20'), null, null, null);
+    DebugHttpHelper.httpPOST(AgentQueryAPI.createPath(terminalAddress,'AFN0C_F24'), null, null, null);
+    if(isBase == true) {
+          DebugHttpHelper.httpPOST(AgentQueryAPI.createPath(terminalAddress,'AFN0C_F9'), null, null, null);
+    }
+    else {
+         DebugHttpHelper.httpPOST(AgentQueryAPI.createPath(terminalAddress,'AFN0C_F30'), null, null, null);
+    }
+  }
+
+  // 仅召测电量和电气参数 - For 电站概要页
+  static void remoteMeasuringElectricParam(String terminalAddress,bool isBase) {
+
+    if(isBase == true) {
+          DebugHttpHelper.httpPOST(AgentQueryAPI.createPath(terminalAddress,'AFN0C_F9'), null, null, null);
+    }
+    else {
+         DebugHttpHelper.httpPOST(AgentQueryAPI.createPath(terminalAddress,'AFN0C_F30'), null, null, null);
+    }
+    DebugHttpHelper.httpPOST(AgentQueryAPI.createPath(terminalAddress,'AFN0C_F24'), null, null, null);
+
+  }
+
+
+  static String createPath(String terminalAddress,String afnFunc) {
+    return DebugAPI.liveDataHost + '/v1/Cmd/Send/' + terminalAddress + '/' +  afnFunc  +'/' + '/0';
+  }
+
+
+  // 单条查询 终端最近运行数据 
+  static void qureryTerminalNearestRunningData({ 
       @required String address, // 终端地址
       @required bool isBase,       // 是否是标准版,默认标准版
       AgentQuerySuccCallback onSucc, // 成功回调

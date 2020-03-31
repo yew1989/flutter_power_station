@@ -205,7 +205,7 @@ class RuntimeDataAdapter {
      runtimeData.status = isAllowRemoteControl ? ControlModelCurrentStatus.remoteOn : ControlModelCurrentStatus.remoteOff;
    }
    // 开关机状态
-   runtimeData.isMotorPowerOn = true;//motorPowerBool(data);
+   runtimeData.isMotorPowerOn = true;
 
    return runtimeData;
  }

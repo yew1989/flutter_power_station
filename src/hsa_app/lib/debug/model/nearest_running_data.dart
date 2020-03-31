@@ -24,7 +24,6 @@ class NearestRunningData{
   // 转速
   double speed;
 
-
   // 是否允许远程控制
   bool isAllowRemoteControl;
   // 控制类型
@@ -33,7 +32,6 @@ class NearestRunningData{
   String powerStatus;
   // 智能控制方案
   String intelligentControlProgram;
-  
   // 预计收入 - 单位元 - 单水轮机收益
   double money;
 
