@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:hsa_app/api/agent/agent.dart';
 import 'package:hsa_app/api/agent/agent_task.dart';
+import 'package:hsa_app/api/api.dart';
 import 'package:hsa_app/api/apis/api_station.dart';
 import 'package:hsa_app/components/dash_board_widget.dart';
 import 'package:hsa_app/components/runtime_progress_bar.dart';
@@ -41,6 +42,9 @@ class _RuntimePageState extends State<RuntimePage> {
   double barMaxWidth = 0;
 
   static const double kHeaderHeight = 44;
+
+  //告警事件
+  List<TerminalAlarmEvent> showEvents = List<TerminalAlarmEvent>();
 
   // 实时数据
   RuntimeData runtimeData = RuntimeData();
@@ -187,25 +191,22 @@ class _RuntimePageState extends State<RuntimePage> {
     APIStation.getMultipleAFNFnpn(terminalAddress:addressId,paramList: param,onSucc: (nearestRunningData){
       Progresshud.dismiss();
       refreshController.refreshCompleted();
-      setState(() {
-        this.deviceTerminal.nearestRunningData = nearestRunningData;
-        this.runtimeData = RuntimeDataAdapter.adapter(deviceTerminal, widget.alias);
-      });
+      this.deviceTerminal.nearestRunningData = nearestRunningData;
+      this.runtimeData = RuntimeDataAdapter.adapter(deviceTerminal, widget.alias);
     },onFail: (msg){
       Progresshud.showInfoWithStatus('获取实时机组数据失败');
       refreshController.refreshFailed();
     });
-    // API.runtimeData(addressId, (RuntimeDataResponse data) {
-    //   Progresshud.dismiss();
-    //   refreshController.refreshCompleted();
-    //   setState(() {
-    //     this.runtimeData = RuntimeDataAdapter.adapter(data, widget.alias);
-    //   });
-    // }, (String msg) {
-    //   Progresshud.showInfoWithStatus('获取实时机组数据失败');
-    //   refreshController.refreshFailed();
-      
-    // });
+    API.getTerminalAlertList(
+      onSucc: (events){
+        setState(() {
+          this.showEvents = events;
+        });
+      },onFail: (msg){},
+      searchDirection : 'Backward',
+      terminalAddress : addressId,
+      limitSize : 10,
+    );
   }
 
   // 静默任务请求
@@ -217,7 +218,6 @@ class _RuntimePageState extends State<RuntimePage> {
       return;
     }
     APIStation.getDeviceTerminalInfo(terminalAddress: addressId,onSucc: (dt){
-      //this.runtimeData = RuntimeDataAdapter.adapter(dt, widget.alias);
       this.deviceTerminal = dt;
     },onFail: (msg){
       
@@ -234,20 +234,21 @@ class _RuntimePageState extends State<RuntimePage> {
       break;
     }
     APIStation.getMultipleAFNFnpn(terminalAddress:addressId,paramList: param,onSucc: (nearestRunningData){
-      setState(() {
-        this.deviceTerminal.nearestRunningData = nearestRunningData;
-        this.runtimeData = RuntimeDataAdapter.adapter(deviceTerminal, widget.alias);
-      });
+      this.deviceTerminal.nearestRunningData = nearestRunningData;
+      this.runtimeData = RuntimeDataAdapter.adapter(deviceTerminal, widget.alias);
     },onFail: (msg){
      
     });
-
-
-    // API.runtimeData(addressId, (RuntimeDataResponse data) {
-    //   setState(() {
-    //     this.runtimeData = RuntimeDataAdapter.adapter(data, widget.alias);
-    //   });
-    // }, (_) {});
+    API.getTerminalAlertList(
+      onSucc: (events){
+        setState(() {
+          this.showEvents = events;
+        });
+      },onFail: (msg){},
+      searchDirection : 'Backward',
+      terminalAddress : addressId,
+      limitSize : 10,
+    );
   }
 
   //  设备概要头
@@ -527,10 +528,12 @@ class _RuntimePageState extends State<RuntimePage> {
   Widget eventList() {
     return Container(
       child: ListView.builder(
-        itemCount: runtimeData?.events?.length ?? 0,
+        itemCount: showEvents?.length ?? 0,
         itemBuilder: (_, index) {
-          var event = runtimeData?.events[index];
-          return RuntimeEventTile(event: event);
+          final event = showEvents[index];
+          final left = 'ERC${event.eventFlag}--${event.eventTitle}';
+          var right = event.eventTime;
+          return RuntimeEventTile(event:  EventTileData(left, right));
         },
       ),
     );

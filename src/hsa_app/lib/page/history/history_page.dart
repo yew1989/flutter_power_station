@@ -73,13 +73,8 @@ class _HistoryPageState extends State<HistoryPage> {
   void reqeustGetEventTypes() {
     API.getErcFlagTypeList(type: '0',onSucc: (types){
       this.evnetTypes = types;
-    },onFail: (msg){
-
-    });
-
-    // API.eventTypes((types) {
-    //   this.evnetTypes = types;
-    // }, (_) {});
+    },onFail: (msg){}
+    );
   }
 
   @override
@@ -146,25 +141,11 @@ class _HistoryPageState extends State<HistoryPage> {
       },
       searchDirection : 'Backward',
       endDateTime : apiEndDateTime,
+      startDateTime : apiStartDateTime,
       stationNos : stationNos,
       terminalAddress : address,
       limitSize : 10,
     );
-    
-
-    // API.eventList(address, apiStartDateTime, apiEndDateTime, (events) {
-    //   this.isEventLoadFinsh = true;
-
-    //   if (events.length == 0) {
-    //     this.isEventEmpty = true;
-    //   }
-    //   setState(() {
-    //     this.showEvents = events;
-    //   });
-    // }, (msg) {
-    //   debugPrint(msg);
-    // },ercFlag: this.ercFlag);
-
 
   }
 
@@ -214,33 +195,6 @@ class _HistoryPageState extends State<HistoryPage> {
     },onFail: (msg){
       debugPrint(msg);    
     });
-
-
-    
-
-
-  //   API.historyPowerAndWater(address, apiStartDateTime, apiEndDateTime,(historyResp) {
-
-  //     this.isChartLoadFinsh = true;
-
-  //     setState(() {
-  //       this.historyPointResp = historyResp;
-        
-  //       final tkWMax = this.historyPointResp.ratedActivePower;
-  //       final waterStageMax = this.historyPointResp.waterStageAlarmValue;
-
-  //       List<DateValuePoint> originalPoints = [];
-  //       for(var p in this.historyPointResp.data) {
-  //         p.tkWMax = tkWMax;
-  //         p.waterStageMax = waterStageMax;
-  //         originalPoints.add(DateValuePoint.fromPoint(p));
-  //       }
-  //       this.points = filterPoint(originalPoints);
-  //     });
-
-  //   }, (msg) {
-  //     debugPrint(msg);
-  //   });
   }
 
   // 点过滤
@@ -706,8 +660,8 @@ class _HistoryPageState extends State<HistoryPage> {
         itemBuilder: (ctx, index) {
           final event = events[index];
           final left = 'ERC${event.eventFlag}--${event.eventTitle}';
-          var right = event.eventTime.replaceAll('T', ' ');
-          right = right.split(' ').last ?? '';
+          var right = event.eventTime;
+          //right = right.split(' ').last ?? '';
           return HistoryEventTile(event: EventTileData(left, right));
         },
         itemCount: events.length ?? 0

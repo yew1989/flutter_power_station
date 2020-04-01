@@ -106,11 +106,6 @@ class _StationPageState extends State<StationPage> {
   }
 
   void onTapPushToHistoryPage(StationInfo info) async {
-    // final deviceIdList = info.waterTurbines.map((wt) {
-    //   return wt?.deviceTerminal?.terminalAddress ?? '';
-    // }).toList();
-    // final addresses = deviceIdList.join(',');
-    // final navTitle = info?.name ?? '';
     pushToPage(context, HistoryPage(title: '历史分析',stationInfo:info));
   }
 

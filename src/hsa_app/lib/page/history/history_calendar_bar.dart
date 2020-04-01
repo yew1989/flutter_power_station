@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:hsa_app/config/app_theme.dart';
-import 'package:loading_indicator/loading_indicator.dart';
 
 class HistoryCalendarBar extends StatefulWidget {
 

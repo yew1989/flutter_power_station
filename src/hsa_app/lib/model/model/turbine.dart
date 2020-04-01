@@ -130,34 +130,34 @@ class TurbineElectricalPower {
       this.phaseDifference});
 
   TurbineElectricalPower.fromJson(Map<String, dynamic> json) {
-    generatorVoltageA = json['发电机A相电压'].cast<double>();
-    generatorVoltageB = json['发电机B相电压'].cast<double>();
-    generatorVoltageC = json['发电机C相电压'].cast<double>();
-    generatorCurrentA = json['发电机A相电流'].cast<double>();
-    generatorCurrentB = json['发电机B相电流'].cast<double>();
-    generatorCurrentC = json['发电机C相电流'].cast<double>();
-    generatorActivePowerAll = json['发电机总有功功率'].cast<double>();
-    generatorActivePowerA = json['发电机A相有功功率'].cast<double>();
-    generatorActivePowerB = json['发电机B相有功功率'].cast<double>();
-    generatorActivePowerC = json['发电机C相有功功率'].cast<double>();
-    generatorReactivePowerAll = json['发电机总无功功率'].cast<double>();
-    generatorReactivePowerA = json['发电机A相无功功率'].cast<double>();
-    generatorReactivePowerB = json['发电机B相无功功率'].cast<double>();
-    generatorReactivePowerC = json['发电机C相无功功率'].cast<double>();
-    generatorApparentPowerAll = json['发电机总视在功率'].cast<double>();
-    generatorApparentPowerA = json['发电机A相视在功率'].cast<double>();
-    generatorApparentPowerB = json['发电机B相视在功率'].cast<double>();
-    generatorApparentPowerC = json['发电机C相视在功率'].cast<double>();
-    generatorPowerFactorAll = json['发电机总功率因数'].cast<double>();
-    generatorPowerFactorA = json['发电机A相功率因数'].cast<double>();
-    generatorPowerFactorB = json['发电机B相功率因数'].cast<double>();
-    generatorPowerFactorC = json['发电机C相功率因数'].cast<double>();
-    generatorVoltageFreq = json['发电机电压频率'].cast<double>();
-    gridVoltageA = json['电网A相电压'].cast<double>();
-    gridVoltageB = json['电网B相电压'].cast<double>();
-    gridVoltageC = json['电网C相电压'].cast<double>();
-    gridVoltageFreq = json['电网电压频率'].cast<double>();
-    phaseDifference = json['发电机与电网电压相位差'].cast<double>();
+    generatorVoltageA = json['发电机A相电压'] is double ? json['发电机A相电压'] : json['发电机A相电压'] == null ?  0.0 : json['发电机A相电压'].toDouble();
+    generatorVoltageB = json['发电机B相电压'] is double ? json['发电机B相电压'] : json['发电机B相电压'] == null ?  0.0 : json['发电机B相电压'].toDouble();
+    generatorVoltageC = json['发电机C相电压'] is double ? json['发电机C相电压'] : json['发电机C相电压'] == null ?  0.0 : json['发电机C相电压'].toDouble();
+    generatorCurrentA = json['发电机A相电流'] is double ? json['发电机A相电流'] : json['发电机A相电流'] == null ?  0.0 : json['发电机A相电流'].toDouble();
+    generatorCurrentB = json['发电机B相电流'] is double ? json['发电机B相电流'] : json['发电机B相电流'] == null ?  0.0 : json['发电机B相电流'].toDouble();
+    generatorCurrentC = json['发电机C相电流'] is double ? json['发电机C相电流'] : json['发电机C相电流'] == null ?  0.0 : json['发电机C相电流'].toDouble();
+    generatorActivePowerAll = json['发电机总有功功率'] is double ? json['发电机总有功功率'] : json['发电机总有功功率'] == null ?  0.0 : json['发电机总有功功率'].toDouble();
+    generatorActivePowerA = json['发电机A相有功功率'] is double ? json['发电机A相有功功率'] : json['发电机A相有功功率'] == null ?  0.0 : json['发电机A相有功功率'].toDouble();
+    generatorActivePowerB = json['发电机B相有功功率'] is double ? json['发电机B相有功功率'] : json['发电机B相有功功率'] == null ?  0.0 : json['发电机B相有功功率'].toDouble();
+    generatorActivePowerC = json['发电机C相有功功率'] is double ? json['发电机C相有功功率'] : json['发电机C相有功功率'] == null ?  0.0 : json['发电机C相有功功率'].toDouble();
+    generatorReactivePowerAll = json['发电机总无功功率'] is double ? json['发电机总无功功率'] : json['发电机总无功功率'] == null ?  0.0 : json['发电机总无功功率'].toDouble();
+    generatorReactivePowerA = json['发电机A相无功功率'] is double ? json['发电机A相无功功率'] : json['发电机A相无功功率'] == null ?  0.0 : json['发电机A相无功功率'].toDouble();
+    generatorReactivePowerB = json['发电机B相无功功率'] is double ? json['发电机B相无功功率'] : json['发电机B相无功功率'] == null ?  0.0 : json['发电机B相无功功率'].toDouble();
+    generatorReactivePowerC = json['发电机C相无功功率'] is double ? json['发电机C相无功功率'] : json['发电机C相无功功率'] == null ?  0.0 : json['发电机C相无功功率'].toDouble();
+    generatorApparentPowerAll = json['发电机总视在功率'] is double ? json['发电机总视在功率'] : json['发电机总视在功率'] == null ?  0.0 : json['发电机总视在功率'].toDouble();
+    generatorApparentPowerA = json['发电机A相视在功率'] is double ? json['发电机A相视在功率'] : json['发电机A相视在功率'] == null ?  0.0 : json['发电机A相视在功率'].toDouble();
+    generatorApparentPowerB = json['发电机B相视在功率'] is double ? json['发电机B相视在功率'] : json['发电机B相视在功率'] == null ?  0.0 : json['发电机B相视在功率'].toDouble();
+    generatorApparentPowerC = json['发电机C相视在功率'] is double ? json['发电机C相视在功率'] : json['发电机C相视在功率'] == null ?  0.0 : json['发电机C相视在功率'].toDouble();
+    generatorPowerFactorAll = json['发电机总功率因数'] is double ? json['发电机总功率因数'] : json['发电机总功率因数'] == null ?  0.0 : json['发电机总功率因数'].toDouble();
+    generatorPowerFactorA = json['发电机A相功率因数'] is double ? json['发电机A相功率因数'] : json['发电机A相功率因数'] == null ?  0.0 : json['发电机A相功率因数'].toDouble();
+    generatorPowerFactorB = json['发电机B相功率因数'] is double ? json['发电机B相功率因数'] : json['发电机B相功率因数'] == null ?  0.0 : json['发电机B相功率因数'].toDouble();
+    generatorPowerFactorC = json['发电机C相功率因数'] is double ? json['发电机C相功率因数'] : json['发电机C相功率因数'] == null ?  0.0 : json['发电机C相功率因数'].toDouble();
+    generatorVoltageFreq = json['发电机电压频率'] is double ? json['发电机电压频率'] : json['发电机电压频率'] == null ?  0.0 : json['发电机电压频率'].toDouble();
+    gridVoltageA = json['电网A相电压'] is double ? json['电网A相电压'] : json['电网A相电压'] == null ?  0.0 : json['电网A相电压'].toDouble();
+    gridVoltageB = json['电网B相电压'] is double ? json['电网B相电压'] : json['电网B相电压'] == null ?  0.0 : json['电网B相电压'].toDouble();
+    gridVoltageC = json['电网C相电压'] is double ? json['电网C相电压'] : json['电网C相电压'] == null ?  0.0 : json['电网C相电压'].toDouble();
+    gridVoltageFreq = json['电网电压频率'] is double ? json['电网电压频率'] : json['电网电压频率'] == null ?  0.0 : json['电网电压频率'].toDouble();
+    phaseDifference = json['发电机与电网电压相位差'] is double ? json['发电机与电网电压相位差'] : json['发电机与电网电压相位差'] == null ?  0.0 : json['发电机与电网电压相位差'].toDouble();
   }
 
   Map<String, dynamic> toJson() {
@@ -237,10 +237,10 @@ class TrubineExcitationComponent {
       {this.fieldCurrent, this.freq, this.setPoint, this.controlAngle});
 
   TrubineExcitationComponent.fromJson(Map<String, dynamic> json) {
-    fieldCurrent = json['励磁电流'].cast<double>();
-    freq = json['freq'].cast<double>();
-    setPoint = json['setPoint'].cast<double>();
-    controlAngle = json['controlAngle'].cast<double>();
+    fieldCurrent = json['励磁电流'] is double ? json['励磁电流'] : json['励磁电流'] == null ?  0.0 : json['励磁电流'].toDouble();
+    freq = json['freq'] is double ? json['freq'] : json['freq'] == null ?  0.0 : json['freq'].toDouble();
+    setPoint = json['setPoint'] is double ? json['setPoint'] : json['setPoint'] == null ?  0.0 : json['setPoint'].toDouble();
+    controlAngle = json['controlAngle'] is double ? json['controlAngle'] : json['controlAngle'] == null ?  0.0 : json['controlAngle'].toDouble();
   }
 
   Map<String, dynamic> toJson() {
@@ -256,7 +256,7 @@ class TrubineExcitationComponent {
 class TurbineRuningStage {
   double measuringWaterLevel;
   double dropWaterLevel;
-  List<double> openAngle;
+  List<dynamic> openAngle;
   double speed;
 
   TurbineRuningStage(
@@ -266,10 +266,10 @@ class TurbineRuningStage {
       this.speed});
 
   TurbineRuningStage.fromJson(Map<String, dynamic> json) {
-    measuringWaterLevel = json['测量水位'].cast<double>();
-    dropWaterLevel = json['落差水位'].cast<double>();
-    openAngle = json['开度'].cast<List<double>>();
-    speed = json['转速'].cast<double>();
+    measuringWaterLevel = json['测量水位'] is double ? json['测量水位'] : json['测量水位'] == null ?  0.0 : json['测量水位'].toDouble();
+    dropWaterLevel = json['落差水位'] is double ? json['落差水位'] : json['落差水位'] == null ?  0.0 : json['落差水位'].toDouble();
+    openAngle = json['开度'] ;
+    speed = json['转速'] is double ? json['转速'] : json['转速'] == null ?  0.0 : json['转速'].toDouble();
   }
 
   Map<String, dynamic> toJson() {
