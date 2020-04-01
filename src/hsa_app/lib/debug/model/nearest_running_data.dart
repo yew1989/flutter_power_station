@@ -183,4 +183,33 @@ class NearestRunningData{
     return result;
   }
 
+
+  @override
+  String toString() {
+    String msg = '运行时参数 : ' + '\n';
+    msg += '电压:' + this.voltage.toStringAsFixed(1) +'\n';
+    msg += '电流:' + this.current.toStringAsFixed(1) +'\n';
+    msg += '励磁电流:' + this.fieldCurrent.toStringAsFixed(2) +'\n';
+    msg += '功率因数:' + this.powerFactor.toStringAsFixed(2) +'\n';
+
+    msg += '有功功率:' + this.power.toStringAsFixed(1) +'\n';
+    msg += '频率:' + this.voltage.toStringAsFixed(2) +'\n';
+    msg += '开度:' + this.voltage.toStringAsFixed(0) +'\n';
+
+    msg += '温度:' + this.temperature.toStringAsFixed(1) +'\n';
+    msg += '转速:' + this.speed.toStringAsFixed(1) +'\n';
+    msg += '水位:' + this.waterStage.toStringAsFixed(1) +'\n';
+
+   msg += '控制类型:' + this.controlType +'\n';
+   msg += '开关机状态:' + this.powerStatus +'\n';
+   msg += '智能控制方案:' + this.intelligentControlProgram +'\n';
+   msg += '是否允许远程控制:' + (this.isAllowRemoteControl == true ? '' : '') +'\n';
+
+    msg += '预计收入:' + this.money.toStringAsFixed(2) + '元'  +'\n';
+    msg += '更新时间:' + this.dataCachedTime +'\n';
+
+    return msg;
+
+  }
+
 }
