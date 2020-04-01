@@ -474,21 +474,21 @@ class _RuntimePageState extends State<RuntimePage> {
                     height: 50,
                     color: Colors.transparent,
                     child:
-                        terminalBriefFooterItem(runtimeData?.other?.radial))),
+                        terminalBriefFooterItem(runtimeData?.other?.temperature))),
             Expanded(
                 flex: 1,
                 child: Container(
                     height: 50,
                     color: Colors.transparent,
                     child:
-                        terminalBriefFooterItem(runtimeData?.other?.thrust))),
+                        terminalBriefFooterItem(runtimeData?.other?.speed))),
             Expanded(
                 flex: 1,
                 child: Container(
                     height: 50,
                     color: Colors.transparent,
                     child:
-                        terminalBriefFooterItem(runtimeData?.other?.pressure))),
+                        terminalBriefFooterItem(runtimeData?.other?.waterStage))),
           ],
         ),
       ),

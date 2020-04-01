@@ -1,25 +1,19 @@
+import 'package:hsa_app/model/model/electricity_price.dart';
 import 'package:hsa_app/model/model/nearest_running_data.dart';
 
 class NearestRunningDataResp {
-  int code;
-  int httpCode;
+
+  // 是否是基础版
+  bool isBase ;
+  // 电价
+  ElectricityPrice price;
+  // 运行时数据
   NearestRunningData data;
 
-  NearestRunningDataResp({this.code, this.httpCode, this.data});
+  NearestRunningDataResp(this.isBase, {this.data,this.price});
 
-  NearestRunningDataResp.fromJson(Map<String, dynamic> json,String terminalAddress) {
-    code = json['code'];
-    httpCode = json['httpCode'];
-    data = json['data'] != null ? NearestRunningData.fromJson(json['data'],terminalAddress) : null;
+  NearestRunningDataResp.fromJson(Map<String, dynamic> json,String terminalAddress,{this.isBase,this.price}) {
+    data = json['data'] != null ? NearestRunningData.fromJson(json['data'],terminalAddress,isBase:this.isBase,price: this.price) : null;
   }
 
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = Map<String, dynamic>();
-    data['code'] = this.code;
-    data['httpCode'] = this.httpCode;
-    if (this.data != null) {
-      data['data'] = this.data.toJson();
-    }
-    return data;
-  }
 }

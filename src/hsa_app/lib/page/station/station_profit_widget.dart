@@ -18,7 +18,6 @@ class _StationProfitWidgetState extends State<StationProfitWidget> with TickerPr
 
   @override
   void dispose() {
-    
     controller.stop();
     controller.dispose();
     super.dispose();

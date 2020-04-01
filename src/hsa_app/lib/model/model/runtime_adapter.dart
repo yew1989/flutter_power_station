@@ -58,40 +58,40 @@ class RuntimeDataAdapter {
  }
 
  // 判断是否可信 - 可信标准为 冻结时间 在 5分钟内
- static bool isDataAvailable(RuntimeDataResponse data) {
-    var freezeTime = data?.voltageAndCurrent?.freezeTime ?? '';
-    freezeTime = freezeTime.replaceAll('T', ' ');// 替换 C# 时间戳中的 T
-    DateTime now = DateTime.now();
-    DateTime freeze = DateTime.parse(freezeTime);
-    var t = now.millisecondsSinceEpoch - freeze.millisecondsSinceEpoch;
-    var minuteFive = 5 * 60 * 1000;
-    return t > minuteFive ? false : true;
- }
-
- // 机组开关机状态
-//  static bool motorPowerBool(RuntimeDataResponse data) {
-
-//    var statusString = data?.terminalInfo?.waterTurbineStartStopState ?? '未定义';
-//    if(statusString.compareTo('正在开机') == 0 || statusString.compareTo('并网运行') == 0) {
-//       var isAvailable = isDataAvailable(data);
-//       return isAvailable;
-//    }
-//    else if(statusString.compareTo('正在关机') == 0 || statusString.compareTo('机组关机') == 0) {
-//      return false;
-//    }
-//    else if(statusString.compareTo('未定义') == 0) {
-//       var volt = data?.voltageAndCurrent?.aV?.toDouble() ?? 0.0;
-//       if(volt <= 50) {
-//         return false;
-//       }
-//       else if (volt > 50){
-//         var isAvailable = isDataAvailable(data);
-//         return isAvailable;
-//       }
-//       return false;
-//    }
-//    return false;
+//  static bool isDataAvailable(DeviceTerminal data) {
+//     var freezeTime = data?.voltageAndCurrent?.freezeTime ?? '';
+//     freezeTime = freezeTime.replaceAll('T', ' ');// 替换 C# 时间戳中的 T
+//     DateTime now = DateTime.now();
+//     DateTime freeze = DateTime.parse(freezeTime);
+//     var t = now.millisecondsSinceEpoch - freeze.millisecondsSinceEpoch;
+//     var minuteFive = 5 * 60 * 1000;
+//     return t > minuteFive ? false : true;
 //  }
+
+ //机组开关机状态
+ static bool motorPowerBool(DeviceTerminal data) {
+
+   var statusString = data?.nearestRunningData?.powerStatus ?? '未定义';
+   if(statusString.compareTo('正在开机') == 0 || statusString.compareTo('并网运行') == 0) {
+      
+      return true;
+   }
+   else if(statusString.compareTo('正在关机') == 0 || statusString.compareTo('机组关机') == 0) {
+     return false;
+   }
+   else if(statusString.compareTo('未定义') == 0) {
+      var volt = data?.nearestRunningData?.voltage?.toDouble() ?? 0.0;
+      if(volt <= 50) {
+        return false;
+      }
+      else if (volt > 50){
+        
+        return true;
+      }
+      return false;
+   }
+   return false;
+ }
 
 
 
@@ -164,22 +164,16 @@ class RuntimeDataAdapter {
    // 其他信息
    runtimeData.other = OtherDataPack();
 
-   // 温度数组
-   //var temperatures  = data?.waterTurbine?.temperatureMeasuringAliasName ?? [];
-   
-   // 首项
-   var radialName  = '径向';//getFirstItemName(temperatures);
-   var radialValue = 0.0;//data?.nearestRunningData?.;//getFirstItemValue(temperatures);
-   // 推力
-   var thrustStr = data?.nearestRunningData?.thrust ?? 0.0;//getThrust(temperatures);
+  // 温度
+   var temperature  =  data?.nearestRunningData?.temperature ?? 0.0 ;
+   // 转速
+   var speed = data?.nearestRunningData?.speed ?? 0.0;
+   // 水位
+   var waterStage = data?.nearestRunningData?.waterStage ?? 0.0;
 
-   // 水压
-   var waterPressures = data?.nearestRunningData?.waterPressure ?? 0.0;
-   var pressure = waterPressures ?? 0.0;
-
-   runtimeData.other.radial   = OtherData(title: radialValue.toString(),subTitle: radialName);
-   runtimeData.other.thrust   = OtherData(title: thrustStr.toString() ,subTitle: '推力:N');
-   runtimeData.other.pressure = OtherData(title: pressure.toString(),subTitle: '水压:MPa');
+   runtimeData.other.temperature   = OtherData(title: temperature.toString(),subTitle: '温度');
+   runtimeData.other.speed   = OtherData(title: speed.toString() ,subTitle: '转速');
+   runtimeData.other.waterStage = OtherData(title: waterStage.toString(),subTitle: '水位');
 
 
    // 事件列表
@@ -212,7 +206,7 @@ class RuntimeDataAdapter {
      runtimeData.status = isAllowRemoteControl ? ControlModelCurrentStatus.remoteOn : ControlModelCurrentStatus.remoteOff;
    }
    // 开关机状态
-   runtimeData.isMotorPowerOn = true;//motorPowerBool(data);
+   runtimeData.isMotorPowerOn = motorPowerBool(data);
 
    return runtimeData;
  }
@@ -242,9 +236,9 @@ class DashBoardDataPack {
 }
 
 class OtherDataPack {
-  OtherData radial;
-  OtherData thrust;
-  OtherData pressure;
+  OtherData temperature;
+  OtherData speed;
+  OtherData waterStage;
 }
 
 class OtherData {

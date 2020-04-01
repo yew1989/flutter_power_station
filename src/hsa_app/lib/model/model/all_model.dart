@@ -13,3 +13,4 @@ export 'package:hsa_app/model/model/turbine.dart';
 export 'package:hsa_app/model/model/data.dart';
 export 'package:hsa_app/model/model/banner.dart';
 export 'package:hsa_app/model/model/weather.dart';
+export 'package:hsa_app/model/model/electricity_price.dart';

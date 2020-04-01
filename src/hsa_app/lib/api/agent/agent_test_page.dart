@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hsa_app/debug/response/all_resp.dart';
 import 'agent.dart';
 import 'package:hsa_app/components/public_tool.dart';
 import 'package:hsa_app/debug/API/debug_api_login.dart';
@@ -16,6 +17,8 @@ class _DebugAgentTestPageState extends State<AgentTestPage> {
   final loginPassword = '456';
   final operationPassword = '123abc';
   
+  final teminalBase = '00020013';
+  final teminalPro  = '00020044';
 
   final List<String> leftLabels = [
 
@@ -41,6 +44,8 @@ class _DebugAgentTestPageState extends State<AgentTestPage> {
     '远程控制垃圾清扫 - 开',
     '远程控制垃圾清扫 - 关',
 
+    '获取最近运行时参数(多项)(Base)',
+    '获取最近运行时参数(多项)(Pro)',
     
     ];
 
@@ -311,6 +316,7 @@ class _DebugAgentTestPageState extends State<AgentTestPage> {
       );
     }
     else if(index == 17) { 
+
       AgentControlAPI.remoteClearRubbishOff(
         context,
         password: operationPassword,
@@ -322,6 +328,33 @@ class _DebugAgentTestPageState extends State<AgentTestPage> {
           showToast(msg);
         },
       );
+
+    }
+    // BASE
+    else if(index == 18) {
+
+        AgentQueryAPI.qureryTerminalNearestRunningData(address: teminalBase,isBase:true,onSucc: (data,msg){
+          
+          showToast(data.toString());
+
+        },onFail: (msg){
+
+          showToast(msg);
+
+        });
+    }
+    // PRO
+    else if(index == 19) {
+
+        AgentQueryAPI.qureryTerminalNearestRunningData(address: teminalPro,isBase:false,onSucc: (data,msg){
+
+          showToast(data.toString());
+
+        },onFail: (msg){
+
+          showToast(msg);
+
+        });
     }
 
 

@@ -71,33 +71,33 @@ class Turbine {
 
 class TurbineElectricalPower {
   double generatorVoltageA;
-  int generatorVoltageB;
+  double generatorVoltageB;
   double generatorVoltageC;
-  int generatorCurrentA;
-  int generatorCurrentB;
-  int generatorCurrentC;
-  int generatorActivePowerAll;
-  int generatorActivePowerA;
-  int generatorActivePowerB;
-  int generatorActivePowerC;
-  int generatorReactivePowerAll;
-  int generatorReactivePowerA;
-  int generatorReactivePowerB;
-  int generatorReactivePowerC;
-  int generatorApparentPowerAll;
-  int generatorApparentPowerA;
-  int generatorApparentPowerB;
-  int generatorApparentPowerC;
-  int generatorPowerFactorAll;
-  int generatorPowerFactorA;
-  int generatorPowerFactorB;
-  int generatorPowerFactorC;
-  int generatorVoltageFreq;
-  int gridVoltageA;
-  int gridVoltageB;
-  int gridVoltageC;
+  double generatorCurrentA;
+  double generatorCurrentB;
+  double generatorCurrentC;
+  double generatorActivePowerAll;
+  double generatorActivePowerA;
+  double generatorActivePowerB;
+  double generatorActivePowerC;
+  double generatorReactivePowerAll;
+  double generatorReactivePowerA;
+  double generatorReactivePowerB;
+  double generatorReactivePowerC;
+  double generatorApparentPowerAll;
+  double generatorApparentPowerA;
+  double generatorApparentPowerB;
+  double generatorApparentPowerC;
+  double generatorPowerFactorAll;
+  double generatorPowerFactorA;
+  double generatorPowerFactorB;
+  double generatorPowerFactorC;
+  double generatorVoltageFreq;
+  double gridVoltageA;
+  double gridVoltageB;
+  double gridVoltageC;
   double gridVoltageFreq;
-  int phaseDifference;
+  double phaseDifference;
 
   TurbineElectricalPower(
       {this.generatorVoltageA,
@@ -157,7 +157,7 @@ class TurbineElectricalPower {
     gridVoltageB = json['电网B相电压'].cast<double>();
     gridVoltageC = json['电网C相电压'].cast<double>();
     gridVoltageFreq = json['电网电压频率'].cast<double>();
-    phaseDifference = json['发电机与电网电压相位差'];
+    phaseDifference = json['发电机与电网电压相位差'].cast<double>();
   }
 
   Map<String, dynamic> toJson() {
@@ -228,19 +228,19 @@ class TurbineControlState {
 }
 
 class TrubineExcitationComponent {
-  int fieldCurrent;
-  int freq;
-  int setPoint;
-  int controlAngle;
+  double fieldCurrent;
+  double freq;
+  double setPoint;
+  double controlAngle;
 
   TrubineExcitationComponent(
       {this.fieldCurrent, this.freq, this.setPoint, this.controlAngle});
 
   TrubineExcitationComponent.fromJson(Map<String, dynamic> json) {
-    fieldCurrent = json['励磁电流'];
-    freq = json['freq'];
-    setPoint = json['setPoint'];
-    controlAngle = json['controlAngle'];
+    fieldCurrent = json['励磁电流'].cast<double>();
+    freq = json['freq'].cast<double>();
+    setPoint = json['setPoint'].cast<double>();
+    controlAngle = json['controlAngle'].cast<double>();
   }
 
   Map<String, dynamic> toJson() {
@@ -254,10 +254,10 @@ class TrubineExcitationComponent {
 }
 
 class TurbineRuningStage {
-  int measuringWaterLevel;
-  int dropWaterLevel;
+  double measuringWaterLevel;
+  double dropWaterLevel;
   List<double> openAngle;
-  int speed;
+  double speed;
 
   TurbineRuningStage(
       {this.measuringWaterLevel,
@@ -266,10 +266,10 @@ class TurbineRuningStage {
       this.speed});
 
   TurbineRuningStage.fromJson(Map<String, dynamic> json) {
-    measuringWaterLevel = json['测量水位'];
-    dropWaterLevel = json['落差水位'];
-    openAngle = json['开度'].cast<double>();
-    speed = json['转速'];
+    measuringWaterLevel = json['测量水位'].cast<double>();
+    dropWaterLevel = json['落差水位'].cast<double>();
+    openAngle = json['开度'].cast<List<double>>();
+    speed = json['转速'].cast<double>();
   }
 
   Map<String, dynamic> toJson() {

@@ -241,7 +241,12 @@ class DebugAPIStation{
 
     DebugHttpHelper.httpPOST(path, param, (map,_){
 
-      var resp = NearestRunningDataResp.fromJson(map,terminalAddress);
+      var resp = NearestRunningDataResp.fromJson(map,terminalAddress,isBase: true,price: ElectricityPrice(
+        peakElectricityPrice:1.0,
+        spikeElectricityPrice: 2.0,
+        flatElectricityPrice: 3.0,
+        valleyElectricityPrice: 4.0,
+      ));
       if(onSucc != null) onSucc(resp.data);
       
     }, onFail);
