@@ -45,7 +45,7 @@ class AgentQueryAPI {
 
 
   static String createPath(String terminalAddress,String afnFunc) {
-    return DebugAPI.liveDataHost + '/v1/Cmd/Send/' + terminalAddress + '/' +  afnFunc  +'/' + '/0';
+    return DebugAPI.agentHost + '/v1/Cmd/Send/' + terminalAddress + '/' +  afnFunc  + '/0';
   }
 
 

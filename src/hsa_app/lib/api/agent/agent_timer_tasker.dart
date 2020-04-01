@@ -35,10 +35,10 @@ class AgentRunTimeDataLoopTimerTasker {
 
   void start (NearestRunningDataCallBack onGetRuntimeData) {
 
-    AgentQueryAPI.remoteMeasuringRunTimeData(terminalAddress, isBase);
-
     timer = Timer.periodic(Duration(seconds: timerInterval), (t) {
       
+      AgentQueryAPI.remoteMeasuringRunTimeData(terminalAddress, isBase);
+
       AgentQueryAPI.qureryTerminalNearestRunningData(address: terminalAddress, isBase: isBase,onFail: (_){
         t.cancel();
       },
