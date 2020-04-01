@@ -23,10 +23,10 @@ class AgentQueryAPI {
     DebugHttpHelper.httpPOST(AgentQueryAPI.createPath(terminalAddress,'AFN0C_F20'), null, null, null);
     DebugHttpHelper.httpPOST(AgentQueryAPI.createPath(terminalAddress,'AFN0C_F24'), null, null, null);
     if(isBase == true) {
-          DebugHttpHelper.httpPOST(AgentQueryAPI.createPath(terminalAddress,'AFN0C_F9'), null, null, null);
+      DebugHttpHelper.httpPOST(AgentQueryAPI.createPath(terminalAddress,'AFN0C_F9'), null, null, null);
     }
     else {
-         DebugHttpHelper.httpPOST(AgentQueryAPI.createPath(terminalAddress,'AFN0C_F30'), null, null, null);
+      DebugHttpHelper.httpPOST(AgentQueryAPI.createPath(terminalAddress,'AFN0C_F30'), null, null, null);
     }
   }
 
@@ -34,10 +34,10 @@ class AgentQueryAPI {
   static void remoteMeasuringElectricParam(String terminalAddress,bool isBase) {
 
     if(isBase == true) {
-          DebugHttpHelper.httpPOST(AgentQueryAPI.createPath(terminalAddress,'AFN0C_F9'), null, null, null);
+      DebugHttpHelper.httpPOST(AgentQueryAPI.createPath(terminalAddress,'AFN0C_F9'), null, null, null);
     }
     else {
-         DebugHttpHelper.httpPOST(AgentQueryAPI.createPath(terminalAddress,'AFN0C_F30'), null, null, null);
+      DebugHttpHelper.httpPOST(AgentQueryAPI.createPath(terminalAddress,'AFN0C_F30'), null, null, null);
     }
     DebugHttpHelper.httpPOST(AgentQueryAPI.createPath(terminalAddress,'AFN0C_F24'), null, null, null);
 
