@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hsa_app/api/agent/agent_task.dart';
 import 'package:hsa_app/components/public_tool.dart';
-import 'package:hsa_app/model/model/runtime_adapter.dart';
+import 'package:hsa_app/model/model/all_model.dart';
 import 'package:hsa_app/page/dialog/control_model_dialog.dart';
 import 'package:hsa_app/page/dialog/power_control_dialog.dart';
 import 'package:hsa_app/page/more/more_page.dart';
@@ -10,9 +10,9 @@ import 'package:ovprogresshud/progresshud.dart';
 class RunTimeOperationBoard extends StatefulWidget {
   
   final String addressId;
-  final RuntimeData runtimeData;
+  final DeviceTerminal deviceTerminal;
   final void Function(TaskName taskName,String param) onSholdRequestRemoteCommand;
-  const RunTimeOperationBoard(this.runtimeData, this.addressId, this.onSholdRequestRemoteCommand,{Key key}) : super(key: key);
+  const RunTimeOperationBoard(this.deviceTerminal, this.addressId, this.onSholdRequestRemoteCommand,{Key key}) : super(key: key);
 
   @override
   _RunTimeOperationBoardState createState() => _RunTimeOperationBoardState();
@@ -20,13 +20,56 @@ class RunTimeOperationBoard extends StatefulWidget {
 
 class _RunTimeOperationBoardState extends State<RunTimeOperationBoard> {
 
+  //机组开关机状态
+  static bool motorPowerBool(DeviceTerminal data) {
+    var statusString = data?.nearestRunningData?.powerStatus ?? '未定义';
+    
+    if(statusString.compareTo('正在开机') == 0 || statusString.compareTo('并网运行') == 0) {
+        
+        return true;
+    }
+    else if(statusString.compareTo('正在关机') == 0 || statusString.compareTo('机组关机') == 0) {
+      return false;
+    }
+    else if(statusString.compareTo('未定义') == 0) {
+        var volt = data?.nearestRunningData?.voltage?.toDouble() ?? 0.0;
+        if(volt <= 50) {
+          return false;
+        }
+        else if (volt > 50){
+          
+          return true;
+        }
+        return false;
+    }
+    return false;
+  }
+
+  //当前模式
+  static String getCurrentStatus(DeviceTerminal data){
+    if(data.controlType != null){
+      if(data.controlType.compareTo('智能') == 0){
+        return '智        能';
+      }else if(data.controlType.compareTo('手动') == 0){
+        return '手        动';
+      }else if(data.controlType.compareTo('自动') == 0){
+        return '自        动';
+      }else{
+        return '未        知';
+      }
+    }else{
+      return '未        知';
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     
-    final runtimeData = widget.runtimeData;
+    final deviceTerminal = widget.deviceTerminal;
     
-    var isMotorPowerOn = runtimeData?.isMotorPowerOn ?? false;
+    var isMotorPowerOn = motorPowerBool(deviceTerminal);
+
+    String currentStatusStr = getCurrentStatus(deviceTerminal);
 
     var deviceWidth = MediaQuery.of(context).size.width;
     final right = deviceWidth % 2 == 0 ? 4.0 : 5.0 ;
@@ -234,25 +277,25 @@ class _RunTimeOperationBoardState extends State<RunTimeOperationBoard> {
                               child: GestureDetector(
                                 onTap: () {
                                   showDialog(
-                                      context: context,
-                                      barrierDismissible: false,
-                                      builder: (_) => ControlModelDialogWidget(
-                                        runtimeData: runtimeData,
-                                        onChoose: (ControlModelCurrentStatus status) {
-                                          debugPrint(status.toString());
-                                          if(status == ControlModelCurrentStatus.remoteOn) {
-                                            if(widget.onSholdRequestRemoteCommand != null) {
-                                            widget.onSholdRequestRemoteCommand(TaskName.remoteSwitchRemoteModeOn,null);
-                                            }
+                                    context: context,
+                                    barrierDismissible: false,
+                                    builder: (_) => ControlModelDialogWidget(
+                                      deviceTerminal: deviceTerminal,
+                                      onChoose: (ControlModelCurrentStatus status ,String currentStatusStr) {
+                                        debugPrint(status.toString());
+                                        if(status == ControlModelCurrentStatus.remoteOn) {
+                                          if(widget.onSholdRequestRemoteCommand != null) {
+                                          widget.onSholdRequestRemoteCommand(TaskName.remoteSwitchRemoteModeOn,null);
                                           }
-                                          else if(status == ControlModelCurrentStatus.remoteOff) {
-                                            if(widget.onSholdRequestRemoteCommand != null) {
-                                            widget.onSholdRequestRemoteCommand(TaskName.remoteSwitchRemoteModeOff,null);
-                                            }
+                                        }
+                                        else if(status == ControlModelCurrentStatus.remoteOff) {
+                                          if(widget.onSholdRequestRemoteCommand != null) {
+                                          widget.onSholdRequestRemoteCommand(TaskName.remoteSwitchRemoteModeOff,null);
                                           }
-                                          
-                                        },
-                                      ));
+                                        }
+                                      },
+                                    )
+                                  );
                                 },
                                 child: Container(
                                   child: Row(
@@ -260,7 +303,7 @@ class _RunTimeOperationBoardState extends State<RunTimeOperationBoard> {
                                         MainAxisAlignment.spaceEvenly,
                                     crossAxisAlignment: CrossAxisAlignment.center,
                                     children: <Widget>[
-                                      Text('自          动',
+                                      Text('$currentStatusStr',
                                           style: TextStyle(
                                               color: Colors.white, fontSize: 15)),
                                       SizedBox(
@@ -303,20 +346,22 @@ class _RunTimeOperationBoardState extends State<RunTimeOperationBoard> {
                                     showDialog(
                                       context: context,barrierDismissible: false,
                                       builder: (_) => PowerControlDialogWidget(
-                                        powerMax: runtimeData?.equippedCapacitor?.toInt() ?? 0,
-                                          onConfirmActivePower:(String activePower) {
-                                             if(widget.onSholdRequestRemoteCommand != null) {
-                                              widget.onSholdRequestRemoteCommand(TaskName.remoteSettingActivePower,activePower);
-                                             }
-                                          },
-                                          onConfirmPowerFactor:(String powerFactor) {
-                                                debugPrint('功率因数:' + powerFactor);
-                                                var hundred = double.parse(powerFactor) * 100;
-                                                var hundredStr = hundred.toStringAsFixed(0);
-                                             if(widget.onSholdRequestRemoteCommand != null) {
-                                              widget.onSholdRequestRemoteCommand(TaskName.remoteSettingPowerFactor,hundredStr);
-                                             }
-                                          }));
+                                        powerMax: deviceTerminal?.waterTurbine?.ratedPowerKW?.toInt() ?? 0,
+                                        onConfirmActivePower:(String activePower) {
+                                            if(widget.onSholdRequestRemoteCommand != null) {
+                                            widget.onSholdRequestRemoteCommand(TaskName.remoteSettingActivePower,activePower);
+                                            }
+                                        },
+                                        onConfirmPowerFactor:(String powerFactor) {
+                                          debugPrint('功率因数:' + powerFactor);
+                                          var hundred = double.parse(powerFactor) * 100;
+                                          var hundredStr = hundred.toStringAsFixed(0);
+                                          if(widget.onSholdRequestRemoteCommand != null) {
+                                            widget.onSholdRequestRemoteCommand(TaskName.remoteSettingPowerFactor,hundredStr);
+                                          }
+                                        }
+                                      )
+                                    );
                                   },
                                 ),
 

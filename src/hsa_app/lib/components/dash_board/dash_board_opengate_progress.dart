@@ -1,13 +1,14 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:hsa_app/model/model/all_model.dart';
 import 'package:hsa_app/model/model/runtime_adapter.dart';
 import 'package:native_color/native_color.dart';
 
 class DashBoardOpenGateProgress extends StatefulWidget {
 
-  final DashBoardDataPack dashboardData;
+  final DeviceTerminal deviceTerminal;
 
-  const DashBoardOpenGateProgress(this.dashboardData,{Key key}) : super(key: key);
+  const DashBoardOpenGateProgress(this.deviceTerminal,{Key key}) : super(key: key);
   @override
   _DashBoardOpenGateProgressState createState() => _DashBoardOpenGateProgressState();
 }
@@ -54,7 +55,7 @@ class _DashBoardOpenGateProgressState extends State<DashBoardOpenGateProgress> w
         animation: controller,
         builder: (context,child) {
           return CustomPaint(
-          painter: DashBoardOpenGateProgressPainter(widget.dashboardData,controller));
+          painter: DashBoardOpenGateProgressPainter(widget.deviceTerminal,controller));
         }
       ),
     );
@@ -63,15 +64,16 @@ class _DashBoardOpenGateProgressState extends State<DashBoardOpenGateProgress> w
 
 class DashBoardOpenGateProgressPainter extends CustomPainter {
 
-  final DashBoardDataPack dashboardData;
+  final DeviceTerminal deviceTerminal;
   final AnimationController controller;
 
-  DashBoardOpenGateProgressPainter(this.dashboardData, this.controller);
+  DashBoardOpenGateProgressPainter(this.deviceTerminal, this.controller);
   
   @override
   void paint(Canvas canvas, Size size) {
-
-    var openPencent   = dashboardData?.open?.percent ?? 0.0;
+    var openNow  = deviceTerminal?.nearestRunningData?.openAngle?.toDouble() ?? 0.0;
+    var openMax  = 1.0;
+    var openPencent   = RuntimeDataAdapter.caclulatePencent(openNow,openMax) ?? 0.0;
     Paint paintOpenReal = Paint();
     paintOpenReal
       ..strokeCap = StrokeCap.round

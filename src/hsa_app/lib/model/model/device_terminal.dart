@@ -57,11 +57,15 @@ class DeviceTerminal {
     isMaster = json['isMaster'];
     isAllowRemoteControl = json['isAllowRemoteControl'];
     controlType = json['controlType'];
-    nearestRunningData = json['nearestRunningData'];
+    nearestRunningData = json['nearestRunningData'] ;
     sessionStartupTime = json['sessionStartupTime'];
     sessionCloseTime = json['sessionCloseTime'];
-    stationInfo = json['hydropowerStation'];
-    waterTurbine = json['waterTurbine'];
+    stationInfo = json['hydropowerStation'] != null
+        ? StationInfo.fromJson(json['hydropowerStation'])
+        : null;
+    waterTurbine = json['waterTurbine'] != null
+        ? WaterTurbine.fromJson(json['waterTurbine'])
+        : null;
   }
 
   Map<String, dynamic> toJson() {

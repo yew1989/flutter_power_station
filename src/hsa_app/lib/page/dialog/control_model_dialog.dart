@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:hsa_app/model/model/runtime_adapter.dart';
+import 'package:hsa_app/model/model/all_model.dart';
 
 class ControlModelDialogWidget extends StatefulWidget {
 
-  final RuntimeData runtimeData;
+  final DeviceTerminal deviceTerminal;
 
-  final void Function(ControlModelCurrentStatus status) onChoose;
+  final String currentStatusStr;
 
-  const ControlModelDialogWidget({Key key, this.runtimeData, this.onChoose}) : super(key: key);
+  final void Function(ControlModelCurrentStatus status,String currentStatusStr) onChoose;
+
+  const ControlModelDialogWidget({Key key, this.deviceTerminal, this.currentStatusStr, this.onChoose}) : super(key: key);
 
   @override
   _ControlModelDialogWidgetState createState() => _ControlModelDialogWidgetState();
@@ -16,9 +18,16 @@ class ControlModelDialogWidget extends StatefulWidget {
 
 class _ControlModelDialogWidgetState extends State<ControlModelDialogWidget> {
   
+  ControlModelCurrentStatus currentStatus;
+  DeviceTerminal deviceTerminal = DeviceTerminal();
+  String currentStatusStr = '';
+
   @override
   void initState() {
+    deviceTerminal = widget?.deviceTerminal;
+    currentStatus = getCurrentStatus();
     super.initState();
+
   }
 
   @override
@@ -28,19 +37,44 @@ class _ControlModelDialogWidgetState extends State<ControlModelDialogWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return ControlModelDialog(widget.runtimeData.status, widget.onChoose);
+    return ControlModelDialog(widget.deviceTerminal, widget.onChoose,currentStatus,currentStatusStr);
+  }
+
+  
+
+  //当前模式
+  ControlModelCurrentStatus getCurrentStatus(){
+    if(deviceTerminal.controlType != null){
+      if(deviceTerminal.controlType.compareTo('智能') == 0){
+        this.currentStatusStr = '智        能';
+        return deviceTerminal.isAllowRemoteControl ? ControlModelCurrentStatus.remoteOn : ControlModelCurrentStatus.remoteOff;
+      }else if(deviceTerminal.controlType.compareTo('手动') == 0){
+        this.currentStatusStr = '手        动';
+        return ControlModelCurrentStatus.manual;
+      }else if(deviceTerminal.controlType.compareTo('自动') == 0){
+        this.currentStatusStr = '自        动';
+        return ControlModelCurrentStatus.auto;
+      }else{
+        return ControlModelCurrentStatus.unknow;
+      }
+    }else{
+      return ControlModelCurrentStatus.unknow;
+    }
   }
 }
 
-enum ControlModelCurrentStatus { unknow, manual, auto, remoteOn, remoteOff }
+enum ControlModelCurrentStatus { unknow ,manual, auto, remoteOn, remoteOff }
 
 class ControlModelDialog extends Dialog {
-
   final ControlModelCurrentStatus currentStatus;
-  final void Function(ControlModelCurrentStatus status) onChoose;
+  final DeviceTerminal deviceTerminal;
+  final String currentStatusStr;
+  final void Function(ControlModelCurrentStatus status,String currentStatusStr) onChoose;
 
-  ControlModelDialog(this.currentStatus, this.onChoose);
-
+  ControlModelDialog(this.deviceTerminal, this.onChoose , this.currentStatus,this.currentStatusStr);
+  
+  
+  
   // 自动
   Widget bottomTile(BuildContext context) {
     return Expanded(
@@ -63,7 +97,7 @@ class ControlModelDialog extends Dialog {
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: <Widget>[
-                          Text('自          动',
+                          Text('$currentStatusStr',
                               style:
                                   TextStyle(color: Colors.white, fontSize: 15)),
                           SizedBox(
@@ -105,10 +139,10 @@ class ControlModelDialog extends Dialog {
   }
 
   Widget modelTile(BuildContext context, String string, bool enable,
-      ControlModelCurrentStatus status) {
+      ControlModelCurrentStatus status , String currentStatusStr) {
     var isRemoteMode = status == ControlModelCurrentStatus.remoteOff ||
         status == ControlModelCurrentStatus.remoteOn;
-
+   
     return Container(
       margin: EdgeInsets.only(right: 12, left: isRemoteMode ? 40 : 12),
       child: SizedBox(
@@ -137,7 +171,7 @@ class ControlModelDialog extends Dialog {
               onTap: () {
                 if (isRemoteMode) {
                   Navigator.of(context).pop();
-                  if (onChoose != null) onChoose(status);
+                  if (onChoose != null) onChoose(status,currentStatusStr);
                 }
               },
             ),
@@ -160,7 +194,7 @@ class ControlModelDialog extends Dialog {
   Widget build(BuildContext context) {
     final isIphone5s =
         MediaQuery.of(context).size.width == 320.0 ? true : false;
-
+    
     return SafeArea(
       child: Material(
         type: MaterialType.transparency,
@@ -190,11 +224,11 @@ class ControlModelDialog extends Dialog {
                         mainAxisAlignment: MainAxisAlignment.start,
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: <Widget>[
-                          modelTile(context, '手动', false,
-                              ControlModelCurrentStatus.manual),
+                          modelTile(context, '手动', false, 
+                              ControlModelCurrentStatus.manual,this.currentStatusStr),
                           divider(12),
                           modelTile(context, '自动', false,
-                              ControlModelCurrentStatus.auto),
+                              ControlModelCurrentStatus.auto,this.currentStatusStr),
                           divider(12),
 
                           // 智能
@@ -229,10 +263,10 @@ class ControlModelDialog extends Dialog {
 
                           divider(12),
                           modelTile(context, '远程控制', true,
-                              ControlModelCurrentStatus.remoteOn),
+                              ControlModelCurrentStatus.remoteOn,this.currentStatusStr),
                           divider(40),
-                          modelTile(context, '智能水位控制', true,
-                              ControlModelCurrentStatus.remoteOff),
+                          modelTile(context, '${deviceTerminal.intelligentControlScheme}', true,
+                              ControlModelCurrentStatus.remoteOff,this.currentStatusStr),
 
                           // 分割线顶格
                           Container(

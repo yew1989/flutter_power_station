@@ -112,7 +112,7 @@ class RuntimeDataAdapter {
    var voltageNow     = data?.nearestRunningData?.voltage?.toDouble() ?? 0.0;
    var currentNow     = data?.nearestRunningData?.current?.toDouble() ?? 0.0;
    var excitationNow  = data?.nearestRunningData?.fieldCurrent?.toDouble() ?? 0.0;
-   var powerFactorNow = data?.nearestRunningData?.power?.toDouble() ?? 0.0;
+   var powerFactorNow = data?.nearestRunningData?.powerFactor?.toDouble() ?? 0.0;
 
    // 获取比例值
    var voltagePercent     = RuntimeDataAdapter.caclulatePencent(voltageNow,voltageMax);
@@ -196,7 +196,7 @@ class RuntimeDataAdapter {
    if(modelString.compareTo('未知') == 0) {
      runtimeData.status = ControlModelCurrentStatus.unknow;
    }
-   else if(modelString.compareTo('手动') == 0) {
+    if(modelString.compareTo('手动') == 0) {
      runtimeData.status = ControlModelCurrentStatus.manual;
    }
    else if(modelString.compareTo('自动') == 0) {

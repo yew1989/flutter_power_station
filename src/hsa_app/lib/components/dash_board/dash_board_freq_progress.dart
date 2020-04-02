@@ -1,13 +1,14 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:hsa_app/model/model/all_model.dart';
 import 'package:hsa_app/model/model/runtime_adapter.dart';
 import 'package:native_color/native_color.dart';
 
 class DashBoardFreqProgress extends StatefulWidget {
 
-  final DashBoardDataPack dashboardData;
+  final DeviceTerminal deviceTerminal;
 
-  const DashBoardFreqProgress(this.dashboardData,{Key key}) : super(key: key);
+  const DashBoardFreqProgress(this.deviceTerminal,{Key key}) : super(key: key);
   @override
   _DashBoardFreqProgressState createState() => _DashBoardFreqProgressState();
 }
@@ -53,7 +54,7 @@ class _DashBoardFreqProgressState extends State<DashBoardFreqProgress> with Tick
         animation: controller,
         builder: (context,child) {
           return CustomPaint(
-          painter: DashBoardFreqProgressPainter(widget.dashboardData,controller));
+          painter: DashBoardFreqProgressPainter(widget.deviceTerminal,controller));
         }
       ),
     );
@@ -62,14 +63,16 @@ class _DashBoardFreqProgressState extends State<DashBoardFreqProgress> with Tick
 
 class DashBoardFreqProgressPainter extends CustomPainter {
 
-  final DashBoardDataPack dashboardData;
+  final DeviceTerminal deviceTerminal;
   final AnimationController controller;
 
-  DashBoardFreqProgressPainter(this.dashboardData, this.controller);
+  DashBoardFreqProgressPainter(this.deviceTerminal, this.controller);
   
   @override
   void paint(Canvas canvas, Size size) {
-    var freqPencent   = dashboardData?.freq?.percent ?? 0.0;
+    var freqNow  = deviceTerminal?.nearestRunningData?.frequency?.toDouble() ?? 0.0;
+    var freqMax  = 50.0;
+    var freqPencent   = RuntimeDataAdapter.caclulatePencent(freqNow,freqMax) ?? 0.0;
     // 真实频率
     Paint paintHzReal = Paint();
     paintHzReal

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hsa_app/components/dash_board/dash_board_opengate_progress.dart';
-import 'package:hsa_app/model/model/runtime_adapter.dart';
+import 'package:hsa_app/model/model/all_model.dart';
 import 'dash_board/dash_board_bg_progress.dart';
 import 'dash_board/dash_board_center_label.dart';
 import 'dash_board/dash_board_freq_progress.dart';
@@ -8,9 +8,9 @@ import 'dash_board/dash_board_power_progress.dart';
 
 class DashBoardWidget extends StatefulWidget {
 
-  final DashBoardDataPack dashBoardData;
+  final DeviceTerminal deviceTerminal;
 
-  const DashBoardWidget({Key key, this.dashBoardData}) : super(key: key);
+  const DashBoardWidget({Key key, this.deviceTerminal}) : super(key: key);
   @override
   _DashBoardWidgetState createState() => _DashBoardWidgetState();
 }
@@ -30,7 +30,7 @@ class _DashBoardWidgetState extends State<DashBoardWidget> with TickerProviderSt
   @override
   Widget build(BuildContext context) {
     // 功率 now
-    var powerNow = widget?.dashBoardData?.power?.now ?? 0.0;
+    var powerNow = widget?.deviceTerminal?.nearestRunningData?.power ?? 0.0;
     var powerNowStr = '0';
     // 展示优化
     if(powerNow < 100) {
@@ -40,7 +40,7 @@ class _DashBoardWidgetState extends State<DashBoardWidget> with TickerProviderSt
        powerNowStr = powerNow.toStringAsFixed(0);
     }
     // 功率 max
-    var powerMax = widget?.dashBoardData?.power?.max ?? 0.0;
+    var powerMax = widget?.deviceTerminal?.waterTurbine?.ratedPowerKW ?? 0.0;
     var powerMaxStr = powerMax.toStringAsFixed(0) + 'kW';
 
     return Container(
@@ -50,9 +50,9 @@ class _DashBoardWidgetState extends State<DashBoardWidget> with TickerProviderSt
         child: Stack(
         children: 
         [
-          DashBoardPowerProgress(widget?.dashBoardData),
-          DashBoardFreqProgress(widget?.dashBoardData),
-          DashBoardOpenGateProgress(widget?.dashBoardData),
+          DashBoardPowerProgress(widget?.deviceTerminal),
+          DashBoardFreqProgress(widget?.deviceTerminal),
+          DashBoardOpenGateProgress(widget?.deviceTerminal),
           DashBoardBgProgress(),
           DashBoardCenterLabel(powerNowStr,powerMaxStr),
         ]),

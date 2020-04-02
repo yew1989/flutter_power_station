@@ -47,7 +47,7 @@ class _RuntimePageState extends State<RuntimePage> {
   List<TerminalAlarmEvent> showEvents = List<TerminalAlarmEvent>();
 
   // 实时数据
-  RuntimeData runtimeData = RuntimeData();
+  //RuntimeData runtimeData = RuntimeData();
 
   //水轮机信息
   DeviceTerminal deviceTerminal = DeviceTerminal();
@@ -174,39 +174,47 @@ class _RuntimePageState extends State<RuntimePage> {
     APIStation.getDeviceTerminalInfo(terminalAddress: addressId,onSucc: (dt){
       //this.runtimeData = RuntimeDataAdapter.adapter(dt, widget.alias);
       this.deviceTerminal = dt;
-    },onFail: (msg){
-      
-    });
-    switch(deviceTerminal.deviceVersion){
-      case 'S1-Base': 
-        param =  ["AFN0C.F7.p0", "AFN0C.F9.p0", "AFN0C.F10.p0", "AFN0C.F11.p0", 
+      switch(deviceTerminal.deviceVersion){
+        case 'S1-Base': 
+          param =  ["AFN0C.F7.p0", "AFN0C.F9.p0", "AFN0C.F10.p0", "AFN0C.F11.p0", 
+                    "AFN0C.F13.p0", "AFN0C.F24.p0", "AFN0C.F20.p0", "AFN0C.F21.p0", "AFN0C.F22.p0"] ;
+        break;
+        
+        case 'S1-Pro':
+          param = ["AFN0C.F28.p0", "AFN0C.F30.p0", "AFN0C.F10.p0", "AFN0C.F11.p0", 
                   "AFN0C.F13.p0", "AFN0C.F24.p0", "AFN0C.F20.p0", "AFN0C.F21.p0", "AFN0C.F22.p0"] ;
-      break;
-      
-      case 'S1-Pro':
-        param = ["AFN0C.F28.p0", "AFN0C.F30.p0", "AFN0C.F10.p0", "AFN0C.F11.p0", 
-                "AFN0C.F13.p0", "AFN0C.F24.p0", "AFN0C.F20.p0", "AFN0C.F21.p0", "AFN0C.F22.p0"] ;
-      break;
-    }
-    APIStation.getMultipleAFNFnpn(terminalAddress:addressId,paramList: param,onSucc: (nearestRunningData){
-      Progresshud.dismiss();
-      refreshController.refreshCompleted();
-      this.deviceTerminal.nearestRunningData = nearestRunningData;
-      this.runtimeData = RuntimeDataAdapter.adapter(deviceTerminal, widget.alias);
+        break;
+      }
+      APIStation.getMultipleAFNFnpn(terminalAddress:addressId,paramList: param,onSucc: (nearestRunningData){
+        
+        this.deviceTerminal.nearestRunningData = nearestRunningData;
+        //this.runtimeData = RuntimeDataAdapter.adapter(deviceTerminal, widget.alias);
+        API.getTerminalAlertList(
+          onSucc: (events){
+            Progresshud.dismiss();
+            refreshController.refreshCompleted();
+            setState(() {
+              this.showEvents = events;
+            });
+          },onFail: (msg){},
+          searchDirection : 'Backward',
+          terminalAddress : addressId,
+          limitSize : 10,
+        );
+
+      },onFail: (msg){
+        Progresshud.showInfoWithStatus('获取实时机组数据失败');
+        refreshController.refreshFailed();
+      });
     },onFail: (msg){
-      Progresshud.showInfoWithStatus('获取实时机组数据失败');
-      refreshController.refreshFailed();
-    });
-    API.getTerminalAlertList(
-      onSucc: (events){
-        setState(() {
-          this.showEvents = events;
-        });
-      },onFail: (msg){},
-      searchDirection : 'Backward',
-      terminalAddress : addressId,
-      limitSize : 10,
+      
+    },
+    isIncludeWaterTurbine : true,
+    isIncludeHydropowerStation:true,
+    isIncludeCustomer:true
     );
+    
+    
   }
 
   // 静默任务请求
@@ -219,35 +227,39 @@ class _RuntimePageState extends State<RuntimePage> {
     }
     APIStation.getDeviceTerminalInfo(terminalAddress: addressId,onSucc: (dt){
       this.deviceTerminal = dt;
-    },onFail: (msg){
-      
-    });
-    switch(deviceTerminal.deviceVersion){
-      case 'S1-Base': 
-        param =  ["AFN0C.F7.p0", "AFN0C.F9.p0", "AFN0C.F10.p0", "AFN0C.F11.p0", 
+      switch(deviceTerminal.deviceVersion){
+        case 'S1-Base': 
+          param =  ["AFN0C.F7.p0", "AFN0C.F9.p0", "AFN0C.F10.p0", "AFN0C.F11.p0", 
+                    "AFN0C.F13.p0", "AFN0C.F24.p0", "AFN0C.F20.p0", "AFN0C.F21.p0", "AFN0C.F22.p0"] ;
+        break;
+        
+        case 'S1-Pro':
+          param = ["AFN0C.F28.p0", "AFN0C.F30.p0", "AFN0C.F10.p0", "AFN0C.F11.p0", 
                   "AFN0C.F13.p0", "AFN0C.F24.p0", "AFN0C.F20.p0", "AFN0C.F21.p0", "AFN0C.F22.p0"] ;
-      break;
+        break;
+      }
+      APIStation.getMultipleAFNFnpn(terminalAddress:addressId,paramList: param,onSucc: (nearestRunningData){
+        this.deviceTerminal.nearestRunningData = nearestRunningData;
+        //this.runtimeData = RuntimeDataAdapter.adapter(deviceTerminal, widget.alias);
+        API.getTerminalAlertList(
+          onSucc: (events){
+            setState(() {
+              this.showEvents = events;
+            });
+          },onFail: (msg){},
+          searchDirection : 'Backward',
+          terminalAddress : addressId,
+          limitSize : 10,
+        );
+      },onFail: (msg){
       
-      case 'S1-Pro':
-        param = ["AFN0C.F28.p0", "AFN0C.F30.p0", "AFN0C.F10.p0", "AFN0C.F11.p0", 
-                "AFN0C.F13.p0", "AFN0C.F24.p0", "AFN0C.F20.p0", "AFN0C.F21.p0", "AFN0C.F22.p0"] ;
-      break;
-    }
-    APIStation.getMultipleAFNFnpn(terminalAddress:addressId,paramList: param,onSucc: (nearestRunningData){
-      this.deviceTerminal.nearestRunningData = nearestRunningData;
-      this.runtimeData = RuntimeDataAdapter.adapter(deviceTerminal, widget.alias);
+      });
     },onFail: (msg){
-     
-    });
-    API.getTerminalAlertList(
-      onSucc: (events){
-        setState(() {
-          this.showEvents = events;
-        });
-      },onFail: (msg){},
-      searchDirection : 'Backward',
-      terminalAddress : addressId,
-      limitSize : 10,
+      
+    },
+    isIncludeWaterTurbine : true,
+    isIncludeHydropowerStation:true,
+    isIncludeCustomer:true
     );
   }
 
@@ -263,24 +275,28 @@ class _RuntimePageState extends State<RuntimePage> {
     barMaxWidth = deviceWidth / denominator;
 
     // 电压
-    var voltage = runtimeData?.electrical?.voltage?.now ?? 0.0;
+    var voltage = deviceTerminal?.nearestRunningData?.voltage ?? 0.0;
     var voltageStr = voltage.toString() + 'V';
-    var voltagePecent = runtimeData?.electrical?.voltage?.percent ?? 0.0;
+    var voltageMax     = deviceTerminal?.waterTurbine?.ratedVoltageV?.toDouble() ?? 0.0;
+    var voltagePecent = RuntimeDataAdapter.caclulatePencent(voltage , voltageMax);
 
     // 电流
-    var current = runtimeData?.electrical?.current?.now ?? 0.0;
+    var current = deviceTerminal?.nearestRunningData?.current ?? 0.0;
     var currentStr = current.toString() + 'A';
-    var currentPecent = runtimeData?.electrical?.current?.percent ?? 0.0;
+    var currentMax     = deviceTerminal?.waterTurbine?.ratedCurrentA?.toDouble() ?? 0.0;
+    var currentPecent = RuntimeDataAdapter.caclulatePencent(current , currentMax);
 
     // 励磁电流
-    var excitation = runtimeData?.electrical?.excitation?.now ?? 0.0;
+    var excitation = deviceTerminal?.nearestRunningData?.fieldCurrent ?? 0.0;
     var excitationStr = excitation.toString() + 'A';
-    var excitationPecent = runtimeData?.electrical?.excitation?.percent ?? 0.0;
+    var excitationMax  = deviceTerminal?.waterTurbine?.ratedExcitationCurrentA?.toDouble() ?? 0.0;
+    var excitationPecent = RuntimeDataAdapter.caclulatePencent(excitation , excitationMax);
 
     // 功率因数
-    var powfactor = runtimeData?.electrical?.powerFactor?.now ?? 0.0;
+    var powfactor = deviceTerminal?.nearestRunningData?.powerFactor ?? 0.0;
     var powfactorStr = powfactor.toStringAsFixed(2);
-    var powfactorPencent = runtimeData?.electrical?.powerFactor?.percent ?? 0.0;
+    var powerFactorMax = 1.0;
+    var powfactorPencent = RuntimeDataAdapter.caclulatePencent(powfactor , powerFactorMax);
 
     return Container(
       color: Colors.transparent,
@@ -333,12 +349,12 @@ class _RuntimePageState extends State<RuntimePage> {
   // 仪表盘
   Widget dashBoardWidget() {
     // 频率
-    var freqNow = runtimeData?.dashboard?.freq?.now ?? 0.0;
+    var freqNow = deviceTerminal?.nearestRunningData?.frequency ?? 0.0;
     var freqNowStr = freqNow.toStringAsFixed(2);
 
     // 开度
-    var openNow = runtimeData?.dashboard?.open?.now ?? 0.0;
-    openNow *= 100;
+    var openNow = deviceTerminal?.nearestRunningData?.openAngle ?? 0.0;
+    //openNow *= 100;
     var openNowStr = openNow.toStringAsFixed(0);
 
     return Container(
@@ -454,7 +470,7 @@ class _RuntimePageState extends State<RuntimePage> {
             ],
           ),
           // 中央仪表盘
-          DashBoardWidget(dashBoardData: runtimeData.dashboard),
+          DashBoardWidget(deviceTerminal: deviceTerminal),
         ],
       ),
     );
@@ -462,6 +478,13 @@ class _RuntimePageState extends State<RuntimePage> {
 
   //  设备概要尾
   Widget terminalBriefFooter() {
+    // 温度
+    var temperature  =  deviceTerminal?.nearestRunningData?.temperature ?? 0.0 ;
+    // 转速
+    var speed = deviceTerminal?.nearestRunningData?.speed ?? 0.0;
+    // 水位
+    var waterStage = deviceTerminal?.nearestRunningData?.waterStage ?? 0.0;
+
     return Container(
       padding: EdgeInsets.symmetric(vertical: 6),
       child: Center(
@@ -475,21 +498,21 @@ class _RuntimePageState extends State<RuntimePage> {
                     height: 50,
                     color: Colors.transparent,
                     child:
-                        terminalBriefFooterItem(runtimeData?.other?.temperature))),
+                        terminalBriefFooterItem(temperature.toString(),'温度'))),
             Expanded(
                 flex: 1,
                 child: Container(
                     height: 50,
                     color: Colors.transparent,
                     child:
-                        terminalBriefFooterItem(runtimeData?.other?.speed))),
+                        terminalBriefFooterItem(speed.toString(),'转速'))),
             Expanded(
                 flex: 1,
                 child: Container(
                     height: 50,
                     color: Colors.transparent,
                     child:
-                        terminalBriefFooterItem(runtimeData?.other?.waterStage))),
+                        terminalBriefFooterItem(waterStage.toString(),'水位'))),
           ],
         ),
       ),
@@ -497,22 +520,22 @@ class _RuntimePageState extends State<RuntimePage> {
     );
   }
 
-  Widget terminalBriefFooterItem(OtherData otherData) {
-    return otherData != null
+  Widget terminalBriefFooterItem(String title , String subTitle) {
+    return title != null 
         ? Container(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
                 Center(
-                  child: Text(otherData?.title ?? '',
+                  child: Text(title ?? '',
                       style: TextStyle(
                           color: Colors.white,
                           fontSize: 22,
                           fontFamily: AppTheme().numberFontName)),
                 ),
                 Center(
-                  child: Text(otherData?.subTitle ?? '',
+                  child: Text(subTitle ?? '',
                       style: TextStyle(
                           color: Colors.grey,
                           fontSize: 15,
@@ -564,8 +587,8 @@ class _RuntimePageState extends State<RuntimePage> {
                 SizedBox(height: 12),
                 terminalBriefHeader(),
                 RuntimeSqureMasterWidget(
-                  isMaster: runtimeData?.dashboard?.isMaster ?? false,
-                  aliasName: runtimeData?.dashboard?.aliasName ?? '',
+                  isMaster: deviceTerminal?.isMaster ?? false,
+                  aliasName: widget.alias ?? '',
                 ),
                 dashBoardWidget(),
                 terminalBriefFooter(),
@@ -576,7 +599,7 @@ class _RuntimePageState extends State<RuntimePage> {
           ),
           isIphone5S ? Container() :Expanded(child: eventList()),
           RunTimeLightDarkShawdow(),
-          RunTimeOperationBoard(runtimeData,widget.address,(taskName,param) => requestRemoteControlCommand(context, taskName, param)),
+          RunTimeOperationBoard(deviceTerminal,widget.address,(taskName,param) => requestRemoteControlCommand(context, taskName, param)),
 
         ]),
       ),
@@ -599,13 +622,15 @@ class _RuntimePageState extends State<RuntimePage> {
     if (taskName == TaskName.remoteSwitchRemoteModeOn ||
         taskName == TaskName.remoteSwitchRemoteModeOff) {
       isRemoteControl =
-          runtimeData.status == ControlModelCurrentStatus.remoteOn ||
-              runtimeData.status == ControlModelCurrentStatus.remoteOff;
+          deviceTerminal.isOnLine == true &&
+              deviceTerminal.controlType == '智能';
     }
     // 其他指令 必须在远程控制模式打开情况下 有效
     else {
       isRemoteControl =
-          runtimeData.status == ControlModelCurrentStatus.remoteOn;
+          deviceTerminal.isOnLine == true &&
+              deviceTerminal.controlType == '智能' &&
+                  deviceTerminal.isAllowRemoteControl == true;
     }
 
     if (isRemoteControl == false) {
@@ -617,38 +642,22 @@ class _RuntimePageState extends State<RuntimePage> {
     await Future.delayed(Duration(milliseconds: 600));
 
     showDialog(
-        context: context,
-        barrierDismissible: false,
-        builder: (BuildContext context) {
-          return PasswordDialog((String pswd) {
-            
-            AgentControlAPI.startTask(context,taskName,widget.address,pswd,
-              (String succString) {
-                finishProgressDialog(succString, true);
-              }, (String failString) {
-                finishProgressDialog(failString, false);
-              }, (String loadingString) {
-                updateProgressDialog(loadingString);
-              }
-            );
-
-            //检查操作密码
-            // API.checkOperationPswd(context, pswd, (String succString) {
-            //   debugPrint('操作密码 🔑 :' + succString);
-            //   // 开始任务
-            //   progressDialog.show();
-            //   agentTask.startTask(taskName, widget.address, param,
-            //       (String succString) {
-            //     finishProgressDialog(succString, true);
-            //   }, (String failString) {
-            //     finishProgressDialog(failString, false);
-            //   }, (String loadingString) {
-            //     updateProgressDialog(loadingString);
-            //   });
-            // }, (_) {
-            //   showOperationPasswordPopWindow();
-            // });
-          });
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return PasswordDialog((String pswd) {
+          //检查操作密码
+          AgentControlAPI.startTask(context,taskName,widget.address,pswd,
+            (String succString) {
+              finishProgressDialog(succString, true);
+            }, (String failString) {
+              finishProgressDialog(failString, false);
+            }, (String loadingString) {
+              updateProgressDialog(loadingString);
+            }
+          );
         });
+      }
+    );
   }
 }

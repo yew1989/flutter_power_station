@@ -1,14 +1,15 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:hsa_app/model/model/all_model.dart';
 import 'package:hsa_app/model/model/runtime_adapter.dart';
 import 'package:native_color/native_color.dart';
 import 'package:path_drawing/path_drawing.dart';
 
 class DashBoardPowerProgress extends StatefulWidget {
 
-  final DashBoardDataPack dashboardData;
+  final DeviceTerminal deviceTerminal;
 
-  const DashBoardPowerProgress(this.dashboardData,{Key key}) : super(key: key);
+  const DashBoardPowerProgress(this.deviceTerminal,{Key key}) : super(key: key);
   
   @override
   _DashBoardPowerProgressState createState() => _DashBoardPowerProgressState();
@@ -58,7 +59,7 @@ class _DashBoardPowerProgressState extends State<DashBoardPowerProgress> with Ti
           return AnimatedBuilder(
             animation: beyondController,
             builder: (context,child) => CustomPaint(
-            painter: DashBoardPowerProgressPainter(widget.dashboardData,controller,beyondController)),
+            painter: DashBoardPowerProgressPainter(widget.deviceTerminal,controller,beyondController)),
           );
         }
       ),
@@ -68,16 +69,18 @@ class _DashBoardPowerProgressState extends State<DashBoardPowerProgress> with Ti
 
 class DashBoardPowerProgressPainter extends CustomPainter {
 
-  final DashBoardDataPack dashboardData;
+  final DeviceTerminal deviceTerminal;
   final AnimationController controller;
   final AnimationController beyondController;
 
-  DashBoardPowerProgressPainter(this.dashboardData, this.controller, this.beyondController);
+  DashBoardPowerProgressPainter(this.deviceTerminal, this.controller, this.beyondController);
   
   @override
   void paint(Canvas canvas, Size size) {
 
-    var powerPencent  = dashboardData?.power?.percent ?? 0.0;
+    var powerNow = deviceTerminal?.nearestRunningData?.power?.toDouble() ?? 0.0;
+    var powerMax = deviceTerminal?.waterTurbine?.ratedPowerKW?.toDouble() ?? 0.0;
+    var powerPencent  = RuntimeDataAdapter.caclulatePencent(powerNow,powerMax) ?? 0.0;
     var beyondPencent = 0.0;
 
     if(powerPencent > 1.0) {

@@ -209,7 +209,7 @@ class APIStation{
     
     HttpHelper.httpGET(path, param, (map,_){
 
-      var resp =  DeviceTerminal.fromJson(map);
+      var resp =  DeviceTerminal.fromJson(map['data']);
       if(onSucc != null) onSucc(resp);
     }, onFail);
   }
