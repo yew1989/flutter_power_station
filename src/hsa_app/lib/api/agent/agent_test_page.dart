@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:hsa_app/api/agent/agent_timer_tasker.dart';
+import 'package:hsa_app/debug/model/electricity_price.dart';
 import 'package:hsa_app/debug/response/all_resp.dart';
 import 'agent.dart';
 import 'package:hsa_app/components/public_tool.dart';
@@ -19,6 +21,11 @@ class _DebugAgentTestPageState extends State<AgentTestPage> {
   
   final teminalBase = '00020013';
   final teminalPro  = '00020044';
+
+  // 实时运行参数任务
+  AgentRunTimeDataLoopTimerTasker runtimTasker;
+  // 实时有功和收益任务
+  AgentStationInfoDataLoopTimerTasker stationTasker;
 
   final List<String> leftLabels = [
 
@@ -46,6 +53,13 @@ class _DebugAgentTestPageState extends State<AgentTestPage> {
 
     '获取最近运行时参数(多项)(Base)',
     '获取最近运行时参数(多项)(Pro)',
+
+    '持续获取指定终端运行实时数据(开启)',
+    '持续获取指定终端运行实时数据(关闭)',
+
+    '持续获取多台终端运行实时功率和收益(开启)',
+    '持续获取多台终端运行实时功率和收益(关闭)',
+
     
     ];
 
@@ -56,6 +70,8 @@ class _DebugAgentTestPageState extends State<AgentTestPage> {
 
   @override
   void dispose() {
+    runtimTasker?.stop();
+    stationTasker?.stop();
     super.dispose();
   }
 
@@ -355,6 +371,47 @@ class _DebugAgentTestPageState extends State<AgentTestPage> {
           showToast(msg);
 
         });
+    }
+
+   // '持续获取指定终端运行实时数据(开启)',
+    else if(index == 20) {
+      runtimTasker = AgentRunTimeDataLoopTimerTasker(
+        isBase: true,
+        terminalAddress: teminalBase,
+        timerInterval: 5
+      );
+      runtimTasker.start((data){
+        showToast(data.toString());
+      });
+    }
+    // '持续获取指定终端运行实时数据(关闭)',      
+    else if(index == 21) {
+      runtimTasker?.stop();
+    }
+    // '持续获取多台终端运行实时功率和收益(开启)',
+    else if(index == 22) {
+      stationTasker = AgentStationInfoDataLoopTimerTasker(
+        price: ElectricityPrice(
+        spikeElectricityPrice : 1.0,
+        peakElectricityPrice : 2.0,
+        flatElectricityPrice : 0.5,
+        valleyElectricityPrice : 1.5,
+      ),
+      timerInterval: 5,
+      terminalAddressList: [teminalBase,teminalPro],
+      isBaseList: [true,false],
+      );
+      stationTasker.start((data,totalPower,totalMoney){
+        String msg = '';
+        msg += '总有功功率:' + totalPower + '\n';
+        msg += '总收益:' + totalMoney + '元' + '\n';
+        msg += data.map((f)=> f.address + ',' + f.power +  ',' + f.date + '\n').toList().toString() + '\n';
+        showToast(msg);
+      });
+    }
+    // '持续获取多台终端运行实时功率和收益(关闭)',
+    else if(index == 23) {
+      stationTasker?.stop();
     }
 
 

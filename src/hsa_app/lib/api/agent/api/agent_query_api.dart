@@ -45,7 +45,7 @@ class AgentQueryAPI {
 
 
   static String createPath(String terminalAddress,String afnFunc) {
-    return DebugAPI.liveDataHost + '/v1/Cmd/Send/' + terminalAddress + '/' +  afnFunc  +'/' + '/0';
+    return DebugAPI.agentHost + '/v1/Cmd/Send/' + terminalAddress + '/' +  afnFunc  + '/0';
   }
 
 
@@ -53,6 +53,7 @@ class AgentQueryAPI {
   static void qureryTerminalNearestRunningData({ 
       @required String address, // 终端地址
       @required bool isBase,       // 是否是标准版,默认标准版
+      ElectricityPrice price, // 电价列表
       AgentQuerySuccCallback onSucc, // 成功回调
       AgentQueryFailCallback onFail, // 失败回调
     }) {
@@ -78,12 +79,7 @@ class AgentQueryAPI {
 
         DebugHttpHelper.httpPOST(path, { '' : param }, (map,msg){
           
-          var resp = NearestRunningDataResp.fromJson(map, address, isBase: true,price: ElectricityPrice(
-            peakElectricityPrice:1.0,
-            spikeElectricityPrice: 2.0,
-            flatElectricityPrice: 3.0,
-            valleyElectricityPrice: 4.0,
-          ));
+          var resp = NearestRunningDataResp.fromJson(map, address, isBase: true,price: price);
           if(onSucc != null) onSucc(resp.data,msg);
           
         }, onFail);
