@@ -7,6 +7,7 @@ import 'package:hsa_app/model/model/station.dart';
 import 'package:hsa_app/event/app_event.dart';
 import 'package:hsa_app/event/event_bird.dart';
 import 'package:hsa_app/page/history/history_page.dart';
+import 'package:hsa_app/page/station/caiyun_weather.dart';
 import 'package:hsa_app/page/station/device/station_device_list.dart';
 import 'package:hsa_app/page/station/station_big_pool.dart';
 import 'package:hsa_app/page/station/station_list_header.dart';
@@ -16,8 +17,8 @@ import 'package:ovprogresshud/progresshud.dart';
 class StationPage extends StatefulWidget {
   
   final String stationId;
-
-  StationPage(this.stationId);
+  final CaiyunWeatherData weather;
+  StationPage(this.stationId, this.weather);
 
   @override
   _StationPageState createState() => _StationPageState();
@@ -26,7 +27,7 @@ class StationPage extends StatefulWidget {
 class _StationPageState extends State<StationPage> {
   
   StationInfo stationInfo = StationInfo();
-  String weather = '晴';
+  
   List<String> openLive = [];
   RefreshController refreshController = RefreshController(initialRefresh: false);
 
@@ -38,7 +39,6 @@ class _StationPageState extends State<StationPage> {
 
   @override
   void dispose() {
-    
     refreshController.dispose();
     Progresshud.dismiss();
     super.dispose();
@@ -106,11 +106,6 @@ class _StationPageState extends State<StationPage> {
   }
 
   void onTapPushToHistoryPage(StationInfo info) async {
-    // final deviceIdList = info.waterTurbines.map((wt) {
-    //   return wt?.deviceTerminal?.terminalAddress ?? '';
-    // }).toList();
-    // final addresses = deviceIdList.join(',');
-    // final navTitle = info?.name ?? '';
     pushToPage(context, HistoryPage(title: '历史分析',stationInfo:info));
   }
 
@@ -127,7 +122,7 @@ class _StationPageState extends State<StationPage> {
         child: ListView(
           children: <Widget>[
             StationBigPool(stationInfo),
-            StationListHeader(weather, openLive, stationInfo.stationName),
+            StationListHeader(widget.weather.name, openLive, stationInfo.stationName),
             StationDeviceList(stationInfo),
           ],
         ),
