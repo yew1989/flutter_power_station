@@ -20,7 +20,7 @@ class _StationBigPoolState extends State<StationBigPool> {
   Widget build(BuildContext context) {
     final stationInfo = widget?.stationInfo;
 
-    final profit = (stationInfo?.peakElectricityPrice ?? 0.0) + (stationInfo?.spikeElectricityPrice ?? 0.0)+ (stationInfo?.flatElectricityPrice ?? 0.0) + (stationInfo?.valleyElectricityPrice ?? 0.0);
+    final profit = stationInfo.totalMoney ?? 0.00;
     return Container(
       height: 266,
       color: Colors.transparent,

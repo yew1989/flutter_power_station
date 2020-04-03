@@ -16,12 +16,12 @@ class _StationPowerWidgetState extends State<StationPowerWidget> {
   Widget build(BuildContext context) {
     
     StationInfo info = widget?.stationInfo ?? new StationInfo();
-    double cur = 0.0;
-    if(info.waterTurbines != null){
-      info.waterTurbines.map((wt){ 
-        cur += wt?.deviceTerminal?.nearestRunningData?.power ?? 0.0;
-      }).toList();
-    }
+    double cur = info.totalActivePower ?? 0.0;
+    // if(info.waterTurbines != null){
+    //   info.waterTurbines.map((wt){ 
+    //     cur += wt?.deviceTerminal?.nearestRunningData?.power ?? 0.0;
+    //   }).toList();
+    // }
     
 
    final current = cur ?? 0.0;

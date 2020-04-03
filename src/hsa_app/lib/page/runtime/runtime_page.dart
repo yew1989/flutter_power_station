@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:hsa_app/api/agent/agent.dart';
 import 'package:hsa_app/api/agent/agent_task.dart';
+import 'package:hsa_app/api/agent/agent_timer_tasker.dart';
 import 'package:hsa_app/api/api.dart';
 import 'package:hsa_app/api/apis/api_station.dart';
 import 'package:hsa_app/components/dash_board_widget.dart';
@@ -60,6 +61,8 @@ class _RuntimePageState extends State<RuntimePage> {
 
   // 轮询定时器
   Timer runLoopTimer;
+
+  AgentRunTimeDataLoopTimerTasker runtimTasker = AgentRunTimeDataLoopTimerTasker();
 
   final pageIndexNotifier = ValueNotifier<int>(0);
 
@@ -140,12 +143,6 @@ class _RuntimePageState extends State<RuntimePage> {
     progressDialog.dismiss();
   }
 
-  // 轮询查询
-  void startRunLoopTimer(int runLoopSecond) async {
-    await Future.delayed(Duration(seconds: 1));
-    runLoopTimer = Timer.periodic(Duration(seconds: runLoopSecond),(_) => requestRunTimeDataInBackground());
-  }
-
   @override
   void initState() {
     initProgressDialog();
@@ -157,6 +154,7 @@ class _RuntimePageState extends State<RuntimePage> {
   void dispose() {
     runLoopTimer?.cancel();
     agentTask.resetTimer();
+    runtimTasker.stop();
     Progresshud.dismiss();
     super.dispose();
   }
@@ -196,6 +194,7 @@ class _RuntimePageState extends State<RuntimePage> {
             setState(() {
               this.showEvents = events;
             });
+            getRealtimeData();
           },onFail: (msg){},
           searchDirection : 'Backward',
           terminalAddress : addressId,
@@ -213,58 +212,24 @@ class _RuntimePageState extends State<RuntimePage> {
     isIncludeHydropowerStation:true,
     isIncludeCustomer:true
     );
-    
-    
   }
 
-  // 静默任务请求
-  void requestRunTimeDataInBackground() async {
+  //获取实时数据
+  void getRealtimeData(){
     final addressId = widget.address ?? '';
-    List<String> param ;
-    if (addressId.length == 0) {
-      runLoopTimer?.cancel();
-      return;
-    }
-    APIStation.getDeviceTerminalInfo(terminalAddress: addressId,onSucc: (dt){
-      this.deviceTerminal = dt;
-      bool isBase = true;
-      switch(deviceTerminal.deviceVersion){
-        case 'S1-Base': 
-          param =  ["AFN0C.F7.p0", "AFN0C.F9.p0", "AFN0C.F10.p0", "AFN0C.F11.p0", 
-                    "AFN0C.F13.p0", "AFN0C.F24.p0", "AFN0C.F20.p0", "AFN0C.F21.p0", "AFN0C.F22.p0"] ;
-          isBase = true;
-        break;
-        
-        case 'S1-Pro':
-          param = ["AFN0C.F28.p0", "AFN0C.F30.p0", "AFN0C.F10.p0", "AFN0C.F11.p0", 
-                  "AFN0C.F13.p0", "AFN0C.F24.p0", "AFN0C.F20.p0", "AFN0C.F21.p0", "AFN0C.F22.p0"] ;
-          isBase = false;
-        break;
-      }
-      APIStation.getMultipleAFNFnpn(terminalAddress:addressId,paramList: param,isBase:isBase,onSucc: (nearestRunningData){
-        this.deviceTerminal.nearestRunningData = nearestRunningData;
-        //this.runtimeData = RuntimeDataAdapter.adapter(deviceTerminal, widget.alias);
-        API.getTerminalAlertList(
-          onSucc: (events){
-            setState(() {
-              this.showEvents = events;
-            });
-          },onFail: (msg){},
-          searchDirection : 'Backward',
-          terminalAddress : addressId,
-          limitSize : 10,
-        );
-      },onFail: (msg){
-      
-      });
-    },onFail: (msg){
-      
-    },
-    isIncludeWaterTurbine : true,
-    isIncludeHydropowerStation:true,
-    isIncludeCustomer:true
+    runtimTasker = AgentRunTimeDataLoopTimerTasker(
+      isBase: true,
+      terminalAddress: addressId,
     );
+    runtimTasker.start((data){
+      setState(() {
+        this.deviceTerminal?.nearestRunningData = data;
+      });
+      //showToast(data.toString());
+    });
   }
+  
+
 
   //  设备概要头
   Widget terminalBriefHeader() {

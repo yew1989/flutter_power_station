@@ -158,10 +158,10 @@ class AgentStationInfoDataLoopTimerTasker {
              for (int k = 0 ; k < datas.length ; k++) {
                final turbine = stationResult.waterTurbines[k];
                final data = datas[k];
-               turbine.deviceTerminal.nearestRunningData.dataCachedTime = data?.date ?? 0.0;
-               turbine.deviceTerminal.nearestRunningData.power = data?.power ?? 0.0;
+               turbine?.deviceTerminal?.nearestRunningData?.dataCachedTime = data?.date ?? '0000-00-00 00:00:00';
+               turbine?.deviceTerminal?.nearestRunningData?.power = data?.power ?? 0.0;
              }
-             stationResult.totoalMoney = _money;
+             stationResult.totalMoney = _money;
              stationResult.totalActivePower = _totalActivePower;
 
              if(onGetStationInfo != null) onGetStationInfo(stationResult);
@@ -182,10 +182,10 @@ class AgentStationInfoDataLoopTimerTasker {
              for (int k = 0 ; k < datas.length ; k++) {
                final turbine = stationResult.waterTurbines[k];
                final data = datas[k];
-               turbine.deviceTerminal.nearestRunningData.dataCachedTime = data?.date ?? 0.0;
-               turbine.deviceTerminal.nearestRunningData.power = data?.power ?? 0.0;
+               turbine?.deviceTerminal?.nearestRunningData?.dataCachedTime = data?.date ?? '0000-00-00 00:00:00';
+               turbine?.deviceTerminal?.nearestRunningData?.power = data?.power ?? 0.0;
              }
-             stationResult.totoalMoney = _money;
+             stationResult.totalMoney = _money;
              stationResult.totalActivePower = _totalActivePower;
              if(onGetStationInfo != null) onGetStationInfo(stationResult);
      
