@@ -7,6 +7,7 @@ import 'package:hsa_app/model/model/all_model.dart';
 import 'package:hsa_app/event/app_event.dart';
 import 'package:hsa_app/event/event_bird.dart';
 import 'package:hsa_app/page/history/history_page.dart';
+import 'package:hsa_app/page/station/caiyun_weather.dart';
 import 'package:hsa_app/page/station/station_page.dart';
 import 'package:hsa_app/page/station/station_weather_widget.dart';
 import 'package:hsa_app/service/umeng_analytics.dart';
@@ -32,7 +33,8 @@ class _StationTabbarPageState extends State<StationTabbarPage> {
   String title;
   PageController pageController;
   StationInfo stationInfo;
-  String weather = '晴';
+
+  CaiyunWeatherData weather = CaiyunWeatherData('晴',WeatherPictureType.sunny);
 
   @override
   void initState() {
@@ -44,7 +46,7 @@ class _StationTabbarPageState extends State<StationTabbarPage> {
     pageController = PageController(initialPage: currentIndex);
 
     UMengAnalyticsService.enterPage('电站概要');
-    super.initState();
+
 
     EventBird().on(AppEvent.eventGotStationInfo, (arg) { 
       if(arg is StationInfo) {
@@ -53,49 +55,51 @@ class _StationTabbarPageState extends State<StationTabbarPage> {
         });
       }
     });
+
+    super.initState();
+
+    // 首次获取天气
+    requestWeatherAPI(currentStation);
+
+  }
+
+  // 发送天气请求
+  void requestWeatherAPI(StationInfo stationInfo) async {
+
+    this.weather = await CaiyunWeatherAPI.request(stationInfo.hyStationLongtitude, stationInfo.hyStationLatitude);
+    if(mounted) {
+      setState(() {});
+    }
+
+    var msg = '地理位置:' + stationInfo.hyStationLongtitude.toString() + ',' + stationInfo.hyStationLatitude.toString() + '\n';
+    msg +=  '天气:' +this.weather.name + '\n';
+    msg +=  '类型：' +this.weather.type.toString();
+    debugPrint(msg);
   }
 
   @override
   void dispose() {
 
     EventBird().off(AppEvent.eventGotStationInfo);
-
     pageController.dispose();
     UMengAnalyticsService.exitPage('电站概要');
     super.dispose();
   }
 
   void onTapPushToHistoryPage(StationInfo info) async {
-  //  final deviceIdList = info.deviceTerminalsOfFMD.map((deviceTerminal) {
-  //     return deviceTerminal?.terminalAddress ?? '';
-  //   }).toList();
-    //final addresses = deviceIdList.join(',');
     final navTitle = info?.stationName ?? '';
     pushToPage(context, HistoryPage(title: navTitle,stationInfo: info));
     
   }
 
-
-
-  void syncWeaher(String weather) async {
-    await Future.delayed(Duration(milliseconds: 500));
-    setState(() {
-      this.weather = weather;
-    });
-  }
-  
   @override
   Widget build(BuildContext context) {
 
     return ThemeGradientBackground(
       child: Stack(
         children:[
-          stationInfo?.hyStationLongtitude != null || stationInfo?.hyStationLatitude != null
-            ? StationWeatherWidget(
-                longtitude: stationInfo?.hyStationLongtitude ?? 0.0,
-                latitude: stationInfo?.hyStationLatitude ?? 0.0,
-                onWeahterResponse: (weather) => syncWeaher(weather))
-            : Container() ,
+          // 天气图片
+          StationWeatherWidget(pictureType: weather.type),
 
           Scaffold(
             backgroundColor: Colors.transparent,
@@ -119,13 +123,14 @@ class _StationTabbarPageState extends State<StationTabbarPage> {
                   physics: AlwaysScrollableScrollPhysics(),
                   controller: pageController,
                   itemCount: widget.stations.length,
-                  itemBuilder: (BuildContext context, int index) => StationPage(widget.stations[index].stationNo.toString()),
+                  itemBuilder: (BuildContext context, int index) => StationPage(widget.stations[index].stationNo.toString(),this.weather),
                   onPageChanged: (int index) {
                     currentIndex = index;
                     currentStation = widget?.stations[currentIndex];
                     setState(() {
                       title = currentStation.stationName;
                     });
+                    requestWeatherAPI(currentStation);
                   },
                 ),
 

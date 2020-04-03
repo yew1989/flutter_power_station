@@ -219,7 +219,6 @@ class _HomeStationListState extends State<HomeStationList> {
 
           GestureDetector(
             onTap: (){
-              // pushToPage(context, StationPage(station.name,station.id.toString()));
               // 新版电站滑块
               pushToPage(context,StationTabbarPage(stations: stations,selectIndex: index));
               

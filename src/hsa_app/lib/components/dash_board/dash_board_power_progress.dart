@@ -26,13 +26,17 @@ class _DashBoardPowerProgressState extends State<DashBoardPowerProgress> with Ti
   }
 
   void forwardAnimation() async {
-    await Future.delayed(Duration(milliseconds:100));
-    controller.forward();
+    if(mounted) {
+      await Future.delayed(Duration(milliseconds:100));
+      controller?.forward();
+    }
   }
 
   void forwardAnimationBeyond() async {
-    await Future.delayed(Duration(milliseconds:1500));
-    beyondController.forward();
+    if(mounted) {
+       await Future.delayed(Duration(milliseconds:1500));
+        beyondController?.forward();
+    }
   }
 
   @override
@@ -45,8 +49,8 @@ class _DashBoardPowerProgressState extends State<DashBoardPowerProgress> with Ti
 
   @override
   void dispose() {
-    controller.dispose();
-    beyondController.dispose();
+    controller?.dispose();
+    beyondController?.dispose();
     super.dispose();
   }
 
