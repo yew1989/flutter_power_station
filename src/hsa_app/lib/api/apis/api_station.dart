@@ -34,12 +34,12 @@ class APIStation{
     }
 
     //部分电站名 模糊匹配
-    if(partStationName != null){
+    if(partStationName != '' && partStationName != null){
       param['partStationName'] = partStationName;
     }
 
     //部分电站拼音 模糊匹配
-    if(partStationNamePinYin != null ){
+    if(partStationNamePinYin != '' && partStationNamePinYin != null ){
       param['partStationNamePinYin'] = partStationNamePinYin;
     }
 

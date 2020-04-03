@@ -39,16 +39,25 @@ class _HomeStationListState extends State<HomeStationList> {
   String keyWord = '';
   List<String> favoriteStations ;
 
+  //是否是英文和数字
+  bool isEngOrNum = false;
   // 是否空视图
   bool isEmpty = false;
   // 是否首次数据加载完毕
   bool isLoadFinsh = false;
 
   // 按省获取电站列表 加载首页
-  void loadFirst(List<String> list) async {
+  void loadFirst(List<String> list,bool isEngOrNum) async {
     
     this.currentPage = 1;
     this.isEmpty = false;
+    var partStationNamePinYin;
+    var partStationName;
+    if(isEngOrNum == true){
+      partStationNamePinYin = keyWord;
+    }else if(isEngOrNum == false){
+      partStationName = keyWord;
+    }
     
     APIStation.getStationList(onSucc: (msg){
       
@@ -78,15 +87,23 @@ class _HomeStationListState extends State<HomeStationList> {
     pageSize:pageRowsMax,
     proviceAreaCityNameOfDotSeparated:provinceName,
     arrayOfStationNoOptAny: list,
+    partStationNamePinYin:partStationNamePinYin,
+    partStationName:partStationName,
     );
   }
 
 
   // 刷新下一页
-  void loadNext(List<String> list) async {
+  void loadNext(List<String> list,bool isEngOrNum) async {
 
     currentPage++ ;
-
+    var partStationNamePinYin;
+    var partStationName;
+    if(isEngOrNum == true){
+      partStationNamePinYin = keyWord;
+    }else if(isEngOrNum == false){
+      partStationName = keyWord;
+    }
     APIStation.getStationList(onSucc: (msg){
       
       isLoadFinsh = true;
@@ -113,6 +130,8 @@ class _HomeStationListState extends State<HomeStationList> {
     pageSize:pageRowsMax,
     proviceAreaCityNameOfDotSeparated:provinceName,
     arrayOfStationNoOptAny: list,
+    partStationNamePinYin:partStationNamePinYin,
+    partStationName:partStationName,
     );
   }
 
@@ -120,17 +139,27 @@ class _HomeStationListState extends State<HomeStationList> {
   void getFavoriteStations(){
     APIStation.getFavoriteStationNos(onSucc :(msg){
       this.favoriteStations = msg;
-      
-      initPage();
+      initPage(); 
       if(this.widget.isFromSearch == true) {
         EventBird().on(AppEvent.searchKeyWord, (text){
-            this.keyWord = text;
-            initPage();
+          this.keyWord = text;
+          this.isEngOrNum = isEnglishOrNumber(keyWord);
+          initPage();
         });
+      }else{
+        this.isEngOrNum = null;
+        initPage(); 
       }
     },onFail: (msg){
       
     });
+  }
+
+  //判断全部是英文和数字
+  bool isEnglishOrNumber(String input) {
+    String p = r'^[A-Za-z0-9]+$';
+    final RegExp regex =  RegExp(p);
+    return regex.hasMatch(input);
   }
 
   // 计算类型和省份
@@ -161,12 +190,23 @@ class _HomeStationListState extends State<HomeStationList> {
   }
 
   void initPage() {
-    isLoadFinsh = false;
-    caculateType(widget.homeParam);
-    if(this.type == 1){
-      loadFirst(favoriteStations);
+    
+    if(isEngOrNum == false){
+      isLoadFinsh = false;
+      caculateType(widget.homeParam);
+      loadFirst(null,isEngOrNum);
+    }else if(isEngOrNum== true){
+      isLoadFinsh = false;
+      caculateType(widget.homeParam);
+      loadFirst(null,isEngOrNum);
     }else{
-      loadFirst(null);
+      isLoadFinsh = false;
+      caculateType(widget.homeParam);
+      if(this.type == 1){
+        loadFirst(favoriteStations,null);
+      }else{
+        loadFirst(null,null);
+      }
     }
   }
 
@@ -194,8 +234,8 @@ class _HomeStationListState extends State<HomeStationList> {
       footer: appRefreshFooter(),
       enablePullDown: true,
       enablePullUp: true,
-      onLoading: ()=> type == 1 ? loadNext(this.favoriteStations) : loadNext(null),
-      onRefresh: ()=> type == 1 ? loadFirst(this.favoriteStations) : loadFirst(null),
+      onLoading: ()=> type == 1 ? loadNext(this.favoriteStations,null) : loadNext(null,this.isEngOrNum),
+      onRefresh: ()=> type == 1 ? loadFirst(this.favoriteStations,null) : loadFirst(null,this.isEngOrNum),
       controller: refreshController,
       child: ListView.builder(
         itemCount: this.stations?.length ?? 0,
@@ -302,20 +342,6 @@ class _HomeStationListState extends State<HomeStationList> {
         station.isCurrentAccountFavorite = !station.isCurrentAccountFavorite;
       });
     });
-
-
-    // API.focusStation(station.isCurrentAccountFavorite.toString(), !station.isCurrentAccountFavorite, (String msg){
-    //   final msg = !station.isCurrentAccountFavorite ? '关注成功' : '取消关注成功'; 
-    //   Progresshud.showSuccessWithStatus(msg);
-    //   setState(() {
-    //     station.isCurrentAccountFavorite = !station.isCurrentAccountFavorite;
-    //   });
-    // }, (String msg){
-    //   Progresshud.showSuccessWithStatus('请检查网络');
-    //   setState(() {
-    //     station.isCurrentAccountFavorite = !station.isCurrentAccountFavorite;
-    //   });
-    // });
   }
 
 
