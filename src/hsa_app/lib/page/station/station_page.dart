@@ -121,23 +121,23 @@ class _StationPageState extends State<StationPage> {
 
   //实时数据获取
   void getRealtimeData() { 
-    stationTasker = AgentStationInfoDataLoopTimerTasker(
-        price: ElectricityPrice(
-        spikeElectricityPrice : stationInfo?.spikeElectricityPrice ?? 0.0,
-        peakElectricityPrice : stationInfo?.peakElectricityPrice ?? 0.0,
-        flatElectricityPrice : stationInfo?.flatElectricityPrice ?? 0.0,
-        valleyElectricityPrice : stationInfo?.valleyElectricityPrice ?? 0.0,
-      ),
-      terminalAddressList: terminalAddressList,
-      isBaseList: isBaseList,
-      );
-      stationTasker.start((data,totalPower,totalMoney){
-        String msg = '';
-        msg += '总有功功率:' + totalPower.toStringAsFixed(1) + '\n';
-        msg += '总收益:' + totalMoney.toStringAsFixed(2) + '元' + '\n';
-        msg += data.map((f)=> f.address + ',' + f.power.toStringAsFixed(0) +  ',' + f.date + '\n').toList().toString() + '\n';
-        showToast(msg);
-      });
+    // stationTasker = AgentStationInfoDataLoopTimerTasker(
+    //     price: ElectricityPrice(
+    //     spikeElectricityPrice : stationInfo?.spikeElectricityPrice ?? 0.0,
+    //     peakElectricityPrice : stationInfo?.peakElectricityPrice ?? 0.0,
+    //     flatElectricityPrice : stationInfo?.flatElectricityPrice ?? 0.0,
+    //     valleyElectricityPrice : stationInfo?.valleyElectricityPrice ?? 0.0,
+    //   ),
+    //   terminalAddressList: terminalAddressList,
+    //   isBaseList: isBaseList,
+    //   );
+    //   stationTasker.start((data,totalPower,totalMoney){
+    //     String msg = '';
+    //     msg += '总有功功率:' + totalPower.toStringAsFixed(1) + '\n';
+    //     msg += '总收益:' + totalMoney.toStringAsFixed(2) + '元' + '\n';
+    //     msg += data.map((f)=> f.address + ',' + f.power.toStringAsFixed(0) +  ',' + f.date + '\n').toList().toString() + '\n';
+    //     showToast(msg);
+    //   });
   }
 
   @override

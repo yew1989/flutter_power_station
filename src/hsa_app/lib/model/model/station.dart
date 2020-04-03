@@ -33,6 +33,9 @@ class StationInfo {
   double flatElectricityPrice;
   double valleyElectricityPrice;
   bool isCurrentAccountFavorite;
+
+  double totalActivePower;   // 总有功
+  double totoalMoney;        // 总收益
   
 
   StationInfo(
@@ -65,6 +68,8 @@ class StationInfo {
       this.flatElectricityPrice,
       this.valleyElectricityPrice,
       this.isCurrentAccountFavorite,
+      this.totalActivePower,
+      this.totoalMoney,
       });
 
   StationInfo.fromJson(Map<String, dynamic> json) {
@@ -112,6 +117,8 @@ class StationInfo {
     flatElectricityPrice = json['flatElectricityPrice'];
     valleyElectricityPrice = json['valleyElectricityPrice'];
     isCurrentAccountFavorite = json['isCurrentAccountFavorite'];
+    totalActivePower = json['totalActivePower'] ?? 0.0;
+    totoalMoney = json['totoalMoney']  ?? 0.0;
   }
 
   Map<String, dynamic> toJson() {
@@ -155,6 +162,8 @@ class StationInfo {
     data['flatElectricityPrice'] = this.flatElectricityPrice;
     data['valleyElectricityPrice'] = this.valleyElectricityPrice;
     data['isCurrentAccountFavorite'] = this.isCurrentAccountFavorite;
+    data['totalActivePower'] = this.totalActivePower;
+    data['totoalMoney'] = this.totoalMoney;
     return data;
   }
 

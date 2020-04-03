@@ -389,24 +389,24 @@ class _DebugAgentTestPageState extends State<AgentTestPage> {
     }
     // '持续获取多台终端运行实时功率和收益(开启)',
     else if(index == 22) {
-      stationTasker = AgentStationInfoDataLoopTimerTasker(
-        price: ElectricityPrice(
-        spikeElectricityPrice : 1.0,
-        peakElectricityPrice : 2.0,
-        flatElectricityPrice : 0.5,
-        valleyElectricityPrice : 1.5,
-      ),
-      timerInterval: 5,
-      terminalAddressList: [teminalBase,teminalPro],
-      isBaseList: [true,false],
-      );
-      stationTasker.start((data,totalPower,totalMoney){
-        String msg = '';
-        msg += '总有功功率:' + totalPower.toStringAsFixed(1) + '\n';
-        msg += '总收益:' + totalMoney.toStringAsFixed(2) + '元' + '\n';
-        msg += data.map((f)=> f.address + ',' + f.power.toStringAsFixed(0) +  ',' + f.date + '\n').toList().toString() + '\n';
-        showToast(msg);
-      });
+      // stationTasker = AgentStationInfoDataLoopTimerTasker(
+      //   price: ElectricityPrice(
+      //   spikeElectricityPrice : 1.0,
+      //   peakElectricityPrice : 2.0,
+      //   flatElectricityPrice : 0.5,
+      //   valleyElectricityPrice : 1.5,
+      // ),
+      // timerInterval: 5,
+      // terminalAddressList: [teminalBase,teminalPro],
+      // isBaseList: [true,false],
+      // );
+      // stationTasker.start((data,totalPower,totalMoney){
+      //   String msg = '';
+      //   msg += '总有功功率:' + totalPower.toStringAsFixed(1) + '\n';
+      //   msg += '总收益:' + totalMoney.toStringAsFixed(2) + '元' + '\n';
+      //   msg += data.map((f)=> f.address + ',' + f.power.toStringAsFixed(0) +  ',' + f.date + '\n').toList().toString() + '\n';
+      //   showToast(msg);
+      // });
     }
     // '持续获取多台终端运行实时功率和收益(关闭)',
     else if(index == 23) {

@@ -18,7 +18,7 @@ class ActivePowerRunTimeData {
 typedef NearestRunningDataCallBack = void Function(NearestRunningData runtimeData);
 
 // 电站概要页返回 - 当前有功,电站总有功,当日电站总收益
-typedef StationInfoDataCallBack = void Function(List<ActivePowerRunTimeData> datas,double totalActivePower,double totalMoney);
+typedef StationInfoDataCallBack = void Function(StationInfo station);
 
 // 持续获取指定终端实时运行数据
 class AgentRunTimeDataLoopTimerTasker {
@@ -65,16 +65,14 @@ class AgentRunTimeDataLoopTimerTasker {
  // 持续获取某个电站下,多个终端运行数据 获取当前有功和电量、预估值, 仅支持在线的终端
 class AgentStationInfoDataLoopTimerTasker {
   
-   AgentStationInfoDataLoopTimerTasker({this.isBaseList,this.terminalAddressList,this.timerInterval = 5,this.price});
+   final StationInfo station;
+   AgentStationInfoDataLoopTimerTasker(this.station, {this.timerInterval = 5});
 
    // 周期间隔 单位 s 秒
    final int timerInterval;
-   final List<String> terminalAddressList;
-   final List<bool> isBaseList;
-   // 电价
-   final ElectricityPrice price;
-   Timer timer;
 
+   Timer timer;
+ 
    void start (StationInfoDataCallBack onGetStationInfo) {
 
    // 总收益
@@ -86,6 +84,9 @@ class AgentStationInfoDataLoopTimerTasker {
 
    // 剩余未返回次数
    int unResponeseAck = 0;
+
+    final terminalAddressList = station.waterTurbines.map((w)=>w.deviceTerminal.terminalAddress).toList();
+    final isBaseList = station.waterTurbines.map((w)=>w.deviceTerminal.deviceType.compareTo('S1-Pro') == 0  ? false : true).toList();
 
     if(terminalAddressList == null)return;
     if(isBaseList == null)return;
@@ -106,6 +107,18 @@ class AgentStationInfoDataLoopTimerTasker {
   }
 
    void stationInfOnce(double _money, double _totalActivePower, List<ActivePowerRunTimeData> datas, int unResponeseAck, StationInfoDataCallBack onGetStationInfo) {
+
+    var stationResult = station;
+
+    final terminalAddressList = station.waterTurbines.map((w)=>w.deviceTerminal.terminalAddress).toList();
+    final isBaseList = station.waterTurbines.map((w)=>w.deviceTerminal.deviceType.compareTo('S1-Pro') == 0  ? false : true).toList();
+    final price = ElectricityPrice(
+      spikeElectricityPrice: station.spikeElectricityPrice ?? 0.0,
+      peakElectricityPrice: station.peakElectricityPrice ?? 0.0,
+      flatElectricityPrice: station.flatElectricityPrice ?? 0.0,
+      valleyElectricityPrice: station.valleyElectricityPrice ?? 0.0,
+    );
+
      // 初始化
      _money = 0.0;
      _totalActivePower = 0.0;
@@ -140,7 +153,18 @@ class AgentStationInfoDataLoopTimerTasker {
      
              // 按输入顺序排序
              datas = sort(datas, terminalAddressList); 
-             if(onGetStationInfo != null) onGetStationInfo(datas,_totalActivePower,_money);
+
+             // 拼接到输出 stationResult
+             for (int k = 0 ; k < datas.length ; k++) {
+               final turbine = stationResult.waterTurbines[k];
+               final data = datas[k];
+               turbine.deviceTerminal.nearestRunningData.dataCachedTime = data?.date ?? 0.0;
+               turbine.deviceTerminal.nearestRunningData.power = data?.power ?? 0.0;
+             }
+             stationResult.totoalMoney = _money;
+             stationResult.totalActivePower = _totalActivePower;
+
+             if(onGetStationInfo != null) onGetStationInfo(stationResult);
            }
          },onFail: (msg){
      
@@ -153,7 +177,17 @@ class AgentStationInfoDataLoopTimerTasker {
      
              // 按输入顺序排序
              datas = sort(datas, terminalAddressList); 
-             if(onGetStationInfo != null) onGetStationInfo(datas,_totalActivePower,_money);
+
+             // 拼接到输出 stationResult
+             for (int k = 0 ; k < datas.length ; k++) {
+               final turbine = stationResult.waterTurbines[k];
+               final data = datas[k];
+               turbine.deviceTerminal.nearestRunningData.dataCachedTime = data?.date ?? 0.0;
+               turbine.deviceTerminal.nearestRunningData.power = data?.power ?? 0.0;
+             }
+             stationResult.totoalMoney = _money;
+             stationResult.totalActivePower = _totalActivePower;
+             if(onGetStationInfo != null) onGetStationInfo(stationResult);
      
            }
          });
