@@ -233,7 +233,7 @@ class APIStation{
 
 
   //取终端最近运行时通讯的数据(多)
-  static void getMultipleAFNFnpn({String terminalAddress,List<String> paramList,NearestRunningDataCallback onSucc,HttpFailCallback onFail}) async {
+  static void getMultipleAFNFnpn({bool isBase,String terminalAddress,List<String> paramList,NearestRunningDataCallback onSucc,HttpFailCallback onFail}) async {
     
     final path = API.liveDataHost + '/v1/NearestRunningData/'+'$terminalAddress'+'/MultipleAFNFnpn';
     
@@ -241,7 +241,7 @@ class APIStation{
 
     HttpHelper.httpPOST(path, param, (map,_){
 
-      var resp = NearestRunningDataResp.fromJson(map,terminalAddress);
+      var resp = NearestRunningDataResp.fromJson(map,terminalAddress,isBase: isBase ?? true);
       if(onSucc != null) onSucc(resp.data);
       
     }, onFail);

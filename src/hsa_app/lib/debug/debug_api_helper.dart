@@ -19,7 +19,7 @@ class DebugHttpHelper {
   // 开启代理模式,允许抓包
   static final isProxyModeOpen = true;
   // 代理主机地址
-  static final proxyHost = '192.168.31.8:8888';
+  static final proxyHost = '192.168.31.208:8888';
   // 接受超时时间
   static final recvTimeOutSeconds = 10000;
   // 发送超时时间

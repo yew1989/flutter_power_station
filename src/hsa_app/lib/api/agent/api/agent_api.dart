@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:hsa_app/api/agent/agent_operation_ticket.dart';
 import 'package:hsa_app/api/agent/agent_replay_unit.dart';
-import 'package:hsa_app/debug/debug_api.dart';
-import 'package:hsa_app/debug/debug_api_helper.dart';
+import 'package:hsa_app/api/api.dart';
+import 'package:hsa_app/api/api_helper.dart';
 import 'package:hsa_app/util/encrypt.dart';
 
 // 发送远程指令
@@ -12,14 +12,14 @@ typedef AgentReplyUnitCallback = void Function(AgentReplyUnitResp resp);
 class AgentAPI {
   
   // 获取操作票
-  static void getCheckOperation(BuildContext context ,String password,DebugHttpSuccStrCallback onSucc,DebugHttpFailCallback onFail) async {
+  static void getCheckOperation(BuildContext context ,String password,HttpSuccStrCallback onSucc,HttpFailCallback onFail) async {
     
     if(password == null || password.length == 0) {
       if(onFail != null) onFail('请输入操作密码');
       return;
     }
 
-    final checkPath = DebugAPI.restHost + '/v1/Account/admin/Check/OperationPassword';
+    final checkPath = API.restHost + '/v1/Account/admin/Check/OperationPassword';
     final encryptedPswd = await LDEncrypt.encryptedRSA(context, password);
 
     if(encryptedPswd == null || encryptedPswd.length == 0) {
@@ -27,7 +27,7 @@ class AgentAPI {
       return;
     }
     
-    DebugHttpHelper.httpPOST(checkPath, {'':encryptedPswd}, (map,_){
+    HttpHelper.httpPOST(checkPath, {'':encryptedPswd}, (map,_){
 
       var resp = AgentOperationTicketResp.fromJson(map);
       if(resp.code != 0 || resp.httpCode != 200) {
@@ -53,7 +53,7 @@ class AgentAPI {
   }
 
   // 发送远程代理指令
-  static void getCommandId({String address,String afn,String func,Map<String,dynamic> param,String operationTicket,DebugHttpSuccStrCallback onSucc,DebugHttpFailCallback onFail}) async {
+  static void getCommandId({String address,String afn,String func,Map<String,dynamic> param,String operationTicket,HttpSuccStrCallback onSucc,HttpFailCallback onFail}) async {
 
     Map<String,dynamic> header = Map<String,dynamic>();
     if(operationTicket != null) {
@@ -62,9 +62,9 @@ class AgentAPI {
       }
     }
 
-    final sendCommandPath = DebugAPI.agentHost + '/v1/Cmd/Send/' + address + '/AFN' + afn + '_' + func + '/0';
+    final sendCommandPath = API.agentHost + '/v1/Cmd/Send/' + address + '/AFN' + afn + '_' + func + '/0';
     
-      DebugHttpHelper.httpPOST(sendCommandPath, param, (map,_){
+      HttpHelper.httpPOST(sendCommandPath, param, (map,_){
       
       var resp =  AgentReplyUnitResp.fromJson(map);
       
@@ -83,11 +83,11 @@ class AgentAPI {
     }
 
     // 跟踪远程命令
-    static void followCommandId(String cmdId,bool isControl,{DebugHttpSuccVoidCallback onSucc,DebugHttpFailCallback onFail,DebugHttpSuccVoidCallback onLoading}){
+    static void followCommandId(String cmdId,bool isControl,{HttpSuccVoidCallback onSucc,HttpFailCallback onFail,HttpSuccVoidCallback onLoading}){
 
-      final followCommandPath = DebugAPI.agentHost + '/v1/Cmd/' + cmdId;
+      final followCommandPath = API.agentHost + '/v1/Cmd/' + cmdId;
 
-      DebugHttpHelper.httpGET(followCommandPath, null, (map,msg){
+      HttpHelper.httpGET(followCommandPath, null, (map,msg){
 
       var resp =  AgentReplyUnitResp.fromJson(map);
       

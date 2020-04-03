@@ -1,10 +1,9 @@
 // 查询 API
 import 'package:flutter/material.dart';
-import 'package:hsa_app/debug/debug_api.dart';
-import 'package:hsa_app/debug/debug_api_helper.dart';
-import 'package:hsa_app/debug/model/all_model.dart';
-import 'package:hsa_app/debug/model/electricity_price.dart';
-import 'package:hsa_app/debug/response/all_resp.dart';
+import 'package:hsa_app/api/api.dart';
+import 'package:hsa_app/api/api_helper.dart';
+import 'package:hsa_app/model/model/all_model.dart';
+import 'package:hsa_app/model/response/all_resp.dart';
 
 // 查询成功返回
 typedef AgentQuerySuccCallback = void Function(NearestRunningData data, String msg);
@@ -16,17 +15,17 @@ class AgentQueryAPI {
   // 召测试在线终端的实时运行数据
   static void remoteMeasuringRunTimeData(String terminalAddress,bool isBase) {
 
-    DebugHttpHelper.httpPOST(AgentQueryAPI.createPath(terminalAddress,'AFN0C_F1'), null, null, null);
-    DebugHttpHelper.httpPOST(AgentQueryAPI.createPath(terminalAddress,'AFN0C_F10'), null, null, null);
-    DebugHttpHelper.httpPOST(AgentQueryAPI.createPath(terminalAddress,'AFN0C_F11'), null, null, null);
-    DebugHttpHelper.httpPOST(AgentQueryAPI.createPath(terminalAddress,'AFN0C_F13'), null, null, null);
-    DebugHttpHelper.httpPOST(AgentQueryAPI.createPath(terminalAddress,'AFN0C_F20'), null, null, null);
-    DebugHttpHelper.httpPOST(AgentQueryAPI.createPath(terminalAddress,'AFN0C_F24'), null, null, null);
+    HttpHelper.httpPOST(AgentQueryAPI.createPath(terminalAddress,'AFN0C_F1'), null, null, null);
+    HttpHelper.httpPOST(AgentQueryAPI.createPath(terminalAddress,'AFN0C_F10'), null, null, null);
+    HttpHelper.httpPOST(AgentQueryAPI.createPath(terminalAddress,'AFN0C_F11'), null, null, null);
+    HttpHelper.httpPOST(AgentQueryAPI.createPath(terminalAddress,'AFN0C_F13'), null, null, null);
+    HttpHelper.httpPOST(AgentQueryAPI.createPath(terminalAddress,'AFN0C_F20'), null, null, null);
+    HttpHelper.httpPOST(AgentQueryAPI.createPath(terminalAddress,'AFN0C_F24'), null, null, null);
     if(isBase == true) {
-      DebugHttpHelper.httpPOST(AgentQueryAPI.createPath(terminalAddress,'AFN0C_F9'), null, null, null);
+      HttpHelper.httpPOST(AgentQueryAPI.createPath(terminalAddress,'AFN0C_F9'), null, null, null);
     }
     else {
-      DebugHttpHelper.httpPOST(AgentQueryAPI.createPath(terminalAddress,'AFN0C_F30'), null, null, null);
+      HttpHelper.httpPOST(AgentQueryAPI.createPath(terminalAddress,'AFN0C_F30'), null, null, null);
     }
   }
 
@@ -34,18 +33,18 @@ class AgentQueryAPI {
   static void remoteMeasuringElectricParam(String terminalAddress,bool isBase) {
 
     if(isBase == true) {
-      DebugHttpHelper.httpPOST(AgentQueryAPI.createPath(terminalAddress,'AFN0C_F9'), null, null, null);
+      HttpHelper.httpPOST(AgentQueryAPI.createPath(terminalAddress,'AFN0C_F9'), null, null, null);
     }
     else {
-      DebugHttpHelper.httpPOST(AgentQueryAPI.createPath(terminalAddress,'AFN0C_F30'), null, null, null);
+      HttpHelper.httpPOST(AgentQueryAPI.createPath(terminalAddress,'AFN0C_F30'), null, null, null);
     }
-    DebugHttpHelper.httpPOST(AgentQueryAPI.createPath(terminalAddress,'AFN0C_F24'), null, null, null);
+    HttpHelper.httpPOST(AgentQueryAPI.createPath(terminalAddress,'AFN0C_F24'), null, null, null);
 
   }
 
 
   static String createPath(String terminalAddress,String afnFunc) {
-    return DebugAPI.agentHost + '/v1/Cmd/Send/' + terminalAddress + '/' +  afnFunc  + '/0';
+    return API.agentHost + '/v1/Cmd/Send/' + terminalAddress + '/' +  afnFunc  + '/0';
   }
 
 
@@ -58,7 +57,7 @@ class AgentQueryAPI {
       AgentQueryFailCallback onFail, // 失败回调
     }) {
 
-        final path = DebugAPI.liveDataHost + '/v1/NearestRunningData/' + address + '/MultipleAFNFnpn';
+        final path = API.liveDataHost + '/v1/NearestRunningData/' + address + '/MultipleAFNFnpn';
         // 通用参数
         var param = [
         'AFN0C.F1.p0', // 硬件版本软件版本
@@ -77,7 +76,7 @@ class AgentQueryAPI {
           param.add('AFN0C.F30.p0');
         }
 
-        DebugHttpHelper.httpPOST(path, { '' : param }, (map,msg){
+        HttpHelper.httpPOST(path, { '' : param }, (map,msg){
           
           var resp = NearestRunningDataResp.fromJson(map, address, isBase: true,price: price);
           if(onSucc != null) onSucc(resp.data,msg);

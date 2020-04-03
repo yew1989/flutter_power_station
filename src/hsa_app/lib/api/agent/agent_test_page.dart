@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:hsa_app/api/agent/agent_timer_tasker.dart';
-import 'package:hsa_app/debug/model/electricity_price.dart';
-import 'package:hsa_app/debug/response/all_resp.dart';
+import 'package:hsa_app/model/model/electricity_price.dart';
 import 'agent.dart';
 import 'package:hsa_app/components/public_tool.dart';
-import 'package:hsa_app/debug/API/debug_api_login.dart';
+import 'package:hsa_app/api/apis/api_login.dart';
 
 class AgentTestPage extends StatefulWidget {
   @override
@@ -85,7 +84,7 @@ class _DebugAgentTestPageState extends State<AgentTestPage> {
   void onTapTile(int index) async {
     // 登录
     if(index == 0 ) {
-      DebugAPILogin.login(context,name:accountName,pswd: loginPassword,onSucc: (auth,msg){
+      APILogin.login(context,name:accountName,pswd: loginPassword,onSucc: (auth,msg){
         showToast(msg + auth.toString());
       },onFail:(msg){
         showToast(msg);

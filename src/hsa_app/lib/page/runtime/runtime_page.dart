@@ -227,18 +227,21 @@ class _RuntimePageState extends State<RuntimePage> {
     }
     APIStation.getDeviceTerminalInfo(terminalAddress: addressId,onSucc: (dt){
       this.deviceTerminal = dt;
+      bool isBase = true;
       switch(deviceTerminal.deviceVersion){
         case 'S1-Base': 
           param =  ["AFN0C.F7.p0", "AFN0C.F9.p0", "AFN0C.F10.p0", "AFN0C.F11.p0", 
                     "AFN0C.F13.p0", "AFN0C.F24.p0", "AFN0C.F20.p0", "AFN0C.F21.p0", "AFN0C.F22.p0"] ;
+          isBase = true;
         break;
         
         case 'S1-Pro':
           param = ["AFN0C.F28.p0", "AFN0C.F30.p0", "AFN0C.F10.p0", "AFN0C.F11.p0", 
                   "AFN0C.F13.p0", "AFN0C.F24.p0", "AFN0C.F20.p0", "AFN0C.F21.p0", "AFN0C.F22.p0"] ;
+          isBase = false;
         break;
       }
-      APIStation.getMultipleAFNFnpn(terminalAddress:addressId,paramList: param,onSucc: (nearestRunningData){
+      APIStation.getMultipleAFNFnpn(terminalAddress:addressId,paramList: param,isBase:isBase,onSucc: (nearestRunningData){
         this.deviceTerminal.nearestRunningData = nearestRunningData;
         //this.runtimeData = RuntimeDataAdapter.adapter(deviceTerminal, widget.alias);
         API.getTerminalAlertList(

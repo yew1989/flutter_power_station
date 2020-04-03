@@ -2,8 +2,8 @@
 import 'dart:async';
 import 'package:date_format/date_format.dart';
 import 'package:hsa_app/api/agent/agent.dart';
-import 'package:hsa_app/debug/model/all_model.dart';
-import 'package:hsa_app/debug/model/electricity_price.dart';
+import 'package:hsa_app/model/model/all_model.dart';
+
 
 // 供展示的实时有功数据体
 class ActivePowerRunTimeData {

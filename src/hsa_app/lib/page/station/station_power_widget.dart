@@ -19,7 +19,7 @@ class _StationPowerWidgetState extends State<StationPowerWidget> {
     double cur = 0.0;
     if(info.waterTurbines != null){
       info.waterTurbines.map((wt){ 
-        cur += wt?.deviceTerminal?.nearestRunningData?.current ?? 0.0;
+        cur += wt?.deviceTerminal?.nearestRunningData?.power ?? 0.0;
       }).toList();
     }
     

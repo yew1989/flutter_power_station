@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hsa_app/api/agent/agent_timer_tasker.dart';
 import 'package:hsa_app/components/public_tool.dart';
 import 'package:hsa_app/components/smart_refresher_style.dart';
 import 'package:hsa_app/api/apis/api_station.dart';
@@ -29,6 +30,10 @@ class _StationPageState extends State<StationPage> {
   String weather = '晴';
   List<String> openLive = [];
   RefreshController refreshController = RefreshController(initialRefresh: false);
+  // 实时有功和收益任务
+  AgentStationInfoDataLoopTimerTasker stationTasker;
+  List<String> terminalAddressList = List<String>();
+  List<bool> isBaseList = List<bool>();
 
   @override
   void initState() {
@@ -38,7 +43,6 @@ class _StationPageState extends State<StationPage> {
 
   @override
   void dispose() {
-    
     refreshController.dispose();
     Progresshud.dismiss();
     super.dispose();
@@ -68,21 +72,28 @@ class _StationPageState extends State<StationPage> {
         this.stationInfo = station;
         if(stationInfo.waterTurbines != null){
           for( int i = 0 ;stationInfo.waterTurbines.length > i; i++){
+
             String terminalAddress = stationInfo.waterTurbines[i]?.deviceTerminal?.terminalAddress ?? '';
+            terminalAddressList.add(terminalAddress);
+            bool isBase = true;
             switch(stationInfo.waterTurbines[i]?.deviceTerminal?.deviceVersion){
               case 'S1-Base': 
                 param =  ["AFN0C.F7.p0", "AFN0C.F9.p0", "AFN0C.F10.p0", "AFN0C.F11.p0", 
                           "AFN0C.F13.p0", "AFN0C.F24.p0", "AFN0C.F20.p0", "AFN0C.F21.p0", "AFN0C.F22.p0"] ;
+                isBase = true;
               break;
               
               case 'S1-Pro':
                 param = ["AFN0C.F28.p0", "AFN0C.F30.p0", "AFN0C.F10.p0", "AFN0C.F11.p0", 
                         "AFN0C.F13.p0", "AFN0C.F24.p0", "AFN0C.F20.p0", "AFN0C.F21.p0", "AFN0C.F22.p0"] ;
+                isBase = false;
               break;
             }
+            isBaseList.add(isBase);
             if(terminalAddress != ''){
               APIStation.getMultipleAFNFnpn(terminalAddress:terminalAddress,
               paramList:param,
+              isBase:isBase,
               onSucc: (nearestRunningData){
                 stationInfo.waterTurbines[i].deviceTerminal.nearestRunningData = nearestRunningData;
               },onFail: (msg){
@@ -101,14 +112,32 @@ class _StationPageState extends State<StationPage> {
       refreshController.refreshFailed();
       Progresshud.showInfoWithStatus('获取电站信息失败');
     });
-
-    
   }
 
   void onTapPushToHistoryPage(StationInfo info) async {
     pushToPage(context, HistoryPage(title: '历史分析',stationInfo:info));
   }
 
+  //实时数据获取
+  void getRealtimeData() { 
+    stationTasker = AgentStationInfoDataLoopTimerTasker(
+        price: ElectricityPrice(
+        spikeElectricityPrice : stationInfo?.spikeElectricityPrice ?? 0.0,
+        peakElectricityPrice : stationInfo?.peakElectricityPrice ?? 0.0,
+        flatElectricityPrice : stationInfo?.flatElectricityPrice ?? 0.0,
+        valleyElectricityPrice : stationInfo?.valleyElectricityPrice ?? 0.0,
+      ),
+      terminalAddressList: terminalAddressList,
+      isBaseList: isBaseList,
+      );
+      stationTasker.start((data,totalPower,totalMoney){
+        String msg = '';
+        msg += '总有功功率:' + totalPower + '\n';
+        msg += '总收益:' + totalMoney + '元' + '\n';
+        msg += data.map((f)=> f.address + ',' + f.power +  ',' + f.date + '\n').toList().toString() + '\n';
+        showToast(msg);
+      });
+  }
 
   @override
   Widget build(BuildContext context) {
