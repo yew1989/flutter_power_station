@@ -1,6 +1,5 @@
 // 获取实时参数定时任务
 import 'dart:async';
-import 'package:date_format/date_format.dart';
 import 'package:hsa_app/api/agent/agent.dart';
 import 'package:hsa_app/model/model/all_model.dart';
 
@@ -10,7 +9,7 @@ class ActivePowerRunTimeData {
 
   final String address;
   final String date;
-  final String power;
+  final double power;
   ActivePowerRunTimeData(this.address, this.date, this.power);
   
 }
@@ -19,7 +18,7 @@ class ActivePowerRunTimeData {
 typedef NearestRunningDataCallBack = void Function(NearestRunningData runtimeData);
 
 // 电站概要页返回 - 当前有功,电站总有功,当日电站总收益
-typedef StationInfoDataCallBack = void Function(List<ActivePowerRunTimeData> datas,String totalActivePower,String totalMoney);
+typedef StationInfoDataCallBack = void Function(List<ActivePowerRunTimeData> datas,double totalActivePower,double totalMoney);
 
 // 持续获取指定终端实时运行数据
 class AgentRunTimeDataLoopTimerTasker {
@@ -35,24 +34,30 @@ class AgentRunTimeDataLoopTimerTasker {
 
   void start (NearestRunningDataCallBack onGetRuntimeData) {
 
+    runTimeDataOnce(null, onGetRuntimeData);
+
     timer = Timer.periodic(Duration(seconds: timerInterval), (t) {
       
-      AgentQueryAPI.remoteMeasuringRunTimeData(terminalAddress, isBase);
+      runTimeDataOnce(t, onGetRuntimeData);
 
-      AgentQueryAPI.qureryTerminalNearestRunningData(address: terminalAddress, isBase: isBase,onFail: (_){
-        t.cancel();
-      },
-      onSucc: (data,msg){
-        if(onGetRuntimeData != null) onGetRuntimeData(data);
-      });
+    });
+  }
 
+  // 运行时数据
+  void runTimeDataOnce(Timer t, NearestRunningDataCallBack onGetRuntimeData) {
+    AgentQueryAPI.remoteMeasuringRunTimeData(terminalAddress, isBase);
+    
+    AgentQueryAPI.qureryTerminalNearestRunningData(address: terminalAddress, isBase: isBase,onFail: (_){
+      t?.cancel();
+    },
+    onSucc: (data,msg){
+      if(onGetRuntimeData != null) onGetRuntimeData(data);
     });
   }
   
   void stop () {
     timer?.cancel();
   }
- 
 
 }
 
@@ -88,65 +93,72 @@ class AgentStationInfoDataLoopTimerTasker {
     if(isBaseList.length == 0)return;
     if(terminalAddressList.length != isBaseList.length) return;
 
+    stationInfOnce(_money, _totalActivePower, datas, unResponeseAck, onGetStationInfo);
+    
     // 定时读取
     timer = Timer.periodic(Duration(seconds: timerInterval), (t) {
 
-    // 初始化
-    _money = 0.0;
-    _totalActivePower = 0.0;
-    datas = [];
-    unResponeseAck = terminalAddressList.length;
+    stationInfOnce(_money, _totalActivePower, datas, unResponeseAck, onGetStationInfo);
 
-    // 并发召测当前有功和电量、预估值
-    for (int i = 0 ; i < terminalAddressList.length ; i++) {
-      final terminalAddress = terminalAddressList[i];
-      final isBase = isBaseList[i];
-      AgentQueryAPI.remoteMeasuringElectricParam(terminalAddress, isBase);
     }
-
-    for (int j = 0; j < terminalAddressList.length; j++) {
-
-        final terminalAddress = terminalAddressList[j];
-        final isBase = isBaseList[j];
-
-        AgentQueryAPI.qureryTerminalNearestRunningData(address: terminalAddress, isBase: isBase,price: price,onSucc: (data,msg){
-
-          unResponeseAck -- ;
-
-          final active = data.power;
-          final date = data.dataCachedTime;
-          final activeData =  ActivePowerRunTimeData(terminalAddress, date, active.toStringAsFixed(0));
-          datas.add(activeData);
-
-          _totalActivePower += active;
-          _money += data.money;
-          
-          if(unResponeseAck <= 0) {
-
-            // 按输入顺序排序
-            datas = sort(datas, terminalAddressList); 
-            if(onGetStationInfo != null) onGetStationInfo(datas,_totalActivePower.toStringAsFixed(1),_money.toStringAsFixed(2));
-          }
-        },onFail: (msg){
-
-          unResponeseAck --;
-
-          final dateStr = formatDate(DateTime.now(), [yyyy, '-', mm, '-', dd,' ',hh, ':', nn, ':', ss]);
-          final activeData =  ActivePowerRunTimeData(terminalAddress, dateStr, '0');
-          datas.add(activeData);
-
-          if(unResponeseAck <= 0) {
-
-            // 按输入顺序排序
-            datas = sort(datas, terminalAddressList); 
-            if(onGetStationInfo != null) onGetStationInfo(datas,_totalActivePower.toStringAsFixed(1),_money.toStringAsFixed(2));
-
-          }
-        });
-     }
-
-    });
+    
+    );
   }
+
+   void stationInfOnce(double _money, double _totalActivePower, List<ActivePowerRunTimeData> datas, int unResponeseAck, StationInfoDataCallBack onGetStationInfo) {
+     // 初始化
+     _money = 0.0;
+     _totalActivePower = 0.0;
+     datas = [];
+     unResponeseAck = terminalAddressList.length;
+     
+     // 并发召测当前有功和电量、预估值
+     for (int i = 0 ; i < terminalAddressList.length ; i++) {
+       final terminalAddress = terminalAddressList[i];
+       final isBase = isBaseList[i];
+       AgentQueryAPI.remoteMeasuringElectricParam(terminalAddress, isBase);
+     }
+     
+     for (int j = 0; j < terminalAddressList.length; j++) {
+     
+         final terminalAddress = terminalAddressList[j];
+         final isBase = isBaseList[j];
+     
+         AgentQueryAPI.qureryTerminalNearestRunningData(address: terminalAddress, isBase: isBase,price: price,onSucc: (data,msg){
+     
+           unResponeseAck -- ;
+     
+           final active = data.power;
+           final date = data.dataCachedTime != ''  ?  data.dataCachedTime ?? '0000-00-00 00:00:00' : '0000-00-00 00:00:00';
+           final activeData =  ActivePowerRunTimeData(terminalAddress, date, active);
+           datas.add(activeData);
+     
+           _totalActivePower += active;
+           _money += data.money;
+           
+           if(unResponeseAck <= 0) {
+     
+             // 按输入顺序排序
+             datas = sort(datas, terminalAddressList); 
+             if(onGetStationInfo != null) onGetStationInfo(datas,_totalActivePower,_money);
+           }
+         },onFail: (msg){
+     
+           unResponeseAck --;
+     
+           final activeData =  ActivePowerRunTimeData(terminalAddress, '0000-00-00 00:00:00', 0.0);
+           datas.add(activeData);
+     
+           if(unResponeseAck <= 0) {
+     
+             // 按输入顺序排序
+             datas = sort(datas, terminalAddressList); 
+             if(onGetStationInfo != null) onGetStationInfo(datas,_totalActivePower,_money);
+     
+           }
+         });
+      }
+   }
 
 
   // 多线程打乱了顺序,按输入顺序排序

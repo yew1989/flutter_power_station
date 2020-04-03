@@ -402,9 +402,9 @@ class _DebugAgentTestPageState extends State<AgentTestPage> {
       );
       stationTasker.start((data,totalPower,totalMoney){
         String msg = '';
-        msg += '总有功功率:' + totalPower + '\n';
-        msg += '总收益:' + totalMoney + '元' + '\n';
-        msg += data.map((f)=> f.address + ',' + f.power +  ',' + f.date + '\n').toList().toString() + '\n';
+        msg += '总有功功率:' + totalPower.toStringAsFixed(1) + '\n';
+        msg += '总收益:' + totalMoney.toStringAsFixed(2) + '元' + '\n';
+        msg += data.map((f)=> f.address + ',' + f.power.toStringAsFixed(0) +  ',' + f.date + '\n').toList().toString() + '\n';
         showToast(msg);
       });
     }
