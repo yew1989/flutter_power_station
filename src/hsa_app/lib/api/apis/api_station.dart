@@ -246,5 +246,16 @@ class APIStation{
       
     }, onFail);
   }
-
+  
+  //取电站水位与总功率
+  static void getCurrentTotalActivePowerAndWaterStage({String stationNos,StationListCallback onSucc,HttpFailCallback onFail}) async {
+    
+    final path = API.liveDataHost + '/v1/TurbineWaterAndPowerAndState/CurrentTotalActivePowerAndWaterStage/'+'$stationNos';
+    
+    HttpHelper.httpGET(path, null, (map,_){
+      var data = map['data'] ?? Data();
+      var resp = Data.fromJson(data, 'current');
+      if(onSucc != null) onSucc(resp);
+    }, onFail);
+  }
 }

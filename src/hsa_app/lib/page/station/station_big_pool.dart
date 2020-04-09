@@ -7,8 +7,9 @@ import 'package:hsa_app/page/station/station_wave_widget.dart';
 class StationBigPool extends StatefulWidget {
   
   final StationInfo stationInfo;
+  final List<num> profitList;
 
-  const StationBigPool(this.stationInfo,{Key key}) : super(key: key);
+  const StationBigPool({Key key,this.stationInfo,this.profitList}) : super(key: key);
   
   @override
   _StationBigPoolState createState() => _StationBigPoolState();
@@ -20,7 +21,7 @@ class _StationBigPoolState extends State<StationBigPool> {
   Widget build(BuildContext context) {
     final stationInfo = widget?.stationInfo;
 
-    final profit = stationInfo.totalMoney ?? 0.00;
+    final profit = widget?.profitList ?? [0.0,0.0];
     return Container(
       height: 266,
       color: Colors.transparent,

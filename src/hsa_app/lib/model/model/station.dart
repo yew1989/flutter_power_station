@@ -102,8 +102,8 @@ class StationInfo {
     hyStationLatitude = json['hyStationLatitude'];
     waterSourceLongtitude = json['waterSourceLongtitude'];
     waterSourceLatitude = json['waterSourceLatitude'];
-    totalEquippedKW = json['totalEquippedKW'].toDouble();
-    totalEquippedKVA = json['totalEquippedKVA'].toDouble();
+    totalEquippedKW = json['totalEquippedKW'] is double ? json['totalEquippedKW'] : json['totalEquippedKW'] != null ? json['totalEquippedKW'].toDouble() : 0.0 ;
+    totalEquippedKVA = json['totalEquippedKVA'] is double ? json['totalEquippedKVA'] : json['totalEquippedKVA'] != null ? json['totalEquippedKVA'].toDouble() : 0.0 ;
     stationNamePinYin = json['stationNamePinYin'];
     reservoirCurrentWaterStage = json['reservoirCurrentWaterStage'].toDouble();
     reservoirAlarmWaterStage = json['reservoirAlarmWaterStage'];

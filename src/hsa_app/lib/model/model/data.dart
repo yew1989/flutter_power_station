@@ -10,6 +10,8 @@ class Data {
   double reservoirBasicWaterStage;
   List<Turbine> turbine;
   List<BannerModel> banners;
+  String reservoirCurrentWaterStage;
+  double totalActivePower;
 
   Data({this.total, this.stationInfo});
 
@@ -37,6 +39,20 @@ class Data {
       json['banner'].forEach((v) {
         banners.add(new BannerModel.fromJson(v));
       });
+    }
+
+    totalActivePower = json['totalActivePower'] != null ? 
+        (json['totalActivePower'] is double ? json['totalActivePower']: json['totalActivePower'].cast<double>()): 0.0 ;
+    reservoirCurrentWaterStage = json['reservoirCurrentWaterStage'] ?? '' ;
+
+    if(state == 'current'){
+      stationInfo = new List<StationInfo>();
+
+      if(json['stations'] != null ){
+        json['stations'].forEach((v) {
+          stationInfo.add(new StationInfo.fromJson(v));
+        });
+      }
     }
   }
 

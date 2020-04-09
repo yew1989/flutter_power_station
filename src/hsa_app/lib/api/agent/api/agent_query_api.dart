@@ -38,7 +38,7 @@ class AgentQueryAPI {
     else {
       HttpHelper.httpPOST(AgentQueryAPI.createPath(terminalAddress,'AFN0C_F30'), null, null, null);
     }
-    HttpHelper.httpPOST(AgentQueryAPI.createPath(terminalAddress,'AFN0C_F24'), null, null, null);
+    HttpHelper.httpPOST(AgentQueryAPI.createPath(terminalAddress,'AFN0C_F20'), null, null, null);
 
   }
 

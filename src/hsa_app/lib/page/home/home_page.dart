@@ -35,31 +35,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
         progressShowError('广告信息获取失败');    
       }
     );
-
-
-    // API.banners((List<BannerItem> banners) {
-    //   setState(() {
-    //     this.banners = banners;
-    //   });
-    // }, (_){
-    //   progressShowError('广告信息获取失败');
-    // });
-
   }
-
-  // 省份列表
-  // void requestProvinces() {
-
-  //   API.provinces((List<String> provinces){
-  //     setState(() {
-  //       this.provinces = provinces;
-  //       this.sections.addAll(provinces.map((name)=>name+'省').toList());
-  //     });
-  //   }, (_){
-  //     progressShowError('省份信息获取失败');
-  //   });
-
-  // }
 
   //省份列表(新)
   void requestProvinces(){

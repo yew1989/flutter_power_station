@@ -35,6 +35,7 @@ class _StationPageState extends State<StationPage> {
   AgentStationInfoDataLoopTimerTasker stationTasker;
   List<String> terminalAddressList = List<String>();
   List<bool> isBaseList = List<bool>();
+  List<num> profitList = [0.0,0.0];
 
   @override
   void initState() {
@@ -125,12 +126,13 @@ class _StationPageState extends State<StationPage> {
   void getRealtimeData() { 
     stationTasker = AgentStationInfoDataLoopTimerTasker(stationInfo);
     stationTasker.start((stationInfo){
-      this.stationInfo = stationInfo;
-      // String msg = '';
-      // msg += '总有功功率:' + totalPower.toStringAsFixed(1) + '\n';
-      // msg += '总收益:' + totalMoney.toStringAsFixed(2) + '元' + '\n';
-      // msg += data.map((f)=> f.address + ',' + f.power.toStringAsFixed(0) +  ',' + f.date + '\n').toList().toString() + '\n';
-      // showToast(msg);
+      setState(() {
+        this.stationInfo = stationInfo;
+        profitList.add(stationInfo.totalMoney);
+        if(profitList.length > 2){
+          profitList.removeAt(0);
+        }
+      });
     });
   }
 
@@ -145,7 +147,7 @@ class _StationPageState extends State<StationPage> {
         controller: refreshController,
         child: ListView(
           children: <Widget>[
-            StationBigPool(stationInfo),
+            StationBigPool(stationInfo:stationInfo,profitList:profitList),
             StationListHeader(widget.weather.name, openLive, stationInfo.stationName),
             StationDeviceList(stationInfo),
           ],

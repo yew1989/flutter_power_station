@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:badges/badges.dart';
 import 'package:flutter/material.dart';
 import 'package:hsa_app/components/empty_page.dart';
@@ -45,6 +47,34 @@ class _HomeStationListState extends State<HomeStationList> {
   bool isEmpty = false;
   // 是否首次数据加载完毕
   bool isLoadFinsh = false;
+  //电站号拼接
+  String stationNos = '';
+
+
+  void loadCurrent(){
+
+    APIStation.getCurrentTotalActivePowerAndWaterStage(
+      stationNos: stationNos,
+      onSucc: (msg){
+       
+       
+        if(mounted) {
+          setState(() {
+            isLoadFinsh = true;
+            refreshController.refreshCompleted();
+            if(msg?.stationInfo != null){
+              for(int i = 0; msg.stationInfo.length > i ;i ++){
+                this.stations[i].totalActivePower = msg?.stationInfo[i]?.totalActivePower ?? 0.0; 
+                this.stations[i].reservoirCurrentWaterStage = msg?.stationInfo[i]?.reservoirCurrentWaterStage ?? 0.0; 
+              }
+            }
+          });
+        }
+      },
+      onFail: (msg){}
+    );
+  }
+
 
   // 按省获取电站列表 加载首页
   void loadFirst(List<String> list,bool isEngOrNum) async {
@@ -61,16 +91,16 @@ class _HomeStationListState extends State<HomeStationList> {
     
     APIStation.getStationList(onSucc: (msg){
       
-      isLoadFinsh = true;
-      refreshController.refreshCompleted();
-      
-      if(mounted) {
-        setState(() {
-          this.stations = msg.stationInfo;
-
-        });
+      this.stations = msg.stationInfo;
+      this.stationNos = '';
+      if(stations != null|| stations?.length != 0){
+        stations.forEach((st) => this.stationNos = this.stationNos + ',' + st.stationNo.toString());
+        if(this.stationNos != ''){
+          this.stationNos = this.stationNos.substring(1);
+        }
       }
-
+      
+      loadCurrent();
       if(stations.length == 0) {
         this.isEmpty = true;
       }
@@ -107,16 +137,21 @@ class _HomeStationListState extends State<HomeStationList> {
     APIStation.getStationList(onSucc: (msg){
       
       isLoadFinsh = true;
-      
-      setState(() {
-        if(stations == null || stations?.length == 0) {
-          refreshController.loadNoData();
+
+      if(stations == null || stations?.length == 0) {
+        refreshController.loadNoData();
+      }
+      else{
+        this.stations.addAll(msg.stationInfo);
+        refreshController.loadComplete();
+        this.stationNos = '';
+        stations.forEach((st) => this.stationNos = this.stationNos + ',' + st.stationNo.toString());
+        if(this.stationNos != ''){
+          this.stationNos = this.stationNos.substring(1);
         }
-        else{
-          this.stations.addAll(msg.stationInfo);
-          refreshController.loadComplete();
-        }
-      });
+      }
+
+      loadCurrent();
 
       if(widget.onFirstLoadFinish != null) widget.onFirstLoadFinish();
     },onFail: (msg){
@@ -139,6 +174,7 @@ class _HomeStationListState extends State<HomeStationList> {
   void getFavoriteStations(){
     APIStation.getFavoriteStationNos(onSucc :(msg){
       this.favoriteStations = msg;
+      this.stationNos = this.favoriteStations.join(',');
       initPage(); 
       if(this.widget.isFromSearch == true) {
         EventBird().on(AppEvent.searchKeyWord, (text){

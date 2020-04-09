@@ -44,12 +44,12 @@ class PowerValuePack {
   static double caculateWaveRatio(StationInfo station) {
 
     var powerMax = station?.totalEquippedKW ?? 0.0;
-    var powerCurrent = 0.0;
-    if(station.waterTurbines != null){
-      station.waterTurbines.map((wt){
-        powerCurrent += wt.deviceTerminal?.nearestRunningData?.current ?? 0.0 ;
-      }).toList();
-    }
+    var powerCurrent = station?.totalActivePower ?? 0.0;
+    // if(station.waterTurbines != null){
+    //   station.waterTurbines.map((wt){
+    //     powerCurrent += wt.deviceTerminal?.nearestRunningData?.current ?? 0.0 ;
+    //   }).toList();
+    // }
    
     if( powerMax == 0 ) return 0.0;
     if( powerCurrent == 0 ) return 0.0; 
@@ -149,8 +149,7 @@ class _WaveBallState extends State<WaveBall> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
               Center(
-                  child: Text(//widget.station?.power?.current?.toString() ??
-                       '0.0',
+                  child: Text(widget.station?.totalActivePower.toString() ??'0.0',
                       style: TextStyle(color: Colors.white, fontSize: 35,fontFamily: AppTheme().numberFontName))),
               Center(
                   child: Text('kW',

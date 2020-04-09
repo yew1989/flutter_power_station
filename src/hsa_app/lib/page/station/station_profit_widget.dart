@@ -3,7 +3,7 @@ import 'package:hsa_app/config/app_theme.dart';
 
 class StationProfitWidget extends StatefulWidget {
 
-  final num profit;
+  final List<num> profit;
 
   const StationProfitWidget({Key key, this.profit}) : super(key: key);
   
@@ -30,12 +30,12 @@ class _StationProfitWidgetState extends State<StationProfitWidget> with TickerPr
 
   @override
   Widget build(BuildContext context) {
-
-    final profit = widget?.profit ?? 0.0;
+    final oldProfit = widget?.profit[0] ?? 0.0;
+    final profit = widget?.profit[1] ?? 0.0;
 
     controller = AnimationController(duration: Duration(milliseconds:500), vsync: this);
     CurvedAnimation curvedAnimation = CurvedAnimation(parent: controller, curve: Curves.fastOutSlowIn);
-    animation = Tween<double>(begin: 0, end: profit).animate(curvedAnimation);
+    animation = Tween<double>(begin: oldProfit, end: profit).animate(curvedAnimation);
     controller.forward();
 
     return Center(
