@@ -40,7 +40,7 @@ class _HomeStationListState extends State<HomeStationList> {
   List<String> favoriteStations ;
 
   //是否是英文和数字
-  bool isEngOrNum = false;
+  bool isEngOrNum ;
   // 是否空视图
   bool isEmpty = false;
   // 是否首次数据加载完毕
