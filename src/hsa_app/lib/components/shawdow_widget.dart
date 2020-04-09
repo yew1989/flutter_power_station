@@ -1,6 +1,31 @@
 import 'package:flutter/material.dart';
 import 'package:native_color/native_color.dart';
 
+class WaterPoolWaveShawdow extends StatelessWidget {
+  const WaterPoolWaveShawdow({
+    Key key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      height: 10,
+      child: Container(
+        decoration: BoxDecoration(
+          boxShadow: [
+            BoxShadow(
+              color: Color.fromRGBO(12, 50, 113, 1),
+              offset: Offset(0,-20.0),
+              blurRadius: 50.0,
+              spreadRadius: 30,
+            )
+          ],
+        ),
+      ),
+    );
+  }
+}
+
 class RunTimeLightDarkShawdow extends StatelessWidget {
   const RunTimeLightDarkShawdow({
     Key key,

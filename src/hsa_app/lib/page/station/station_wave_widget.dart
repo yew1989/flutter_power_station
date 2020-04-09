@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hsa_app/components/shawdow_widget.dart';
 import 'package:hsa_app/components/wave_widget.dart';
 import 'package:hsa_app/model/model/station.dart';
 import 'package:native_color/native_color.dart';
@@ -41,23 +42,32 @@ class _StationWaveWidgetState extends State<StationWaveWidget> {
     final waveRatio = caculateWaveRatio(widget.station);
     final wave      = caculateUIWave(waveRatio);
     return Center(
-       child: WaveWidget(
-         waveFrequency: 1.8,
-         config: CustomConfig(
-           gradients: [
-            [HexColor('ff4296bc'),HexColor('ff4296bc'),HexColor('004296bc')],
-            [HexColor('99147cc1'),HexColor('00147cc1')],
-            ],
-           durations: [2000,3000],
-           heightPercentages: [wave,wave],
-           gradientBegin: Alignment.topCenter,
-           gradientEnd: Alignment.bottomCenter
-           ),
-           waveAmplitude: 0,
-           backgroundColor: Colors.transparent,
-           size: Size(width, double.infinity),
+      child: Stack(
+        children: <Widget>[
+                 Center(
+              child: WaveWidget(
+               waveFrequency: 1.8,
+               config: CustomConfig(
+                 gradientBegin:Alignment.centerRight,
+                 gradientEnd: Alignment.centerLeft,
+                 gradients: [
+                    [HexColor('ff4296bc'),HexColor('ff4296bc')],
+                    [HexColor('66147cc1'),HexColor('66147cc1')],
+                  ],
+                 durations: [2000,3000],
+                 heightPercentages: [wave,wave],
+                 ),
+                 waveAmplitude: 0,
+                 backgroundColor: Colors.transparent,
+                 size: Size(width, double.infinity),
+                ),
           ),
-      );
+          Positioned(
+            bottom: 0,left: 0,right: 0,child: WaterPoolWaveShawdow(),
+          ),
+        ],
+      ),
+    );
   }
   
 }

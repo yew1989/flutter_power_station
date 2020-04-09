@@ -44,7 +44,6 @@ class _WaveWidgetState extends State<WaveWidget> with TickerProviderStateMixin {
       }).toList();
 
       _wavePhaseValues = _waveControllers.map((controller) {
-        // CurvedAnimation _curve =CurvedAnimation(parent: controller, curve: Curves.easeInOut);
         CurvedAnimation _curve =CurvedAnimation(parent: controller, curve: Curves.linear);
         Animation<double> value = Tween(
           begin: widget.wavePhase,
@@ -55,7 +54,6 @@ class _WaveWidgetState extends State<WaveWidget> with TickerProviderStateMixin {
         value.addStatusListener((status) {
           switch (status) {
             case AnimationStatus.completed:
-              // controller.reverse();
               break;
             case AnimationStatus.dismissed:
               controller.forward();
@@ -220,8 +218,9 @@ class _CustomWavePainter extends CustomPainter {
       var rect = Offset.zero &
           Size(size.width, size.height - viewCenterY * heightPercentange);
       _paint.shader = LinearGradient(
-              begin: gradientBegin == null ? Alignment.bottomCenter : gradientBegin,
-              end: gradientEnd == null ? Alignment.topCenter : gradientEnd,
+             tileMode: TileMode.mirror,
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
               colors: _layer.gradient)
           .createShader(rect);
     }
