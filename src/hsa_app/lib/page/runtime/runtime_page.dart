@@ -12,7 +12,6 @@ import 'package:hsa_app/components/smart_refresher_style.dart';
 import 'package:hsa_app/config/app_theme.dart';
 import 'package:hsa_app/model/model/all_model.dart';
 import 'package:hsa_app/model/model/runtime_adapter.dart';
-import 'package:hsa_app/page/dialog/control_model_dialog.dart';
 import 'package:hsa_app/page/dialog/password_dialog.dart';
 import 'package:hsa_app/page/history/history_page.dart';
 import 'package:hsa_app/page/runtime/runtime_event_tile.dart';
@@ -47,20 +46,12 @@ class _RuntimePageState extends State<RuntimePage> {
   //告警事件
   List<TerminalAlarmEvent> showEvents = List<TerminalAlarmEvent>();
 
-  // 实时数据
-  //RuntimeData runtimeData = RuntimeData();
-
   //水轮机信息
   DeviceTerminal deviceTerminal = DeviceTerminal();
-
-  // 远程控制任务
-  AgentTask agentTask = AgentTask();
 
   // 弹出进度对话框
   ProgressDialog progressDialog;
 
-  // 轮询定时器
-  Timer runLoopTimer;
 
   AgentRunTimeDataLoopTimerTasker runtimTasker = AgentRunTimeDataLoopTimerTasker();
 
@@ -152,9 +143,7 @@ class _RuntimePageState extends State<RuntimePage> {
 
   @override
   void dispose() {
-    runLoopTimer?.cancel();
-    agentTask.resetTimer();
-    runtimTasker.stop();
+    runtimTasker?.stop();
     Progresshud.dismiss();
     super.dispose();
   }

@@ -46,7 +46,7 @@ class _StationPageState extends State<StationPage> {
   @override
   void dispose() {
     refreshController.dispose();
-    stationTasker.stop();
+    stationTasker?.stop();
     Progresshud.dismiss();
     super.dispose();
   }
