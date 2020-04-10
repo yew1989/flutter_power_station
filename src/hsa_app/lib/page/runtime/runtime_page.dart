@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:hsa_app/api/agent/agent.dart';
+import 'package:hsa_app/api/agent/agent_fake.dart';
 import 'package:hsa_app/api/agent/agent_task.dart';
 import 'package:hsa_app/api/agent/agent_timer_tasker.dart';
 import 'package:hsa_app/api/api.dart';
@@ -213,7 +214,7 @@ class _RuntimePageState extends State<RuntimePage> {
     );
     runtimTasker.start((data){
       setState(() {
-        this.deviceTerminal?.nearestRunningData = data;
+        this.deviceTerminal?.nearestRunningData = AgentFake.fakeNearestRunningData(data);
       });
       //showToast(data.toString());
     });
