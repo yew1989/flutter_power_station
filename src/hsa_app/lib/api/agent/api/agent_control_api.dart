@@ -63,7 +63,7 @@ class AgentControlAPI {
   
 
   // 开启新任务
-  static void startTask(BuildContext context,TaskName task,String address,String password,
+  static void startTask(BuildContext context,String param,TaskName task,String address,String password,
     HttpSuccMsgCallback onSucc,
     HttpFailCallback onFail,
     HttpSuccMsgCallback onLoading,){
@@ -72,7 +72,7 @@ class AgentControlAPI {
 
         // 远程开机
         case TaskName.remotePowerOn:{
-          remoteSwitchRemoteModeOn(context,address:address,password: password,
+          remotePowerOn(context,address:address,password: password,
           onSucc: (msg){
             onSucc(msg);
           },
@@ -85,7 +85,7 @@ class AgentControlAPI {
 
         //远程关机
         case TaskName.remotePowerOff:{
-          remoteSwitchRemoteModeOn(context,address:address,password: password,
+          remotePowerOff(context,address:address,password: password,
           onSucc: (msg){
             onSucc(msg);
           },
@@ -98,7 +98,7 @@ class AgentControlAPI {
 
         //远程开主阀门
         case TaskName.remoteMainValveOn:{
-          remoteSwitchRemoteModeOn(context,address:address,password: password,
+          remoteMainValveOn(context,address:address,password: password,
           onSucc: (msg){
             onSucc(msg);
           },
@@ -111,7 +111,7 @@ class AgentControlAPI {
 
         //远程关主阀门
         case TaskName.remoteMainValveOff:{
-          remoteSwitchRemoteModeOn(context,address:address,password: password,
+          remoteMainValveOff(context,address:address,password: password,
           onSucc: (msg){
             onSucc(msg);
           },
@@ -124,7 +124,7 @@ class AgentControlAPI {
 
         //远程设定目标有功功率
         case TaskName.remoteSettingActivePower:{
-          remoteSwitchRemoteModeOn(context,address:address,password: password,
+          remoteSettingActivePower(context,param,address:address,password: password,
           onSucc: (msg){
             onSucc(msg);
           },
@@ -137,7 +137,7 @@ class AgentControlAPI {
 
         //远程设定目标功率因数
         case TaskName.remoteSettingPowerFactor:{
-          remoteSwitchRemoteModeOn(context,address:address,password: password,
+          remoteSettingPowerFactor(context,param,address:address,password: password,
           onSucc: (msg){
             onSucc(msg);
           },
@@ -150,7 +150,7 @@ class AgentControlAPI {
 
         //远程开旁通阀
         case TaskName.remoteSideValveOn:{
-          remoteSwitchRemoteModeOn(context,address:address,password: password,
+          remoteSideValveOn(context,address:address,password: password,
           onSucc: (msg){
             onSucc(msg);
           },
@@ -163,7 +163,7 @@ class AgentControlAPI {
 
         //远程关旁通阀
         case TaskName.remoteSideValveOff:{
-          remoteSwitchRemoteModeOn(context,address:address,password: password,
+          remoteSideValveOff(context,address:address,password: password,
           onSucc: (msg){
             onSucc(msg);
           },
@@ -189,7 +189,7 @@ class AgentControlAPI {
 
         //远程切换智能控制方案 - 关闭远程控制
         case TaskName.remoteSwitchRemoteModeOff:{
-          remoteSwitchRemoteModeOn(context,address:address,password: password,
+          remoteSwitchRemoteModeOff(context,address:address,password: password,
           onSucc: (msg){
             onSucc(msg);
           },
@@ -202,7 +202,7 @@ class AgentControlAPI {
 
         //远程控制垃圾清扫 - 开
         case TaskName.remoteSwitchRemoteModeOff:{
-          remoteSwitchRemoteModeOn(context,address:address,password: password,
+          remoteSwitchRemoteModeOff(context,address:address,password: password,
           onSucc: (msg){
             onSucc(msg);
           },

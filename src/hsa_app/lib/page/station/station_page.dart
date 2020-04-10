@@ -124,7 +124,7 @@ class _StationPageState extends State<StationPage> {
 
   //实时数据获取
   void getRealtimeData() { 
-    stationTasker = AgentStationInfoDataLoopTimerTasker(stationInfo);
+    stationTasker = AgentStationInfoDataLoopTimerTasker(stationInfo,timerInterval:1);
     stationTasker.start((stationInfo){
       setState(() {
         this.stationInfo = stationInfo;

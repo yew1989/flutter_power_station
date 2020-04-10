@@ -42,15 +42,16 @@ class _SearchPageState extends State<SearchPage> {
           children: <Widget>[
             SearchBar(isEditEnable: isEditEnable),
             Expanded(child: 
-            HomeStationList(
-            homeParam:'全部电站',
-            isFromSearch: true,
-            onFirstLoadFinish: (){
-              setState(() {
-                  this.isEditEnable = true;
-               });
-              },
-            )),
+              HomeStationList(
+                homeParam:'全部电站',
+                isFromSearch: true,
+                onFirstLoadFinish: (){
+                  setState(() {
+                      this.isEditEnable = true;
+                  });
+                },
+              )
+            ),
           ],
         ),
       ),

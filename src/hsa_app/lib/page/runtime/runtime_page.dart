@@ -220,6 +220,7 @@ class _RuntimePageState extends State<RuntimePage> {
     runtimTasker = AgentRunTimeDataLoopTimerTasker(
       isBase: true,
       terminalAddress: addressId,
+      timerInterval: 1
     );
     runtimTasker.start((data){
       setState(() {
@@ -615,7 +616,7 @@ class _RuntimePageState extends State<RuntimePage> {
       builder: (BuildContext context) {
         return PasswordDialog((String pswd) {
           //检查操作密码
-          AgentControlAPI.startTask(context,taskName,widget.address,pswd,
+          AgentControlAPI.startTask(context,param,taskName,widget.address,pswd,
             (String succString) {
               finishProgressDialog(succString, true);
             }, (String failString) {
