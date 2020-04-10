@@ -158,31 +158,8 @@ class DashBoardPowerProgressPainter extends CustomPainter {
 
     // 超发进度条
     Path redPath = Path();
-    // 为了展现好看,超发部分 放大 3倍
-    beyondPencent = beyondPencent * 3;
-    redPath.addArc(Rect.fromCircle(center: Offset(0, 0), radius: 54.0), pi/2 ,beyondPencent * 1.0 * pi *  beyondController.value) ;
+    redPath.addArc(Rect.fromCircle(center: Offset(0, 0), radius: 54.0), pi/2 ,beyondPencent * pi *  beyondController.value) ;
     canvas.drawPath(dashPath(redPath,dashArray: CircularIntervalList<double>(<double>[1.0, 2.5])),paintPowerRed);
-
-    // 超发功率指针  暂停
-    /*
-    Paint beyondIndexPaint = Paint();
-    beyondIndexPaint
-      ..strokeCap = StrokeCap.butt
-      ..filterQuality = FilterQuality.high
-      ..isAntiAlias = true
-      ..strokeWidth = 24
-      ..maskFilter = MaskFilter.blur(BlurStyle.solid, 2)
-      ..style = PaintingStyle.stroke
-      ..shader = RadialGradient(
-        radius:1,
-        center:Alignment.center,
-        colors: [
-          HexColor('fff7f1ce'),
-          HexColor('fff7f1ce'),
-        ],
-      ).createShader(Rect.fromCircle(center: Offset(0, 0), radius: 50.0));
-      canvas.drawArc(Rect.fromCircle(center: Offset(0, 0), radius: 54.0), (pi/2 + beyondPencent * 1.0 * pi *  beyondController.value), -0.1, false, beyondIndexPaint);
-    */
    }
   }
 

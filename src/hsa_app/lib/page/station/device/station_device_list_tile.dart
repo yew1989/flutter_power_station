@@ -78,7 +78,6 @@ class _StationDeviceListTileState extends State<StationDeviceListTile> with Tick
       if(ratio > 1.0) {
         isBeyond = true;
         var beyond = ratio - 1.0;
-        beyond = beyond * 3;// 为了好看,超发部分放大 3 倍
         barLeft  = maxWidth * beyond;
       
         isShowCyanComet = false;
