@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hsa_app/api/agent/agent_fake.dart';
 import 'package:hsa_app/api/agent/agent_timer_tasker.dart';
 import 'package:hsa_app/components/public_tool.dart';
 import 'package:hsa_app/components/smart_refresher_style.dart';
@@ -127,7 +128,7 @@ class _StationPageState extends State<StationPage> {
     stationTasker = AgentStationInfoDataLoopTimerTasker(stationInfo,timerInterval:1);
     stationTasker.start((stationInfo){
       setState(() {
-        this.stationInfo = stationInfo;
+        this.stationInfo = AgentFake.fakeStationInfo(stationInfo);
         profitList.add(stationInfo.totalMoney);
         if(profitList.length > 2){
           profitList.removeAt(0);

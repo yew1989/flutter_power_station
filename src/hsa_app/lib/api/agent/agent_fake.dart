@@ -4,6 +4,12 @@ import 'package:hsa_app/model/model/station.dart';
 
 class AgentFake {
 
+  double savedMoney = 1024.0;
+
+  AgentFake._internal();
+  static AgentFake _singleton = AgentFake._internal();
+  factory AgentFake()=> _singleton;
+
   static fakeNearestRunningData(NearestRunningData data) {
     var result = data;
 
@@ -57,7 +63,25 @@ class AgentFake {
   }
 
   static fakeStationInfo(StationInfo station) {
+    var result = station;
+    var random = Random();
+    var sign = 1.0;
+    var pointLeft = 0;
+    var pointRight = 0.0;
+    
+    sign = random.nextBool() ? 1.0 : -1.0; pointLeft  =random.nextInt(10); pointRight  = random.nextDouble();
+    var delka = 3 + pointLeft + (sign * pointRight * 7);
+    AgentFake().savedMoney += delka;
+    result.totalMoney = AgentFake().savedMoney;
+    result.waterTurbines = station.waterTurbines.map((f){
+       sign = random.nextBool() ? 1.0 : -1.0; pointLeft  =random.nextInt(50); pointRight  = random.nextDouble();
+       var power = 300 + (sign * pointLeft) + (sign * pointRight);
+       f?.deviceTerminal?.nearestRunningData?.power = power ?? 0.0;
+       f?.deviceTerminal?.isOnLine = true;
+       return f;
+    }).toList();
 
+    return result;
   }
 
   static double fixDouble(double old) {
