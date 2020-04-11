@@ -33,7 +33,7 @@ class _StationProfitWidgetState extends State<StationProfitWidget> with TickerPr
     final oldProfit = widget?.profit[0] ?? 0.0;
     final profit = widget?.profit[1] ?? 0.0;
 
-    controller = AnimationController(duration: Duration(milliseconds:500), vsync: this);
+    controller = AnimationController(duration: Duration(milliseconds:3000), vsync: this);
     CurvedAnimation curvedAnimation = CurvedAnimation(parent: controller, curve: Curves.fastOutSlowIn);
     animation = Tween<double>(begin: oldProfit, end: profit).animate(curvedAnimation);
     controller.forward();
