@@ -29,8 +29,9 @@ class RuntimePage extends StatefulWidget {
   final String address;
   final String alias;
   final bool isOnline;
+  final bool isBase;      // 是否是Base版本
 
-  RuntimePage({this.title, this.address, this.alias, this.isOnline});
+  RuntimePage({this.title, this.address, this.alias, this.isOnline, this.isBase});
 
   @override
   _RuntimePageState createState() => _RuntimePageState();
@@ -208,15 +209,16 @@ class _RuntimePageState extends State<RuntimePage> {
   void getRealtimeData(){
     final addressId = widget.address ?? '';
     runtimTasker = AgentRunTimeDataLoopTimerTasker(
-      isBase: true,
+      isBase: widget?.isBase == true ?  true: false,
       terminalAddress: addressId,
-      timerInterval: 1
+      timerInterval: 5,
     );
     runtimTasker.start((data){
       setState(() {
-        this.deviceTerminal?.nearestRunningData = AgentFake.fakeNearestRunningData(data);
+        // 若开启此处,进入假数据模式,用于动画调试
+        // this.deviceTerminal?.nearestRunningData = AgentFake.fakeNearestRunningData(data);
+        this.deviceTerminal?.nearestRunningData = data;
       });
-      //showToast(data.toString());
     });
   }
   
