@@ -11,6 +11,7 @@ import 'package:hsa_app/components/runtime_progress_bar.dart';
 import 'package:hsa_app/components/shawdow_widget.dart';
 import 'package:hsa_app/components/smart_refresher_style.dart';
 import 'package:hsa_app/config/app_theme.dart';
+import 'package:hsa_app/event/event_bird.dart';
 import 'package:hsa_app/model/model/all_model.dart';
 import 'package:hsa_app/model/model/runtime_adapter.dart';
 import 'package:hsa_app/page/dialog/password_dialog.dart';
@@ -58,6 +59,8 @@ class _RuntimePageState extends State<RuntimePage> {
   AgentRunTimeDataLoopTimerTasker runtimTasker = AgentRunTimeDataLoopTimerTasker();
 
   final pageIndexNotifier = ValueNotifier<int>(0);
+
+  List<double> powerNowList = [0.0,0.0];
 
   // 初始化弹出框
   void initProgressDialog() {
@@ -211,13 +214,16 @@ class _RuntimePageState extends State<RuntimePage> {
     runtimTasker = AgentRunTimeDataLoopTimerTasker(
       isBase: widget?.isBase == true ?  true: false,
       terminalAddress: addressId,
-      timerInterval: 5,
+      timerInterval: 5
     );
     runtimTasker.start((data){
       setState(() {
-        // 若开启此处,进入假数据模式,用于动画调试
-        // this.deviceTerminal?.nearestRunningData = AgentFake.fakeNearestRunningData(data);
-        this.deviceTerminal?.nearestRunningData = data;
+        this.deviceTerminal?.nearestRunningData = AgentFake.fakeNearestRunningData(data);
+        powerNowList.add(this.deviceTerminal?.nearestRunningData?.power ?? 0.0);
+        if(powerNowList.length > 2){
+          powerNowList.removeAt(0);
+        }
+        EventBird().emit('POWER',this.deviceTerminal);
       });
     });
   }
@@ -431,7 +437,7 @@ class _RuntimePageState extends State<RuntimePage> {
             ],
           ),
           // 中央仪表盘
-          DashBoardWidget(deviceTerminal: deviceTerminal),
+          DashBoardWidget(deviceTerminal: deviceTerminal,powerNowList: powerNowList,),
         ],
       ),
     );

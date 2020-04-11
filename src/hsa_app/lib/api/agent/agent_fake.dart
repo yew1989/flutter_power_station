@@ -22,8 +22,8 @@ class AgentFake {
     result.frequency = 50 + (sign * pointLeft) + (sign * pointRight);
     result.frequency = fixDouble(result.frequency);
     // 功率
-    sign = random.nextBool() ? 1.0 : -1.0; pointLeft  =random.nextInt(120); pointRight = random.nextDouble();
-    result.power= 500 + (sign * pointLeft) + (sign * pointRight);
+    sign = random.nextBool() ? 1.0 : -1.0; pointLeft  =random.nextInt(300); pointRight = random.nextDouble();
+    result.power= 1200 + (sign * pointLeft) + (sign * pointRight);
     result.power = fixDouble(result.power);
     // 开度
     pointRight  = random.nextDouble();

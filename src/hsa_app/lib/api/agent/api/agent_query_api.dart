@@ -25,7 +25,6 @@ class AgentQueryAPI {
     HttpHelper.httpPOST(url, null, null, null);
 
     debugPrint('实时运行召测中:' + DateTime.now().toString() + '  '  + terminalAddress + '  ' + (isBase ? '基础版' : '标准版') + '   ');
-
   }
 
   // 仅召测电量和电气参数 - For 电站概要页

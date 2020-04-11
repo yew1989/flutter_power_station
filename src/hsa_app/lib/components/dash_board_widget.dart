@@ -9,8 +9,9 @@ import 'dash_board/dash_board_power_progress.dart';
 class DashBoardWidget extends StatefulWidget {
 
   final DeviceTerminal deviceTerminal;
+  final List<double> powerNowList;
 
-  const DashBoardWidget({Key key, this.deviceTerminal}) : super(key: key);
+  const DashBoardWidget({Key key, this.deviceTerminal,this.powerNowList}) : super(key: key);
   @override
   _DashBoardWidgetState createState() => _DashBoardWidgetState();
 }
@@ -39,9 +40,12 @@ class _DashBoardWidgetState extends State<DashBoardWidget> with TickerProviderSt
     else {
        powerNowStr = powerNow.toStringAsFixed(0);
     }
+    List<double> powerNowList = widget?.powerNowList;
+
     // 功率 max
     var powerMax = widget?.deviceTerminal?.waterTurbine?.ratedPowerKW ?? 0.0;
     var powerMaxStr = powerMax.toStringAsFixed(0) + 'kW';
+
 
     return Container(
         color: Colors.transparent,
@@ -50,11 +54,11 @@ class _DashBoardWidgetState extends State<DashBoardWidget> with TickerProviderSt
         child: Stack(
         children: 
         [
-          DashBoardPowerProgress(widget?.deviceTerminal),
+          DashBoardPowerProgress(widget?.deviceTerminal,powerNowList,5),
           DashBoardFreqProgress(widget?.deviceTerminal),
           DashBoardOpenGateProgress(widget?.deviceTerminal),
           DashBoardBgProgress(),
-          DashBoardCenterLabel(powerNowStr,powerMaxStr),
+          DashBoardCenterLabel(powerNowList,powerMaxStr),
         ]),
       );
   }

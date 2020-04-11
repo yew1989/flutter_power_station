@@ -1,5 +1,6 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:hsa_app/event/event_bird.dart';
 import 'package:hsa_app/model/model/all_model.dart';
 import 'package:hsa_app/model/model/runtime_adapter.dart';
 import 'package:native_color/native_color.dart';
@@ -8,8 +9,10 @@ import 'package:path_drawing/path_drawing.dart';
 class DashBoardPowerProgress extends StatefulWidget {
 
   final DeviceTerminal deviceTerminal;
+  final List<double> powerList;
+  final int seconds;
 
-  const DashBoardPowerProgress(this.deviceTerminal,{Key key}) : super(key: key);
+  const DashBoardPowerProgress(this.deviceTerminal, this.powerList,this.seconds,{Key key, }) : super(key: key);
   
   @override
   _DashBoardPowerProgressState createState() => _DashBoardPowerProgressState();
@@ -19,31 +22,108 @@ class _DashBoardPowerProgressState extends State<DashBoardPowerProgress> with Ti
 
   AnimationController controller;
   AnimationController beyondController;
+  AnimationController pinController;
+  AnimationController oldController;
+  int seconds ;
+  List<double> powerList;
+  DeviceTerminal deviceTerminal;
 
-  void initAnimationController() async {
-    controller       = AnimationController(vsync: this, duration: const Duration(milliseconds: 1400));
-    beyondController = AnimationController(vsync: this, duration: const Duration(milliseconds: 500));
+  void initAnimationController(int seconds ,DeviceTerminal deviceTerminal,List<double> powerList ) async {
+    pinController = AnimationController(vsync: this, duration: Duration(seconds: 5));
+    controller = AnimationController(vsync: this, duration: Duration(seconds: seconds));
+    beyondController = AnimationController(vsync: this, duration: Duration(seconds: seconds));
+    oldController = AnimationController(vsync: this, duration: const Duration(milliseconds: 0));
+
+    
+
+    EventBird().on('POWER', (deviceTerminal){
+      
+        pinController.value = 0;
+        pinController.forward();
+        controller.value = 0;
+        beyondController.value = 0;
+        judgeStats(seconds,deviceTerminal,powerList);
+    });
   }
+  
 
-  void forwardAnimation() async {
-    if(mounted) {
-      await Future.delayed(Duration(milliseconds:100));
-      controller?.forward();
-    }
-  }
+  //整理判断状态
+  void judgeStats(int seconds,DeviceTerminal deviceTerminal,List<double> powerList) async {
+    oldController.forward();
+    pinController.forward();
+    var kw = deviceTerminal?.waterTurbine?.ratedPowerKW ?? 0;
+    if(kw > 0){
+      //前数据<后数据 
+      if(powerList[0] < powerList[1] && powerList[0] >= 0 && powerList[0] >= 0){
+        //pinController.forward();
+        //后数据<=额定 
+        if(powerList[1] <= deviceTerminal?.waterTurbine?.ratedPowerKW){
+          controller = AnimationController(vsync: this, duration: Duration(seconds: seconds));
+          controller?.forward();
+        }
+        //前数据>=额定
+        else if(powerList[0] >= deviceTerminal?.waterTurbine?.ratedPowerKW){
+          beyondController = AnimationController(vsync: this, duration: Duration(seconds: seconds));
+          beyondController?.forward();
+        }
+        //前数据<额定 且 后数据>额定
+        else if(powerList[0] < deviceTerminal?.waterTurbine?.ratedPowerKW && powerList[1] > deviceTerminal?.waterTurbine?.ratedPowerKW){
+          int waitingT = (((deviceTerminal?.waterTurbine?.ratedPowerKW - powerList[0])/(powerList[1] - powerList[0]))* seconds * 1000 ).round();
+          controller    = AnimationController(vsync: this, duration: Duration(microseconds: waitingT));
+          beyondController = AnimationController(vsync: this, duration: Duration(microseconds: seconds * 1000 - waitingT));
+          controller?.forward();
+          controller.addStatusListener((_){
+            if(controller.status == AnimationStatus.completed){
+              beyondController?.forward();
+            }
+            else if(controller.status == AnimationStatus.dismissed){
+              controller?.forward();
+            }
+          });
+        }
+      //前数据>后数据
+      }else if(powerList[1] < powerList[0]){
+        //pinController.forward();
 
-  void forwardAnimationBeyond() async {
-    if(mounted) {
-       await Future.delayed(Duration(milliseconds:1500));
-        beyondController?.forward();
+        //后数据 >= 额定
+        if(powerList[1] >= deviceTerminal?.waterTurbine?.ratedPowerKW){
+          beyondController = AnimationController(vsync: this, duration: Duration(seconds: seconds));
+          beyondController?.forward();
+        }
+        //前数据 <= 额定
+        else if(powerList[0] < deviceTerminal?.waterTurbine?.ratedPowerKW){
+          controller = AnimationController(vsync: this, duration: Duration(seconds: seconds));
+          controller?.forward();    
+        }
+        //前数据>额定 且 后数据<额定
+        else if(powerList[0] > deviceTerminal?.waterTurbine?.ratedPowerKW && powerList[1] < deviceTerminal?.waterTurbine?.ratedPowerKW){
+          int waitingT = (((powerList[0] - deviceTerminal?.waterTurbine?.ratedPowerKW)/(powerList[0] - powerList[1]))* seconds * 1000 ).round();
+          beyondController = AnimationController(vsync: this, duration: Duration(microseconds: waitingT));
+          controller    = AnimationController(vsync: this, duration: Duration(microseconds: seconds * 1000 - waitingT));
+          beyondController?.forward();
+  
+          beyondController.addStatusListener((_){
+            if(beyondController.status == AnimationStatus.completed){
+              controller?.forward();
+            }
+            else if(beyondController.status == AnimationStatus.dismissed){
+              beyondController?.forward();
+            }
+          });
+        }
+      }
     }
+    
   }
 
   @override
   void initState() {
-    initAnimationController();
-    forwardAnimation();
-    forwardAnimationBeyond();
+    this.seconds = widget?.seconds ?? 5;
+    this.deviceTerminal = widget?.deviceTerminal ?? DeviceTerminal();
+    this.powerList = widget?.powerList ?? [0.0, 0.0];
+    //this.powerList = [800.0,1200.0];
+    initAnimationController(seconds,deviceTerminal,powerList);
+    //judgeStats(seconds,deviceTerminal,powerList);
     super.initState();
   }
 
@@ -51,21 +131,28 @@ class _DashBoardPowerProgressState extends State<DashBoardPowerProgress> with Ti
   void dispose() {
     controller?.dispose();
     beyondController?.dispose();
+    pinController?.dispose();
+    oldController?.dispose();
+    EventBird().off('POWER');
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    var powerList = widget?.powerList ?? [0.0, 0.0];
+    //powerList = [800.0,1200.0];
+    judgeStats(seconds,deviceTerminal,powerList);
     return Center(
       child: AnimatedBuilder(
-        animation: controller,
-        builder: (context,child) {
-          return AnimatedBuilder(
+        animation: oldController,
+        builder: (context,child) => AnimatedBuilder(
+          animation: controller,
+          builder: (context,child) => AnimatedBuilder(
             animation: beyondController,
             builder: (context,child) => CustomPaint(
-            painter: DashBoardPowerProgressPainter(widget.deviceTerminal,controller,beyondController)),
-          );
-        }
+            painter: DashBoardPowerProgressPainter(widget.deviceTerminal,powerList,seconds,pinController,beyondController,oldController,controller)),
+          ),
+        ),
       ),
     );
   }
@@ -76,24 +163,133 @@ class DashBoardPowerProgressPainter extends CustomPainter {
   final DeviceTerminal deviceTerminal;
   final AnimationController controller;
   final AnimationController beyondController;
+  final AnimationController pinController;
+  final AnimationController oldController;
+  final List<double> powerList;
+  final int seconds;
 
-  DashBoardPowerProgressPainter(this.deviceTerminal, this.controller, this.beyondController);
+  DashBoardPowerProgressPainter(this.deviceTerminal, this.powerList,  this.seconds,this.pinController,this.beyondController, this.oldController,  this.controller);
   
+
   @override
   void paint(Canvas canvas, Size size) {
-
-    var powerNow = deviceTerminal?.nearestRunningData?.power?.toDouble() ?? 0.0;
+    
+    //最大功率
     var powerMax = deviceTerminal?.waterTurbine?.ratedPowerKW?.toDouble() ?? 0.0;
-    var powerPencent  = RuntimeDataAdapter.caclulatePencent(powerNow,powerMax) ?? 0.0;
-    var beyondPencent = 0.0;
+    //前数据/最大功率
+    var powerPencentOld  = RuntimeDataAdapter.caclulatePencent(powerList[0],powerMax) ?? 0.0;
+    //后数据/最大功率
+    var powerPencentNew  = RuntimeDataAdapter.caclulatePencent(powerList[1],powerMax) ?? 0.0;
+    //var beyondPencentOld = 0.0;
+    //var beyondPencentNew = 0.0;
 
-    if(powerPencent > 1.0) {
-      beyondPencent = powerPencent - 1.0;
-      powerPencent = 1.0;
-      if(beyondPencent > 0.5) {
-        beyondPencent = 0.5;
+    if(powerPencentNew > 1.3) {
+      powerPencentNew = 1.3;
+    }
+    if(powerPencentOld > 1.3) {
+      powerPencentOld = 1.3;
+    }
+
+    //指针起始位置
+    double pinStartAngle ;
+    //蓝色线起始
+    double blueStartAngle;
+    //蓝色线变化
+    double blueSweepAngle;
+    //蓝色线补充
+    double blueSweepAngleOld;
+    //红色线起始
+    double redStartAngle;
+    //红色线变化
+    double redSweepAngle;
+    //红色线补充
+    double redSweepAngleOld;
+
+
+    //后数据>前数据(顺时针)
+    if(powerList[1] > powerList[0]){
+      //行动轨迹 + 初始角度 + 初始位置
+      //控制器*(后数据-前数据)*pi*1.5 + 前数据*pi*1.5 + (-pi)
+      pinStartAngle = pinController.value * (powerPencentNew - powerPencentOld) * pi * 1.5 
+                    + pi * 1.5 * powerPencentOld 
+                    + (- pi);
+      if(powerPencentNew <= 1){
+        blueStartAngle = pi * 1.5 * powerPencentOld  + (- pi);    
+        blueSweepAngle = controller.value * (powerPencentNew - powerPencentOld) * pi * 1.5 ;
+        blueSweepAngleOld =pi * 1.5 * powerPencentOld;  
+        redStartAngle = pi * 0.5 * (powerPencentOld - 1) + 0.5 * pi;
+      }else if(powerPencentOld >= 1){
+        blueStartAngle = pi * 1.5 + (- pi);
+        blueSweepAngle = 0;
+        blueSweepAngleOld = pi * 1.5;
+      }else{
+        blueSweepAngle = controller.value * (1 - powerPencentOld) * pi * 1.5 ;
+        blueStartAngle = pi * 1.5 + (- pi);
+        blueSweepAngleOld = pi * 1.5 * powerPencentOld;
+      }
+
+    }
+    //后数据<前数据(逆时针)
+    else if(powerList[1] < powerList[0]){
+      //行动轨迹(反向) + 初始角度 + 初始位置
+      //(1-控制器)*(前数据-后数据)*pi*1.5 + 后数据*pi*1.5 + (-pi)
+      pinStartAngle = (1 - pinController.value) * (powerPencentOld - powerPencentNew) * pi * 1.5 
+                      + pi * 1.5 * powerPencentNew
+                      + (- pi);
+      if(powerPencentOld <= 1){
+        blueStartAngle = pi * 1.5 * powerPencentNew  + (- pi);   
+        blueSweepAngle = (1 - controller.value) * (powerPencentOld - powerPencentNew) * pi * 1.5  ; 
+        blueSweepAngleOld = pi * 1.5 * powerPencentNew;
+      }else if(powerPencentNew >= 1){
+        blueStartAngle = pi * 1.5 + (- pi);
+        blueSweepAngle = 0;
+        blueSweepAngleOld =  pi * 1.5;  
+      }else {
+        blueStartAngle = pi * 1.5 * powerPencentNew  + (- pi);
+        blueSweepAngle = (1 - controller.value) * (1 - powerPencentNew) * pi * 1.5  ;
+        blueSweepAngleOld = pi * 1.5 * powerPencentNew;
       }
     }
+
+
+
+    //后数据>前数据
+    if(powerList[1] > powerList[0]){
+      //行动轨迹 + 初始角度 + 初始位置
+      //控制器*(后数据-前数据)*pi*1.5 + 前数据*pi*1.5 + (-pi)
+      pinStartAngle = pinController.value * (powerPencentNew - powerPencentOld) * pi * 1.5 
+                    + pi * 1.5 * powerPencentOld 
+                    + (- pi);
+    }
+    //后数据<前数据
+    else if(powerList[1] < powerList[0]){
+      //行动轨迹(反向) + 初始角度 + 初始位置
+      //(1-控制器)*(前数据-后数据)*pi*1.5 + 后数据*pi*1.5 + (-pi)
+      pinStartAngle = (1 - pinController.value) * (powerPencentOld - powerPencentNew) * pi * 1.5 
+                      + pi * 1.5 * powerPencentNew
+                      + (- pi);
+    }
+
+    // 真实功率补充
+    Paint paintPowerBlueOld= Paint();
+    paintPowerBlueOld
+      ..strokeCap = StrokeCap.butt
+      ..filterQuality = FilterQuality.high
+      ..isAntiAlias = true
+      ..strokeWidth = 24
+      ..style = PaintingStyle.stroke
+      ..shader = LinearGradient(
+        begin: Alignment.topLeft,
+        end: Alignment.bottomRight,
+        colors: [
+          HexColor('4778f7'),
+          HexColor('66f7f9'),
+        ],
+      ).createShader(Rect.fromCircle(center: Offset(0, 0), radius: 50.0));
+
+    Path bluePathOld = Path();
+    bluePathOld.addArc(Rect.fromCircle(center: Offset(0, 0), radius: 54.0), -pi , blueSweepAngleOld);
+    canvas.drawPath(dashPath(bluePathOld,dashArray: CircularIntervalList<double>(<double>[1.0, 2.5])),paintPowerBlueOld);
 
     // 真实功率
     Paint paintPowerBlue = Paint();
@@ -113,8 +309,13 @@ class DashBoardPowerProgressPainter extends CustomPainter {
       ).createShader(Rect.fromCircle(center: Offset(0, 0), radius: 50.0));
 
     Path bluePath = Path();
-    bluePath.addArc(Rect.fromCircle(center: Offset(0, 0), radius: 54.0), -pi, (controller.value * powerPencent*1.5) * pi);
+    bluePath.addArc(Rect.fromCircle(center: Offset(0, 0), radius: 54.0), blueStartAngle, blueSweepAngle);
     canvas.drawPath(dashPath(bluePath,dashArray: CircularIntervalList<double>(<double>[1.0, 2.5])),paintPowerBlue);
+
+    //final k = (pinController.value * powerPencentNew) * pi*2.0;
+    // debugPrint('value:' + beyondController.value.toString());
+    // debugPrint('powerPencentNew' + powerPencentNew.toString());
+    // debugPrint('k:' + pinStartAngle.toString());
 
     // 真实功率指针
     Paint paintPowerPoint = Paint();
@@ -134,33 +335,55 @@ class DashBoardPowerProgressPainter extends CustomPainter {
         ],
       ).createShader(Rect.fromCircle(center: Offset(0, 0), radius: 50.0));
     Rect rectPowerPoint = Rect.fromCircle(center: Offset(0, 0), radius: 54.0);
-    canvas.drawArc(rectPowerPoint, (-pi + (controller.value * powerPencent*1.5) * pi), -0.1, false, paintPowerPoint);
+    canvas.drawArc(rectPowerPoint, pinStartAngle, -0.1, false, paintPowerPoint);
 
 
-   // 超发
-   if(beyondPencent > 0) {
-      Paint paintPowerRed = Paint();
-      paintPowerRed
-      ..strokeCap = StrokeCap.butt
-      ..filterQuality = FilterQuality.high
-      ..isAntiAlias = true
-      ..strokeWidth = 24
-      ..style = PaintingStyle.stroke
-      ..shader = LinearGradient(
-        begin: Alignment.topLeft,
-        end: Alignment.bottomRight,
-        colors: [
-          HexColor('f8083a'),
-          HexColor('f8083a'),
-        ],
-      ).createShader(Rect.fromCircle(center: Offset(0, 0), radius: 50.0));
+  //  // 超发
+  //  if(beyondPencentNew > 0) {
 
+    Paint paintPowerRedOld = Paint();
+    paintPowerRedOld
+    ..strokeCap = StrokeCap.butt
+    ..filterQuality = FilterQuality.high
+    ..isAntiAlias = true
+    ..strokeWidth = 24
+    ..style = PaintingStyle.stroke
+    ..shader = LinearGradient(
+      begin: Alignment.topLeft,
+      end: Alignment.bottomRight,
+      colors: [
+        HexColor('f8083a'),
+        HexColor('f8083a'),
+      ],
+    ).createShader(Rect.fromCircle(center: Offset(0, 0), radius: 50.0));
 
     // 超发进度条
     Path redPath = Path();
-    redPath.addArc(Rect.fromCircle(center: Offset(0, 0), radius: 54.0), pi/2 ,beyondPencent * pi *  beyondController.value) ;
-    canvas.drawPath(dashPath(redPath,dashArray: CircularIntervalList<double>(<double>[1.0, 2.5])),paintPowerRed);
-   }
+    //redPath.addArc(Rect.fromCircle(center: Offset(0, 0), radius: 54.0), 0.5 * pi ,beyondPencentNew * pi *  beyondController.value) ;
+    canvas.drawPath(dashPath(redPath,dashArray: CircularIntervalList<double>(<double>[1.0, 2.5])),paintPowerRedOld);
+
+
+    Paint paintPowerRed = Paint();
+    paintPowerRed
+    ..strokeCap = StrokeCap.butt
+    ..filterQuality = FilterQuality.high
+    ..isAntiAlias = true
+    ..strokeWidth = 24
+    ..style = PaintingStyle.stroke
+    ..shader = LinearGradient(
+      begin: Alignment.topLeft,
+      end: Alignment.bottomRight,
+      colors: [
+        HexColor('f8083a'),
+        HexColor('f8083a'),
+      ],
+    ).createShader(Rect.fromCircle(center: Offset(0, 0), radius: 50.0));
+
+    // 超发进度条
+    Path redPathNew = Path();
+    //redPathNew.addArc(Rect.fromCircle(center: Offset(0, 0), radius: 54.0), beyondPencentOld * pi * 0.5 *  beyondController.value ,beyondPencentNew * pi *  beyondController.value) ;
+    canvas.drawPath(dashPath(redPathNew,dashArray: CircularIntervalList<double>(<double>[1.0, 2.5])),paintPowerRed);
+  //  }
   }
 
   @override
