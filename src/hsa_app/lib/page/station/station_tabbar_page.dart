@@ -72,8 +72,7 @@ class _StationTabbarPageState extends State<StationTabbarPage> {
     }
 
     var msg = '地理位置:' + stationInfo.hyStationLongtitude.toString() + ',' + stationInfo.hyStationLatitude.toString() + '\n';
-    msg +=  '天气:' +this.weather.name + '\n';
-    msg +=  '类型：' +this.weather.type.toString();
+    msg +=  '天气:' +this.weather.name + '   类型：' +this.weather.type.toString();
     debugPrint(msg);
   }
 

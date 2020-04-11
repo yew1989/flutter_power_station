@@ -9,4 +9,8 @@ class AppEvent {
   static final String eventGotStationInfo = 'eventGotStationInfo';
   // 点击了某个机组
   static final String onTapDevice = 'onTapDevice';
+  // 进入运行参数页
+  static final String onEnterRunTimePage = 'onEnterRunTimePage';
+  // 退出运行参数页
+  static final String onExitRunTimePage = 'onExitRunTimePage';
 }
