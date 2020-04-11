@@ -75,7 +75,7 @@ class AgentQueryAPI {
 
         HttpHelper.httpPOST(path, { '' : param }, (map,msg){
           
-          var resp = NearestRunningDataResp.fromJson(map, address, isBase: true,price: price);
+          var resp = NearestRunningDataResp.fromJson(map, address, isBase: isBase,price: price);
           if(onSucc != null) onSucc(resp.data,msg);
           
         }, onFail);

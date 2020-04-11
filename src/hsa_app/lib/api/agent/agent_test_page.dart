@@ -377,7 +377,7 @@ class _DebugAgentTestPageState extends State<AgentTestPage> {
       runtimTasker = AgentRunTimeDataLoopTimerTasker(
         isBase: true,
         terminalAddress: teminalBase,
-        timerInterval: 5
+        timerInterval: 5,
       );
       runtimTasker.start((data){
         showToast(data.toString());

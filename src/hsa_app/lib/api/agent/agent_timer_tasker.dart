@@ -1,5 +1,6 @@
 // 获取实时参数定时任务
 import 'dart:async';
+import 'package:flutter/material.dart';
 import 'package:hsa_app/api/agent/agent.dart';
 import 'package:hsa_app/model/model/all_model.dart';
 
@@ -86,7 +87,7 @@ class AgentStationInfoDataLoopTimerTasker {
    int unResponeseAck = 0;
 
     final terminalAddressList = station.waterTurbines.map((w)=>w.deviceTerminal.terminalAddress).toList();
-    final isBaseList = station.waterTurbines.map((w)=>w.deviceTerminal.deviceType.compareTo('S1-Pro') == 0  ? false : true).toList();
+    final isBaseList = station.waterTurbines.map((w)=>w.deviceTerminal.deviceVersion.compareTo('S1-Pro') == 0  ? false : true).toList();
 
     if(terminalAddressList == null)return;
     if(isBaseList == null)return;
@@ -111,7 +112,7 @@ class AgentStationInfoDataLoopTimerTasker {
     var stationResult = station;
 
     final terminalAddressList = station.waterTurbines.map((w)=>w.deviceTerminal.terminalAddress).toList();
-    final isBaseList = station.waterTurbines.map((w)=>w.deviceTerminal.deviceType.compareTo('S1-Pro') == 0  ? false : true).toList();
+    final isBaseList = station.waterTurbines.map((w)=>w.deviceTerminal.deviceVersion.compareTo('S1-Pro') == 0  ? false : true).toList();
     final price = ElectricityPrice(
       spikeElectricityPrice: station.spikeElectricityPrice ?? 0.0,
       peakElectricityPrice: station.peakElectricityPrice ?? 0.0,

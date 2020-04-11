@@ -89,7 +89,6 @@ class LDEncrypt{
         string += t.toLowerCase();
       }
     }
-    debugPrint(string);
     return string;
   }
 
