@@ -15,30 +15,28 @@ class AgentQueryAPI {
   // 召测试在线终端的实时运行数据
   static void remoteMeasuringRunTimeData(String terminalAddress,bool isBase) {
 
-    HttpHelper.httpPOST(AgentQueryAPI.createPath(terminalAddress,'AFN0C_F1'), null, null, null);
-    HttpHelper.httpPOST(AgentQueryAPI.createPath(terminalAddress,'AFN0C_F10'), null, null, null);
-    HttpHelper.httpPOST(AgentQueryAPI.createPath(terminalAddress,'AFN0C_F11'), null, null, null);
-    HttpHelper.httpPOST(AgentQueryAPI.createPath(terminalAddress,'AFN0C_F13'), null, null, null);
-    HttpHelper.httpPOST(AgentQueryAPI.createPath(terminalAddress,'AFN0C_F20'), null, null, null);
-    HttpHelper.httpPOST(AgentQueryAPI.createPath(terminalAddress,'AFN0C_F24'), null, null, null);
-    if(isBase == true) {
-      HttpHelper.httpPOST(AgentQueryAPI.createPath(terminalAddress,'AFN0C_F9'), null, null, null);
-    }
-    else {
-      HttpHelper.httpPOST(AgentQueryAPI.createPath(terminalAddress,'AFN0C_F30'), null, null, null);
-    }
+    var url =  API.agentHost + '/v1/Cmd/Send/' + terminalAddress + '/AFN0C_Combine/';
+    url += 'f10p0,';
+    url += 'f11p0,';
+    url += 'f13p0,';
+    url += 'f20p0,';
+    url += 'f24p0,';
+    url += isBase == true ? 'f9p0':'f30p0';
+    HttpHelper.httpPOST(url, null, null, null);
+
+    debugPrint('实时运行召测中:' + DateTime.now().toString() + '  '  + terminalAddress + '  ' + (isBase ? '基础版' : '标准版') + '   ');
+
   }
 
   // 仅召测电量和电气参数 - For 电站概要页
   static void remoteMeasuringElectricParam(String terminalAddress,bool isBase) {
 
-    if(isBase == true) {
-      HttpHelper.httpPOST(AgentQueryAPI.createPath(terminalAddress,'AFN0C_F9'), null, null, null);
-    }
-    else {
-      HttpHelper.httpPOST(AgentQueryAPI.createPath(terminalAddress,'AFN0C_F30'), null, null, null);
-    }
-    HttpHelper.httpPOST(AgentQueryAPI.createPath(terminalAddress,'AFN0C_F20'), null, null, null);
+    var url =  API.agentHost + '/v1/Cmd/Send/' + terminalAddress + '/AFN0C_Combine/';
+    url += 'f20p0,';
+    url += isBase == true ? 'f9p0':'f30p0';
+    HttpHelper.httpPOST(url, null, null, null);
+
+    debugPrint('电气参数召测中:' + DateTime.now().toString() + '  '  + terminalAddress + '  ' + (isBase ? '基础版' : '标准版') + '   ');
 
   }
 
