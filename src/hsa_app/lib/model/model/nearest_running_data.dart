@@ -86,7 +86,7 @@ class NearestRunningData{
     
     // 控制方案与开关机状态
     isAllowRemoteControl = json['terminal-'+'$terminalAddress'+'.afn0c.f24.p0'] != null ? json['terminal-'+'$terminalAddress'+'.afn0c.f24.p0']['isAllowRemoteControl'] ?? false : false;
-    controlType = json['terminal-'+'$terminalAddress'+'.afn0c.f24.p0'] != null ? json['terminal-'+'$terminalAddress'+'.afn0c.f24.p0']['controlType'] ?? '手动' : '手动';
+    controlType = json['terminal-'+'$terminalAddress'+'.afn0c.f24.p0'] != null ? json['terminal-'+'$terminalAddress'+'.afn0c.f24.p0']['controlType'] ?? '未知' : '未知';
     powerStatus = json['terminal-'+'$terminalAddress'+'.afn0c.f24.p0'] != null ? json['terminal-'+'$terminalAddress'+'.afn0c.f24.p0']['机组开关机状态'] ?? '未定义' : '未定义';
     intelligentControlProgram = json['terminal-'+'$terminalAddress'+'.afn0c.f24.p0'] != null ? json['terminal-'+'$terminalAddress'+'.afn0c.f24.p0']['智能控制方案'] ?? '水位智能调节方案' : '水位智能调节方案';
 
