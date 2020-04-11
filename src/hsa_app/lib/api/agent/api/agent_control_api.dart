@@ -201,8 +201,8 @@ class AgentControlAPI {
         break;
 
         //远程控制垃圾清扫 - 开
-        case TaskName.remoteSwitchRemoteModeOff:{
-          remoteSwitchRemoteModeOff(context,address:address,password: password,
+        case TaskName.remoteClearRubbishOn:{
+          remoteClearRubbishOn(context,address:address,password: password,
           onSucc: (msg){
             onSucc(msg);
           },
@@ -214,8 +214,8 @@ class AgentControlAPI {
         break;
 
         //远程控制垃圾清扫 - 关
-        case TaskName.remoteSwitchRemoteModeOff:{
-          remoteSwitchRemoteModeOn(context,address:address,password: password,
+        case TaskName.remoteClearRubbishOff:{
+          remoteClearRubbishOff(context,address:address,password: password,
           onSucc: (msg){
             onSucc(msg);
           },
@@ -225,13 +225,6 @@ class AgentControlAPI {
           );
         }
         break;
-
-        case TaskName.remoteClearRubbishOn:
-          // TODO: Handle this case.
-          break;
-        case TaskName.remoteClearRubbishOff:
-          // TODO: Handle this case.
-          break;
       }
   }
 }
