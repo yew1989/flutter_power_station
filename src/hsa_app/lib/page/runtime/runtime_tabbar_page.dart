@@ -88,7 +88,7 @@ class _RuntimeTabbarPageState extends State<RuntimeTabbarPage> {
                 address:currentDevice.terminalAddress,
                 alias:(index+1).toString() + '#',
                 isOnline:isOnline,
-                isBase: currentDevice.deviceType.compareTo('S1-Pro') == 0  ? false : true,
+                isBase: currentDevice.deviceVersion.compareTo('S1-Pro') == 0  ? false : true,
               ),
               onPageChanged: (int index) {
                 currentIndex = index;
