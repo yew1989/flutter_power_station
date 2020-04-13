@@ -16,12 +16,12 @@ class AgentQueryAPI {
   static void remoteMeasuringRunTimeData(String terminalAddress,bool isBase) {
 
     var url =  API.agentHost + '/v1/Cmd/Send/' + terminalAddress + '/AFN0C_Combine/';
-    url += 'f10p0,';
-    url += 'f11p0,';
-    url += 'f13p0,';
-    url += 'f20p0,';
-    url += 'f24p0,';
-    url += isBase == true ? 'f9p0':'f30p0';
+    url += 'f10p0,';      // 励磁板信息 励磁电流
+    url += 'f11p0,';      // 开度、相对水位、转速,非电气量
+    url += 'f13p0,';      // 温度路数、温度值
+    url += 'f24p0,';      // 开关机状态,是否支持远程、是否自动、智能方案
+    url += isBase == true ? 'f9p0':'f30p0'; // 电气量、电压电流 电气量
+
     HttpHelper.httpPOST(url, null, null, null);
 
     debugPrint('实时运行召测中:' + DateTime.now().toString() + '  '  + terminalAddress + '  ' + (isBase ? '基础版' : '标准版') + '   ');
@@ -31,8 +31,9 @@ class AgentQueryAPI {
   static void remoteMeasuringElectricParam(String terminalAddress,bool isBase) {
 
     var url =  API.agentHost + '/v1/Cmd/Send/' + terminalAddress + '/AFN0C_Combine/';
-    url += 'f20p0,';
-    url += isBase == true ? 'f9p0':'f30p0';
+    url += 'f20p0,';                        // 当日发电量 用于计算金额
+    url += isBase == true ? 'f9p0':'f30p0'; // 电气量、电压电流 电气量
+    
     HttpHelper.httpPOST(url, null, null, null);
 
     debugPrint('电气参数召测中:' + DateTime.now().toString() + '  '  + terminalAddress + '  ' + (isBase ? '基础版' : '标准版') + '   ');

@@ -58,7 +58,7 @@ class NearestRunningData{
     if(isBase == true) {
       voltage        = json['terminal-'+'$terminalAddress'+'.afn0c.f9.p0'] != null ? json['terminal-'+'$terminalAddress'+'.afn0c.f9.p0']['发电机A相电压'] ?? 0.0 : 0.0;
       current        = json['terminal-'+'$terminalAddress'+'.afn0c.f9.p0'] != null ? json['terminal-'+'$terminalAddress'+'.afn0c.f9.p0']['发电机A相电流'] ?? 0.0 : 0.0;
-      frequency      = json['terminal-'+'$terminalAddress'+'.afn0c.f9.p0'] != null ? json['terminal-'+'$terminalAddress'+'.afn0c.f9.p0']['电网电压频率'] ?? 0.0 : 0.0;
+      frequency      = json['terminal-'+'$terminalAddress'+'.afn0c.f9.p0'] != null ? json['terminal-'+'$terminalAddress'+'.afn0c.f9.p0']['发电机电压频率'] ?? 0.0 : 0.0;
       power          = json['terminal-'+'$terminalAddress'+'.afn0c.f9.p0'] != null ? json['terminal-'+'$terminalAddress'+'.afn0c.f9.p0']['发电机总有功功率'] ?? 0.0 : 0.0;
       powerFactor    = json['terminal-'+'$terminalAddress'+'.afn0c.f9.p0'] != null ? json['terminal-'+'$terminalAddress'+'.afn0c.f9.p0']['发电机总功率因数'] ?? 0.0 : 0.0;
       dataCachedTime = json['terminal-'+'$terminalAddress'+'.afn0c.f9.p0'] != null ? json['terminal-'+'$terminalAddress'+'.afn0c.f9.p0']['dataCachedTime'] ?? '' : '' ;
@@ -67,7 +67,7 @@ class NearestRunningData{
     else {
       voltage        = json['terminal-'+'$terminalAddress'+'.afn0c.f30.p0'] != null ? json['terminal-'+'$terminalAddress'+'.afn0c.f30.p0']['发电机A相电压'] ?? 0.0 : 0.0;
       current        = json['terminal-'+'$terminalAddress'+'.afn0c.f30.p0'] != null ? json['terminal-'+'$terminalAddress'+'.afn0c.f30.p0']['发电机A相电流'] ?? 0.0 : 0.0;
-      frequency      = json['terminal-'+'$terminalAddress'+'.afn0c.f30.p0'] != null ? json['terminal-'+'$terminalAddress'+'.afn0c.f30.p0']['电网电压频率'] ?? 0.0 : 0.0;
+      frequency      = json['terminal-'+'$terminalAddress'+'.afn0c.f30.p0'] != null ? json['terminal-'+'$terminalAddress'+'.afn0c.f30.p0']['发电机电压频率'] ?? 0.0 : 0.0;
       power          = json['terminal-'+'$terminalAddress'+'.afn0c.f30.p0'] != null ? json['terminal-'+'$terminalAddress'+'.afn0c.f30.p0']['发电机总有功功率'] ?? 0.0 : 0.0;
       powerFactor    = json['terminal-'+'$terminalAddress'+'.afn0c.f30.p0'] != null ? json['terminal-'+'$terminalAddress'+'.afn0c.f30.p0']['发电机总功率因数'] ?? 0.0 : 0.0;
       dataCachedTime = json['terminal-'+'$terminalAddress'+'.afn0c.f30.p0'] != null ? json['terminal-'+'$terminalAddress'+'.afn0c.f30.p0']['dataCachedTime'] ?? '' : '' ;
@@ -86,7 +86,7 @@ class NearestRunningData{
     
     // 控制方案与开关机状态
     isAllowRemoteControl = json['terminal-'+'$terminalAddress'+'.afn0c.f24.p0'] != null ? json['terminal-'+'$terminalAddress'+'.afn0c.f24.p0']['isAllowRemoteControl'] ?? false : false;
-    controlType = json['terminal-'+'$terminalAddress'+'.afn0c.f24.p0'] != null ? json['terminal-'+'$terminalAddress'+'.afn0c.f24.p0']['controlType'] ?? '手动' : '手动';
+    controlType = json['terminal-'+'$terminalAddress'+'.afn0c.f24.p0'] != null ? json['terminal-'+'$terminalAddress'+'.afn0c.f24.p0']['controlType'] ?? '未知' : '未知';
     powerStatus = json['terminal-'+'$terminalAddress'+'.afn0c.f24.p0'] != null ? json['terminal-'+'$terminalAddress'+'.afn0c.f24.p0']['机组开关机状态'] ?? '未定义' : '未定义';
     intelligentControlProgram = json['terminal-'+'$terminalAddress'+'.afn0c.f24.p0'] != null ? json['terminal-'+'$terminalAddress'+'.afn0c.f24.p0']['智能控制方案'] ?? '水位智能调节方案' : '水位智能调节方案';
 

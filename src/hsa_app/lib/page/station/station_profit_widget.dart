@@ -45,7 +45,6 @@ class _StationProfitWidgetState extends State<StationProfitWidget> with TickerPr
 
   @override
   Widget build(BuildContext context) {
-    
     return Center(
       child: AnimatedBuilder(
         animation: controller,
