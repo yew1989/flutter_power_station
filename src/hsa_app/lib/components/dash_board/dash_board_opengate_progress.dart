@@ -1,5 +1,6 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:hsa_app/event/event_bird.dart';
 import 'package:hsa_app/model/model/all_model.dart';
 import 'package:hsa_app/model/model/runtime_adapter.dart';
 import 'package:native_color/native_color.dart';
@@ -7,55 +8,49 @@ import 'package:native_color/native_color.dart';
 class DashBoardOpenGateProgress extends StatefulWidget {
 
   final DeviceTerminal deviceTerminal;
+  final List<double> openList;
+  final int seconds;
 
-  const DashBoardOpenGateProgress(this.deviceTerminal,{Key key}) : super(key: key);
+  const DashBoardOpenGateProgress(this.deviceTerminal,this.openList,this.seconds,{Key key}) : super(key: key);
   @override
   _DashBoardOpenGateProgressState createState() => _DashBoardOpenGateProgressState();
 }
 
 class _DashBoardOpenGateProgressState extends State<DashBoardOpenGateProgress> with TickerProviderStateMixin{
 
-  AnimationController controller;
+  AnimationController openController;
 
   void initAnimationController(){
-    controller  = AnimationController(vsync: this, duration: const Duration(milliseconds: 800));
-    // controller.addStatusListener((status) {
-    // if (status == AnimationStatus.completed) {
-    //   controller.reverse();
-    // }
-    // else if(status == AnimationStatus.dismissed) {
-    //   controller.forward();
-    //  }
-    // });
+    int t = widget?.seconds ?? 5;
+    openController  = AnimationController(vsync: this, duration: Duration(seconds: t));
+    EventBird().on('NEAREST_DATA_OPEN', (deviceTerminal){
+      openController.value = 0;
+      openController.forward();
+    });
   }
 
-  void forwardAnimation() async {
-    await Future.delayed(Duration(milliseconds:800));
-    if(controller == null) return;
-    controller.forward();
-  }
 
   @override
   void initState() {
     initAnimationController();
-    forwardAnimation();
     super.initState();
   }
 
   @override
   void dispose() {
-    controller.dispose();
+    openController?.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    var openList = widget?.openList ?? [0.0,0.0];
     return Center(
       child: AnimatedBuilder(
-        animation: controller,
+        animation: openController,
         builder: (context,child) {
           return CustomPaint(
-          painter: DashBoardOpenGateProgressPainter(widget.deviceTerminal,controller));
+          painter: DashBoardOpenGateProgressPainter(widget.deviceTerminal,openController,openList));
         }
       ),
     );
@@ -65,15 +60,58 @@ class _DashBoardOpenGateProgressState extends State<DashBoardOpenGateProgress> w
 class DashBoardOpenGateProgressPainter extends CustomPainter {
 
   final DeviceTerminal deviceTerminal;
-  final AnimationController controller;
+  final AnimationController openController;
+  final List<double> openList;
 
-  DashBoardOpenGateProgressPainter(this.deviceTerminal, this.controller);
+  DashBoardOpenGateProgressPainter(this.deviceTerminal, this.openController,this.openList);
   
   @override
   void paint(Canvas canvas, Size size) {
-    var openNow  = deviceTerminal?.nearestRunningData?.openAngle?.toDouble() ?? 0.0;
     var openMax  = 1.0;
-    var openPencent   = RuntimeDataAdapter.caclulatePencent(openNow,openMax) ?? 0.0;
+    var openPencentOld   = RuntimeDataAdapter.caclulatePencent(openList[0],openMax) ?? 0.0;
+    var openPencentNew   = RuntimeDataAdapter.caclulatePencent(openList[1],openMax) ?? 0.0;
+    
+
+    //线起始
+    double startAngle;
+    //线变化
+    double sweepAngle;
+    //线补充
+    double sweepAngleOld;
+
+    //后数据>前数据(顺时针)
+    if(openList[1] > openList[0]){
+      startAngle = pi * openPencentOld + (- 0.5 * pi);
+      sweepAngle = openController.value * (openPencentNew - openPencentOld) * pi ;
+      sweepAngleOld = pi * openPencentOld;
+    }
+    //后数据<前数据(逆时针)
+    else if(openList[1] < openList[0]){
+      startAngle = pi * openPencentNew + (- 0.5 * pi);
+      sweepAngle = (1 - openController.value) * (openPencentOld - openPencentNew) * pi ;
+      sweepAngleOld = pi * openPencentNew;
+    }
+
+    //补充
+    Paint paintOpenRealOld = Paint();
+    paintOpenRealOld
+      ..strokeCap = StrokeCap.round
+      ..filterQuality = FilterQuality.high
+      ..isAntiAlias = true
+      ..strokeWidth = 2
+      ..style = PaintingStyle.stroke
+      ..shader = LinearGradient(
+        begin: Alignment.topLeft,
+        end: Alignment.bottomRight,
+        colors: [
+          HexColor('4778f7'),
+          HexColor('66f7f9'),
+        ],
+      ).createShader(Rect.fromCircle(center: Offset(0, 0), radius: 100.0));
+    Rect rectCircleRealOld = Rect.fromCircle(center: Offset(0, 0), radius: 100.0);
+    canvas.drawArc(rectCircleRealOld, -pi / 2, sweepAngleOld, false, paintOpenRealOld);
+
+    //行动轨迹
     Paint paintOpenReal = Paint();
     paintOpenReal
       ..strokeCap = StrokeCap.round
@@ -90,7 +128,7 @@ class DashBoardOpenGateProgressPainter extends CustomPainter {
         ],
       ).createShader(Rect.fromCircle(center: Offset(0, 0), radius: 100.0));
     Rect rectCircleReal = Rect.fromCircle(center: Offset(0, 0), radius: 100.0);
-    canvas.drawArc(rectCircleReal, -pi / 2,  controller.value * openPencent * pi, false, paintOpenReal);
+    canvas.drawArc(rectCircleReal, startAngle,  sweepAngle, false, paintOpenReal);
   }
 
   @override

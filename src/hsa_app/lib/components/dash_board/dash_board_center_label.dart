@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hsa_app/config/app_theme.dart';
+import 'package:hsa_app/event/event_bird.dart';
 
 class DashBoardCenterLabel extends StatefulWidget {
 
@@ -16,30 +17,35 @@ class _DashBoardCenterLabelState extends State<DashBoardCenterLabel> with Ticker
   AnimationController controller;
   Animation<double> animation;
 
-  @override
-  void dispose() {
-    controller?.stop();
-    controller?.dispose();
-    super.dispose();
-  }
-
-  @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-
+  void init(){
     final oldPower = widget?.powerNowList[0] ?? 0.0;
     final powerNow = widget?.powerNowList[1] ?? 0.0;
-
 
     controller = AnimationController(duration: Duration(milliseconds:5000), vsync: this);
     CurvedAnimation curvedAnimation = CurvedAnimation(parent: controller, curve: Curves.fastOutSlowIn);
     animation = Tween<double>(begin: oldPower, end: powerNow).animate(curvedAnimation);
     controller.forward();
+  }
 
+  @override
+  void dispose() {
+    controller?.stop();
+    controller?.dispose();
+    EventBird().off('NEAREST_DATA_POWER_STR');
+    super.dispose();
+  }
+
+  @override
+  void initState() {
+    init();
+    EventBird().on('NEAREST_DATA_POWER_STR', (_){
+      init();
+    });
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
 
     return  Center(
       child: Column(

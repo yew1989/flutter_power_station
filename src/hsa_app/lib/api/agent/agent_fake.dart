@@ -23,7 +23,7 @@ class AgentFake {
     result.frequency = fixDouble(result.frequency);
     // 功率
     sign = random.nextBool() ? 1.0 : -1.0; pointLeft  =random.nextInt(300); pointRight = random.nextDouble();
-    result.power= 1200 + (sign * pointLeft) + (sign * pointRight);
+    result.power= 1200+ (sign * pointLeft) + (sign * pointRight);
     result.power = fixDouble(result.power);
     // 开度
     pointRight  = random.nextDouble();

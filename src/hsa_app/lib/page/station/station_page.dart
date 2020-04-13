@@ -150,6 +150,7 @@ class _StationPageState extends State<StationPage> {
         if(profitList.length > 2){
           profitList.removeAt(0);
         }
+        EventBird().emit('REFLASH_MONEY');
       });
     });
   }

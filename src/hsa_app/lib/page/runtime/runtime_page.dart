@@ -6,6 +6,8 @@ import 'package:hsa_app/api/agent/agent_task.dart';
 import 'package:hsa_app/api/agent/agent_timer_tasker.dart';
 import 'package:hsa_app/api/api.dart';
 import 'package:hsa_app/api/apis/api_station.dart';
+import 'package:hsa_app/components/dash_board/dash_board_freq.dart';
+import 'package:hsa_app/components/dash_board/dash_board_open.dart';
 import 'package:hsa_app/components/dash_board_widget.dart';
 import 'package:hsa_app/components/runtime_progress_bar.dart';
 import 'package:hsa_app/components/shawdow_widget.dart';
@@ -62,6 +64,8 @@ class _RuntimePageState extends State<RuntimePage> {
   final pageIndexNotifier = ValueNotifier<int>(0);
 
   List<double> powerNowList = [0.0,0.0];
+  List<double> freqList = [0.0,0.0];
+  List<double> openList = [0.0,0.0];
 
   // 初始化弹出框
   void initProgressDialog() {
@@ -226,7 +230,20 @@ class _RuntimePageState extends State<RuntimePage> {
         if(powerNowList.length > 2){
           powerNowList.removeAt(0);
         }
-        EventBird().emit('POWER',this.deviceTerminal);
+        freqList.add(this.deviceTerminal?.nearestRunningData?.frequency ?? 0.0);
+        if(freqList.length > 2){
+          freqList.removeAt(0);
+        }
+        openList.add(this.deviceTerminal?.nearestRunningData?.openAngle);
+        if(openList.length > 2){
+          openList.removeAt(0);
+        }
+        EventBird().emit('NEAREST_DATA_FREQ',this.deviceTerminal);
+        EventBird().emit('NEAREST_DATA_FREQ_STR',this.deviceTerminal);
+        EventBird().emit('NEAREST_DATA_POWER',this.deviceTerminal);
+        EventBird().emit('NEAREST_DATA_POWER_STR',this.deviceTerminal);
+        EventBird().emit('NEAREST_DATA_OPEN',this.deviceTerminal);
+        EventBird().emit('NEAREST_DATA_OPEN_STR',this.deviceTerminal);
       });
     });
   }
@@ -318,14 +335,6 @@ class _RuntimePageState extends State<RuntimePage> {
 
   // 仪表盘
   Widget dashBoardWidget() {
-    // 频率
-    var freqNow = deviceTerminal?.nearestRunningData?.frequency ?? 0.0;
-    var freqNowStr = freqNow.toStringAsFixed(2);
-
-    // 开度
-    var openNow = deviceTerminal?.nearestRunningData?.openAngle ?? 0.0;
-    //openNow *= 100;
-    var openNowStr = openNow.toStringAsFixed(0);
 
     return Container(
       height: 202,
@@ -350,25 +359,7 @@ class _RuntimePageState extends State<RuntimePage> {
                         child: Container(
                           width: 50,
                           height: 50,
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: <Widget>[
-                              Text(freqNowStr,
-                                  style: TextStyle(
-                                      color: Colors.white,
-                                      fontFamily: AppTheme().numberFontName,
-                                      fontSize: 24)),
-                              SizedBox(
-                                  height: 2,
-                                  width: 52,
-                                  child: Image.asset(
-                                      'images/runtime/Time_line1.png')),
-                              Text('频率:Hz',
-                                  style: TextStyle(
-                                      color: Colors.white30, fontSize: 11)),
-                            ],
-                          ),
+                          child: DashBoardFreq(freqList),
                         ),
                       ),
                       // 左侧一根引出线
@@ -401,25 +392,7 @@ class _RuntimePageState extends State<RuntimePage> {
                           child: Container(
                             width: 50,
                             height: 50,
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: <Widget>[
-                                Text(openNowStr,
-                                    style: TextStyle(
-                                        color: Colors.white,
-                                        fontFamily: AppTheme().numberFontName,
-                                        fontSize: 24)),
-                                SizedBox(
-                                    height: 2,
-                                    width: 52,
-                                    child: Image.asset(
-                                        'images/runtime/Time_line1.png')),
-                                Text('开度:%',
-                                    style: TextStyle(
-                                        color: Colors.white30, fontSize: 11)),
-                              ],
-                            ),
+                            child: DashBoardOpen(openList),
                           ),
                         ),
 
@@ -440,7 +413,11 @@ class _RuntimePageState extends State<RuntimePage> {
             ],
           ),
           // 中央仪表盘
-          DashBoardWidget(deviceTerminal: deviceTerminal,powerNowList: powerNowList,),
+          DashBoardWidget(deviceTerminal: deviceTerminal,
+                          powerNowList: powerNowList,
+                          freqList:freqList,
+                          openList:openList,
+                          ),
         ],
       ),
     );

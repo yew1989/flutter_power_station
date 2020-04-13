@@ -10,8 +10,10 @@ class DashBoardWidget extends StatefulWidget {
 
   final DeviceTerminal deviceTerminal;
   final List<double> powerNowList;
+  final List<double> freqList;
+  final List<double> openList;
 
-  const DashBoardWidget({Key key, this.deviceTerminal,this.powerNowList}) : super(key: key);
+  const DashBoardWidget({Key key, this.deviceTerminal,this.powerNowList,this.freqList,this.openList}) : super(key: key);
   @override
   _DashBoardWidgetState createState() => _DashBoardWidgetState();
 }
@@ -31,16 +33,11 @@ class _DashBoardWidgetState extends State<DashBoardWidget> with TickerProviderSt
   @override
   Widget build(BuildContext context) {
     // 功率 now
-    var powerNow = widget?.deviceTerminal?.nearestRunningData?.power ?? 0.0;
-    var powerNowStr = '0';
-    // 展示优化
-    if(powerNow < 100) {
-       powerNowStr = powerNow.toStringAsFixed(1);
-    }
-    else {
-       powerNowStr = powerNow.toStringAsFixed(0);
-    }
     List<double> powerNowList = widget?.powerNowList;
+    // 功率 now
+    List<double> freqList = widget?.freqList;
+    // 功率 now
+    List<double> openList = widget?.openList;
 
     // 功率 max
     var powerMax = widget?.deviceTerminal?.waterTurbine?.ratedPowerKW ?? 0.0;
@@ -55,8 +52,8 @@ class _DashBoardWidgetState extends State<DashBoardWidget> with TickerProviderSt
         children: 
         [
           DashBoardPowerProgress(widget?.deviceTerminal,powerNowList,5),
-          DashBoardFreqProgress(widget?.deviceTerminal),
-          DashBoardOpenGateProgress(widget?.deviceTerminal),
+          DashBoardFreqProgress(widget?.deviceTerminal,freqList,5),
+          DashBoardOpenGateProgress(widget?.deviceTerminal,openList,5),
           DashBoardBgProgress(),
           DashBoardCenterLabel(powerNowList,powerMaxStr),
         ]),
