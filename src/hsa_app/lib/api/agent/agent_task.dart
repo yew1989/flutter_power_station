@@ -142,7 +142,7 @@ class AgentTask {
           },
           onLoading: (msg){
 
-            if(onSucc != null) onSucc(msg);
+            if(onLoading != null) onLoading(msg);
           },
           onFail: (msg){
 

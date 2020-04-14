@@ -41,7 +41,6 @@ class _StationPageState extends State<StationPage> {
   @override
   void initState() {
     reqeustStationInfo();
-    listenEvent();
     super.initState();
   }
 
@@ -50,18 +49,7 @@ class _StationPageState extends State<StationPage> {
     refreshController?.dispose();
     stationTasker?.stop();
     Progresshud.dismiss();
-    EventBird().off(AppEvent.onEnterRunTimePage);
-    EventBird().off(AppEvent.onExitRunTimePage);
     super.dispose();
-  }
-
-  void listenEvent() {
-    EventBird().on(AppEvent.onEnterRunTimePage, (_){
-      stationTasker?.stop();
-    });
-    EventBird().on(AppEvent.onExitRunTimePage, (_){
-      getRealtimeData();
-    });
   }
 
   // 请求电站概要

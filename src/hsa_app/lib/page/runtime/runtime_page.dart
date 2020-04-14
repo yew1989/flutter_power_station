@@ -62,7 +62,7 @@ class _RuntimePageState extends State<RuntimePage> {
   final pageIndexNotifier = ValueNotifier<int>(0);
 
   // 初始化弹出框
-  void initProgressDialog() {
+  void initProgressDialog() async {
 
     progressDialog = ProgressDialog(context,type: ProgressDialogType.Normal, isDismissible: false, showLogs: false);
     
@@ -81,7 +81,7 @@ class _RuntimePageState extends State<RuntimePage> {
   }
 
   // 更新弹出框
-  void updateProgressDialog(String message) {
+  void updateProgressDialog(String message) async{
     progressDialog.update(
         message: message,
         progress: 0.0,
@@ -94,10 +94,12 @@ class _RuntimePageState extends State<RuntimePage> {
             color: Colors.black,
             fontSize: 19.0,
             fontWeight: FontWeight.normal));
+     progressDialog.show();
   }
 
   // 关闭弹出框
-  void finishProgressDialog(String message, bool isSuccess) {
+  void finishProgressDialog(String message, bool isSuccess) async{
+
     var progressWidget = isSuccess
         ? Icon(Icons.check_circle_outline, color: Colors.greenAccent, size: 46)
         : Icon(Icons.error_outline, color: Colors.redAccent, size: 46);
@@ -113,9 +115,9 @@ class _RuntimePageState extends State<RuntimePage> {
             color: Colors.black,
             fontSize: 19.0,
             fontWeight: FontWeight.normal));
-    Future.delayed(Duration(seconds: 1), () {
-      progressDialog.dismiss();
-    });
+    progressDialog.show();
+    await Future.delayed(Duration(milliseconds: 1000));
+    progressDialog.dismiss();
   }
 
   // 操作密码输入错误弹窗
@@ -134,7 +136,7 @@ class _RuntimePageState extends State<RuntimePage> {
             fontSize: 19.0,
             fontWeight: FontWeight.normal));
     progressDialog.show();
-    await Future.delayed(Duration(seconds: 1));
+    await Future.delayed(Duration(milliseconds: 1000));
     progressDialog.dismiss();
   }
 
@@ -142,7 +144,7 @@ class _RuntimePageState extends State<RuntimePage> {
   void initState() {
     initProgressDialog();
     requestRunTimeData();
-    EventBird().emit(AppEvent.onEnterRunTimePage);
+    // EventBird().emit(AppEvent.onEnterRunTimePage);
     super.initState();
   }
 
@@ -150,7 +152,7 @@ class _RuntimePageState extends State<RuntimePage> {
   void dispose() {
     runtimTasker?.stop();
     Progresshud.dismiss();
-    EventBird().emit(AppEvent.onExitRunTimePage);
+    // EventBird().emit(AppEvent.onExitRunTimePage);
     super.dispose();
   }
 
@@ -603,8 +605,7 @@ class _RuntimePageState extends State<RuntimePage> {
       return;
     }
 
-    updateProgressDialog('正在操作中');
-    await Future.delayed(Duration(milliseconds: 600));
+    await Future.delayed(Duration(milliseconds: 300));
 
     showDialog(
       context: context,
@@ -614,10 +615,13 @@ class _RuntimePageState extends State<RuntimePage> {
           //检查操作密码
           AgentControlAPI.startTask(context,param,taskName,widget.address,pswd,
             (String succString) {
+              debugPrint(succString);
               finishProgressDialog(succString, true);
             }, (String failString) {
+              debugPrint(failString);
               finishProgressDialog(failString, false);
             }, (String loadingString) {
+               debugPrint(loadingString);
               updateProgressDialog(loadingString);
             }
           );
