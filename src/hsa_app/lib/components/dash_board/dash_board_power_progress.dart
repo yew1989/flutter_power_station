@@ -36,14 +36,14 @@ class _DashBoardPowerProgressState extends State<DashBoardPowerProgress> with Ti
 
     
 
-    EventBird().on('NEAREST_DATA_POWER', (deviceTerminal){
+    EventBird().on('NEAREST_DATA_POWER', (dt){
       
         pinController.value = 0;
         pinController.forward();
         controller.value = 0;
         //controller.forward();
         beyondController.value = 0;
-        judgeStats(seconds,deviceTerminal,powerList);
+        judgeStats(seconds,dt,powerList);
     });
   }
   

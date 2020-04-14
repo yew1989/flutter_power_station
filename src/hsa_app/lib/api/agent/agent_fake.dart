@@ -31,7 +31,7 @@ class AgentFake {
     result.openAngle = fixDouble(result.openAngle);
     // 电压
     sign = random.nextBool() ? 1.0 : -1.0; pointLeft  =random.nextInt(100); pointRight  = random.nextDouble();
-    result.voltage= 200 + (sign * pointLeft) + (sign * pointRight);
+    result.voltage= 400 + (sign * pointLeft) + (sign * pointRight);
     result.voltage = fixDouble(result.voltage);
     // 电流
     sign = random.nextBool() ? 1.0 : -1.0; pointLeft  =random.nextInt(50); pointRight  = random.nextDouble();

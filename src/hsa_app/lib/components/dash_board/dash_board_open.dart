@@ -39,7 +39,7 @@ class _DashBoardOpenState extends State<DashBoardOpen> with TickerProviderStateM
   @override
   void initState() {
     init();
-    EventBird().on('NEAREST_DATA_OPEN_STR', (_){
+    EventBird().on('NEAREST_DATA_OPEN_STR', (dt){
       init();   
     });
     super.initState();

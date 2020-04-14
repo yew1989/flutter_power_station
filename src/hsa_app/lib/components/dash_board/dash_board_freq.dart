@@ -39,7 +39,7 @@ class _DashBoardFreqState extends State<DashBoardFreq> with TickerProviderStateM
   @override
   void initState() {
     init();
-    EventBird().on('NEAREST_DATA_FREQ_STR', (_){
+    EventBird().on('NEAREST_DATA_FREQ_STR', (dt){
       init();
     });
     super.initState();
@@ -47,10 +47,7 @@ class _DashBoardFreqState extends State<DashBoardFreq> with TickerProviderStateM
 
   @override
   Widget build(BuildContext context) {
-
     
-
-
     return  Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,

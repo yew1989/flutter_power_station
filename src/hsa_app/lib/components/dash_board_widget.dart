@@ -12,8 +12,9 @@ class DashBoardWidget extends StatefulWidget {
   final List<double> powerNowList;
   final List<double> freqList;
   final List<double> openList;
+  final int seconds;
 
-  const DashBoardWidget({Key key, this.deviceTerminal,this.powerNowList,this.freqList,this.openList}) : super(key: key);
+  const DashBoardWidget({Key key, this.deviceTerminal,this.powerNowList,this.freqList,this.openList,this.seconds}) : super(key: key);
   @override
   _DashBoardWidgetState createState() => _DashBoardWidgetState();
 }
@@ -43,6 +44,7 @@ class _DashBoardWidgetState extends State<DashBoardWidget> with TickerProviderSt
     var powerMax = widget?.deviceTerminal?.waterTurbine?.ratedPowerKW ?? 0.0;
     var powerMaxStr = powerMax.toStringAsFixed(0) + 'kW';
 
+    int seconds = widget?.seconds ?? 5;
 
     return Container(
         color: Colors.transparent,
@@ -51,9 +53,9 @@ class _DashBoardWidgetState extends State<DashBoardWidget> with TickerProviderSt
         child: Stack(
         children: 
         [
-          DashBoardPowerProgress(widget?.deviceTerminal,powerNowList,5),
-          DashBoardFreqProgress(widget?.deviceTerminal,freqList,5),
-          DashBoardOpenGateProgress(widget?.deviceTerminal,openList,5),
+          DashBoardPowerProgress(widget?.deviceTerminal,powerNowList,seconds),
+          DashBoardFreqProgress(widget?.deviceTerminal,freqList,seconds),
+          DashBoardOpenGateProgress(widget?.deviceTerminal,openList,seconds),
           DashBoardBgProgress(),
           DashBoardCenterLabel(powerNowList,powerMaxStr),
         ]),

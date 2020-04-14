@@ -9,7 +9,10 @@ import 'package:hsa_app/api/apis/api_station.dart';
 import 'package:hsa_app/components/dash_board/dash_board_freq.dart';
 import 'package:hsa_app/components/dash_board/dash_board_open.dart';
 import 'package:hsa_app/components/dash_board_widget.dart';
-import 'package:hsa_app/components/runtime_progress_bar.dart';
+import 'package:hsa_app/components/runtime_progress_bar/runtime_progress_current.dart';
+import 'package:hsa_app/components/runtime_progress_bar/runtime_progress_excitation.dart';
+import 'package:hsa_app/components/runtime_progress_bar/runtime_progress_factory.dart';
+import 'package:hsa_app/components/runtime_progress_bar/runtime_progress_voltage.dart';
 import 'package:hsa_app/components/shawdow_widget.dart';
 import 'package:hsa_app/components/smart_refresher_style.dart';
 import 'package:hsa_app/config/app_theme.dart';
@@ -41,7 +44,8 @@ class RuntimePage extends StatefulWidget {
   _RuntimePageState createState() => _RuntimePageState();
 }
 
-class _RuntimePageState extends State<RuntimePage> {
+class _RuntimePageState extends State<RuntimePage> with TickerProviderStateMixin{
+
   RefreshController refreshController = RefreshController(initialRefresh: false);
 
   // 计算宽度
@@ -58,14 +62,31 @@ class _RuntimePageState extends State<RuntimePage> {
   // 弹出进度对话框
   ProgressDialog progressDialog;
 
-
   AgentRunTimeDataLoopTimerTasker runtimTasker = AgentRunTimeDataLoopTimerTasker();
 
   final pageIndexNotifier = ValueNotifier<int>(0);
 
+  //0旧数据临时储存 1新入数据
   List<double> powerNowList = [0.0,0.0];
   List<double> freqList = [0.0,0.0];
   List<double> openList = [0.0,0.0];
+  List<double> temperatureList = [0.0,0.0];
+  List<double> speedList = [0.0,0.0];
+  List<double> waterStageList = [0.0,0.0];
+  List<double> voltageList = [0.0,0.0];
+  List<double> excitationList = [0.0,0.0];
+  List<double> currentList = [0.0,0.0];
+  List<double> factorList = [0.0,0.0];
+
+  AnimationController footerDataController;
+  Animation<double> animationTemp;
+  Animation<double> animationSpeed;
+  Animation<double> animationWaterStage;
+  Animation<double> animationVoltage;
+
+  //动画过程时间
+  int seconds = 5;
+
 
   // 初始化弹出框
   void initProgressDialog() {
@@ -155,6 +176,7 @@ class _RuntimePageState extends State<RuntimePage> {
   @override
   void dispose() {
     runtimTasker?.stop();
+    footerDataController?.dispose();
     Progresshud.dismiss();
     EventBird().emit(AppEvent.onExitRunTimePage);
     super.dispose();
@@ -221,31 +243,47 @@ class _RuntimePageState extends State<RuntimePage> {
     runtimTasker = AgentRunTimeDataLoopTimerTasker(
       isBase: widget?.isBase == true ?  true: false,
       terminalAddress: addressId,
-      timerInterval: 5
+      timerInterval: this.seconds,
     );
     runtimTasker.start((data){
       setState(() {
         this.deviceTerminal?.nearestRunningData = AgentFake.fakeNearestRunningData(data);
-        powerNowList.add(this.deviceTerminal?.nearestRunningData?.power ?? 0.0);
-        if(powerNowList.length > 2){
-          powerNowList.removeAt(0);
-        }
-        freqList.add(this.deviceTerminal?.nearestRunningData?.frequency ?? 0.0);
-        if(freqList.length > 2){
-          freqList.removeAt(0);
-        }
-        openList.add(this.deviceTerminal?.nearestRunningData?.openAngle);
-        if(openList.length > 2){
-          openList.removeAt(0);
-        }
+        addToList(powerNowList,this.deviceTerminal?.nearestRunningData?.power ?? 0.0);
+        addToList(freqList,this.deviceTerminal?.nearestRunningData?.frequency ?? 0.0);
+        addToList(openList,this.deviceTerminal?.nearestRunningData?.openAngle ?? 0.0);
+
         EventBird().emit('NEAREST_DATA_FREQ',this.deviceTerminal);
         EventBird().emit('NEAREST_DATA_FREQ_STR',this.deviceTerminal);
         EventBird().emit('NEAREST_DATA_POWER',this.deviceTerminal);
         EventBird().emit('NEAREST_DATA_POWER_STR',this.deviceTerminal);
         EventBird().emit('NEAREST_DATA_OPEN',this.deviceTerminal);
         EventBird().emit('NEAREST_DATA_OPEN_STR',this.deviceTerminal);
+        
+        addToList(temperatureList,this.deviceTerminal?.nearestRunningData?.temperature ?? 0.0);
+        addToList(speedList,this.deviceTerminal?.nearestRunningData?.speed ?? 0.0);
+        addToList(waterStageList,this.deviceTerminal?.nearestRunningData?.waterStage ?? 0.0);
+        addToList(voltageList,this.deviceTerminal?.nearestRunningData?.voltage ?? 0.0);
+        addToList(excitationList,this.deviceTerminal?.nearestRunningData?.fieldCurrent ?? 0.0);
+        addToList(currentList,this.deviceTerminal?.nearestRunningData?.current ?? 0.0);
+        addToList(factorList,this.deviceTerminal?.nearestRunningData?.powerFactor ?? 0.0);
+
+        //EventBird().emit('REFLASH_DATA',this.deviceTerminal);
+        EventBird().emit('REFLASH_DATA_VOLTAGE',this.deviceTerminal);
+        EventBird().emit('REFLASH_DATA_CURRENT',this.deviceTerminal);
+        EventBird().emit('REFLASH_DATA_FACTORY',this.deviceTerminal);
+        EventBird().emit('REFLASH_DATA_EXCITATION',this.deviceTerminal);
+        terminalBriefFooterData();
       });
     });
+  }
+
+  //list处理
+  List<double> addToList(List<double> list, double d){
+    list.add(d ?? 0.0);
+    if(list.length > 2){
+      list.removeAt(0);
+    }
+    return list;
   }
   
 
@@ -257,33 +295,17 @@ class _RuntimePageState extends State<RuntimePage> {
     if (deviceWidth == 320.0) {
       denominator = 3.3;
     }
-
     // 条状宽度
     barMaxWidth = deviceWidth / denominator;
 
     // 电压
-    var voltage = deviceTerminal?.nearestRunningData?.voltage ?? 0.0;
-    var voltageStr = voltage.toString() + 'V';
     var voltageMax     = deviceTerminal?.waterTurbine?.ratedVoltageV?.toDouble() ?? 0.0;
-    var voltagePecent = RuntimeDataAdapter.caclulatePencent(voltage , voltageMax);
-
     // 电流
-    var current = deviceTerminal?.nearestRunningData?.current ?? 0.0;
-    var currentStr = current.toString() + 'A';
     var currentMax     = deviceTerminal?.waterTurbine?.ratedCurrentA?.toDouble() ?? 0.0;
-    var currentPecent = RuntimeDataAdapter.caclulatePencent(current , currentMax);
-
     // 励磁电流
-    var excitation = deviceTerminal?.nearestRunningData?.fieldCurrent ?? 0.0;
-    var excitationStr = excitation.toString() + 'A';
     var excitationMax  = deviceTerminal?.waterTurbine?.ratedExcitationCurrentA?.toDouble() ?? 0.0;
-    var excitationPecent = RuntimeDataAdapter.caclulatePencent(excitation , excitationMax);
-
     // 功率因数
-    var powfactor = deviceTerminal?.nearestRunningData?.powerFactor ?? 0.0;
-    var powfactorStr = powfactor.toStringAsFixed(2);
     var powerFactorMax = 1.0;
-    var powfactorPencent = RuntimeDataAdapter.caclulatePencent(powfactor , powerFactorMax);
 
     return Container(
       color: Colors.transparent,
@@ -296,32 +318,36 @@ class _RuntimePageState extends State<RuntimePage> {
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
-              RuntimeProgressBar(
-                  barMaxWidth: barMaxWidth,
-                  leftText: '电压',
-                  valueText: voltageStr,
-                  pencent: voltagePecent),
-              RuntimeProgressBar(
-                  barMaxWidth: barMaxWidth,
-                  leftText: '励磁电流',
-                  valueText: excitationStr,
-                  pencent: excitationPecent),
+              RuntimeProgressVoltage(
+                barMaxWidth: barMaxWidth,
+                leftText: '电压',
+                maxData: voltageMax,
+                doubleList: voltageList,
+                seconds: seconds,),
+              RuntimeProgressExcitation(
+                barMaxWidth: barMaxWidth,
+                leftText: '励磁电流',
+                maxData: excitationMax,
+                doubleList: excitationList,
+                seconds: seconds),
             ],
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
-              RuntimeProgressBar(
-                  barMaxWidth: barMaxWidth,
-                  leftText: '电流',
-                  valueText: currentStr,
-                  pencent: currentPecent),
-              RuntimeProgressBar(
-                  barMaxWidth: barMaxWidth,
-                  leftText: '功率因数',
-                  valueText: powfactorStr,
-                  pencent: powfactorPencent),
+              RuntimeProgressCurrent(
+                barMaxWidth: barMaxWidth,
+                leftText: '电流',
+                maxData: currentMax,
+                doubleList: currentList,
+                seconds: seconds),
+              RuntimeProgressFactory(
+                barMaxWidth: barMaxWidth,
+                leftText: '功率因数',
+                maxData: powerFactorMax,
+                doubleList: factorList,
+                seconds: seconds),
             ],
           ),
         ],
@@ -417,21 +443,26 @@ class _RuntimePageState extends State<RuntimePage> {
                           powerNowList: powerNowList,
                           freqList:freqList,
                           openList:openList,
+                          seconds:seconds
                           ),
         ],
       ),
     );
   }
 
+  //温度 转速 水位数据处理
+  void terminalBriefFooterData(){
+    footerDataController = AnimationController(duration: Duration(seconds:this.seconds), vsync: this);
+    CurvedAnimation curvedAnimation = CurvedAnimation(parent: footerDataController, curve: Curves.fastOutSlowIn);
+    animationTemp = Tween<double>(begin: temperatureList[0], end: temperatureList[1]).animate(curvedAnimation);
+    animationSpeed = Tween<double>(begin: speedList[0], end: speedList[1]).animate(curvedAnimation);
+    animationWaterStage = Tween<double>(begin: waterStageList[0], end: waterStageList[1]).animate(curvedAnimation);
+    animationVoltage = Tween<double>(begin: voltageList[0], end: voltageList[1]).animate(curvedAnimation);
+    footerDataController.forward();
+  }
+
   //  设备概要尾
   Widget terminalBriefFooter() {
-    // 温度
-    var temperature  =  deviceTerminal?.nearestRunningData?.temperature ?? 0.0 ;
-    // 转速
-    var speed = deviceTerminal?.nearestRunningData?.speed ?? 0.0;
-    // 水位
-    var waterStage = deviceTerminal?.nearestRunningData?.waterStage ?? 0.0;
-
     return Container(
       padding: EdgeInsets.symmetric(vertical: 6),
       child: Center(
@@ -440,26 +471,23 @@ class _RuntimePageState extends State<RuntimePage> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
             Expanded(
-                flex: 1,
-                child: Container(
-                    height: 50,
-                    color: Colors.transparent,
-                    child:
-                        terminalBriefFooterItem(temperature.toString(),'温度'))),
+              flex: 1,
+              child: Container(
+                height: 50,
+                color: Colors.transparent,
+                child:terminalBriefFooterItem(animationTemp,'温度'))),
             Expanded(
-                flex: 1,
-                child: Container(
-                    height: 50,
-                    color: Colors.transparent,
-                    child:
-                        terminalBriefFooterItem(speed.toString(),'转速'))),
+              flex: 1,
+              child: Container(
+                height: 50,
+                color: Colors.transparent,
+                child:terminalBriefFooterItem(animationSpeed,'转速'))),
             Expanded(
-                flex: 1,
-                child: Container(
-                    height: 50,
-                    color: Colors.transparent,
-                    child:
-                        terminalBriefFooterItem(waterStage.toString(),'水位'))),
+              flex: 1,
+              child: Container(
+                height: 50,
+                color: Colors.transparent,
+                child:terminalBriefFooterItem(animationWaterStage,'水位'))),
           ],
         ),
       ),
@@ -467,31 +495,35 @@ class _RuntimePageState extends State<RuntimePage> {
     );
   }
 
-  Widget terminalBriefFooterItem(String title , String subTitle) {
-    return title != null 
+  Widget terminalBriefFooterItem(Animation<double> animationDouble , String subTitle) {
+    return animationDouble != null 
         ? Container(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: <Widget>[
-                Center(
-                  child: Text(title ?? '',
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 22,
-                          fontFamily: AppTheme().numberFontName)),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            AnimatedBuilder(
+              animation: footerDataController,
+              builder: (BuildContext context, Widget child) => RichText(
+                text: TextSpan(
+                  children: 
+                  [
+                    TextSpan(text:animationDouble.value.toStringAsFixed(2),style: TextStyle(color: Colors.white,fontFamily: AppTheme().numberFontName,fontSize: 24)),
+                  ]
                 ),
-                Center(
-                  child: Text(subTitle ?? '',
-                      style: TextStyle(
-                          color: Colors.grey,
-                          fontSize: 15,
-                          fontFamily: AppTheme().numberFontName)),
-                ),
-              ],
+              ),
             ),
-          )
-        : Container();
+            Center(
+              child: Text(subTitle ?? '',
+                style: TextStyle(
+                  color: Colors.grey,
+                  fontSize: 15,
+                  fontFamily: AppTheme().numberFontName)),
+            ),
+          ],
+        ),
+      )
+    : Container();
   }
 
   // 事件列表

@@ -12,14 +12,14 @@ class AgentTestPage extends StatefulWidget {
 
 class _DebugAgentTestPageState extends State<AgentTestPage> {
 
-  final teminalAddress = '00020013';
+  final teminalAddress = '00020023';
   final accountName = 'admin';
 
   final loginPassword = '456';
-  final operationPassword = '123abc';
+  final operationPassword = '123456';
   
-  final teminalBase = '00020013';
-  final teminalPro  = '00020044';
+  final teminalBase = '00020023';
+  final teminalPro  = '00020023';
 
   // 实时运行参数任务
   AgentRunTimeDataLoopTimerTasker runtimTasker;
@@ -95,7 +95,7 @@ class _DebugAgentTestPageState extends State<AgentTestPage> {
 
       // 发送命令 00020013/AFN0C_F1/0
       AgentAPI.getCommandId(
-        address: '00020013',
+        address: teminalAddress,
         afn: '0C',
         func: 'F1',
         onSucc: (cmdId,msg){
@@ -111,7 +111,7 @@ class _DebugAgentTestPageState extends State<AgentTestPage> {
 
       AgentTask().sendCommandTask(
         context,
-        address: '00020013', 
+        address: teminalAddress, 
         afn: '0C',
         func: 'F1',
         onSucc: (msg) {

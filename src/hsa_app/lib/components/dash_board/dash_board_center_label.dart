@@ -38,7 +38,7 @@ class _DashBoardCenterLabelState extends State<DashBoardCenterLabel> with Ticker
   @override
   void initState() {
     init();
-    EventBird().on('NEAREST_DATA_POWER_STR', (_){
+    EventBird().on('NEAREST_DATA_POWER_STR', (dt){
       init();
     });
     super.initState();

@@ -1,48 +1,70 @@
 import 'package:flutter/material.dart';
 import 'package:hsa_app/config/app_theme.dart';
+import 'package:hsa_app/event/event_bird.dart';
+import 'package:hsa_app/model/model/runtime_adapter.dart';
 import 'package:native_color/native_color.dart';
 
-class  RuntimeProgressBar extends StatefulWidget {
-
-  final double barMaxWidth;
-  final double pencent;
+class  RuntimeProgressFactory extends StatefulWidget {
+  final double maxData;
   final String leftText;
-  final String valueText;
+  final int seconds;
+  final List<double> doubleList;
+  final double barMaxWidth;
 
-  const RuntimeProgressBar({Key key, this.barMaxWidth, this.pencent, this.leftText, this.valueText}) : super(key: key);
+
+  const RuntimeProgressFactory({Key key, this.barMaxWidth,this.maxData , this.leftText,this.doubleList,this.seconds}) : super(key: key);
 
   @override
-  _RuntimeProgressBarState createState() => _RuntimeProgressBarState();
+  _RuntimeProgressFactoryState createState() => _RuntimeProgressFactoryState();
 }
 
-class _RuntimeProgressBarState extends State<RuntimeProgressBar> {
+class _RuntimeProgressFactoryState extends State<RuntimeProgressFactory> with TickerProviderStateMixin{
   
-  bool isShowText = false;
+  AnimationController controller;
+  Animation<double> animation;
 
-  void showText() async {
-    await Future.delayed(Duration(milliseconds: 500));
-    if(mounted) {
-      setState(() {
-        isShowText = true;
-      });
-    }
+  double ratio;
+  double oldData ;
+  double newData ;
+  int seconds ;
+
+  void init(){
+    this.seconds = widget?.seconds ?? 5;
+
+    this.oldData = widget?.doubleList[0] ?? 0.0;
+    this.newData = widget?.doubleList[1] ?? 0.0;
+
+    controller = AnimationController(duration: Duration(seconds:seconds), vsync: this);
+    CurvedAnimation curvedAnimation = CurvedAnimation(parent: controller, curve: Curves.fastOutSlowIn);
+    animation = Tween<double>(begin: oldData, end: newData).animate(curvedAnimation);
+    controller.forward();
   }
 
   @override
   void initState() {
-    showText();
+    init();
+    EventBird().on('REFLASH_DATA_FACTORY', (dt){
+      init();
+    });
     super.initState();
   }
 
   @override
   void dispose() {
+    controller?.dispose();
+    EventBird().off('REFLASH_DATA_FACTORY');
     super.dispose();
   }
+
+  void math(){
+    var maxData = widget?.maxData;
+    ratio = RuntimeDataAdapter.caclulatePencent(this.newData,maxData);
+  } 
   
   @override
   Widget build(BuildContext context) {
-
-      final ratio = widget?.pencent ?? 0.0;
+      math();
+      //ratio = widget?.pencent ?? 0.0;
       final maxWidth = widget?.barMaxWidth ?? 0.0;
       
       bool isBeyond = false;
@@ -89,10 +111,10 @@ class _RuntimeProgressBarState extends State<RuntimeProgressBar> {
                   // 渐变颜色条 红色
                   isBeyond ? AnimatedContainer(
                         alignment: Alignment.centerRight,
-                        width: isShowText == true ? left : maxWidth,
-                        margin: EdgeInsets.only(left: isShowText == true ? left : 0),
+                        width: left ,
+                        margin: EdgeInsets.only(left: left ),
                         curve: Curves.easeOutSine,
-                        duration: Duration(milliseconds: 600),
+                        duration: Duration(seconds: this.seconds),
                         decoration: BoxDecoration(
                           gradient: LinearGradient(
                             colors: [
@@ -106,7 +128,7 @@ class _RuntimeProgressBarState extends State<RuntimeProgressBar> {
                   AnimatedContainer(
                       width: maxWidth - right,
                       curve: Curves.easeOutSine,
-                      duration: Duration(milliseconds: 500),
+                      duration: Duration(seconds: this.seconds),
                       decoration: BoxDecoration(
                         gradient: LinearGradient(
                           colors: [
@@ -120,23 +142,15 @@ class _RuntimeProgressBarState extends State<RuntimeProgressBar> {
                   // 文字交火动画
                   Positioned(
                     left: 0,right: 0,bottom: 0,
-                    child: AnimatedCrossFade(
-                        crossFadeState: isShowText ?  CrossFadeState .showSecond : CrossFadeState.showFirst,
-                        duration: Duration(milliseconds: 300),
-                        firstChild: Text(''),
-                        secondChild: Container(
-                            child: Center(
-                                child: Text(widget?.valueText ?? '',
-                                    style: TextStyle(
-                                      color: isBeyond
-                                          ? Color(0xfff8083a)
-                                          : Colors.white,
-                                      fontSize: 12,
-                                      fontFamily: AppTheme().numberFontName))))),
+                    child: Container(
+                      child: Center(
+                        child: AnimatedBuilder(
+                          animation: controller,
+                          builder: (BuildContext context, Widget child) => RichText(
+                            text: TextSpan(text:animation.value.toStringAsFixed(2),style: TextStyle(color: Colors.white,fontFamily: AppTheme().numberFontName,fontSize: 12)),
+                          ),
+                        ))),
                   ),
-
-
-
                 ],
               ),
             ),
