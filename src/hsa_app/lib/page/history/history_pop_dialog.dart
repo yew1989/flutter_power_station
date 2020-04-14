@@ -29,13 +29,13 @@ class _ControlModelDialogWidgetState extends State<HistoryEventDialogWidget> {
   Widget build(BuildContext context) {
     
     final ercFlag = widget?.ercFlag ?? '-1';
-    final isTickAll = ercFlag.compareTo('0');
+    final isTickAll = (ercFlag.compareTo('-1') == 0);
 
     List<HistoryPopDialogTile> tiles = [
        HistoryPopDialogTile('图表筛选', false,false),
        HistoryPopDialogTile('水位&功率图', true,true),
        HistoryPopDialogTile('日志筛选', false,false),
-       HistoryPopDialogTile('全部', true,(isTickAll == 0 ? true : false),ercFlag: '-1'),
+       HistoryPopDialogTile('全部', true,(isTickAll == true? true : false),ercFlag: '-1'),
     ];
     for (var type in widget.eventTypes) {
       final isTickERCFlag = ercFlag.compareTo('${type.ercFlag}');

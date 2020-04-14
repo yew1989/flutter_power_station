@@ -46,7 +46,7 @@ class _HistoryPageState extends State<HistoryPage> {
   String startDateTime;
   String endDateTime;
   // 事件标志
-  String ercFlag = '0';
+  String ercFlag = '-1';
 
   // 是否空视图
   bool isEventEmpty = false;
@@ -144,6 +144,8 @@ class _HistoryPageState extends State<HistoryPage> {
       startDateTime : apiStartDateTime,
       stationNos : stationNos,
       terminalAddress : address,
+      ercVersions: '0',
+      eventFlags: (this.ercFlag.compareTo('-1') == 0) ? null : this.ercFlag,
       limitSize : 10,
     );
 
