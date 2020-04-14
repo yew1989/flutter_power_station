@@ -586,18 +586,12 @@ class _RuntimePageState extends State<RuntimePage> {
     // 远程控制检测
     var isRemoteControl = false;
     // 如果是远程控制模式开关
-    if (taskName == TaskName.remoteSwitchRemoteModeOn ||
-        taskName == TaskName.remoteSwitchRemoteModeOff) {
-      isRemoteControl =
-          deviceTerminal.isOnLine == true &&
-              deviceTerminal.controlType == '智能';
+    if (taskName == TaskName.remoteSwitchRemoteModeOn || taskName == TaskName.remoteSwitchRemoteModeOff) {
+      isRemoteControl = deviceTerminal.isOnLine == true && deviceTerminal.nearestRunningData.controlType == '智能';
     }
     // 其他指令 必须在远程控制模式打开情况下 有效
     else {
-      isRemoteControl =
-          deviceTerminal.isOnLine == true &&
-              deviceTerminal.controlType == '智能' &&
-                  deviceTerminal.isAllowRemoteControl == true;
+      isRemoteControl = deviceTerminal.isOnLine == true && deviceTerminal.nearestRunningData.controlType == '智能' && deviceTerminal.nearestRunningData.isAllowRemoteControl == true;
     }
 
     if (isRemoteControl == false) {
@@ -615,13 +609,10 @@ class _RuntimePageState extends State<RuntimePage> {
           //检查操作密码
           AgentControlAPI.startTask(context,param,taskName,widget.address,pswd,
             (String succString) {
-              debugPrint(succString);
               finishProgressDialog(succString, true);
             }, (String failString) {
-              debugPrint(failString);
               finishProgressDialog(failString, false);
             }, (String loadingString) {
-               debugPrint(loadingString);
               updateProgressDialog(loadingString);
             }
           );
