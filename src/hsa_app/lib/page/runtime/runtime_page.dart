@@ -144,7 +144,6 @@ class _RuntimePageState extends State<RuntimePage> {
   void initState() {
     initProgressDialog();
     requestRunTimeData();
-    // EventBird().emit(AppEvent.onEnterRunTimePage);
     super.initState();
   }
 
@@ -152,7 +151,6 @@ class _RuntimePageState extends State<RuntimePage> {
   void dispose() {
     runtimTasker?.stop();
     Progresshud.dismiss();
-    // EventBird().emit(AppEvent.onExitRunTimePage);
     super.dispose();
   }
 
@@ -531,44 +529,46 @@ class _RuntimePageState extends State<RuntimePage> {
 
   @override
   Widget build(BuildContext context) {
-    final deviceWidth = MediaQuery.of(context).size.width;
+    
+    MediaQueryData mq = MediaQuery.of(context);
+    final deviceWidth = mq.size.width;
+    final deviceHeight = mq.size.height;
+    final statusBarHeight = mq.padding.top;
+    final bottomBarHeight = mq.padding.bottom;
+    final safeContentHeight =  deviceHeight - statusBarHeight - bottomBarHeight;
+    final safeHeight = safeContentHeight - kToolbarHeight - kBottomNavigationBarHeight;
     final isIphone5S = deviceWidth == 320.0 ? true : false;
-
+    final eventListHeight = safeHeight - (isIphone5S ? 350 : 400) - 140;
     return Scaffold(
       backgroundColor: Colors.transparent,
-      body: Container(
-        color: Colors.transparent,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children:[
-          Container(
-            height: isIphone5S ? 350 : 400,
-            child: SmartRefresher(
-              header: appRefreshHeader(),
-              enablePullDown: true,
-              onRefresh: requestRunTimeData,
-              controller: refreshController,
-              child: ListView(
-              children: <Widget>[
-                SizedBox(height: 12),
-                terminalBriefHeader(),
-                RuntimeSqureMasterWidget(
-                  isMaster: deviceTerminal?.isMaster ?? false,
-                  aliasName: widget.alias ?? '',
+      body: Stack(
+          children: [
+              Positioned(left: 0,right: 0,top: 0,child: Container(height: isIphone5S ? 350 : 400,
+                  child: SmartRefresher(
+                    header: appRefreshHeader(),
+                    enablePullDown: true,
+                    onRefresh: requestRunTimeData,
+                    controller: refreshController,
+                    child: ListView(
+                    children: <Widget>[
+                      SizedBox(height: 12),
+                      terminalBriefHeader(),
+                      RuntimeSqureMasterWidget(
+                        isMaster: deviceTerminal?.isMaster ?? false,
+                        aliasName: widget.alias ?? '',
+                      ),
+                      dashBoardWidget(),
+                      terminalBriefFooter(),
+                      SizedBox(height: 8),
+                      ],
+                    ),
+                  ),
                 ),
-                dashBoardWidget(),
-                terminalBriefFooter(),
-                SizedBox(height: 8),
-                ],
               ),
-            ),
-          ),
-          isIphone5S ? Container() :Expanded(child: eventList()),
-          RunTimeLightDarkShawdow(),
-          RunTimeOperationBoard(deviceTerminal,widget.address,(taskName,param) => requestRemoteControlCommand(context, taskName, param)),
-
-        ]),
+            Positioned(left: 0,right: 0,top: isIphone5S ? 350 : 400,child:isIphone5S ? Container() :Container(height:eventListHeight,child: Container(child: eventList()))),
+            Positioned(left: 0,right: 0,bottom: 139,child: RunTimeLightDarkShawdow()),
+            Positioned(left: 0,right: 0,bottom: 0,child: RunTimeOperationBoard(deviceTerminal,widget.address,(taskName,param) => requestRemoteControlCommand(context, taskName, param))),
+          ],
       ),
     );
   }
