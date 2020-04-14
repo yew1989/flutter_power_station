@@ -3,6 +3,7 @@ import 'package:hsa_app/api/agent/agent_task.dart';
 import 'package:hsa_app/components/public_tool.dart';
 import 'package:hsa_app/model/model/all_model.dart';
 import 'package:hsa_app/page/dialog/control_model_dialog.dart';
+import 'package:hsa_app/page/dialog/device_control_dialog.dart';
 import 'package:hsa_app/page/dialog/power_control_dialog.dart';
 import 'package:hsa_app/page/more/more_page.dart';
 import 'package:ovprogresshud/progresshud.dart';
@@ -271,12 +272,28 @@ class _RunTimeOperationBoardState extends State<RunTimeOperationBoard> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: <Widget>[
-                            // 自动
+                            // 自动/智能/
                             Expanded(
                               flex: 1,
-                              child: GestureDetector(
-                                onTap: () {
-                                  showDialog(
+                              child: Stack(
+                                children: <Widget>[
+                                  Center(
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    children: <Widget>[
+                                      Text('$currentStatusStr',style: TextStyle(color: Colors.white, fontSize: 15)),
+                                      SizedBox(
+                                        height: 14,
+                                        width: 14,
+                                        child: Image.asset('images/runtime/Time_list_icon.png'),
+                                      )
+                                    ],
+                                  ),
+                                ),
+                                
+                                GestureDetector(onTap: () {
+                                    showDialog(
                                     context: context,
                                     barrierDismissible: false,
                                     builder: (_) => ControlModelDialogWidget(
@@ -296,25 +313,8 @@ class _RunTimeOperationBoardState extends State<RunTimeOperationBoard> {
                                       },
                                     )
                                   );
-                                },
-                                child: Container(
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceEvenly,
-                                    crossAxisAlignment: CrossAxisAlignment.center,
-                                    children: <Widget>[
-                                      Text('$currentStatusStr',
-                                          style: TextStyle(
-                                              color: Colors.white, fontSize: 15)),
-                                      SizedBox(
-                                        height: 14,
-                                        width: 14,
-                                        child: Image.asset(
-                                            'images/runtime/Time_list_icon.png'),
-                                      )
-                                    ],
-                                  ),
-                                ),
+                                }),
+                                ],
                               ),
                             ),
                             SizedBox(width: 127),
@@ -404,17 +404,17 @@ class _RunTimeOperationBoardState extends State<RunTimeOperationBoard> {
                                 
                                 GestureDetector(
                                 onTap: () {
-                                  Progresshud.showInfoWithStatus('功能未开放,尽请期待');
-                                  return;
+                                  // Progresshud.showInfoWithStatus('功能未开放,尽请期待');
+                                  // return;
                                   // 暂时屏蔽该项功能
-                                //   showDialog(
-                                //       context: context,
-                                //       barrierDismissible: false,
-                                //       builder: (_) => DeviceControlDialog((taskName){
-                                //         if(widget.onSholdRequestRemoteCommand != null) {
-                                //           widget.onSholdRequestRemoteCommand(taskName,null);
-                                //         }
-                                //       }));
+                                  showDialog(
+                                      context: context,
+                                      barrierDismissible: false,
+                                      builder: (_) => DeviceControlDialog((taskName){
+                                        if(widget.onSholdRequestRemoteCommand != null) {
+                                          widget.onSholdRequestRemoteCommand(taskName,null);
+                                        }
+                                  }));
                                 },
                               ),
                                 ],
