@@ -144,7 +144,7 @@ class _HistoryPageState extends State<HistoryPage> {
       searchDirection : 'Backward',
       endDateTime : apiEndDateTime,
       startDateTime : apiStartDateTime,
-      stationNos : stationNos,
+      stationNos : this.isSingleDevice == true ? null :  stationNos ,
       terminalAddress : this.isSingleDevice == true ? address : null,
       ercVersions: '0',
       eventFlags: (this.ercFlag.compareTo('-1') == 0) ? null : this.ercFlag,
