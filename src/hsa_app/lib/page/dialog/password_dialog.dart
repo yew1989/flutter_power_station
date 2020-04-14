@@ -74,7 +74,7 @@ class PasswordDialog extends Dialog {
                       defaultBorderColor: Colors.black26,
                       hasTextBorderColor: Colors.black26,
                       maxLength: 6,
-                      keyboardType: TextInputType.number,
+                      keyboardType: TextInputType.text,
                       maskCharacter: "●",
                       onTextChanged: (text) {},
                       onDone: (text) {
