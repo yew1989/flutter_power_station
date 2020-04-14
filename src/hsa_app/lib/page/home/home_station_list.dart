@@ -1,6 +1,7 @@
 import 'dart:ffi';
 
 import 'package:badges/badges.dart';
+import 'package:flui/flui.dart';
 import 'package:flutter/material.dart';
 import 'package:hsa_app/components/empty_page.dart';
 import 'package:hsa_app/components/public_tool.dart';
@@ -385,7 +386,7 @@ class _HomeStationListState extends State<HomeStationList> {
   String buildEventCount(int eventCount) {
     if(eventCount == null) return '';
     if(eventCount == 0) return '';
-    if(eventCount > 99) return '99+';
+    if(eventCount > 99) return '99';
     return eventCount.toString();
   }
 
@@ -443,16 +444,16 @@ class _HomeStationListState extends State<HomeStationList> {
               // 报警状态
               Row(
                 children: [
-                Badge(
-                  position: BadgePosition.topRight(top: -8,right: -8),
-                  badgeColor: Colors.red,
-                  badgeContent: Text(eventStr,style: TextStyle(color: Colors.white,fontSize:12)),
-                  toAnimate: false,
-                  child: SizedBox(height: 24,width: 24,
+                  FLBadge(
+                    position: FLBadgePosition.topRight,
+                    shape: FLBadgeShape.circle,
+                    hidden: eventCount == 0,
+                    textStyle:TextStyle(color: Colors.white,fontSize:10) ,
+                    text: eventStr,
+                    color: Colors.red,
+                    child: SizedBox(height: 24,width: 24,
                     child: Image.asset('images/home/Home_Aalarm_icon.png'),
-                  ),
-                  showBadge: eventCount != 0,
-                ),
+                  )),
                 SizedBox(width: 8),
                 Text('报警',style: TextStyle(color: Colors.white,fontSize: 15)),
                 ]
