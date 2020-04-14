@@ -147,11 +147,11 @@ class AgentAPI {
       // 控制类命令 1 全部确认 2 全部否认 3 部分确认
       if(isControl == true) {
         if(fn == 1) {
-         if(onSucc != null) onSucc('操作成功(确认)');
+         if(onSucc != null) onSucc('操作成功');
          return ;
         }
         else {
-          if(onFail != null) onFail('操作失败(否认)');
+          if(onFail != null) onFail('操作失败');
           return ;
         }
       }

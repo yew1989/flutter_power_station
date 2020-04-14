@@ -89,7 +89,7 @@ class _RuntimePageState extends State<RuntimePage> with TickerProviderStateMixin
 
 
   // 初始化弹出框
-  void initProgressDialog() {
+  void initProgressDialog() async {
 
     progressDialog = ProgressDialog(context,type: ProgressDialogType.Normal, isDismissible: false, showLogs: false);
     
@@ -108,7 +108,7 @@ class _RuntimePageState extends State<RuntimePage> with TickerProviderStateMixin
   }
 
   // 更新弹出框
-  void updateProgressDialog(String message) {
+  void updateProgressDialog(String message) async{
     progressDialog.update(
         message: message,
         progress: 0.0,
@@ -121,10 +121,12 @@ class _RuntimePageState extends State<RuntimePage> with TickerProviderStateMixin
             color: Colors.black,
             fontSize: 19.0,
             fontWeight: FontWeight.normal));
+     progressDialog.show();
   }
 
   // 关闭弹出框
-  void finishProgressDialog(String message, bool isSuccess) {
+  void finishProgressDialog(String message, bool isSuccess) async{
+
     var progressWidget = isSuccess
         ? Icon(Icons.check_circle_outline, color: Colors.greenAccent, size: 46)
         : Icon(Icons.error_outline, color: Colors.redAccent, size: 46);
@@ -140,9 +142,9 @@ class _RuntimePageState extends State<RuntimePage> with TickerProviderStateMixin
             color: Colors.black,
             fontSize: 19.0,
             fontWeight: FontWeight.normal));
-    Future.delayed(Duration(seconds: 1), () {
-      progressDialog.dismiss();
-    });
+    progressDialog.show();
+    await Future.delayed(Duration(milliseconds: 1000));
+    progressDialog.dismiss();
   }
 
   // 操作密码输入错误弹窗
@@ -161,7 +163,7 @@ class _RuntimePageState extends State<RuntimePage> with TickerProviderStateMixin
             fontSize: 19.0,
             fontWeight: FontWeight.normal));
     progressDialog.show();
-    await Future.delayed(Duration(seconds: 1));
+    await Future.delayed(Duration(milliseconds: 1000));
     progressDialog.dismiss();
   }
 
@@ -169,7 +171,6 @@ class _RuntimePageState extends State<RuntimePage> with TickerProviderStateMixin
   void initState() {
     initProgressDialog();
     requestRunTimeData();
-    EventBird().emit(AppEvent.onEnterRunTimePage);
     super.initState();
   }
 
@@ -178,7 +179,6 @@ class _RuntimePageState extends State<RuntimePage> with TickerProviderStateMixin
     runtimTasker?.stop();
     footerDataController?.dispose();
     Progresshud.dismiss();
-    EventBird().emit(AppEvent.onExitRunTimePage);
     super.dispose();
   }
 
@@ -543,44 +543,46 @@ class _RuntimePageState extends State<RuntimePage> with TickerProviderStateMixin
 
   @override
   Widget build(BuildContext context) {
-    final deviceWidth = MediaQuery.of(context).size.width;
+    
+    MediaQueryData mq = MediaQuery.of(context);
+    final deviceWidth = mq.size.width;
+    final deviceHeight = mq.size.height;
+    final statusBarHeight = mq.padding.top;
+    final bottomBarHeight = mq.padding.bottom;
+    final safeContentHeight =  deviceHeight - statusBarHeight - bottomBarHeight;
+    final safeHeight = safeContentHeight - kToolbarHeight - kBottomNavigationBarHeight;
     final isIphone5S = deviceWidth == 320.0 ? true : false;
-
+    final eventListHeight = safeHeight - (isIphone5S ? 350 : 400) - 140;
     return Scaffold(
       backgroundColor: Colors.transparent,
-      body: Container(
-        color: Colors.transparent,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children:[
-          Container(
-            height: isIphone5S ? 350 : 400,
-            child: SmartRefresher(
-              header: appRefreshHeader(),
-              enablePullDown: true,
-              onRefresh: requestRunTimeData,
-              controller: refreshController,
-              child: ListView(
-              children: <Widget>[
-                SizedBox(height: 12),
-                terminalBriefHeader(),
-                RuntimeSqureMasterWidget(
-                  isMaster: deviceTerminal?.isMaster ?? false,
-                  aliasName: widget.alias ?? '',
+      body: Stack(
+          children: [
+              Positioned(left: 0,right: 0,top: 0,child: Container(height: isIphone5S ? 350 : 400,
+                  child: SmartRefresher(
+                    header: appRefreshHeader(),
+                    enablePullDown: true,
+                    onRefresh: requestRunTimeData,
+                    controller: refreshController,
+                    child: ListView(
+                    children: <Widget>[
+                      SizedBox(height: 12),
+                      terminalBriefHeader(),
+                      RuntimeSqureMasterWidget(
+                        isMaster: deviceTerminal?.isMaster ?? false,
+                        aliasName: widget.alias ?? '',
+                      ),
+                      dashBoardWidget(),
+                      terminalBriefFooter(),
+                      SizedBox(height: 8),
+                      ],
+                    ),
+                  ),
                 ),
-                dashBoardWidget(),
-                terminalBriefFooter(),
-                SizedBox(height: 8),
-                ],
               ),
-            ),
-          ),
-          isIphone5S ? Container() :Expanded(child: eventList()),
-          RunTimeLightDarkShawdow(),
-          RunTimeOperationBoard(deviceTerminal,widget.address,(taskName,param) => requestRemoteControlCommand(context, taskName, param)),
-
-        ]),
+            Positioned(left: 0,right: 0,top: isIphone5S ? 350 : 400,child:isIphone5S ? Container() :Container(height:eventListHeight,child: Container(child: eventList()))),
+            Positioned(left: 0,right: 0,bottom: 139,child: RunTimeLightDarkShawdow()),
+            Positioned(left: 0,right: 0,bottom: 0,child: RunTimeOperationBoard(deviceTerminal,widget.address,(taskName,param) => requestRemoteControlCommand(context, taskName, param))),
+          ],
       ),
     );
   }
@@ -598,18 +600,12 @@ class _RuntimePageState extends State<RuntimePage> with TickerProviderStateMixin
     // 远程控制检测
     var isRemoteControl = false;
     // 如果是远程控制模式开关
-    if (taskName == TaskName.remoteSwitchRemoteModeOn ||
-        taskName == TaskName.remoteSwitchRemoteModeOff) {
-      isRemoteControl =
-          deviceTerminal.isOnLine == true &&
-              deviceTerminal.controlType == '智能';
+    if (taskName == TaskName.remoteSwitchRemoteModeOn || taskName == TaskName.remoteSwitchRemoteModeOff) {
+      isRemoteControl = deviceTerminal.isOnLine == true && deviceTerminal.nearestRunningData.controlType == '智能';
     }
     // 其他指令 必须在远程控制模式打开情况下 有效
     else {
-      isRemoteControl =
-          deviceTerminal.isOnLine == true &&
-              deviceTerminal.controlType == '智能' &&
-                  deviceTerminal.isAllowRemoteControl == true;
+      isRemoteControl = deviceTerminal.isOnLine == true && deviceTerminal.nearestRunningData.controlType == '智能' && deviceTerminal.nearestRunningData.isAllowRemoteControl == true;
     }
 
     if (isRemoteControl == false) {
@@ -617,8 +613,7 @@ class _RuntimePageState extends State<RuntimePage> with TickerProviderStateMixin
       return;
     }
 
-    updateProgressDialog('正在操作中');
-    await Future.delayed(Duration(milliseconds: 600));
+    await Future.delayed(Duration(milliseconds: 300));
 
     showDialog(
       context: context,
