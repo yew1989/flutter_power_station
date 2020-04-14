@@ -85,11 +85,6 @@ class _StationTabbarPageState extends State<StationTabbarPage> {
     super.dispose();
   }
 
-  void onTapPushToHistoryPage(StationInfo info) async {
-    final navTitle = info?.stationName ?? '';
-    pushToPage(context, HistoryPage(title: navTitle,stationInfo: info));
-    
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -108,7 +103,7 @@ class _StationTabbarPageState extends State<StationTabbarPage> {
               actions: <Widget>[
 
                 GestureDetector(
-                onTap: stationInfo?.waterTurbines == null ? null : () => onTapPushToHistoryPage(stationInfo),
+                onTap: stationInfo?.waterTurbines == null ? null : () => pushToPage(context, HistoryPage(stationInfo: stationInfo, isSingleDevice: false)),
                 child: Center(child: Text('历史分析',style:TextStyle(color: Colors.white, fontSize: 16)))),
                 
                 SizedBox(width: 20),

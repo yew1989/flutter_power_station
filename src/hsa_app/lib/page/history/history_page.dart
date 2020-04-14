@@ -23,13 +23,11 @@ import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:intl/intl.dart';
 
 class HistoryPage extends StatefulWidget {
-  @required final StationInfo stationInfo;
-  final String address;
-  final String title;
-  //final double ratedActivePower;
-  //final double waterStageAlarmValue;
 
-  const HistoryPage({Key key, this.address,this.stationInfo, this.title}) : super(key: key);
+  final StationInfo stationInfo;
+  final bool isSingleDevice; // 是否是单台设备
+  final String address;
+  const HistoryPage({Key key, this.address,@required this.stationInfo,@required  this.isSingleDevice}) : super(key: key);
 
   @override
   _HistoryPageState createState() => _HistoryPageState();
@@ -60,6 +58,9 @@ class _HistoryPageState extends State<HistoryPage> {
   // 曲线点
   List<DateValuePoint> points = List<DateValuePoint>();
 
+  // 是否是单台设备
+  bool isSingleDevice = false;
+
   // 获取日期格式化
   DateFormat getDateFormat() {
     if(segmentIndex == 0) return DateFormat.Hm();
@@ -79,6 +80,7 @@ class _HistoryPageState extends State<HistoryPage> {
 
   @override
   void initState() {
+    this.isSingleDevice = widget?.isSingleDevice ?? false;
     super.initState();
     reqeustGetEventTypes();
     requestTodayData();
@@ -143,7 +145,7 @@ class _HistoryPageState extends State<HistoryPage> {
       endDateTime : apiEndDateTime,
       startDateTime : apiStartDateTime,
       stationNos : stationNos,
-      terminalAddress : address,
+      terminalAddress : this.isSingleDevice == true ? address : null,
       ercVersions: '0',
       eventFlags: (this.ercFlag.compareTo('-1') == 0) ? null : this.ercFlag,
       limitSize : 10,
@@ -156,7 +158,9 @@ class _HistoryPageState extends State<HistoryPage> {
 
     this.isChartLoadFinsh = false;
     final stationInfo = widget.stationInfo;
-    //final address = widget.address ?? '';
+    final stationNos = stationInfo?.stationNo ?? '';
+    final address = widget?.address ?? '';
+
     var  apiStartDateTime = startDateTime + ' 00:00:00';
     var  apiEndDateTime = endDateTime + ' 23:59:59';
 
@@ -167,7 +171,9 @@ class _HistoryPageState extends State<HistoryPage> {
       apiEndDateTime = formatDate(now, [yyyy, '-', mm, '-', dd,' ',hh, ':', nn, ':', ss]);
     }
 
-    API.getTurbineWaterAndPowerAndState(stationNo: stationInfo.stationNo,
+    API.getTurbineWaterAndPowerAndState(
+      stationNo : stationNos,
+      terminalAddress : this.isSingleDevice == true ? address : null,
       startDateTime:apiStartDateTime,endDateTime:apiEndDateTime,
       onSucc: (turbinelist){
       

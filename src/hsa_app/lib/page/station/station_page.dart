@@ -112,17 +112,13 @@ class _StationPageState extends State<StationPage> {
           }).toList();
         }
       });
-      //getRealtimeData();
+      getRealtimeData();
     }, onFail: (String msg) {
       refreshController.refreshFailed();
       Progresshud.showInfoWithStatus('获取电站信息失败');
     });
   }
-
-  void onTapPushToHistoryPage(StationInfo info) async {
-    pushToPage(context, HistoryPage(title: '历史分析',stationInfo:info));
-  }
-
+  
   //实时数据获取
   void getRealtimeData() { 
     stationTasker = AgentStationInfoDataLoopTimerTasker(
@@ -132,8 +128,8 @@ class _StationPageState extends State<StationPage> {
     stationTasker.start((stationInfo){
       setState(() {
         // 若开启此处,用于假数据调试动画
-        this.stationInfo = AgentFake.fakeStationInfo(stationInfo);
-        //this.stationInfo = stationInfo;
+        // this.stationInfo = AgentFake.fakeStationInfo(stationInfo);
+        this.stationInfo = stationInfo;
         profitList.add(stationInfo.totalMoney);
         if(profitList.length > 2){
           profitList.removeAt(0);

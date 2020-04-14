@@ -355,10 +355,6 @@ class _RuntimePageState extends State<RuntimePage> with TickerProviderStateMixin
     );
   }
 
-  void onTapPushToHistoryPage(String navTitle, String address, StationInfo stationInfo) async {
-    pushToPage(context, HistoryPage(address:address,stationInfo: stationInfo));
-  }
-
   // 仪表盘
   Widget dashBoardWidget() {
 

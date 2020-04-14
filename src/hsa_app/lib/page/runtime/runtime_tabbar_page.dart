@@ -48,9 +48,6 @@ class _RuntimeTabbarPageState extends State<RuntimeTabbarPage> {
     super.dispose();
   }
 
-   void onTapPushToHistoryPage(DeviceTerminal devices,StationInfo stationInfo) async {
-    pushToPage(context, HistoryPage(title: '历史分析',address: devices.terminalAddress,stationInfo:stationInfo));
-  }
   
 
   @override
@@ -70,7 +67,7 @@ class _RuntimeTabbarPageState extends State<RuntimeTabbarPage> {
                   fontSize: AppTheme().navigationAppBarFontSize)),
           actions: <Widget>[
             GestureDetector(
-                onTap: () => onTapPushToHistoryPage(currentDevice,stationInfo),
+                onTap: () => pushToPage(context, HistoryPage(address: currentDevice.terminalAddress,stationInfo:stationInfo, isSingleDevice: true)),
                 child: Center(child: Text('历史分析',style: TextStyle(color: Colors.white, fontSize: 16)))),
             SizedBox(width: 20),
           ],
