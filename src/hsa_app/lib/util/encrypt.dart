@@ -7,36 +7,9 @@ import 'package:convert/convert.dart';
 
 class LDEncrypt{
   
-  // 老版本 APP 的公钥
-  static const oldAppPublicKeyPath = 'keys/oldapp.pem';
-  // 新版本 APP 的公钥
-  static const publicKeyPath = 'keys/public.pem';
+  static const publicKeyPath = 'keys/public.pem'; // 公钥路径
 
-  // 老的 APP RSA 加密
-  static Future<String> encryptedRSAWithOldAppKey(BuildContext context,String plain) async {
-    var list = utf8.encode(plain);
-    final publicKeyFile = await DefaultAssetBundle.of(context).loadString(LDEncrypt.oldAppPublicKeyPath);
-    final parser = Encrypt.RSAKeyParser();
-    final RSAPublicKey publicKey = parser.parse(publicKeyFile);
-    final encrypter = Encrypt.Encrypter(Encrypt.RSA(publicKey: publicKey));
-    final encrypted = encrypter.encryptBytes(list);
-    return LDEncrypt.byteToHexString(encrypted.bytes);
-  }
-
-  // 转 hex文档
-  static String byteToHexString(List<int> bytes) {
-    final StringBuffer buffer = StringBuffer();
-    for (int part in bytes) {
-      if (part & 0xff != part) {
-        throw FormatException("$part is not a byte integer");
-      }
-      buffer.write('${part < 16 ? '0' : ''}${part.toRadixString(16)}');
-    }
-    return buffer.toString().toUpperCase();
-  }
-
-
-
+  // 用 RSA 加密 for LEAD
   static Future<String> encryptedRSA(BuildContext context,String plain) async {
     final publicKeyFile = await DefaultAssetBundle.of(context).loadString(LDEncrypt.publicKeyPath);
     final parser = Encrypt.RSAKeyParser();
@@ -46,8 +19,9 @@ class LDEncrypt{
     return encrypted.base64;
   }
 
-  static Future<String> encryptedAES(BuildContext context,String plain) async { 
-    String cryptoKey= "a23deb1b79f344068a345995fb2fafc7";
+  // 用 AES 加密 for LEAD
+  static Future<String> encryptedAES(BuildContext context,String plain,String cryptoKey) async { 
+
     final key = Encrypt.Key.fromUtf8(cryptoKey);
     var  ivstring =  '';
     for(int i = 0; i < cryptoKey.length ; i ++) {
@@ -57,17 +31,19 @@ class LDEncrypt{
     var aes = Encrypt.AES(key,mode:Encrypt.AESMode.cbc);
     final encrypter = Encrypt.Encrypter(aes);
     final encrypted = encrypter.encrypt(plain, iv: iv);
-    print(encrypted.base64); 
-    // final s = 'MjODiF5eXcn/EyOfjSRwn8YlNZXNlJXoDKW6GC/QUqw=';
-    final decrypted = encrypter.decrypt64(plain,iv: iv);
-
-    print(decrypted); // Lore
-
-    return  encrypted.base64;
+    return encrypted.base64;
   }
 
+  // Md5 加密 for LEAD
+  static String encodeMd5(String plain) {
+    var content = Utf8Encoder().convert(plain);
+    var digest = md5.convert(content);
+    final res = hex.encode(digest.bytes)?.substring(8, 8 + 16);
+    return res;
+  }
 
-  static String encryptedMD5Sign(BuildContext context,String plain)  {
+  // MD5 签名 For LEAD
+  static String signMD5(BuildContext context,String plain)  {
     var content = Utf8Encoder().convert(plain);
     var digest = md5.convert(content);
     var res = hex.encode(digest.bytes);
@@ -92,12 +68,16 @@ class LDEncrypt{
     return string;
   }
 
-
-  static String encryptedMd5Pwd(String plain) {
-    var content = Utf8Encoder().convert(plain);
-    var digest = md5.convert(content);
-    final res = hex.encode(digest.bytes)?.substring(8, 8 + 16);
-    return res;
+  // 十六进制 Byte Hex 转 Hex String
+  static String byteToHexString(List<int> bytes) {
+    final StringBuffer buffer = StringBuffer();
+    for (int part in bytes) {
+      if (part & 0xff != part) {
+        throw FormatException("$part is not a byte integer");
+      }
+      buffer.write('${part < 16 ? '0' : ''}${part.toRadixString(16)}');
+    }
+    return buffer.toString().toUpperCase();
   }
 
 

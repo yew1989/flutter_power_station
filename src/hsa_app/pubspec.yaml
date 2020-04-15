@@ -64,8 +64,10 @@ flutter:
   uses-material-design: true
 
   assets:
-    - keys/oldapp.pem
+    
+    # 身份验证公钥
     - keys/public.pem
+    # 图片资源
     - images/
     - images/common/
     - images/history/
