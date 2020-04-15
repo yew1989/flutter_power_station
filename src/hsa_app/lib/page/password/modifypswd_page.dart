@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:hsa_app/api/apis/api_login.dart';
-import 'package:hsa_app/api/share_instance.dart';
 import 'package:hsa_app/service/umeng_analytics.dart';
 import 'package:hsa_app/theme/theme_gradient_background.dart';
 import 'package:hsa_app/components/public_tool.dart';
+import 'package:hsa_app/util/share.dart';
 import 'package:native_color/native_color.dart';
 
 class ModifyPswdPage extends StatefulWidget {
+  final String userName;
+  const ModifyPswdPage(this.userName,{Key key, }) : super(key: key);
   @override
   _ModifyPswdPageState createState() => _ModifyPswdPageState();
 }
@@ -18,8 +20,8 @@ class _ModifyPswdPageState extends State<ModifyPswdPage> {
 
   @override
   void initState() {
-    UMengAnalyticsService.enterPage('修改密码');
     super.initState();
+    UMengAnalyticsService.enterPage('修改密码');
   }
 
   @override
@@ -116,13 +118,13 @@ class _ModifyPswdPageState extends State<ModifyPswdPage> {
       showToast('请输入新密码');
       return;
     }
-
-    if (oldText.length < 6 || oldText.length > 20) {
-      showToast('请输入6到20位旧密码');
+    
+    if (oldText.length < 3 || oldText.length > 20) {
+      showToast('请输入3到20位旧密码');
       return;
     }
-    if (newText.length < 6 || newText.length > 20) {
-      showToast('请输入6到20位新密码');
+    if (newText.length < 3 || newText.length > 20) {
+      showToast('请输入3到20位新密码');
       return;
     }
 
@@ -146,22 +148,22 @@ class _ModifyPswdPageState extends State<ModifyPswdPage> {
 
   //  修改登录密码请求
   void httpModifyLoginPswd(BuildContext context) async {
-    var oldWord = oldController.text;
-    var newWord = againController.text;
-    //var result = await API.modifyPswd(oldWord, newWord);
-    var result;
-    var accountName = ShareInstance.getInstance().accountName;
-    APILogin.resetLoginPassword(context,accountName:accountName , oldLoginPwd: oldWord ,newLoginPwd:newWord,onSucc: (account,msg){
-      var log = '密码修改成功!';
-    },onFail:(msg){
-    });
-
-    if (result.success) {
-      // showToast('密码修改成功');
+    final oldWord = oldController.text;
+    final newWord = againController.text;
+    final userName = widget?.userName ?? '';
+    if(userName.length == 0) {
+      showToast('请检查账号信息');
+      return ;
+    }
+    APILogin.resetLoginPassword(context,accountName:userName , oldLoginPwd: oldWord ,newLoginPwd:newWord,onSucc: (result,msg){
+      // 保存新密码
+      ShareManager.instance.savaUserPassword(newWord);
+      showToast('密码修改成功');
       Future.delayed(Duration(seconds: 1), () {
         Navigator.of(context).pop();
       });
-      return;
-    }
+    },onFail:(msg){
+      showToast('密码修改失败');
+    });
   }
 }
