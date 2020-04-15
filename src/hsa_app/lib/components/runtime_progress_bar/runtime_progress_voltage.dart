@@ -31,8 +31,7 @@ class _RuntimeProgressVoltageState extends State<RuntimeProgressVoltage> with Ti
   bool isBeyond = false;
   double right = 0;
   double left = 0;
-  // int redT = 0;
-  // int blueT = 0;
+  var beyond;
   int t = 0;
 
   var maxWidth;
@@ -70,36 +69,15 @@ class _RuntimeProgressVoltageState extends State<RuntimeProgressVoltage> with Ti
     ratio = RuntimeDataAdapter.caclulatePencent(this.newData,maxData);
     maxWidth = widget?.barMaxWidth ?? 0.0;
 
-    if(oldData < newData){
-      if(maxData - oldData > 0 ){
-        t = ((maxData - oldData) / (newData - oldData) * seconds * 1000).round();
-      } else{
-        t = 0;
-      }
-    }else if(oldData > newData){
-      if(oldData - maxData > 0){
-        t = ((oldData - maxData) / (oldData - newData) * seconds * 1000).round();
-      }else{
-        t = 0;
-      }
-    }
-     
-
     // 超量程
     if(ratio > 1.0) {
       isBeyond = true;
-      var beyond = ratio - 1.0;
-      // 为了好看,超量程部分放大3倍
-      // beyond = beyond * 3;
-      //final rightRatio = 1.0 - beyond;
+      beyond = ratio - 1.0;
+      if(beyond > 1.0) {
+        beyond = 1.0;
+      }
       right = maxWidth * beyond;
-      //right = 0;
       left =  maxWidth - (maxWidth *  beyond);
-      
-      // setState(() {
-      //   right = maxWidth * beyond;
-      //   t = seconds * 1000 - t;
-      // });
     }
     // 正常发电
     else {
@@ -107,36 +85,14 @@ class _RuntimeProgressVoltageState extends State<RuntimeProgressVoltage> with Ti
       right = maxWidth * (1 - ratio);
     }
   } 
-  
-  Widget red(){
-    math();
-    //await Future.delayed(Duration(microseconds:blueT));
-    return AnimatedContainer(
-      alignment: Alignment.centerRight,
-      // width: left ,
-      margin: EdgeInsets.only(right: 0 ,left:  left),
-      curve: Curves.easeOutSine,
-      duration: Duration(seconds:seconds ),
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [
-            Color(0xfff8083a), 
-            Color(0x99f8083a), 
-          ],
-        ),
-      ),
-    );
-  }
 
-    Widget redAlaph(){
-    // math();
-    //await Future.delayed(Duration(microseconds:blueT));
+  Widget redAlaph(){
     return AnimatedContainer(
       alignment: Alignment.centerRight,
       width: maxWidth ,
       margin: EdgeInsets.only(right: 0 ,left:  0),
       curve: Curves.easeOutSine,
-      duration: Duration(seconds:0 ),
+      duration: Duration(seconds:seconds ),
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: [
@@ -148,17 +104,14 @@ class _RuntimeProgressVoltageState extends State<RuntimeProgressVoltage> with Ti
     );
   }
 
-
   Widget blue(){
-    math();
-    //await Future.delayed(Duration(microseconds:redT));
     return AnimatedContainer(
-        width: maxWidth - right,
-        curve: Curves.easeOutSine,
-        duration: Duration(milliseconds: seconds*1000),
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [
+      width: maxWidth - right,
+      curve: Curves.easeOutSine,
+      duration: Duration(milliseconds: seconds*1000),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: [
             HexColor('4778f7'), 
             HexColor('66f7f9'), 
           ],
@@ -194,12 +147,9 @@ class _RuntimeProgressVoltageState extends State<RuntimeProgressVoltage> with Ti
                 children: <Widget>[
 
                   // 渐变颜色条 红色
-                  // red() ,
                   redAlaph(),
                   // 渐变颜色条 蓝色
                   blue(),
-
-                  
 
                   // 文字交火动画
                   Positioned(
@@ -213,7 +163,6 @@ class _RuntimeProgressVoltageState extends State<RuntimeProgressVoltage> with Ti
                           ),
                         ))),
                   ),
-
                 ],
               ),
             ),

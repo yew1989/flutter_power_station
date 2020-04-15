@@ -16,16 +16,13 @@ import 'package:hsa_app/components/runtime_progress_bar/runtime_progress_voltage
 import 'package:hsa_app/components/shawdow_widget.dart';
 import 'package:hsa_app/components/smart_refresher_style.dart';
 import 'package:hsa_app/config/app_theme.dart';
-import 'package:hsa_app/event/app_event.dart';
 import 'package:hsa_app/event/event_bird.dart';
 import 'package:hsa_app/model/model/all_model.dart';
 import 'package:hsa_app/model/model/runtime_adapter.dart';
 import 'package:hsa_app/page/dialog/password_dialog.dart';
-import 'package:hsa_app/page/history/history_page.dart';
 import 'package:hsa_app/page/runtime/runtime_event_tile.dart';
 import 'package:hsa_app/page/runtime/runtime_operation_board.dart';
 import 'package:hsa_app/page/runtime/runtime_squre_master_widget.dart';
-import 'package:hsa_app/components/public_tool.dart';
 import 'package:ovprogresshud/progresshud.dart';
 import 'package:progress_dialog/progress_dialog.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
@@ -403,36 +400,36 @@ class _RuntimePageState extends State<RuntimePage> with TickerProviderStateMixin
 
               // 右侧大区
               Expanded(
-                  flex: 1,
-                  child: Container(
-                    color: Colors.transparent,
-                    child: Stack(
-                      children: <Widget>[
-                        // 左侧文字
-                        Positioned(
-                          left: 113,
-                          top: 10,
-                          child: Container(
-                            width: 50,
-                            height: 50,
-                            child: DashBoardOpen(openList),
-                          ),
+                flex: 1,
+                child: Container(
+                  color: Colors.transparent,
+                  child: Stack(
+                    children: <Widget>[
+                      // 左侧文字
+                      Positioned(
+                        left: 113,
+                        top: 10,
+                        child: Container(
+                          width: 50,
+                          height: 50,
+                          child: DashBoardOpen(openList),
                         ),
+                      ),
 
-                        // 右侧一根引出线
-                        Positioned(
-                          left: 84,
-                          top: 37,
-                          child: Container(
-                            height: 20,
-                            width: 35,
-                            child: Image.asset(
-                                'images/runtime/Time_light_line2.png'),
-                          ),
+                      // 右侧一根引出线
+                      Positioned(
+                        left: 84,
+                        top: 37,
+                        child: Container(
+                          height: 20,
+                          width: 35,
+                          child: Image.asset(
+                              'images/runtime/Time_light_line2.png'),
                         ),
-                      ],
-                    ),
-                  )),
+                      ),
+                    ],
+                  ),
+                )),
             ],
           ),
           // 中央仪表盘

@@ -64,29 +64,63 @@ class _RuntimeProgressCurrentState extends State<RuntimeProgressCurrent> with Ti
   @override
   Widget build(BuildContext context) {
 
-      math();
+    math();
 
-      final maxWidth = widget?.barMaxWidth ?? 0.0;
-      
-      bool isBeyond = false;
-      double right = 0;
-      double left = 0;
+    final maxWidth = widget?.barMaxWidth ?? 0.0;
+    
+    bool isBeyond = false;
+    double right = 0;
+    double left = 0;
 
-      // 超量程
-      if(ratio > 1.0) {
-        isBeyond = true;
-        var beyond = ratio - 1.0;
-        // 为了好看,超量程部分放大3倍
-        beyond = beyond * 3;
-        final rightRatio = 1.0 - beyond;
-        right = maxWidth * (1.0 - rightRatio);
-        left =  maxWidth - (maxWidth *  beyond);
+    // 超量程
+    if(ratio > 1.0) {
+      isBeyond = true;
+      var beyond = ratio - 1.0;
+      if(beyond > 1.0) {
+        beyond = 1.0;
       }
-      // 正常发电
-      else {
-        isBeyond = false;
-        right = maxWidth * (1 - ratio);
-      }
+      right = maxWidth * beyond;
+      left =  maxWidth - (maxWidth *  beyond);
+    }
+    // 正常发电
+    else {
+      isBeyond = false;
+      right = maxWidth * (1 - ratio);
+    }
+
+    Widget redAlaph(){
+      return AnimatedContainer(
+        alignment: Alignment.centerRight,
+        width: maxWidth ,
+        margin: EdgeInsets.only(right: 0 ,left:  0),
+        curve: Curves.easeOutSine,
+        duration: Duration(seconds:seconds ),
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [
+              isBeyond ? Color(0xfff8083a) : Colors.transparent, 
+              isBeyond ? Color(0x99f8083a) : Colors.transparent, 
+            ],
+          ),
+        ),
+      );
+    }
+
+    Widget blue(){
+      return AnimatedContainer(
+        width: maxWidth - right,
+        curve: Curves.easeOutSine,
+        duration: Duration(milliseconds: seconds*1000),
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [
+              HexColor('4778f7'), 
+              HexColor('66f7f9'), 
+            ],
+          ),
+        ),
+      );
+    }
 
     return Center(
       child: Row(
@@ -110,36 +144,10 @@ class _RuntimeProgressCurrentState extends State<RuntimeProgressCurrent> with Ti
                 children: <Widget>[
 
                   // 渐变颜色条 红色
-                  isBeyond ? AnimatedContainer(
-                    alignment: Alignment.centerRight,
-                    width: left ,
-                    margin: EdgeInsets.only(left: left ),
-                    curve: Curves.easeOutSine,
-                    duration: Duration(seconds: this.seconds),
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        colors: [
-                          Color(0xfff8083a), 
-                          Color(0x99f8083a), 
-                        ],
-                      ),
-                    ),
-                  ): Container(),
+                  redAlaph(),
 
                   // 渐变颜色条 蓝色
-                  AnimatedContainer(
-                    width: maxWidth - right,
-                    curve: Curves.easeOutSine,
-                    duration: Duration(seconds: this.seconds),
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        colors: [
-                        HexColor('4778f7'), 
-                        HexColor('66f7f9'), 
-                        ],
-                      ),
-                    ),
-                  ),
+                  blue(),
 
                   // 文字交火动画
                   Positioned(
