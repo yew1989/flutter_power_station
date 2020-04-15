@@ -72,7 +72,7 @@ class _WebViewPageState extends State<WebViewPage> {
   @override
   Widget build(BuildContext context) {
 
-    debugPrint('🌍 🌍 🌍 WEBVIEW 🌍 🌍 🌍: '+widget.url);
+    debugPrint('🌍浏览器地址: '+widget.url);
   
     return Stack(
       children: [

@@ -57,7 +57,7 @@ class LoginPageState extends State<LoginPage> {
       var token = ShareInstance.getInstance().auth;
       if (token.length > 0) {
 
-      debugPrint('🎉 登录成功:' + token);
+      debugPrint('✅登录成功:' + token);
 
       ShareManager.instance.saveToken(token);
       ShareManager.instance.saveUserName(usrCtrl.text);
@@ -76,11 +76,11 @@ class LoginPageState extends State<LoginPage> {
          Navigator.of(context,rootNavigator: true).pushAndRemoveUntil(route, (route) => route == null);
       return;
     }
-    debugPrint('❌:登录失败');
+    debugPrint('❌登录失败');
     Progresshud.dismiss();
     Progresshud.showInfoWithStatus('登录失败,请检查您的信息');
     },onFail: (msg){
-      debugPrint('❌:登录失败');
+      debugPrint('❌登录失败');
       Progresshud.dismiss();
       Progresshud.showInfoWithStatus('登录失败,请检查网络');
     });

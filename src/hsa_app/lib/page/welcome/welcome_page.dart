@@ -99,9 +99,7 @@ class _WelcomePageState extends State<WelcomePage> with WidgetsBindingObserver {
   // 获取版本管理信息
   void requestPackageInfo(BuildContext context) {
     // 获取版本信息
-    LeanCloudAPI.getPackageVersionInfo(LeanCloudEnv.test,(Package pack, String msg) {
-      debugPrint(' 🎉 版本信息文件获取成功');
-      debugPrint(pack.toJson().toString());
+    LeanCloudAPI.getPackageVersionInfo(AppConfig.getInstance().env,(Package pack, String msg) {
       setState(() {
         displayVersion   = pack?.displayVersion ?? '';
         displayBuild     = pack?.displayBuild ?? '';
@@ -122,30 +120,26 @@ class _WelcomePageState extends State<WelcomePage> with WidgetsBindingObserver {
     await Future.delayed(Duration(seconds: 3));
     requestPackageInfo(context);
   }
-  // 初始化友盟 
+
+  // 初始化友盟统计
   void initUmengService() async{
     await Future.delayed(Duration(milliseconds: 500));
     UMengAnalyticsService.init();
   }
 
-  // 推送
+  // 初始化极光推送
   void initJpush() async {
-    await Future.delayed(Duration(milliseconds: 100));
+    await Future.delayed(Duration(milliseconds: 500));
     jpush = JpushService.init();
   }
 
   @override
   void initState() {
+    super.initState();
     DeviceInspector.inspectDevice(context);
+    requestPackageInfo(context);
     initUmengService();
     initJpush();
-    requestPackageInfo(context);
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
   }
 
   @override

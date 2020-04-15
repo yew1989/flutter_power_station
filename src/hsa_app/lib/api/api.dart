@@ -1,10 +1,7 @@
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:hsa_app/api/api_helper.dart';
 import 'package:hsa_app/model/model/all_model.dart';
 import 'package:hsa_app/model/response/all_resp.dart';
-
-
 
 // 返回回调 : 
 typedef HttpSuccMsgCallback = void Function(String msg);
@@ -245,37 +242,6 @@ class API {
 
     },onFail);
   }
-
-
-  //彩云天气
-  static void getWeather({num longitude, num latitude,WeatherCallback onSucc,HttpFailCallback onFail}) async { 
-
-    final long = longitude ?? 0.0;
-    final lat  = latitude ?? 0.0;
-
-    final path = 'https://api.caiyunapp.com/'+wVersion+'/'+wToken+'/'+long.toString()+','+lat.toString()+'/realtime.json';
-    
-    HttpHelper.getHttpCommon(path, null, (map,_) {
-
-      var resp = WeatherResp.fromJson(map);
-      if(onSucc != null) onSucc(resp.result.realtime);
-    },onFail);
-  }
-  // Touch 外部环境
-  static Future<String> touchNetWork() async {
-    try {
-      final path = 'http://www.baidu.com';
-      Response response = await Dio().get(path);
-      if (response.statusCode != 200) {
-        return null;
-      }
-      return '';
-    } catch (e) {
-      print(e);
-      return null;
-    }
-}
-  
 }
   
 

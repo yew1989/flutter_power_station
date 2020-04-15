@@ -75,12 +75,8 @@ class LeanCloudAPI {
     else {
       envValue = 'unknow';
     }
-
     whereMap['env'] = envValue;
-
     var whereStr = json.encode(whereMap);
-
-    debugPrint(whereStr);
     return whereStr;
   }
 
