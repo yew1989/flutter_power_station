@@ -1,4 +1,5 @@
 import 'package:badges/badges.dart';
+import 'package:flui/flui.dart';
 import 'package:flutter/material.dart';
 import 'package:hsa_app/model/model/all_model.dart';
 import 'package:hsa_app/event/app_event.dart';
@@ -192,13 +193,17 @@ class _StationDeviceListTileState extends State<StationDeviceListTile> with Tick
                       ],
                     ),
 
-                    // 告警铃
-                    eventCount != 0 ? Badge(
-                      badgeContent: Center(child: Text(eventStr,style: TextStyle(color: Colors.white,fontSize: 12))),
-                      position: BadgePosition.topRight(top: -12,right: -4),
-                      badgeColor: Colors.red,toAnimate: false,
-                      child:  SizedBox(height: 24,width: 24,child: Image.asset('images/station/GL_Alarm_icon.png')))
-                    : SizedBox(height: 24,width: 24),
+                  // 事件告警
+                   FLBadge(
+                    position: FLBadgePosition.topRight,
+                    shape: FLBadgeShape.circle,
+                    hidden: eventCount == 0,
+                    textStyle:TextStyle(color: Colors.white,fontSize:10) ,
+                    text: eventStr,
+                    color: Colors.red,
+                    child: SizedBox(height: 24,width: 24,
+                    child: Image.asset('images/station/GL_Alarm_icon.png'),
+                  )),
 
                     // 当前功率
                     SizedBox(

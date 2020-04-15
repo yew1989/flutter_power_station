@@ -53,6 +53,7 @@ dependencies:
   equatable: ^1.0.0
   wave: ^0.0.8
   mysql1: ^0.17.1
+  flui: 0.9.0
   
 dev_dependencies:
   flutter_test:
