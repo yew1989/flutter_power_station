@@ -1,14 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:hsa_app/api/agent/agent_fake.dart';
 import 'package:hsa_app/api/agent/agent_timer_tasker.dart';
-import 'package:hsa_app/components/public_tool.dart';
 import 'package:hsa_app/components/smart_refresher_style.dart';
 import 'package:hsa_app/api/apis/api_station.dart';
 import 'package:hsa_app/model/model/all_model.dart';
 import 'package:hsa_app/model/model/station.dart';
 import 'package:hsa_app/event/app_event.dart';
 import 'package:hsa_app/event/event_bird.dart';
-import 'package:hsa_app/page/history/history_page.dart';
 import 'package:hsa_app/page/station/caiyun_weather.dart';
 import 'package:hsa_app/page/station/device/station_device_list.dart';
 import 'package:hsa_app/page/station/station_big_pool.dart';

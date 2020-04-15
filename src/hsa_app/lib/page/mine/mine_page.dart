@@ -1,10 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:hsa_app/api/agent/agent_test_page.dart';
+import 'package:hsa_app/api/apis/api_login.dart';
 import 'package:hsa_app/components/shawdow_widget.dart';
 import 'package:hsa_app/config/app_config.dart';
-import 'package:hsa_app/api/apis/api_station.dart';
 import 'package:hsa_app/page/about/about_page.dart';
 import 'package:hsa_app/page/login/login_page.dart';
 import 'package:hsa_app/page/search/search_page.dart';
@@ -24,15 +23,13 @@ class MinePage extends StatefulWidget {
 class _MinePageState extends State<MinePage> {
 
   String userName = '';
-
   int stationCount = 0;
 
   @override
   void initState() {
-    updateUserName();
-    requestStationCount();
-    UMengAnalyticsService.enterPage('我的');
     super.initState();
+    requestUserInfo();
+    UMengAnalyticsService.enterPage('我的');
   }
 
   @override
@@ -41,30 +38,40 @@ class _MinePageState extends State<MinePage> {
     super.dispose();
   }
 
-  void requestStationCount() {
-    
-    // API.stationsCount((int count) {
-    //   setState(() {
-    //     this.stationCount = count;
-    //   });
-    // },(String msg){
-
-    // });
-    APIStation.getStationList(onSucc: (msg){
+  void requestUserInfo() async {
+    userName = await ShareManager.instance.loadUserName();
+    APILogin.getAccountInfo(name: userName,onSucc: (account){
       setState(() {
-        this.stationCount = msg.total;
+        this.stationCount = account.accountStationRelation.length;
+        this.userName = account.accountName;  
       });
-    },onFail: (msg){
-      
     });
+  }
 
+  // 用户资料信息
+  Widget userInfoWidget(String userName,int stationCount) {
+    var downString = stationCount.toString() + ' 座智能电站';
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children:[
+          Text(userName, style: TextStyle(color: Colors.white, fontSize: 21)),
+          SizedBox(height: 12),
+          Text(downString, style: TextStyle(color: Colors.white, fontSize: 13)),
+          ],
+      );
+  }
+
+  // 用户头像
+  Widget userAvator(){
+    return SizedBox(height: 100, width: 100,child: CircleAvatar(radius: 50, backgroundImage: AssetImage('images/about/about_icon.png')));
   }
 
   // 我的页面头部
-  Widget avatorView() {
-    var downString = stationCount.toString() + ' 座智能电站';
+  Widget mineHeaderView() {
+
     return Container(
-      height: 198,
+      height: 200,
       width: double.infinity,
       child: Padding(
         padding: EdgeInsets.symmetric(horizontal: 20),
@@ -72,40 +79,21 @@ class _MinePageState extends State<MinePage> {
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
-            // 圆环
-            SizedBox(
-              height: 100, width: 100,
-              child: CircleAvatar(
-                radius: 50, backgroundImage: AssetImage('images/about/about_icon.png'),
-              ),
-            ),
+            userAvator(),
             SizedBox(width: 16),
-            Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Text(userName, style: TextStyle(color: Colors.white, fontSize: 21)),
-                SizedBox(height: 4),
-                Text(downString, style: TextStyle(color: Colors.white, fontSize: 13)),
-              ],
-            ),
+            userInfoWidget(this.userName,this.stationCount),
           ],
         ),
       ),
     );
   }
 
-  void updateUserName() async {
-    userName = await ShareManager.instance.loadUserName();
-    setState(() {
-      
-    });
-  }
+
 
   // 修改密码
   void onTapChangePswd(BuildContext context) async {
     await Future.delayed(Duration(milliseconds: 250));
-    pushToPage(context, ModifyPswdPage());
+    pushToPage(context, ModifyPswdPage(this.userName));
   }
 
   // 关于
@@ -208,16 +196,16 @@ class _MinePageState extends State<MinePage> {
           // 选项列表
           ListView(
             primary: false,
-            children: <Widget>[
+            children: [
 
-              avatorView(),
+              mineHeaderView(),
               
               itemTile('修改密码', 'images/mine/My_Change_pwd_icon.png', () => onTapChangePswd(context)),
               itemTile('关于智能电站', 'images/mine/My_about_icon.png', () =>  onTapAbout(context)),
               itemTile('SOS', 'images/mine/My_sos_icon.png', () =>  onTapSOSCall(context)),
               itemTile('搜索电站', 'images/history/History_selt_btn.png', () =>  onTapSearchStations(context)),
               
-              // 分割线
+              // 分割线(最后一条)
               SizedBox(height: 0.3,child: Container(color:Colors.white24)),
             ],
           ),

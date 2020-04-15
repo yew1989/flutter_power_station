@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:hsa_app/api/agent/agent_timer_tasker.dart';
-import 'package:hsa_app/model/model/electricity_price.dart';
 import 'agent.dart';
 import 'package:hsa_app/components/public_tool.dart';
 import 'package:hsa_app/api/apis/api_login.dart';

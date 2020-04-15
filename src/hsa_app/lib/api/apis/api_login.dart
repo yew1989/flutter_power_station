@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:hsa_app/api/api_helper.dart';
 import 'package:hsa_app/api/share_instance.dart';
 import 'package:hsa_app/model/response/all_resp.dart';
+import 'package:hsa_app/model/response/password_resp.dart';
 import 'package:hsa_app/util/encrypt.dart';
 
 class APILogin {
@@ -82,10 +83,7 @@ class APILogin {
     final path = API.restHost + '/v1/Account/' + name;
     
     HttpHelper.httpGET(path, null, (map,_){
-
-      var resp = AccountInfoResp.fromJson(map);
-      ShareInstance.getInstance().accountName = resp.data.accountName;
-      
+      final resp = AccountInfoResp.fromJson(map);
       if(onSucc != null) onSucc(resp.data);
 
     }, onFail);
@@ -93,7 +91,11 @@ class APILogin {
   }
 
   // 修改登录密码
-  static void resetLoginPassword(BuildContext context,{String accountName,String oldLoginPwd,String newLoginPwd,HttpSuccStrCallback onSucc,HttpFailCallback onFail}) async {
+  static void resetLoginPassword(BuildContext context,{
+    @required String accountName,
+    @required String oldLoginPwd,
+    @required String newLoginPwd,
+    HttpSuccStrCallback onSucc,HttpFailCallback onFail}) async {
     // 输入检查
     if(oldLoginPwd == null) {
       if(onFail != null) onFail('请输入旧密码');
@@ -103,16 +105,23 @@ class APILogin {
       if(onFail != null) onFail('请输入新密码');
       return;
     }
+
     final oldPwd = await LDEncrypt.encryptedRSA(context,oldLoginPwd);
     final newPwd = await LDEncrypt.encryptedRSA(context,newLoginPwd);
-    // 获取修改密码地址
+
     final path = API.restHost + '/v1/Account/'+'$accountName'+'/Reset/LoginPassword';
-
     var param = {'oldLoginPwd':oldPwd,'newLoginPwd':newPwd};
-    
-    HttpHelper.httpPATCH(path, param, (map,_){
 
-      if(onSucc != null) onSucc('','密码修改成功!');
-    }, onFail);
+    HttpHelper.httpPATCH(path, param, (map,_){
+      final resp = PasswordResp.fromJson(map);
+      if (resp.code == 0 && resp.httpCode == 200) {
+        if(onSucc != null) onSucc('','密码修改成功');
+      }
+      else {
+        if(onFail != null) onFail('密码修改失败');
+      }
+    }, (_){
+      if(onFail != null) onFail('密码修改失败');
+    });
   }
 }
