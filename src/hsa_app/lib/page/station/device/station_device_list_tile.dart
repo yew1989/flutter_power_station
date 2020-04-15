@@ -1,4 +1,3 @@
-import 'package:badges/badges.dart';
 import 'package:flui/flui.dart';
 import 'package:flutter/material.dart';
 import 'package:hsa_app/model/model/all_model.dart';
