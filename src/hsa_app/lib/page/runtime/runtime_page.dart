@@ -141,7 +141,7 @@ class _RuntimePageState extends State<RuntimePage> with TickerProviderStateMixin
             fontWeight: FontWeight.normal));
     progressDialog.show();
     await Future.delayed(Duration(milliseconds: 1000));
-    progressDialog.dismiss();
+    progressDialog.hide();
   }
 
   // 操作密码输入错误弹窗
@@ -161,7 +161,7 @@ class _RuntimePageState extends State<RuntimePage> with TickerProviderStateMixin
             fontWeight: FontWeight.normal));
     progressDialog.show();
     await Future.delayed(Duration(milliseconds: 1000));
-    progressDialog.dismiss();
+    progressDialog.hide();
   }
 
   @override
@@ -584,7 +584,7 @@ class _RuntimePageState extends State<RuntimePage> with TickerProviderStateMixin
   // 远程控制
   void requestRemoteControlCommand(
       BuildContext context, TaskName taskName, String param) async {
-    progressDialog.dismiss();
+    progressDialog.hide();
     // 终端在线状态检测
     final isOnline = widget.isOnline ?? false;
     if (isOnline == false) {

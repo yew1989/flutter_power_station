@@ -1,66 +1,66 @@
 name: hsa_app
-description: A new Flutter project.
-
-version: 1.0.0+1
+description: Flutter project For LEAD Smart One App .
+version: 1.1.0
 
 environment:
   sdk: ">=2.2.2 <3.0.0"
 
 dependencies:
-  flutter: 
+  flutter:
     sdk: flutter
 
-  cupertino_icons: ^0.1.2
-  webview_flutter: ^0.3.15+1
-  cached_network_image: ^2.0.0
-  flutter_cache_manager: ^1.1.3
-  shared_preferences: ^0.5.6+3
-  event_bus: ^1.1.0
-  date_format: ^1.0.8
-  #equatable: ^0.4.0
-  url_launcher: ^5.1.2
-  sqlcool: ^3.2.0
-  path_provider: ^1.2.0
-  sqflite: ^1.1.6+3
-  dio: ^3.0.3
-  package_info: ^0.4.0+6
-  encrypt: ^3.1.0
-  flutter_section_table_view: ^1.0.5
-  fluttertoast: ^3.1.2
-  flutter_spinkit: ^4.0.0
-  ovprogresshud: ^0.2.5
-  badges: ^1.1.0
-  flutter_banner_swiper: ^0.1.4
-  loading: ^1.0.1
-  native_color: ^1.0.0
-  path_drawing: ^0.4.1
-  connectivity: ^0.4.5+3
-  pull_to_refresh: ^1.5.7
-  flt_video_player: ^0.0.4
-  pin_code_text_field: ^1.5.1
-  flutter_cupertino_data_picker: ^0.8.6
-  progress_dialog: ^1.2.0
-  device_info: ^0.4.1+3
-  lcfarm_flutter_umeng: ^0.1.8
+  # 系统
+  event_bus: 1.1.1
+  url_launcher: 5.4.2
+  package_info: 0.4.0+16
+  device_info: 0.4.2+1
+  # 工具
+  encrypt: 3.3.1
+  date_format: 1.0.8
+  native_color: 1.2.0
+  path_drawing: 0.4.1
+  # 网络
+  cached_network_image: 2.0.0
+  flutter_cache_manager: 1.2.1
+  dio: 3.0.9
+  connectivity: 0.4.8
+  webview_flutter: 0.3.19+9
+  # 文件
+  shared_preferences: 0.5.6+3
+  path_provider: 1.6.5
+  # 播放器
+  flt_video_player: 0.0.4
+  # 推送
   jpush_flutter: 0.0.13
-  syncfusion_flutter_charts: ^17.4.40
-  flutter_cupertino_date_picker: ^1.0.12
-  loading_indicator: ^1.1.0
-  page_view_indicator: ^2.0.3
-  mqtt_client: ^6.0.0
-  flutter_bloc: ^3.2.0
-  meta: ^1.1.6
-  equatable: ^1.0.0
-  wave: ^0.0.8
-  mysql1: ^0.17.1
+  # 图表
+  syncfusion_flutter_charts: 17.4.40
+  # 统计
+  lcfarm_flutter_umeng: 0.1.8
+  # 状态管理
+  flutter_bloc: 3.2.0
+  # UI
+  cupertino_icons: 0.1.3
+  flutter_section_table_view: 1.0.5
+  fluttertoast: 3.1.3
+  flutter_spinkit: 4.1.2+1
+  ovprogresshud: 0.2.5
+  flutter_banner_swiper: 0.1.4
+  loading: 1.0.2
+  pull_to_refresh: 1.5.8
+  pin_code_text_field: 1.5.1
+  flutter_cupertino_data_picker: 0.8.6
+  progress_dialog: 1.2.2
+  loading_indicator: 1.1.0
+  page_view_indicator: 2.0.3
+  flutter_cupertino_date_picker: 1.0.12
+  wave: 0.0.8
   flui: 0.9.0
-  
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
 
 flutter:
-
   uses-material-design: true
 
   assets:
@@ -80,11 +80,10 @@ flutter:
     - images/banner/
 
   fonts:
-    
     - family: ArialNarrow
       fonts:
-      - asset: fonts/ArialNarrow.ttf
+        - asset: fonts/ArialNarrow.ttf
 
     - family: DINCondensedC
       fonts:
-      - asset: fonts/DINCondensedC.ttf
+        - asset: fonts/DINCondensedC.ttf
