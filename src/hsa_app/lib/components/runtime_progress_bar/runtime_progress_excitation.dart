@@ -68,7 +68,6 @@ class _RuntimeProgressExcitationState extends State<RuntimeProgressExcitation> w
     
     bool isBeyond = false;
     double right = 0;
-    double left = 0;
 
     // 超量程
     if(ratio > 1.0) {
@@ -78,7 +77,6 @@ class _RuntimeProgressExcitationState extends State<RuntimeProgressExcitation> w
         beyond = 1.0;
       }
       right = maxWidth * beyond;
-      left =  maxWidth - (maxWidth *  beyond);
     }
     // 正常发电
     else {
@@ -151,23 +149,14 @@ class _RuntimeProgressExcitationState extends State<RuntimeProgressExcitation> w
                   Positioned(
                     left: 0,right: 0,bottom: 0,
                     child: Container(
-                          child: Center(
-                            child: AnimatedBuilder(
-                              animation: controller,
-                              builder: (BuildContext context, Widget child) => RichText(
-                                text: TextSpan(text:animation.value.toStringAsFixed(2),style: TextStyle(color: Colors.white,fontFamily: AppTheme().numberFontName,fontSize: 12)),
-                              ),
-                            ))),
+                      child: Center(
+                        child: AnimatedBuilder(
+                          animation: controller,
+                          builder: (BuildContext context, Widget child) => RichText(
+                            text: TextSpan(text:animation.value.toStringAsFixed(2),style: TextStyle(color: Colors.white,fontFamily: AppTheme().numberFontName,fontSize: 12)),
+                          ),
+                        ))),
                   ),
-                    // Positioned(
-                    //   left: 0,right: 0,bottom: 0,
-                    //   child:AnimatedBuilder(
-                    //     animation: controller,
-                    //     builder: (BuildContext context, Widget child) => RichText(
-                    //       text: TextSpan(text:animationDouble.value.toStringAsFixed(2),style: TextStyle(color: Colors.white,fontFamily: AppTheme().numberFontName,fontSize: 12)),
-                    //     ),
-                    //   ),
-                    // ),
                 ],
               ),
             ),

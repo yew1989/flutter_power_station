@@ -69,7 +69,6 @@ class _RuntimeProgressFactoryState extends State<RuntimeProgressFactory> with Ti
     
     bool isBeyond = false;
     double right = 0;
-    double left = 0;
 
     // 超量程
     if(ratio > 1.0) {
@@ -79,7 +78,6 @@ class _RuntimeProgressFactoryState extends State<RuntimeProgressFactory> with Ti
         beyond = 1.0;
       }
       right = maxWidth * beyond;
-      left =  maxWidth - (maxWidth *  beyond);
     }
     // 正常发电
     else {
