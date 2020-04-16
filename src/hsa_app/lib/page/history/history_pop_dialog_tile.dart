@@ -67,7 +67,7 @@ class _HistoryPopDialogState extends State<HistoryPopDialogTile> {
                       onTap: () {
                         Navigator.of(context).pop();
                         final erc = widget?.ercFlag ?? '';
-                        EventBird().emit(AppEvent.eventFilterChoose, erc);
+                        eventBird?.emit(AppEvent.eventFilterChoose, erc);
                       },
                     ),
                   ],

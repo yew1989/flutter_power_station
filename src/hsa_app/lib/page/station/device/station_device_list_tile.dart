@@ -232,7 +232,7 @@ class _StationDeviceListTileState extends State<StationDeviceListTile> with Tick
            // 点击进入机组详情页
            GestureDetector(
              onTap: (){
-               EventBird().emit(AppEvent.onTapDevice,widget.index);
+               eventBird?.emit(AppEvent.onTapDevice,widget.index);
              },
            )
         ],

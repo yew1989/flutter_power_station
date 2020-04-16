@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hsa_app/api/agent/agent_fake.dart';
 import 'package:hsa_app/api/agent/agent_timer_tasker.dart';
 import 'package:hsa_app/components/smart_refresher_style.dart';
 import 'package:hsa_app/api/apis/api_station.dart';
@@ -67,7 +68,7 @@ class _StationPageState extends State<StationPage> {
       refreshController.refreshCompleted();
 
       if (station == null) return;
-      EventBird().emit(AppEvent.eventGotStationInfo,station);
+      eventBird?.emit(AppEvent.eventGotStationInfo,station);
 
       setState(() {
         this.stationInfo = station;
@@ -125,14 +126,14 @@ class _StationPageState extends State<StationPage> {
     stationTasker.start((stationInfo){
       setState(() {
         // 若开启此处,用于假数据调试动画
-        // this.stationInfo = AgentFake.fakeStationInfo(stationInfo);
-        this.stationInfo = stationInfo;
+        this.stationInfo = AgentFake.fakeStationInfo(stationInfo);
+        // this.stationInfo = stationInfo;
         profitList.add(stationInfo.totalMoney);
         if(profitList.length > 2){
           profitList.removeAt(0);
         }
-        EventBird().emit('REFLASH_MONEY');
       });
+      eventBird?.emit(AppEvent.onRefreshProfit);
     });
   }
 

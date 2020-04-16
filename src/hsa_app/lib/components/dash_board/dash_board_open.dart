@@ -32,14 +32,14 @@ class _DashBoardOpenState extends State<DashBoardOpen> with TickerProviderStateM
   void dispose() {
     openControllerStr?.stop();
     openControllerStr?.dispose();
-    EventBird().off('NEAREST_DATA_OPEN_STR');
+    eventBird?.off('NEAREST_DATA_OPEN_STR');
     super.dispose();
   }
 
   @override
   void initState() {
     init();
-    EventBird().on('NEAREST_DATA_OPEN_STR', (dt){
+    eventBird?.on('NEAREST_DATA_OPEN_STR', (dt){
       init();   
     });
     super.initState();

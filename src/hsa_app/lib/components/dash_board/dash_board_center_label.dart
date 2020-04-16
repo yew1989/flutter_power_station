@@ -31,17 +31,17 @@ class _DashBoardCenterLabelState extends State<DashBoardCenterLabel> with Ticker
   void dispose() {
     controller?.stop();
     controller?.dispose();
-    EventBird().off('NEAREST_DATA_POWER_STR');
+    eventBird?.off('NEAREST_DATA_POWER_STR');
     super.dispose();
   }
 
   @override
   void initState() {
+    super.initState();
     init();
-    EventBird().on('NEAREST_DATA_POWER_STR', (dt){
+    eventBird?.on('NEAREST_DATA_POWER_STR', (dt){
       init();
     });
-    super.initState();
   }
 
   @override
