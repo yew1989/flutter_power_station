@@ -8,7 +8,9 @@ class BootApp {
   static void boot(){
     // 生产环境
     AppConfig.initConfig(LeanCloudEnv.product);
+    // 注册 SyncfusionLicense
     SyncfusionLicense.registerLicense("NT8mJyc2IWhiZH1nfWN9YGpoYmF8YGJ8ampqanNiYmlmamlmanMDHmhia2NnZWNmYGJqYBNiZWB9MDw+");
+    // 外网连接尝试
     touch('http://www.baidu.com');
   }
 

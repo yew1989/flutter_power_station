@@ -34,9 +34,7 @@ class _DashBoardPowerProgressState extends State<DashBoardPowerProgress> with Ti
     beyondController = AnimationController(vsync: this, duration: Duration(seconds: seconds));
     oldController = AnimationController(vsync: this, duration: const Duration(milliseconds: 0));
 
-    
-
-    EventBird().on('NEAREST_DATA_POWER', (dt){
+    eventBird?.on('NEAREST_DATA_POWER', (dt){
       
         pinController.value = 0;
         pinController.forward();
@@ -83,7 +81,7 @@ class _DashBoardPowerProgressState extends State<DashBoardPowerProgress> with Ti
     beyondController?.dispose();
     pinController?.dispose();
     oldController?.dispose();
-    EventBird().off('NEAREST_DATA_POWER');
+    eventBird?.off('NEAREST_DATA_POWER');
     super.dispose();
   }
 

@@ -41,7 +41,7 @@ class _SearchBarState extends State<SearchBar> {
            hintStyle: TextStyle(color: Colors.white30,fontSize: 16),
          ),
          onChanged:(String text){
-          EventBird().emit(AppEvent.searchKeyWord,text);
+          eventBird?.emit(AppEvent.searchKeyWord,text);
          },
        ),
      )
