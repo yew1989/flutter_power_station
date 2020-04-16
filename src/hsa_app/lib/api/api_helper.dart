@@ -322,7 +322,7 @@ class HttpHelper {
       if (code == 401) {
         debugPrint('🔑 Authorization 过期错误');
         if(onFail == null) onFail('请求错误');
-        EventBird().emit(AppEvent.tokenExpiration);
+        eventBird?.emit(AppEvent.tokenExpiration);
         return;
       } 
       if(onFail == null) onFail('请求错误');
