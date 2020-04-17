@@ -33,7 +33,7 @@ dependencies:
   # 推送
   jpush_flutter: 0.0.13
   # 图表
-  syncfusion_flutter_charts: 17.4.40
+  syncfusion_flutter_charts: ^18.1.42
   # 统计
   lcfarm_flutter_umeng: 0.1.8
   # 状态管理
@@ -55,6 +55,7 @@ dependencies:
   flutter_cupertino_date_picker: 1.0.12
   wave: 0.0.8
   flui: 0.9.0
+  syncfusion_flutter_gauges: ^18.1.42
 
 dev_dependencies:
   flutter_test:

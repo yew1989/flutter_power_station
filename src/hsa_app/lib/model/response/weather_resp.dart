@@ -33,7 +33,7 @@ class WeatherResp {
     tzshift = json['tzshift'];
     timezone = json['timezone'];
     serverTime = json['server_time'];
-    location = json['location'].cast<double>();
+    location = json['location'];
     result =
         json['result'] != null ? new Result.fromJson(json['result']) : null;
   }

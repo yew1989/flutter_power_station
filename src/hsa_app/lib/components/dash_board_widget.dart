@@ -53,7 +53,7 @@ class _DashBoardWidgetState extends State<DashBoardWidget> with TickerProviderSt
         child: Stack(
         children: 
         [
-          DashBoardPowerProgress(widget?.deviceTerminal,powerNowList,seconds),
+          DashBoardPowerProgress(widget?.deviceTerminal,powerNowList,seconds,powerMax),
           DashBoardFreqProgress(widget?.deviceTerminal,freqList,seconds),
           DashBoardOpenGateProgress(widget?.deviceTerminal,openList,seconds),
           DashBoardBgProgress(),
