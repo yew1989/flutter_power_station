@@ -13,4 +13,7 @@ class AppEvent {
   static final String onEnterRunTimePage = 'onEnterRunTimePage';
   // 退出运行参数页
   static final String onExitRunTimePage = 'onExitRunTimePage';
+  // 刷新收益值
+  static final String onRefreshProfit = 'onRefreshProfit';
+  
 }

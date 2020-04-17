@@ -39,24 +39,22 @@ class _StationTabbarPageState extends State<StationTabbarPage> {
   @override
   void initState() {
 
+    super.initState();
+    UMengAnalyticsService.enterPage('电站概要');
+
     currentIndex = widget?.selectIndex ?? 0;
     currentStation = widget?.stations[currentIndex];
     pageLength = widget?.stations?.length ?? 0;
     title = currentStation?.stationName ?? '';
     pageController = PageController(initialPage: currentIndex);
 
-    UMengAnalyticsService.enterPage('电站概要');
-
-
-    EventBird().on(AppEvent.eventGotStationInfo, (arg) { 
+    eventBird?.on(AppEvent.eventGotStationInfo, (arg) { 
       if(arg is StationInfo) {
         setState(() {
           this.stationInfo = arg;
         });
       }
     });
-
-    super.initState();
 
     // 首次获取天气
     requestWeatherAPI(currentStation);
@@ -79,7 +77,7 @@ class _StationTabbarPageState extends State<StationTabbarPage> {
   @override
   void dispose() {
 
-    EventBird().off(AppEvent.eventGotStationInfo);
+    eventBird?.off(AppEvent.eventGotStationInfo);
     pageController.dispose();
     UMengAnalyticsService.exitPage('电站概要');
     super.dispose();

@@ -250,12 +250,12 @@ class _RuntimePageState extends State<RuntimePage> with TickerProviderStateMixin
         addToList(freqList,this.deviceTerminal?.nearestRunningData?.frequency ?? 0.0);
         addToList(openList,this.deviceTerminal?.nearestRunningData?.openAngle ?? 0.0);
 
-        EventBird().emit('NEAREST_DATA_FREQ',this.deviceTerminal);
-        EventBird().emit('NEAREST_DATA_FREQ_STR',this.deviceTerminal);
-        EventBird().emit('NEAREST_DATA_POWER',this.deviceTerminal);
-        EventBird().emit('NEAREST_DATA_POWER_STR',this.deviceTerminal);
-        EventBird().emit('NEAREST_DATA_OPEN',this.deviceTerminal);
-        EventBird().emit('NEAREST_DATA_OPEN_STR',this.deviceTerminal);
+        eventBird?.emit('NEAREST_DATA_FREQ',this.deviceTerminal);
+        eventBird?.emit('NEAREST_DATA_FREQ_STR',this.deviceTerminal);
+        eventBird?.emit('NEAREST_DATA_POWER',this.deviceTerminal);
+        eventBird?.emit('NEAREST_DATA_POWER_STR',this.deviceTerminal);
+        eventBird?.emit('NEAREST_DATA_OPEN',this.deviceTerminal);
+        eventBird?.emit('NEAREST_DATA_OPEN_STR',this.deviceTerminal);
         
         addToList(temperatureList,this.deviceTerminal?.nearestRunningData?.temperature ?? 0.0);
         addToList(speedList,this.deviceTerminal?.nearestRunningData?.speed ?? 0.0);
@@ -265,11 +265,11 @@ class _RuntimePageState extends State<RuntimePage> with TickerProviderStateMixin
         addToList(currentList,this.deviceTerminal?.nearestRunningData?.current ?? 0.0);
         addToList(factorList,this.deviceTerminal?.nearestRunningData?.powerFactor ?? 0.0);
 
-        //EventBird().emit('REFLASH_DATA',this.deviceTerminal);
-        EventBird().emit('REFLASH_DATA_VOLTAGE',this.deviceTerminal);
-        EventBird().emit('REFLASH_DATA_CURRENT',this.deviceTerminal);
-        EventBird().emit('REFLASH_DATA_FACTORY',this.deviceTerminal);
-        EventBird().emit('REFLASH_DATA_EXCITATION',this.deviceTerminal);
+        //eventBird?..emit('REFLASH_DATA',this.deviceTerminal);
+        eventBird?.emit('REFLASH_DATA_VOLTAGE',this.deviceTerminal);
+        eventBird?.emit('REFLASH_DATA_CURRENT',this.deviceTerminal);
+        eventBird?.emit('REFLASH_DATA_FACTORY',this.deviceTerminal);
+        eventBird?.emit('REFLASH_DATA_EXCITATION',this.deviceTerminal);
         terminalBriefFooterData();
       });
     });

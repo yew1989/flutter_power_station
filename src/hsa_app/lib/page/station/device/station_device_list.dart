@@ -21,16 +21,22 @@ class _StationDeviceListState extends State<StationDeviceList> {
 
   @override
   void initState() {
-    EventBird().on(AppEvent.onTapDevice, (index) { 
-      pushToPage(context, RuntimeTabbarPage(waterTurbines: widget?.stationInfo?.waterTurbines ?? null,selectIndex: index,stationInfo:widget?.stationInfo));
-    });
     super.initState();
+    listenEvent();
   }
 
   @override
   void dispose() {
+    eventBird?.off(AppEvent.onTapDevice);
     super.dispose();
   }
+
+  void listenEvent() {
+    eventBird?.on(AppEvent.onTapDevice, (index) { 
+      pushToPage(context, RuntimeTabbarPage(waterTurbines: widget?.stationInfo?.waterTurbines ?? null,selectIndex: index,stationInfo:widget?.stationInfo));
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final wt = widget?.stationInfo?.waterTurbines ?? new List<WaterTurbine>();

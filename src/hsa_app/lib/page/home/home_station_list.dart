@@ -175,7 +175,7 @@ class _HomeStationListState extends State<HomeStationList> {
       this.stationNos = this.favoriteStations.join(',');
       initPage(); 
       if(this.widget.isFromSearch == true) {
-        EventBird().on(AppEvent.searchKeyWord, (text){
+        eventBird?.on(AppEvent.searchKeyWord, (text){
           this.keyWord = text;
           this.isEngOrNum = isEnglishOrNumber(keyWord);
           initPage();
@@ -247,7 +247,7 @@ class _HomeStationListState extends State<HomeStationList> {
   @override
   void dispose() {
     if(this.widget.isFromSearch == true) {
-      EventBird().off(AppEvent.searchKeyWord);
+      eventBird?.off(AppEvent.searchKeyWord);
     }
     super.dispose();
   }

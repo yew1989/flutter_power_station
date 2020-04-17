@@ -9,7 +9,6 @@ class WeatherResp {
   int tzshift;
   String timezone;
   int serverTime;
-  List<double> location;
   Result result;
 
   WeatherResp(
@@ -21,7 +20,6 @@ class WeatherResp {
       this.tzshift,
       this.timezone,
       this.serverTime,
-      this.location,
       this.result});
 
   WeatherResp.fromJson(Map<String, dynamic> json) {
@@ -33,9 +31,7 @@ class WeatherResp {
     tzshift = json['tzshift'];
     timezone = json['timezone'];
     serverTime = json['server_time'];
-    location = json['location'];
-    result =
-        json['result'] != null ? new Result.fromJson(json['result']) : null;
+    result = json['result'] != null ? new Result.fromJson(json['result']) : null;
   }
 
   Map<String, dynamic> toJson() {
@@ -48,7 +44,6 @@ class WeatherResp {
     data['tzshift'] = this.tzshift;
     data['timezone'] = this.timezone;
     data['server_time'] = this.serverTime;
-    data['location'] = this.location;
     if (this.result != null) {
       data['result'] = this.result.toJson();
     }

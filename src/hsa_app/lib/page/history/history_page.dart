@@ -87,13 +87,13 @@ class _HistoryPageState extends State<HistoryPage> {
 
   @override
   void dispose() {
-    EventBird().off(AppEvent.eventFilterChoose);
+    eventBird?.off(AppEvent.eventFilterChoose);
     super.dispose();
   }
 
   // 监听事件过滤选择器
   void addObserverEventFilterChoose() {
-    EventBird().on(AppEvent.eventFilterChoose, (flag) {
+    eventBird?.on(AppEvent.eventFilterChoose, (flag) {
       if (flag == '') return;
       this.ercFlag = flag;
       requestEventListData();

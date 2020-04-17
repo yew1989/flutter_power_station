@@ -32,14 +32,14 @@ class _DashBoardFreqState extends State<DashBoardFreq> with TickerProviderStateM
   void dispose() {
     freqControllerStr?.stop();
     freqControllerStr?.dispose();
-    EventBird().off('NEAREST_DATA_FREQ_STR');
+    eventBird?.off('NEAREST_DATA_FREQ_STR');
     super.dispose();
   }
 
   @override
   void initState() {
     init();
-    EventBird().on('NEAREST_DATA_FREQ_STR', (dt){
+    eventBird?.on('NEAREST_DATA_FREQ_STR', (dt){
       init();
     });
     super.initState();

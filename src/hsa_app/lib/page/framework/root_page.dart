@@ -16,7 +16,7 @@ class _RootPageState extends State<RootPage> with SingleTickerProviderStateMixin
   List<Widget> pages = new List();
 
   void addEventListener() {
-    EventBird().on(AppEvent.tokenExpiration, (_){
+    eventBird?.on(AppEvent.tokenExpiration, (_){
       showToast('会话过期,请重新登录');
       Future.delayed(Duration(seconds:1),(){
         pushToPageAndKill(context, LoginPage());
@@ -35,7 +35,7 @@ class _RootPageState extends State<RootPage> with SingleTickerProviderStateMixin
 
   @override
   void dispose() {
-    EventBird().off(AppEvent.tokenExpiration);
+    eventBird?.off(AppEvent.tokenExpiration);
     super.dispose();
   }
 

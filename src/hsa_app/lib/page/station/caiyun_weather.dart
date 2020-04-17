@@ -25,7 +25,7 @@ class CaiyunWeatherAPI {
     //天气接口的版本
    final wVersion = 'v2.5';
    //天气接口token
-   final wToken = 'TAkhjf8d1nlSlspN';
+   final wToken = '92hF=eMIfl7T6t4l';
    // 地理位置参数
    final long = longtitude ?? 0.0;
    final lat  = latitude ?? 0.0;

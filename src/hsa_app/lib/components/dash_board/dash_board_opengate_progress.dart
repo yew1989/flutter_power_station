@@ -23,7 +23,7 @@ class _DashBoardOpenGateProgressState extends State<DashBoardOpenGateProgress> w
   void initAnimationController(){
     int t = widget?.seconds ?? 5;
     openController  = AnimationController(vsync: this, duration: Duration(seconds: t));
-    EventBird().on('NEAREST_DATA_OPEN', (dt){
+    eventBird?.on('NEAREST_DATA_OPEN', (dt){
       openController.value = 0;
       openController.forward();
     });
@@ -39,6 +39,7 @@ class _DashBoardOpenGateProgressState extends State<DashBoardOpenGateProgress> w
   @override
   void dispose() {
     openController?.dispose();
+    eventBird?.off('NEAREST_DATA_OPEN');
     super.dispose();
   }
 
