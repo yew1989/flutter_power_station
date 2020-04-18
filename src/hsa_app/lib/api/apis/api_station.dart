@@ -7,7 +7,7 @@ class APIStation{
 
   // 获取电站列表信息
   static void getStationList({bool isIncludeCustomer,bool isIncludeWaterTurbine,bool isIncludeFMD,bool isIncludeLiveLink,
-      String partStationName,String partStationNamePinYin,String proviceAreaCityNameOfDotSeparated,
+      String partStationName,String partStationNamePinYin,String stationNoPrefix,String proviceAreaCityNameOfDotSeparated,
       List<String> arrayOfCustomerNoOptAny, List<String> arrayOfStationNoOptAny,
       int page,int pageSize, StationListCallback onSucc,HttpFailCallback onFail}) async {
        
@@ -41,6 +41,11 @@ class APIStation{
     //部分电站拼音 模糊匹配
     if(partStationNamePinYin != '' && partStationNamePinYin != null ){
       param['partStationNamePinYin'] = partStationNamePinYin;
+    }
+
+    //部分电站拼音 模糊匹配
+    if(stationNoPrefix != '' && stationNoPrefix != null ){
+      param['stationNoPrefix'] = stationNoPrefix;
     }
 
     //用.号分隔的电站所在地（省.地区.市）（三段模式匹配,*为通配符)

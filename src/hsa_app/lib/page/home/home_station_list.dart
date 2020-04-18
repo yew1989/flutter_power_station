@@ -41,6 +41,8 @@ class _HomeStationListState extends State<HomeStationList> {
 
   //是否是英文和数字
   bool isEngOrNum ;
+  //是否是数字
+  bool isNum ;
   // 是否空视图
   bool isEmpty = false;
   // 是否首次数据加载完毕
@@ -49,28 +51,35 @@ class _HomeStationListState extends State<HomeStationList> {
   String stationNos = '';
 
 
+
   void loadCurrent(){
 
-    APIStation.getCurrentTotalActivePowerAndWaterStage(
-      stationNos: stationNos,
-      onSucc: (msg){
-       
-       
-        if(mounted) {
-          setState(() {
-            isLoadFinsh = true;
-            refreshController.refreshCompleted();
-            if(msg?.stationInfo != null){
-              for(int i = 0; msg.stationInfo.length > i ;i ++){
-                this.stations[i].totalActivePower = msg?.stationInfo[i]?.totalActivePower ?? 0.0; 
-                this.stations[i].reservoirCurrentWaterStage = msg?.stationInfo[i]?.reservoirCurrentWaterStage ?? 0.0; 
+    if(stationNos != null && stationNos != ''){
+      APIStation.getCurrentTotalActivePowerAndWaterStage(
+        stationNos: stationNos,
+        onSucc: (msg){
+          if(mounted) {
+            setState(() {
+              isLoadFinsh = true;
+              refreshController.refreshCompleted();
+              if(msg?.stationInfo != null){
+                for(int i = 0; msg.stationInfo.length > i ;i ++){
+                  this.stations[i].totalActivePower = msg?.stationInfo[i]?.totalActivePower ?? 0.0; 
+                  this.stations[i].reservoirCurrentWaterStage = msg?.stationInfo[i]?.reservoirCurrentWaterStage ?? 0.0; 
+                }
               }
-            }
-          });
-        }
-      },
-      onFail: (msg){}
-    );
+            });
+          }
+        },
+        onFail: (msg){}
+      );
+    }else{
+      setState(() {
+        isLoadFinsh = true;
+        refreshController.refreshCompleted();
+      });
+    }
+  
   }
 
 
@@ -81,8 +90,13 @@ class _HomeStationListState extends State<HomeStationList> {
     this.isEmpty = false;
     var partStationNamePinYin;
     var partStationName;
+    var stationNoPrefix;
     if(isEngOrNum == true){
-      partStationNamePinYin = keyWord;
+      if(isNum == true){
+        stationNoPrefix = keyWord;
+      }else if(isNum == false){
+        partStationNamePinYin = keyWord;
+      }
     }else if(isEngOrNum == false){
       partStationName = keyWord;
     }
@@ -117,6 +131,7 @@ class _HomeStationListState extends State<HomeStationList> {
     arrayOfStationNoOptAny: list,
     partStationNamePinYin:partStationNamePinYin,
     partStationName:partStationName,
+    stationNoPrefix:stationNoPrefix
     );
   }
 
@@ -127,8 +142,13 @@ class _HomeStationListState extends State<HomeStationList> {
     currentPage++ ;
     var partStationNamePinYin;
     var partStationName;
+    var stationNoPrefix;
     if(isEngOrNum == true){
-      partStationNamePinYin = keyWord;
+      if(isNum == true){
+        stationNoPrefix = keyWord;
+      }else if(isNum == false){
+        partStationNamePinYin = keyWord;
+      }
     }else if(isEngOrNum == false){
       partStationName = keyWord;
     }
@@ -165,6 +185,7 @@ class _HomeStationListState extends State<HomeStationList> {
     arrayOfStationNoOptAny: list,
     partStationNamePinYin:partStationNamePinYin,
     partStationName:partStationName,
+    stationNoPrefix:stationNoPrefix
     );
   }
 
@@ -178,6 +199,7 @@ class _HomeStationListState extends State<HomeStationList> {
         eventBird?.on(AppEvent.searchKeyWord, (text){
           this.keyWord = text;
           this.isEngOrNum = isEnglishOrNumber(keyWord);
+          this.isNum = isNumber(keyWord);
           initPage();
         });
       }else{
@@ -192,6 +214,12 @@ class _HomeStationListState extends State<HomeStationList> {
   //判断全部是英文和数字
   bool isEnglishOrNumber(String input) {
     String p = r'^[A-Za-z0-9]+$';
+    final RegExp regex =  RegExp(p);
+    return regex.hasMatch(input);
+  }
+  //判断全部是数字
+  bool isNumber(String input){
+    String p = r'^[0-9]+$';
     final RegExp regex =  RegExp(p);
     return regex.hasMatch(input);
   }

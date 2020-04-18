@@ -39,7 +39,7 @@ class _StationProfitWidgetState extends State<StationProfitWidget> with TickerPr
     init();
     eventBird?.on(AppEvent.onRefreshProfit, (_){
       init();
-      debugPrint('-- 刷新 --');
+      //debugPrint('-- 刷新 --');
     });
     super.initState();
   }

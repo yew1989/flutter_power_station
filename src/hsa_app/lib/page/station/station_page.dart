@@ -109,6 +109,7 @@ class _StationPageState extends State<StationPage> {
             openLive.add(liveLink.m3u8Url ?? '' );
           }).toList();
         }
+        
       });
       getRealtimeData();
     }, onFail: (String msg) {
@@ -132,6 +133,7 @@ class _StationPageState extends State<StationPage> {
         if(profitList.length > 2){
           profitList.removeAt(0);
         }
+        eventBird?.emit('REFLASH_DATA');
       });
       eventBird?.emit(AppEvent.onRefreshProfit);
     });

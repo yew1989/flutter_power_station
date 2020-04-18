@@ -55,12 +55,7 @@ class _DashBoardCenterLabelState extends State<DashBoardCenterLabel> with Ticker
           AnimatedBuilder(
             animation: controller,
             builder: (BuildContext context, Widget child) => RichText(
-              text: TextSpan(
-                children: 
-                [
-                  TextSpan(text:animation.value.toStringAsFixed(1),style: TextStyle(color: Colors.white,fontFamily: AppTheme().numberFontName,fontSize: 34)),
-                ]
-              ),
+              text: TextSpan(text:animation.value.toStringAsFixed(1),style: TextStyle(color: Colors.white,fontFamily: AppTheme().numberFontName,fontSize: 34)),
             ),
           ),
           //Text(widget.powerNowStr ?? '',style: TextStyle(color: Colors.white,fontSize: 34,fontFamily: AppTheme().numberFontName)),

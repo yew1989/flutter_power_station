@@ -27,7 +27,12 @@ class _StationDeviceListTileState extends State<StationDeviceListTile> with Tick
   bool isShowCyanComet = false;
   bool isShowRedComet = false;
 
-  AnimationController fanAnimationController; // 风机页片动画
+  List<double> list = [0.0,0.0]; 
+
+  AnimationController fanAnimationController;// 风机页片动画
+  AnimationController controller; //文字动态
+  Animation<double> animation;
+
 
   void showProgressCyanBar() async {
 
@@ -106,11 +111,27 @@ class _StationDeviceListTileState extends State<StationDeviceListTile> with Tick
     fanAnimationController  = AnimationController(duration: const Duration(seconds: 2), vsync: this);
     fanAnimationController.forward();
     fanAnimationController.addStatusListener((status) {
-    if (status == AnimationStatus.completed) {
-      fanAnimationController.reset();
-      fanAnimationController.forward();
+      if (status == AnimationStatus.completed) {
+        fanAnimationController.reset();
+        fanAnimationController.forward();
       }
     });
+  }
+
+
+  void init(){
+
+    list.add(widget?.waterTurbine?.deviceTerminal?.nearestRunningData?.power ?? 0.0);
+    if(list.length > 2){
+      list.removeAt(0);
+    }
+    final oldPower = list[0] ?? 0.0;
+    final powerNow = list[1] ?? 0.0;
+
+    controller = AnimationController(duration: Duration(milliseconds:5000), vsync: this);
+    CurvedAnimation curvedAnimation = CurvedAnimation(parent: controller, curve: Curves.fastOutSlowIn);
+    animation = Tween<double>(begin: oldPower, end: powerNow).animate(curvedAnimation);
+    controller.forward();
   }
 
   @override
@@ -118,12 +139,18 @@ class _StationDeviceListTileState extends State<StationDeviceListTile> with Tick
     showProgressCyanBar();
     showProgressRedBar();
     initFanAnimtaionController();
+    init();
+    eventBird.on('REFLASH_DATA', (_){
+      init();
+    });
     super.initState();
   }
 
   @override
   void dispose() {
-    fanAnimationController.dispose();
+    fanAnimationController?.dispose();
+    controller?.dispose();
+    eventBird?.off('REFLASH_DATA');
     super.dispose();
   }
   @override
@@ -209,11 +236,13 @@ class _StationDeviceListTileState extends State<StationDeviceListTile> with Tick
                       width: 54,
                       child: Align(
                         alignment: Alignment.centerRight,
-                        child: Text(currentPowerStr,
-                        style: TextStyle(
-                        color: isOnline ? Colors.white : Colors.white60,
-                        fontFamily: AppTheme().numberFontName,
-                        fontSize: 28)),
+                        child: AnimatedBuilder(
+                          animation: controller,
+                          builder: (BuildContext context, Widget child) => RichText(
+                            text: TextSpan(text:animation.value.toStringAsFixed(0),style:TextStyle(color: isOnline ? Colors.white : Colors.white60,
+                                    fontFamily: AppTheme().numberFontName,fontSize: 28)),
+                          ),
+                        ),
                       )),
                   ],
                 ),
