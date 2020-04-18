@@ -29,7 +29,7 @@ class _DashBoardPowerProgressState extends State<DashBoardPowerProgress> with Ti
   void initAnimationController(int seconds ,DeviceTerminal deviceTerminal,List<double> powerList ) async {
     controller = AnimationController(vsync: this, duration: Duration(seconds: seconds));
 
-    eventBird?.on('NEAREST_DATA_POWER', (dt){
+    eventBird?.on('NEAREST_DATA', (dt){
         controller.value = 0;
         judgeStats(seconds,powerList);
     });
@@ -59,7 +59,7 @@ class _DashBoardPowerProgressState extends State<DashBoardPowerProgress> with Ti
   @override
   void dispose() {
     controller?.dispose();
-    eventBird?.off('NEAREST_DATA_POWER');
+    eventBird?.off('NEAREST_DATA');
     super.dispose();
   }
 

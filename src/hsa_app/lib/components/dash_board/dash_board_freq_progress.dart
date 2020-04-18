@@ -24,7 +24,7 @@ class _DashBoardFreqProgressState extends State<DashBoardFreqProgress> with Tick
   void initAnimationController(){
     int t = widget?.seconds ?? 5;
     freqController  = AnimationController(vsync: this, duration: Duration(seconds: t));
-    eventBird?.on('NEAREST_DATA_FREQ', (dt){
+    eventBird?.on('NEAREST_DATA', (dt){
       freqController.value = 0;
       freqController.forward();
     });
@@ -41,7 +41,7 @@ class _DashBoardFreqProgressState extends State<DashBoardFreqProgress> with Tick
   @override
   void dispose() {
     freqController?.dispose();
-    eventBird?.off('NEAREST_DATA_FREQ');
+    eventBird?.off('NEAREST_DATA');
     super.dispose();
   }
 

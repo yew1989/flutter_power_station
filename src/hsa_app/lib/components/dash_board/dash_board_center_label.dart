@@ -31,7 +31,7 @@ class _DashBoardCenterLabelState extends State<DashBoardCenterLabel> with Ticker
   void dispose() {
     controller?.stop();
     controller?.dispose();
-    eventBird?.off('NEAREST_DATA_POWER_STR');
+    eventBird?.off('NEAREST_DATA');
     super.dispose();
   }
 
@@ -39,7 +39,7 @@ class _DashBoardCenterLabelState extends State<DashBoardCenterLabel> with Ticker
   void initState() {
     super.initState();
     init();
-    eventBird?.on('NEAREST_DATA_POWER_STR', (dt){
+    eventBird?.on('NEAREST_DATA', (dt){
       init();
     });
   }

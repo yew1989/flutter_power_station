@@ -51,7 +51,7 @@ class _RuntimeProgressVoltageState extends State<RuntimeProgressVoltage> with Ti
   @override
   void initState() {
     init();
-    eventBird?.on('REFLASH_DATA_VOLTAGE', (dt){
+    eventBird?.on('NEAREST_DATA', (dt){
       init();
     });
     super.initState();
@@ -61,7 +61,7 @@ class _RuntimeProgressVoltageState extends State<RuntimeProgressVoltage> with Ti
   void dispose() {
     controller?.stop();
     controller?.dispose();
-    eventBird?.off('REFLASH_DATA_VOLTAGE');
+    eventBird?.off('NEAREST_DATA');
     super.dispose();
   }
 

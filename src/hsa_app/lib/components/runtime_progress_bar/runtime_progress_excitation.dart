@@ -43,7 +43,7 @@ class _RuntimeProgressExcitationState extends State<RuntimeProgressExcitation> w
   @override
   void initState() {
     init();
-    eventBird?.on('REFLASH_DATA_EXCITATION', (dt){
+    eventBird?.on('NEAREST_DATA', (dt){
       init();
     });
     super.initState();
@@ -52,7 +52,7 @@ class _RuntimeProgressExcitationState extends State<RuntimeProgressExcitation> w
   @override
   void dispose() {
     controller?.dispose();
-    eventBird?.off('REFLASH_DATA_EXCITATION');
+    eventBird?.off('NEAREST_DATA');
     super.dispose();
   }
 

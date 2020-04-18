@@ -43,7 +43,7 @@ class _RuntimeProgressCurrentState extends State<RuntimeProgressCurrent> with Ti
   @override
   void initState() {
     init();
-    eventBird?.on('REFLASH_DATA_CURRENT', (dt){
+    eventBird?.on('NEAREST_DATA', (dt){
       init();
     });
     super.initState();
@@ -52,7 +52,7 @@ class _RuntimeProgressCurrentState extends State<RuntimeProgressCurrent> with Ti
   @override
   void dispose() {
     controller?.dispose();
-    eventBird?.off('REFLASH_DATA_CURRENT');
+    eventBird?.off('NEAREST_DATA');
     super.dispose();
   }
 
