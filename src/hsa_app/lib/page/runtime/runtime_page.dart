@@ -245,7 +245,8 @@ class _RuntimePageState extends State<RuntimePage> with TickerProviderStateMixin
     );
     runtimTasker.start((data){
       setState(() {
-        this.deviceTerminal?.nearestRunningData = AgentFake.fakeNearestRunningData(data);
+        // this.deviceTerminal?.nearestRunningData = AgentFake.fakeNearestRunningData(data);
+        this.deviceTerminal?.nearestRunningData =  data;
         addToList(powerNowList,this.deviceTerminal?.nearestRunningData?.power ?? 0.0);
         addToList(freqList,this.deviceTerminal?.nearestRunningData?.frequency ?? 0.0);
         addToList(openList,this.deviceTerminal?.nearestRunningData?.openAngle ?? 0.0);

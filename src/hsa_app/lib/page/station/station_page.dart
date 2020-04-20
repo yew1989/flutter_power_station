@@ -127,8 +127,8 @@ class _StationPageState extends State<StationPage> {
     stationTasker.start((stationInfo){
       setState(() {
         // 若开启此处,用于假数据调试动画
-        this.stationInfo = AgentFake.fakeStationInfo(stationInfo);
-        // this.stationInfo = stationInfo;
+        // this.stationInfo = AgentFake.fakeStationInfo(stationInfo);
+        this.stationInfo = stationInfo;
         profitList.add(stationInfo.totalMoney);
         if(profitList.length > 2){
           profitList.removeAt(0);
