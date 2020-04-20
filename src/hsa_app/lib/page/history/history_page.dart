@@ -160,11 +160,11 @@ class _HistoryPageState extends State<HistoryPage> {
   void requestChartHistory() {
 
     this.isChartLoadFinsh = false;
-    final stationInfo = widget.stationInfo;
-    final stationNos = stationInfo?.stationNo ?? '';
+
+    final stationNos = widget?.stationInfo?.stationNo ?? '';
     final address = widget?.singleTerminal?.terminalAddress ?? '';
 
-    var endDateTime = currentEndDateTime    + ' 23:59:59';
+    var endDateTime = currentEndDateTime  + ' 23:59:59';
 
     final now = DateTime.now();
     final will = DateTime.parse(endDateTime) ?? now;
@@ -187,10 +187,7 @@ class _HistoryPageState extends State<HistoryPage> {
         
         this.turbinelList = turbinelist;
 
-        var waterMax     = stationInfo.reservoirAlarmWaterStage;
-        var waterCurrent = 0.0;
-
-        var powerCurrent = 0.0;
+        var waterMax     = widget?.stationInfo?.reservoirAlarmWaterStage ?? 0.0;
 
         List<HistoryChartValue> originalPoints = [];
 
@@ -209,7 +206,7 @@ class _HistoryPageState extends State<HistoryPage> {
         // 整个电站
         else {
           var totalPower = 0.0;
-          for (final waterTurbine in stationInfo.waterTurbines) {
+          for (final waterTurbine in widget.stationInfo.waterTurbines) {
             totalPower += waterTurbine.ratedPowerKW;
           }
           for (final t in turbinelList) {
@@ -222,7 +219,7 @@ class _HistoryPageState extends State<HistoryPage> {
           }
         }
 
-        this.points  = originalPoints.reversed.toList();
+        this.points  = originalPoints;
 
       });
     },onFail:(msg){});
@@ -474,7 +471,7 @@ class _HistoryPageState extends State<HistoryPage> {
 
   Widget chartGraphWidget() {
     return Container(
-      height: 400,
+      height: 300,
       decoration: BoxDecoration(
         color: HexColor('1affffff'),
         borderRadius: BorderRadius.circular(6),
