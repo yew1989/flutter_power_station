@@ -10,9 +10,9 @@ import 'package:hsa_app/api/api.dart';
 import 'package:hsa_app/model/model/all_model.dart';
 import 'package:hsa_app/event/app_event.dart';
 import 'package:hsa_app/event/event_bird.dart';
-import 'package:hsa_app/model/model/history_point.dart';
 import 'package:hsa_app/model/model/runtime_adapter.dart';
 import 'package:hsa_app/page/history/history_calendar_bar.dart';
+import 'package:hsa_app/page/history/history_chart_value.dart';
 import 'package:hsa_app/page/history/history_event_tile.dart';
 import 'package:hsa_app/page/history/history_pop_dialog.dart';
 import 'package:hsa_app/theme/theme_gradient_background.dart';
@@ -22,10 +22,11 @@ import 'package:intl/intl.dart';
 
 class HistoryPage extends StatefulWidget {
 
-  final StationInfo stationInfo;
-  final bool isSingleDevice; // 是否是单台设备
-  final String address;
-  const HistoryPage({Key key, this.address,@required this.stationInfo,@required  this.isSingleDevice}) : super(key: key);
+  final StationInfo stationInfo;        // 电站信息
+  final bool isSingleDevice;            // 是否是单台设备
+  final DeviceTerminal singleTerminal;  // 如果是单台设备,从这里取数据
+
+  const HistoryPage({Key key,@required this.stationInfo,@required  this.isSingleDevice,this.singleTerminal}) : super(key: key);
 
   @override
   _HistoryPageState createState() => _HistoryPageState();
@@ -36,25 +37,34 @@ class _HistoryPageState extends State<HistoryPage> {
   List<TerminalAlarmEvent> showEvents = List<TerminalAlarmEvent>();
   List<WaterLevel> waterLevelList = List<WaterLevel>();
   List<Turbine> turbinelList = List<Turbine>();
-  int segmentIndex = 0;
 
+  // 0日  1周  2月 3年
+  int segmentIndex = 0; 
+
+  int get minuteInterval  {
+    switch (segmentIndex) {
+      case 0:return  10;break; // 日 = 10  10分钟
+      case 1:return  60;break; // 周 = 60  1小时
+      case 2:return 240;break; // 月 = 240 4小时
+      case 3:return 720;break; // 年 = 720 1天
+      default:return 10;
+    }
+  }
   // 时间
-  String startDateTime;
-  String endDateTime;
-  // 事件标志
-  String ercFlag = '-1';
-
+  String currentStartDateTime;
+  String currentEndDateTime;
+  // 当前事件标志
+  String currentERCFlag = '-1';
   // 是否空视图
   bool isEventEmpty = false;
-  // 是否首次数据加载完毕
+  // 事件列表是否首次数据加载完毕
   bool isEventLoadFinsh = false;
-
+  // 图表是否首次数据加载完毕
   bool isChartLoadFinsh = false;
-
-  List<ERCFlagType> evnetTypes = List<ERCFlagType>();
-
+  // ERC列表
+  List<ERCFlagType> evnetTypesList = List<ERCFlagType>();
   // 曲线点
-  List<DateValuePoint> points = List<DateValuePoint>();
+  List<HistoryChartValue> points = List<HistoryChartValue>();
 
   // 是否是单台设备
   bool isSingleDevice = false;
@@ -70,16 +80,13 @@ class _HistoryPageState extends State<HistoryPage> {
 
   // 获取事件类型
   void reqeustGetEventTypes() {
-    API.getErcFlagTypeList(type: '0',onSucc: (types){
-      this.evnetTypes = types;
-    },onFail: (msg){}
-    );
+    API.getErcFlagTypeList(type: '0',onSucc: (types){this.evnetTypesList = types;},onFail: (msg){});
   }
 
   @override
   void initState() {
-    this.isSingleDevice = widget?.isSingleDevice ?? false;
     super.initState();
+    this.isSingleDevice = widget?.isSingleDevice ?? false;
     reqeustGetEventTypes();
     requestTodayData();
     addObserverEventFilterChoose();
@@ -95,7 +102,7 @@ class _HistoryPageState extends State<HistoryPage> {
   void addObserverEventFilterChoose() {
     eventBird?.on(AppEvent.eventFilterChoose, (flag) {
       if (flag == '') return;
-      this.ercFlag = flag;
+      this.currentERCFlag = flag;
       requestEventListData();
     });
   }
@@ -109,8 +116,8 @@ class _HistoryPageState extends State<HistoryPage> {
     final day = now.day;
     final end   = formatDate(DateTime(year, month, day), [yyyy, '-', mm, '-', dd]);
     final start = formatDate(DateTime(year, month, day),[yyyy, '-', mm, '-', dd]);
-    this.startDateTime = start;
-    this.endDateTime = end;
+    this.currentStartDateTime = start;
+    this.currentEndDateTime = end;
 
     requestEventListData();
     requestChartHistory();
@@ -121,33 +128,31 @@ class _HistoryPageState extends State<HistoryPage> {
 
     this.isEventEmpty = false;
     this.isEventLoadFinsh = false;
-    final stationNos = widget?.stationInfo?.stationNo ?? '';
-    final address = widget?.address ?? '';
-    var apiStartDateTime = startDateTime + '  00:00:00';
-    var apiEndDateTime = endDateTime + '  23:59:59';
     
+    // 电站号 
+    final stationNos = widget?.stationInfo?.stationNo ?? '';
+    // 单台机组地址
+    final address = widget?.singleTerminal?.terminalAddress ?? '';
+
     API.getTerminalAlertList(
-      onSucc: (events){
-        this.isEventLoadFinsh = true;
-
-        if (events.length == 0) {
-          this.isEventEmpty = true;
-        }
-        setState(() {
-          this.showEvents = events;
-        });
-      },onFail: (msg){
-
-      },
       searchDirection : 'Backward',
-      endDateTime : apiEndDateTime,
-      startDateTime : apiStartDateTime,
+      endDateTime : currentStartDateTime   + '  00:00:00',
+      startDateTime : currentEndDateTime   + '  23:59:59',
       stationNos : this.isSingleDevice == true ? null :  stationNos ,
       terminalAddress : this.isSingleDevice == true ? address : null,
       ercVersions: '0',
-      eventFlags: (this.ercFlag.compareTo('-1') == 0) ? null : this.ercFlag,
-      limitSize : 10,
-    );
+      eventFlags: (this.currentERCFlag.compareTo('-1') == 0) ? null : this.currentERCFlag,
+      limitSize : 1000,
+      onSucc: (events){
+
+        this.isEventLoadFinsh = true;
+        this.isEventEmpty = events.length == 0 ? true : false;
+
+        setState(() {
+          this.showEvents = events;
+        });
+
+      },onFail: (msg){});
 
   }
 
@@ -155,112 +160,98 @@ class _HistoryPageState extends State<HistoryPage> {
   void requestChartHistory() {
 
     this.isChartLoadFinsh = false;
-    final stationInfo = widget.stationInfo;
-    final stationNos = stationInfo?.stationNo ?? '';
-    final address = widget?.address ?? '';
 
-    var  apiStartDateTime = startDateTime + ' 00:00:00';
-    var  apiEndDateTime = endDateTime + ' 23:59:59';
+    final stationNos = widget?.stationInfo?.stationNo ?? '';
+    final address = widget?.singleTerminal?.terminalAddress ?? '';
+
+    var endDateTime = currentEndDateTime  + ' 23:59:59';
 
     final now = DateTime.now();
-    final will = DateTime.parse(apiEndDateTime);
+    final will = DateTime.parse(endDateTime) ?? now;
 
     if(will.isAfter(now)) {
-      apiEndDateTime = formatDate(now, [yyyy, '-', mm, '-', dd,' ',hh, ':', nn, ':', ss]);
+      endDateTime = formatDate(now, [yyyy, '-', mm, '-', dd,' ',hh, ':', nn, ':', ss]);
     }
 
     API.getTurbineWaterAndPowerAndState(
       stationNo : stationNos,
       terminalAddress : this.isSingleDevice == true ? address : null,
-      startDateTime:apiStartDateTime,endDateTime:apiEndDateTime,
+      startDateTime:  currentStartDateTime  + ' 00:00:00',
+      endDateTime: endDateTime,
+      minuteInterval:this.minuteInterval.toString(), 
       onSucc: (turbinelist){
       
       this.isChartLoadFinsh = true;
 
       setState(() {
-        this.turbinelList = turbinelist;
         
-        final tkWMax = stationInfo.totalEquippedKW;
-        final waterStageMax = stationInfo.reservoirAlarmWaterStage;
+        this.turbinelList = turbinelist;
 
-        List<DateValuePoint> originalPoints = [];
-        if(turbinelList != null){
-          for(var t in this.turbinelList) {
-            var p = HistoryPoint();
-            p.tkWMax = tkWMax;
-            p.waterStageMax = waterStageMax;
-            p.freezeTime = t.freezeTime;
-            p.tkW = t.turbineElectricalPower.generatorActivePowerAll;
-            p.waterStage = t.turbineRuningStage.measuringWaterLevel;
-            originalPoints.add(DateValuePoint.fromPoint(p));
+        var waterMax     = widget?.stationInfo?.reservoirAlarmWaterStage ?? 0.0;
+
+        List<HistoryChartValue> originalPoints = [];
+
+        // 单台机组
+        if(this.isSingleDevice) {
+          final ratePower = widget?.singleTerminal?.waterTurbine?.ratedPowerKW ?? 0.0;
+          for (final t in turbinelList) {
+            var value = HistoryChartValue(DateTime.parse(t.freezeTime));
+            value.powerMax = ratePower;
+            value.waterMax = waterMax;
+            value.power = t.turbineElectricalPower.generatorActivePowerAll;
+            value.water = t.turbineRuningStage.measuringWaterLevel;
+            originalPoints.add(value);
           }
         }
-        
-        this.points = filterPoint(originalPoints);
+        // 整个电站
+        else {
+          var totalPower = 0.0;
+          for (final waterTurbine in widget.stationInfo.waterTurbines) {
+            totalPower += waterTurbine.ratedPowerKW;
+          }
+          for (final t in turbinelList) {
+            var value = HistoryChartValue(DateTime.parse(t.freezeTime));
+            value.powerMax = totalPower;
+            value.waterMax = waterMax;
+            value.power = t.turbineElectricalPower.generatorActivePowerAll;
+            value.water = t.turbineRuningStage.measuringWaterLevel;
+            originalPoints.add(value);
+          }
+        }
+
+        this.points  = originalPoints;
+
       });
-    },onFail: (msg){
-      debugPrint(msg);    
-    });
+    },onFail:(msg){});
   }
 
-  // 点过滤
-  List<DateValuePoint> filterPoint(List<DateValuePoint> originalPoints) {
-    List<DateValuePoint> newPoints = [];
-    var weight = 1;
-    if(originalPoints.length < 1000){
-      weight = 1;
-    }
-    else if (originalPoints.length >= 1000 && originalPoints.length < 10000){
-      weight = 10;
-    }
-    else if (originalPoints.length >= 10000 && originalPoints.length < 100000){
-      weight = 100;
-    }
-    else if (originalPoints.length >= 100000 && originalPoints.length < 1000000){
-      weight = 1000;
-    }
-    else if (originalPoints.length >= 1000000 && originalPoints.length < 10000000){
-      weight = 10000;
-    }
-    else if (originalPoints.length >= 10000000 && originalPoints.length < 100000000){
-      weight = 100000;
-    }
-
-    for (int i = 0 ; i < originalPoints.length ; i++) {
-      final p = originalPoints[i];
-      if(i % weight == 0) {
-        newPoints.add(p);
-      }
-    }
-    return newPoints;
-  }
 
   void onTapFilterButton(BuildContext context) {
-    if (this.evnetTypes.length == 0) return;
+    if (this.evnetTypesList.length == 0) return;
     showDialog(
         context: context,
         barrierDismissible: false,
-        builder: (_) => HistoryEventDialogWidget(ercFlag: this.ercFlag,eventTypes: this.evnetTypes));
+        builder: (_) => HistoryEventDialogWidget(ercFlag: this.currentERCFlag,eventTypes: this.evnetTypesList));
   }
 
   // 点击了日.周.月.年
   void onTapToggleButton() {
-    final now = DateTime.now();
 
+    final now = DateTime.now();
+    // 日
     if (segmentIndex == 0) {
-      this.startDateTime = formatDate(now, [yyyy, '-', mm, '-', dd]);
-      this.endDateTime = formatDate(now, [yyyy, '-', mm, '-', dd]);
+      this.currentStartDateTime   = formatDate(now, [yyyy, '-', mm, '-', dd]);
+      this.currentEndDateTime     = formatDate(now, [yyyy, '-', mm, '-', dd]);
+    // 周
     } else if (segmentIndex == 1) {
-      final year = now.year;
+      final year  = now.year;
       final month = now.month;
-      final day = now.day;
-      final end =
-          formatDate(DateTime(year, month, day), [yyyy, '-', mm, '-', dd]);
-      final start = formatDate(
-          DateTime(year, month, day).subtract(Duration(days: 6)),
-          [yyyy, '-', mm, '-', dd]);
-      this.startDateTime = start;
-      this.endDateTime = end;
+      final day   = now.day;
+      final end   = formatDate(DateTime(year, month, day), [yyyy, '-', mm, '-', dd]);
+      final start = formatDate( DateTime(year, month, day).subtract(Duration(days: 6)),[yyyy, '-', mm, '-', dd]);
+      this.currentStartDateTime = start;
+      this.currentEndDateTime   = end;
+    // 月
     } else if (segmentIndex == 2) {
       final year = now.year;
       final month = now.month;
@@ -272,8 +263,9 @@ class _HistoryPageState extends State<HistoryPage> {
       } else {
         end = formatDate(endDate, [yyyy, '-', mm, '-', dd]);
       }
-      this.startDateTime = start;
-      this.endDateTime = end;
+      this.currentStartDateTime  = start;
+      this.currentEndDateTime    = end;
+    // 年
     } else if (segmentIndex == 3) {
       final year = now.year;
       final start = formatDate(DateTime(year), [yyyy, '-', mm, '-', dd]);
@@ -284,8 +276,8 @@ class _HistoryPageState extends State<HistoryPage> {
       } else {
         end = formatDate(endDate, [yyyy, '-', mm, '-', dd]);
       }
-      this.startDateTime = start;
-      this.endDateTime = end;
+      this.currentStartDateTime = start;
+      this.currentEndDateTime = end;
     }
     requestEventListData();
     requestChartHistory();
@@ -314,8 +306,8 @@ class _HistoryPageState extends State<HistoryPage> {
                 color: Colors.white, fontFamily: AppTheme().numberFontName, fontSize: 22),
           ), onConfirm: (selectDate, _) {
         setState(() {
-          this.startDateTime = formatDate(selectDate, [yyyy, '-', mm, '-', dd]);
-          this.endDateTime = formatDate(selectDate, [yyyy, '-', mm, '-', dd]);
+          this.currentStartDateTime  = formatDate(selectDate, [yyyy, '-', mm, '-', dd]);
+          this.currentEndDateTime    = formatDate(selectDate, [yyyy, '-', mm, '-', dd]);
         });
         requestEventListData();
         requestChartHistory();
@@ -348,8 +340,8 @@ class _HistoryPageState extends State<HistoryPage> {
             DateTime(year, month, day).subtract(Duration(days: 6)),
             [yyyy, '-', mm, '-', dd]);
         setState(() {
-          this.startDateTime = start;
-          this.endDateTime = end;
+          this.currentStartDateTime = start;
+          this.currentEndDateTime   = end;
         });
         requestEventListData();
         requestChartHistory();
@@ -385,8 +377,8 @@ class _HistoryPageState extends State<HistoryPage> {
           end = formatDate(endDate, [yyyy, '-', mm, '-', dd]);
         }
         setState(() {
-          this.startDateTime = start;
-          this.endDateTime = end;
+          this.currentStartDateTime = start;
+          this.currentEndDateTime   = end;
         });
         requestEventListData();
         requestChartHistory();
@@ -418,8 +410,8 @@ class _HistoryPageState extends State<HistoryPage> {
           end = formatDate(endDate, [yyyy, '-', mm, '-', dd]);
         }
         setState(() {
-          this.startDateTime = start;
-          this.endDateTime = end;
+          this.currentStartDateTime = start;
+          this.currentEndDateTime   = end;
         });
         requestEventListData();
         requestChartHistory();
@@ -490,8 +482,8 @@ class _HistoryPageState extends State<HistoryPage> {
         children: <Widget>[
 
           HistoryCalendarBar(
-            startDateTime: this.startDateTime,
-            endDateTime: this.endDateTime,
+            startDateTime: this.currentStartDateTime,
+            endDateTime: this.currentEndDateTime,
             isLoading: this.isChartLoadFinsh,
             onChoose: () => showPickerPopWindow(),
           ),
@@ -499,19 +491,8 @@ class _HistoryPageState extends State<HistoryPage> {
           Container(
             height: 264,
             child: SfCartesianChart(
-                // annotations: [
-                //   CartesianChartAnnotation(
-                //     widget: 
-                //       Container(
-                //         child: const Text('Text',style: TextStyle(color: Colors.white,fontSize: 10))
-                //       ),
-                //     coordinateUnit: CoordinateUnit.logicalPixel,
-                //     x: 150,
-                //     y: 200,
-                //   )
-                // ],
-                plotAreaBorderWidth: 2,
-                plotAreaBorderColor: Colors.transparent,
+
+                plotAreaBorderWidth: 0,
                 zoomPanBehavior: ZoomPanBehavior(
                   enablePinching: true,
                   enablePanning: true,
@@ -526,96 +507,86 @@ class _HistoryPageState extends State<HistoryPage> {
                     color: Colors.white,
                     fontFamily:'ArialNarrow',
                   ),
-                  majorGridLines: MajorGridLines(
-                    width: 0,
-                  ),
-                  minorGridLines: MinorGridLines(
-                    width: 0,
-                  ),
-                  majorTickLines: MajorTickLines(
-                    width: 0,
-                  ),
-                  minorTickLines: MinorTickLines(
-                    width: 0,
-                  ),
+                  majorGridLines: MajorGridLines(width: 0),
+                  minorGridLines: MinorGridLines(width: 0),
+                  majorTickLines: MajorTickLines(width: 0),
+                  minorTickLines: MinorTickLines(width: 0),
                   dateFormat: getDateFormat(),
                 ),
                 primaryYAxis: NumericAxis(
-                  opposedPosition: true,
+                  name:'power',opposedPosition: true,
                   axisLine: AxisLine(color: Colors.transparent),
-                  minimum: 100,
-                  labelStyle: ChartTextStyle(
-                    color: Colors.white,
-                    fontFamily:'ArialNarrow',
-                  ),
-                  majorTickLines: MajorTickLines(width: 0),
-                  majorGridLines: MajorGridLines(
-                    width: 0.5,
-                    color: Colors.white60,
-                  ),
+                  labelStyle: ChartTextStyle(color: Colors.white,fontFamily:'ArialNarrow'),
+                  majorGridLines: MajorGridLines(width: 0.5,color: Colors.white60),
                   minorGridLines: MinorGridLines(width: 0),
+                  majorTickLines: MajorTickLines(width: 0),
                   minorTickLines: MinorTickLines(width: 0),
                 ),
                 axes:[
                   NumericAxis(
-                  name: 'water',
-                  opposedPosition: false,
+                  name: 'water',opposedPosition: false,
                   axisLine: AxisLine(color: Colors.transparent),
-                  minimum: 8,
-                  labelStyle: ChartTextStyle(
-                    color: Colors.white,
-                    fontFamily:'ArialNarrow',
-                  ),
-                  majorTickLines: MajorTickLines(width: 0),
+                  labelStyle: ChartTextStyle(color: Colors.white,fontFamily:'ArialNarrow'),
                   majorGridLines: MajorGridLines(width: 0),
                   minorGridLines: MinorGridLines(width: 0),
+                  majorTickLines: MajorTickLines(width: 0),
                   minorTickLines: MinorTickLines(width: 0),
                 ),
                 ],
-                series: getChartData()),
+                series: drawChartSeries()),
           ),
         ],
       ),
     );
   }
 
-   List<ChartSeries> getChartData() {
+  // draw 绘制曲线
+   List<ChartSeries> drawChartSeries() {
 
     return <ChartSeries>[
+
       // 有功曲线
-      SplineSeries<DateValuePoint, DateTime>(
-        dataSource: points,
+      SplineSeries<HistoryChartValue, DateTime>(
+        emptyPointSettings: EmptyPointSettings(mode: EmptyPointMode.average),
+        dataSource: this.points,
         splineType: SplineType.natural,
         color: HexColor('ee2e3b'),
-        xValueMapper: (DateValuePoint sales, _) => sales.time,
-        yValueMapper: (DateValuePoint sales, _) => sales.tkW,
+        xValueMapper: (HistoryChartValue point, _) => point.time,
+        yValueMapper: (HistoryChartValue point, _) => point.power,
+        yAxisName: 'power',
       ),
+
       // 水位高度
-      SplineAreaSeries<DateValuePoint, DateTime>(
+      SplineAreaSeries<HistoryChartValue, DateTime>(
         dataSource: points,
         borderDrawMode: BorderDrawMode.excludeBottom,
         gradient: LinearGradient(
           colors: [HexColor('0003a9f4'),HexColor('9903a9f4')]
         ),
-        xValueMapper: (DateValuePoint sales, _) => sales.time,
-        yValueMapper: (DateValuePoint sales, _) => sales.waterStage,
+        xValueMapper: (HistoryChartValue point, _) => point.time,
+        yValueMapper: (HistoryChartValue point, _) => point.water,
         yAxisName: 'water'
       ),
-      LineSeries<DateValuePoint, DateTime>(
+
+      // 有功告警曲线 = 额定 或 额定和
+      LineSeries<HistoryChartValue, DateTime>(
         dataSource: points,
-        dashArray: <double>[10, 10],
-        color: Colors.white,
+        // dashArray: <double>[10, 10],
+        color: HexColor('ee2e3b'),
         width: 0.5,
-        xValueMapper: (DateValuePoint sales, _) => sales.time,
-        yValueMapper: (DateValuePoint sales, _) => sales.tkWMax,
+        xValueMapper: (HistoryChartValue point, _) => point.time,
+        yValueMapper: (HistoryChartValue point, _) => point.powerMax,
+        yAxisName: 'power'
       ),
-      LineSeries<DateValuePoint, DateTime>(
+
+      // 水位告警曲线 = 告警水位水位
+      LineSeries<HistoryChartValue, DateTime>(
         dataSource: points,
-        dashArray: <double>[10, 10],
-        color: Colors.white,
+        // dashArray: <double>[10, 10],
+        color: HexColor('9903a9f4'),
         width: 0.5,
-        xValueMapper: (DateValuePoint sales, _) => sales.time,
-        yValueMapper: (DateValuePoint sales, _) => sales.waterStageMax,
+        xValueMapper: (HistoryChartValue point, _) => point.time,
+        yValueMapper: (HistoryChartValue point, _) => point.waterMax,
         yAxisName: 'water'
       ),
     ];
@@ -663,47 +634,17 @@ class _HistoryPageState extends State<HistoryPage> {
       return Expanded(child: EmptyPage(title: '暂无数据', subTitle: ''));
     return Expanded(
       child: ListView.builder(
+        itemCount: events.length ?? 0,
         itemBuilder: (ctx, index) {
           final event = events[index];
           final left = 'ERC${event.eventFlag}--${event.eventTitle}';
           var right = event.eventTime;
-          //right = right.split(' ').last ?? '';
           return HistoryEventTile(event: EventTileData(left, right));
         },
-        itemCount: events.length ?? 0
       )
     );
   }
 }
 
-class DateValuePoint {
-
-  DateTime time;
-  num tkW;
-  num waterStage;
-  num tkWMax;
-  num waterStageMax;
-
-  DateValuePoint(this.time, {this.tkW,this.waterStage,this.tkWMax,this.waterStageMax});
-
-  DateValuePoint.fromPoint(HistoryPoint point) {
-    final freezDate = point.freezeTime.replaceAll('T', ' ');
-    DateTime freeze = DateTime.parse(freezDate);
-    time = freeze;
-    tkW = point?.tkW ?? 1.0;
-    waterStage = point?.waterStage ?? 0.0;
-
-    tkWMax = point?.tkWMax ?? 1.0;
-    waterStageMax = point?.waterStageMax ?? 0.0;
-
-    if(point.tkW == 0.0) {
-      tkW = 1.0;
-    }
-    if(point?.tkW == null) {
-      tkW = 1.0;
-    }
-  }
-
-}
 
 

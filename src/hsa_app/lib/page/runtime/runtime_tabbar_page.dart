@@ -67,7 +67,7 @@ class _RuntimeTabbarPageState extends State<RuntimeTabbarPage> {
                   fontSize: AppTheme().navigationAppBarFontSize)),
           actions: <Widget>[
             GestureDetector(
-                onTap: () => pushToPage(context, HistoryPage(address: currentDevice.terminalAddress,stationInfo:stationInfo, isSingleDevice: true)),
+                onTap: () => pushToPage(context, HistoryPage(stationInfo:stationInfo, isSingleDevice: true,singleTerminal: currentDevice)),
                 child: Center(child: Text('历史分析',style: TextStyle(color: Colors.white, fontSize: 16)))),
             SizedBox(width: 20),
           ],
