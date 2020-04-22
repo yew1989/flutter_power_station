@@ -55,6 +55,7 @@ dependencies:
   wave: 0.0.8
   flui: 0.9.0
   syncfusion_flutter_gauges: ^18.1.42
+  infinite_listview: 1.0.0
 
 dev_dependencies:
   flutter_test:

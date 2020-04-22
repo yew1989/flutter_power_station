@@ -20,7 +20,7 @@ class  RuntimeProgressVoltage extends StatefulWidget {
 
 class _RuntimeProgressVoltageState extends State<RuntimeProgressVoltage> with TickerProviderStateMixin{
   
-  AnimationController controller;
+  AnimationController _controller;
   Animation<double> animation;
 
   double ratio;
@@ -42,25 +42,25 @@ class _RuntimeProgressVoltageState extends State<RuntimeProgressVoltage> with Ti
     this.oldData = widget?.doubleList[0] ?? 0.0;
     this.newData = widget?.doubleList[1] ?? 0.0;
 
-    controller = AnimationController(duration: Duration(seconds:seconds), vsync: this);
-    CurvedAnimation curvedAnimation = CurvedAnimation(parent: controller, curve: Curves.fastOutSlowIn);
+    _controller = AnimationController(duration: Duration(seconds:seconds), vsync: this);
+    CurvedAnimation curvedAnimation = CurvedAnimation(parent: _controller, curve: Curves.fastOutSlowIn);
     animation = Tween<double>(begin: oldData, end: newData).animate(curvedAnimation);
-    controller.forward();
+    _controller.forward();
   }
 
   @override
   void initState() {
+    super.initState();
     init();
     eventBird?.on('NEAREST_DATA', (dt){
-      init();
+        init();
     });
-    super.initState();
   }
 
   @override
   void dispose() {
-    controller?.stop();
-    controller?.dispose();
+    _controller?.stop();
+    _controller?.dispose();
     eventBird?.off('NEAREST_DATA');
     super.dispose();
   }
@@ -158,7 +158,7 @@ class _RuntimeProgressVoltageState extends State<RuntimeProgressVoltage> with Ti
                     child: Container(
                       child: Center(
                         child: AnimatedBuilder(
-                          animation: controller,
+                          animation: _controller,
                           builder: (BuildContext context, Widget child) => RichText(
                             text: TextSpan(text:animation.value.toStringAsFixed(2)+'V',style: TextStyle(color: Colors.white,fontFamily: AppTheme().numberFontName,fontSize: 12)),
                           ),

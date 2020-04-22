@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:hsa_app/config/app_theme.dart';
 import 'package:hsa_app/event/app_event.dart';
 import 'package:hsa_app/event/event_bird.dart';
@@ -27,6 +28,13 @@ class _StationProfitWidgetState extends State<StationProfitWidget> with TickerPr
     controller.forward();
   }
 
+  void first(){
+    controller = AnimationController(duration: Duration(milliseconds:50), vsync: this);
+    CurvedAnimation curvedAnimation = CurvedAnimation(parent: controller, curve: Curves.fastOutSlowIn);
+    animation = Tween<double>(begin: 0, end: 0).animate(curvedAnimation);
+    controller.forward();
+  }
+
   @override
   void dispose() {
     eventBird?.off(AppEvent.onRefreshProfit);
@@ -36,12 +44,12 @@ class _StationProfitWidgetState extends State<StationProfitWidget> with TickerPr
 
   @override
   void initState() {
+    super.initState();
+    first();
     init();
     eventBird?.on(AppEvent.onRefreshProfit, (_){
       init();
-      //debugPrint('-- 刷新 --');
     });
-    super.initState();
   }
 
   @override

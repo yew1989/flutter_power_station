@@ -190,7 +190,6 @@ class _RuntimePageState extends State<RuntimePage> with TickerProviderStateMixin
       return;
     }
     APIStation.getDeviceTerminalInfo(terminalAddress: addressId,onSucc: (dt){
-      //this.runtimeData = RuntimeDataAdapter.adapter(dt, widget.alias);
       this.deviceTerminal = dt;
       switch(deviceTerminal.deviceVersion){
         case 'S1-Base': 
@@ -206,7 +205,6 @@ class _RuntimePageState extends State<RuntimePage> with TickerProviderStateMixin
       APIStation.getMultipleAFNFnpn(terminalAddress:addressId,paramList: param,onSucc: (nearestRunningData){
         
         this.deviceTerminal.nearestRunningData = nearestRunningData;
-        //this.runtimeData = RuntimeDataAdapter.adapter(deviceTerminal, widget.alias);
         API.getTerminalAlertList(
           onSucc: (events){
             Progresshud.dismiss();

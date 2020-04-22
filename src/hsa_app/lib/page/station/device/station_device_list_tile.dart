@@ -31,7 +31,7 @@ class _StationDeviceListTileState extends State<StationDeviceListTile> with Tick
 
   AnimationController fanAnimationController;// 风机页片动画
   AnimationController controller; //文字动态
-  Animation<double> animation;
+  Animation<double> animation;//文字动态过程
 
 
   void showProgressCyanBar() async {
@@ -46,8 +46,8 @@ class _StationDeviceListTileState extends State<StationDeviceListTile> with Tick
       // 超发
       if(ratio > 1.0) {
         isBeyond = true;
-        var beyond = ratio - 1.0;
-        beyond = beyond * 3;// 为了好看,超发部分放大 3 倍
+        //var beyond = ratio - 1.0;
+        //beyond = beyond * 3;// 为了好看,超发部分放大 3 倍
         barRight = maxWidth * 1;
         isShowCyanComet = true;
         isShowRedComet = false;
@@ -72,7 +72,7 @@ class _StationDeviceListTileState extends State<StationDeviceListTile> with Tick
 
     void showProgressRedBar() async {
 
-    await Future.delayed(Duration(milliseconds: 700 +widget.index *(200)));
+    await Future.delayed(Duration(milliseconds: 200 +widget.index *(200)));
 
     if(mounted) {
       setState(() {
@@ -118,8 +118,14 @@ class _StationDeviceListTileState extends State<StationDeviceListTile> with Tick
     });
   }
 
+  void first(){
+    controller = AnimationController(duration: Duration(milliseconds:50), vsync: this);
+    CurvedAnimation curvedAnimation = CurvedAnimation(parent: controller, curve: Curves.fastOutSlowIn);
+    animation = Tween<double>(begin: 0, end: 0).animate(curvedAnimation);
+    controller.forward();
+  }
 
-  void init(){
+  void initTextAnimtaion(){
 
     list.add(widget?.waterTurbine?.deviceTerminal?.nearestRunningData?.power ?? 0.0);
     if(list.length > 2){
@@ -128,7 +134,7 @@ class _StationDeviceListTileState extends State<StationDeviceListTile> with Tick
     final oldPower = list[0] ?? 0.0;
     final powerNow = list[1] ?? 0.0;
 
-    controller = AnimationController(duration: Duration(milliseconds:5000), vsync: this);
+    controller = AnimationController(duration: Duration(milliseconds:2000), vsync: this);
     CurvedAnimation curvedAnimation = CurvedAnimation(parent: controller, curve: Curves.fastOutSlowIn);
     animation = Tween<double>(begin: oldPower, end: powerNow).animate(curvedAnimation);
     controller.forward();
@@ -136,12 +142,15 @@ class _StationDeviceListTileState extends State<StationDeviceListTile> with Tick
 
   @override
   void initState() {
+    first();
     showProgressCyanBar();
     showProgressRedBar();
     initFanAnimtaionController();
-    init();
+    initTextAnimtaion();
     eventBird.on('REFLASH_DATA', (_){
-      init();
+      showProgressCyanBar();
+      showProgressRedBar();
+      initTextAnimtaion();
     });
     super.initState();
   }
@@ -161,7 +170,6 @@ class _StationDeviceListTileState extends State<StationDeviceListTile> with Tick
     final isMaster = waterTurbine?.deviceTerminal?.isMaster ?? false;
     final isOnline =  waterTurbine?.deviceTerminal?.isOnLine ?? false;
     final currentPower =  waterTurbine?.deviceTerminal?.nearestRunningData?.power ?? 0.0; 
-    final currentPowerStr = currentPower.toStringAsFixed(0) + '';
     var now = DateTime.now();
     final year = now.year;
     final month = now.month;
