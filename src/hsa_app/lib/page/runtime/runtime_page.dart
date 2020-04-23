@@ -189,7 +189,12 @@ class _RuntimePageState extends State<RuntimePage> with TickerProviderStateMixin
       Progresshud.showInfoWithStatus('获取实时机组数据失败');
       return;
     }
-    APIStation.getDeviceTerminalInfo(terminalAddress: addressId,onSucc: (dt){
+    APIStation.getDeviceTerminalInfo(
+    terminalAddress: addressId,
+    isIncludeWaterTurbine : true,
+    isIncludeHydropowerStation:true,
+    isIncludeCustomer:true,
+    onSucc: (dt){
       this.deviceTerminal = dt;
       switch(deviceTerminal.deviceVersion){
         case 'S1-Base': 
@@ -210,9 +215,11 @@ class _RuntimePageState extends State<RuntimePage> with TickerProviderStateMixin
           onSucc: (events){
             Progresshud.dismiss();
             refreshController.refreshCompleted();
-            setState(() {
+            if(mounted) {
+              setState(() {
               this.showEvents = events;
-            });
+              });
+            }
             getRealtimeData();
           },onFail: (msg){},
           searchDirection : 'Backward',
@@ -225,13 +232,7 @@ class _RuntimePageState extends State<RuntimePage> with TickerProviderStateMixin
         Progresshud.showInfoWithStatus('获取实时机组数据失败');
         refreshController.refreshFailed();
       });
-    },onFail: (msg){
-      
-    },
-    isIncludeWaterTurbine : true,
-    isIncludeHydropowerStation:true,
-    isIncludeCustomer:true
-    );
+    });
   }
 
   //获取实时数据
@@ -243,7 +244,8 @@ class _RuntimePageState extends State<RuntimePage> with TickerProviderStateMixin
       timerInterval: this.seconds,
     );
     runtimTasker.start((data){
-      setState(() {
+      if(mounted) {
+        setState(() {
         // this.deviceTerminal?.nearestRunningData = AgentFake.fakeNearestRunningData(data);
         this.deviceTerminal?.nearestRunningData =  data;
         addToList(powerNowList,this.deviceTerminal?.nearestRunningData?.power ?? 0.0);
@@ -258,7 +260,8 @@ class _RuntimePageState extends State<RuntimePage> with TickerProviderStateMixin
         addToList(factorList,this.deviceTerminal?.nearestRunningData?.powerFactor ?? 0.0);
         eventBird?.emit('NEAREST_DATA',this.deviceTerminal);
         terminalBriefFooterData();
-      });
+        });
+      }
     });
   }
 
