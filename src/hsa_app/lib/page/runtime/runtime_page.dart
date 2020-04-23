@@ -205,6 +205,7 @@ class _RuntimePageState extends State<RuntimePage> with TickerProviderStateMixin
       APIStation.getMultipleAFNFnpn(terminalAddress:addressId,paramList: param,onSucc: (nearestRunningData){
         
         this.deviceTerminal.nearestRunningData = nearestRunningData;
+        
         API.getTerminalAlertList(
           onSucc: (events){
             Progresshud.dismiss();

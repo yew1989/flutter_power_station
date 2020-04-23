@@ -30,9 +30,11 @@ class _StationDeviceListTileState extends State<StationDeviceListTile> with Tick
   List<double> list = [0.0,0.0]; 
 
   AnimationController fanAnimationController;// 风机页片动画
-  AnimationController controller; //文字动态
-  Animation<double> animation;//文字动态过程
+  AnimationController wordController; //文字动态
+  Animation<double> animation;
 
+  // 防止内存泄漏 当等于0时才触发动画
+  var canPlayAnimationOnZero = 2;
 
   void showProgressCyanBar() async {
 
@@ -46,8 +48,6 @@ class _StationDeviceListTileState extends State<StationDeviceListTile> with Tick
       // 超发
       if(ratio > 1.0) {
         isBeyond = true;
-        //var beyond = ratio - 1.0;
-        //beyond = beyond * 3;// 为了好看,超发部分放大 3 倍
         barRight = maxWidth * 1;
         isShowCyanComet = true;
         isShowRedComet = false;
@@ -118,14 +118,7 @@ class _StationDeviceListTileState extends State<StationDeviceListTile> with Tick
     });
   }
 
-  void first(){
-    controller = AnimationController(duration: Duration(milliseconds:50), vsync: this);
-    CurvedAnimation curvedAnimation = CurvedAnimation(parent: controller, curve: Curves.fastOutSlowIn);
-    animation = Tween<double>(begin: 0, end: 0).animate(curvedAnimation);
-    controller.forward();
-  }
-
-  void initTextAnimtaion(){
+  void initWordAnimtaionController(){
 
     list.add(widget?.waterTurbine?.deviceTerminal?.nearestRunningData?.power ?? 0.0);
     if(list.length > 2){
@@ -134,23 +127,26 @@ class _StationDeviceListTileState extends State<StationDeviceListTile> with Tick
     final oldPower = list[0] ?? 0.0;
     final powerNow = list[1] ?? 0.0;
 
-    controller = AnimationController(duration: Duration(milliseconds:2000), vsync: this);
-    CurvedAnimation curvedAnimation = CurvedAnimation(parent: controller, curve: Curves.fastOutSlowIn);
-    animation = Tween<double>(begin: oldPower, end: powerNow).animate(curvedAnimation);
-    controller.forward();
+    if(canPlayAnimationOnZero <= 0) {
+      wordController?.dispose();
+      wordController = AnimationController(duration: Duration(milliseconds:3000), vsync: this);
+      CurvedAnimation curvedAnimation = CurvedAnimation(parent: wordController, curve: Curves.fastOutSlowIn);
+      animation = Tween<double>(begin: oldPower, end: powerNow).animate(curvedAnimation);
+      wordController.forward();
+      canPlayAnimationOnZero = 0 ;
+    }
+    canPlayAnimationOnZero--;
   }
 
   @override
   void initState() {
-    first();
-    showProgressCyanBar();
-    showProgressRedBar();
+    // showProgressCyanBar();
+    // showProgressRedBar();
     initFanAnimtaionController();
-    initTextAnimtaion();
-    eventBird.on('REFLASH_DATA', (_){
-      showProgressCyanBar();
-      showProgressRedBar();
-      initTextAnimtaion();
+    initWordAnimtaionController();
+    eventBird?.on('REFLASH_DATA', (_){
+      initWordAnimtaionController();
+      // debugPrint('Device List Tile REFLASH_DATA');
     });
     super.initState();
   }
@@ -158,12 +154,13 @@ class _StationDeviceListTileState extends State<StationDeviceListTile> with Tick
   @override
   void dispose() {
     fanAnimationController?.dispose();
-    controller?.dispose();
+    wordController?.dispose();
     eventBird?.off('REFLASH_DATA');
     super.dispose();
   }
   @override
   Widget build(BuildContext context) {
+
     final waterTurbine = widget.waterTurbine;
     final index = widget.index;
     final badgeName = (index + 1).toString();
@@ -227,36 +224,14 @@ class _StationDeviceListTileState extends State<StationDeviceListTile> with Tick
                       ],
                     ),
 
-                  // 事件告警
-                   FLBadge(
-                    position: FLBadgePosition.topRight,
-                    shape: FLBadgeShape.circle,
-                    hidden: eventCount == 0,
-                    textStyle:TextStyle(color: Colors.white,fontSize:10) ,
-                    text: eventStr,
-                    color: Colors.red,
-                    child: SizedBox(height: 24,width: 24,
-                    child: Image.asset('images/station/GL_Alarm_icon.png'),
-                  )),
-
-                    // 当前功率
-                    SizedBox(
-                      width: 54,
-                      child: Align(
-                        alignment: Alignment.centerRight,
-                        child: AnimatedBuilder(
-                          animation: controller,
-                          builder: (BuildContext context, Widget child) => RichText(
-                            text: TextSpan(text:animation.value.toStringAsFixed(0),style:TextStyle(color: isOnline ? Colors.white : Colors.white60,
-                                    fontFamily: AppTheme().numberFontName,fontSize: 28)),
-                          ),
-                        ),
-                      )),
+                    // 事件告警
+                    alarmWidget(eventStr,eventCount),
+                    // 当前功率带动画
+                    animateNumberWidget(wordController, canPlayAnimationOnZero == 0 ? animation?.value?.toStringAsFixed(0) ?? (currentPower.toStringAsFixed(0) ?? '0') : (currentPower.toStringAsFixed(0) ?? '0'), isOnline),
                   ],
                 ),
             ),
           ),
-
 
           // 功率 渐进线
           gradientPowerLine(waterTurbine.deviceTerminal,isOnline,index),
@@ -275,6 +250,38 @@ class _StationDeviceListTileState extends State<StationDeviceListTile> with Tick
         ],
       ),
     );
+  }
+
+  Widget alarmWidget(String eventStr,int eventCount) {
+     return FLBadge(
+        position: FLBadgePosition.topRight,
+        shape: FLBadgeShape.circle,
+        hidden: eventCount == 0,
+        textStyle:TextStyle(color: Colors.white,fontSize:10),
+        text: eventStr,
+        color: Colors.red,
+        child: SizedBox(height: 24,width: 24,child: Image.asset('images/home/Home_Aalarm_icon.png')),
+      );
+  }
+
+
+  // 功率动画数字
+  Widget animateNumberWidget(AnimationController controller,String text,bool isOnline) {
+
+    if(isOnline == false) {
+      return SizedBox(width: 54,child: Align(alignment: Alignment.centerRight,
+        child: Text(text,style:TextStyle(color:Colors.white60,fontFamily: AppTheme().numberFontName,fontSize: 28))));
+    }
+    else {
+      if(animation == null || controller == null) {
+        return SizedBox(width: 54,child: Align(alignment: Alignment.centerRight,
+        child: Text(text,style:TextStyle(color:Colors.white,fontFamily: AppTheme().numberFontName,fontSize: 28))));
+      } else {
+        return SizedBox(width: 54,child: Align(alignment: Alignment.centerRight,
+          child: AnimatedBuilder(animation: controller,builder: (BuildContext context, Widget child) => 
+          Text(text,style:TextStyle(color: Colors.white,fontFamily: AppTheme().numberFontName,fontSize: 28)))));
+      }
+    }
   }
 
   // 右上角标
@@ -367,7 +374,7 @@ class _StationDeviceListTileState extends State<StationDeviceListTile> with Tick
   String buildEventCount(int eventCount) {
     if(eventCount == null) return '';
     if(eventCount == 0) return '';
-    if(eventCount > 99) return '99+';
+    if(eventCount > 99) return '99';
     return eventCount.toString();
   }
 

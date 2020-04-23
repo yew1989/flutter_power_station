@@ -69,8 +69,8 @@ class _StationPageState extends State<StationPage> {
 
       if (station == null) return;
       eventBird?.emit(AppEvent.eventGotStationInfo,station);
-
-      setState(() {
+      if(mounted) {
+       setState(() {
         this.stationInfo = station;
         if(stationInfo.waterTurbines != null){
           for( int i = 0 ;stationInfo.waterTurbines.length > i; i++){
@@ -86,7 +86,7 @@ class _StationPageState extends State<StationPage> {
               break;
               
               case 'S1-Pro':
-                param = ["AFN0C.F28.p0", "AFN0C.F30.p0", "AFN0C.F10.p0", "AFN0C.F11.p0", 
+                param = ["AFN0C.F28.p0", "AFN0C.F30.p0", "AFN0C.F10.p0", "AFN0C.F11.p0",
                         "AFN0C.F13.p0", "AFN0C.F24.p0", "AFN0C.F20.p0", "AFN0C.F21.p0", "AFN0C.F22.p0"] ;
                 isBase = false;
               break;
@@ -109,9 +109,9 @@ class _StationPageState extends State<StationPage> {
             openLive.add(liveLink.m3u8Url ?? '' );
           }).toList();
         }
-        
-      });
-      getRealtimeData();
+        });
+      }
+
     }, onFail: (String msg) {
       refreshController.refreshFailed();
       Progresshud.showInfoWithStatus('获取电站信息失败');
@@ -125,17 +125,19 @@ class _StationPageState extends State<StationPage> {
       timerInterval:5,
     );
     stationTasker.start((stationInfo){
-      setState(() {
-        // 若开启此处,用于假数据调试动画
-        // this.stationInfo = AgentFake.fakeStationInfo(stationInfo);
-        this.stationInfo = stationInfo;
-        profitList.add(stationInfo.totalMoney);
-        if(profitList.length > 2){
-          profitList.removeAt(0);
-        }
-        eventBird?.emit('REFLASH_DATA');
-      });
-      eventBird?.emit(AppEvent.onRefreshProfit);
+      if(mounted) {
+        setState(() {
+          // 若开启此处,用于假数据调试动画
+          // this.stationInfo = AgentFake.fakeStationInfo(stationInfo);
+          this.stationInfo = stationInfo;
+          profitList.add(stationInfo.totalMoney);
+          if(profitList.length > 2){
+            profitList.removeAt(0);
+          }
+          eventBird?.emit('REFLASH_DATA');
+        });
+        eventBird?.emit(AppEvent.onRefreshProfit);
+      }
     });
   }
 

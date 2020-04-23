@@ -19,13 +19,21 @@ class _StationProfitWidgetState extends State<StationProfitWidget> with TickerPr
   AnimationController controller;
   Animation<double> animation;
 
-  void init() {
+  // 防止内存泄漏 当等于0时才触发动画
+  var canPlayAnimationOnZero = 2;
+
+  void initAnimateController() {
+
     final oldProfit = widget?.profit[0] ?? 0.0;
-    final profit = widget?.profit[1] ?? 0.0;
-    controller = AnimationController(duration: Duration(milliseconds:2500), vsync: this);
+    final profit    = widget?.profit[1] ?? 0.0;
+    
+    if(canPlayAnimationOnZero <= 0) {
+    controller = AnimationController(duration: Duration(milliseconds:3000), vsync: this);
     CurvedAnimation curvedAnimation = CurvedAnimation(parent: controller, curve: Curves.fastOutSlowIn);
     animation = Tween<double>(begin: oldProfit, end: profit).animate(curvedAnimation);
     controller.forward();
+    }
+    canPlayAnimationOnZero --;
   }
 
   void first(){
@@ -45,28 +53,42 @@ class _StationProfitWidgetState extends State<StationProfitWidget> with TickerPr
   @override
   void initState() {
     super.initState();
-    first();
-    init();
+    initAnimateController();
     eventBird?.on(AppEvent.onRefreshProfit, (_){
-      init();
+      initAnimateController();
     });
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: AnimatedBuilder(
+  Widget richTextMoneyWidget() {
+
+    final current = animation?.value?.toStringAsFixed(2) ?? '0.00';
+
+    if(animation == null || controller == null) {
+      return RichText(text:TextSpan(children: 
+          [
+            TextSpan(text:current,style: TextStyle(color: Colors.white,fontFamily: AppTheme().numberFontName,fontSize: 50)),
+            TextSpan(text:' 元',style: TextStyle(color: Colors.white,fontSize: 13)),
+          ]
+        ));
+    }
+    else {
+      return AnimatedBuilder(
         animation: controller,
-        builder: (BuildContext context, Widget child) => RichText(
-          text: TextSpan(
-            children: 
+        builder: (BuildContext context, Widget child) => RichText( text: TextSpan(children: 
             [
               TextSpan(text:animation.value.toStringAsFixed(2),style: TextStyle(color: Colors.white,fontFamily: AppTheme().numberFontName,fontSize: 50)),
               TextSpan(text:' 元',style: TextStyle(color: Colors.white,fontSize: 13)),
             ]
           ),
         ),
-      ),
+      );
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: richTextMoneyWidget()
     );
   }
 }
