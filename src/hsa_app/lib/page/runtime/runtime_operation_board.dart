@@ -334,8 +334,8 @@ class _RunTimeOperationBoardState extends State<RunTimeOperationBoard> {
                                             child: Image.asset('images/runtime/Time_Apower_icon.png')),
                                           SizedBox(width: 4),
                                           Text('调功',
-                                              style: TextStyle(
-                                                  color: Colors.white, fontSize: 15)),
+                                            style: TextStyle(
+                                              color: Colors.white, fontSize: 15)),
                                         ],
                                     ),
                                   ),
@@ -345,15 +345,19 @@ class _RunTimeOperationBoardState extends State<RunTimeOperationBoard> {
                                     showDialog(
                                       context: context,barrierDismissible: false,
                                       builder: (_) => PowerControlDialogWidget(
+                                        
                                         powerMax: deviceTerminal?.waterTurbine?.ratedPowerKW?.toInt() ?? 0,
-                                        onConfirmActivePower:(String activePower) {
-                                            if(widget.onSholdRequestRemoteCommand != null) {
-                                            widget.onSholdRequestRemoteCommand(TaskName.remoteSettingActivePower,activePower);
-                                            }
+                                        currentPower: deviceTerminal?.nearestRunningData?.power?.toInt() ?? 0,
+                                        currentFactor: deviceTerminal?.nearestRunningData?.powerFactor ?? 0.0,
+                                        onConfirmActivePower:(num activePower) {
+                                          debugPrint('功率因数:' + activePower.toString());
+                                          if(widget.onSholdRequestRemoteCommand != null) {
+                                            widget.onSholdRequestRemoteCommand(TaskName.remoteSettingActivePower,activePower.toString());
+                                          }
                                         },
-                                        onConfirmPowerFactor:(String powerFactor) {
-                                          debugPrint('功率因数:' + powerFactor);
-                                          var hundred = double.parse(powerFactor) * 100;
+                                        onConfirmPowerFactor:(num powerFactor) {
+                                          debugPrint('功率因数:' + powerFactor.toString());
+                                          var hundred = double.parse(powerFactor.toString()) * 100;
                                           var hundredStr = hundred.toStringAsFixed(0);
                                           if(widget.onSholdRequestRemoteCommand != null) {
                                             widget.onSholdRequestRemoteCommand(TaskName.remoteSettingPowerFactor,hundredStr);
@@ -407,12 +411,12 @@ class _RunTimeOperationBoardState extends State<RunTimeOperationBoard> {
                                   // return;
                                   // 暂时屏蔽该项功能
                                   showDialog(
-                                      context: context,
-                                      barrierDismissible: false,
-                                      builder: (_) => DeviceControlDialog((taskName){
-                                        if(widget.onSholdRequestRemoteCommand != null) {
-                                          widget.onSholdRequestRemoteCommand(taskName,null);
-                                        }
+                                    context: context,
+                                    barrierDismissible: false,
+                                    builder: (_) => DeviceControlDialog((taskName){
+                                      if(widget.onSholdRequestRemoteCommand != null) {
+                                        widget.onSholdRequestRemoteCommand(taskName,null);
+                                      }
                                   }));
                                 },
                               ),

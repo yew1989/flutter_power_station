@@ -1,17 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:hsa_app/components/data_picker.dart';
 
-typedef PowControlDialogOnConfirmActivePower = void Function(String activePower);
-typedef PowControlDialogOnConfirmPowerFactor = void Function(String powerFactor);
+typedef PowControlDialogOnConfirmActivePower = void Function(num activePower);
+typedef PowControlDialogOnConfirmPowerFactor = void Function(num powerFactor);
 
 class PowerControlDialogWidget extends StatefulWidget {
+  
   final int powerMax;
+  final int currentPower;
+  final double currentFactor;
   final PowControlDialogOnConfirmActivePower onConfirmActivePower;
   final PowControlDialogOnConfirmPowerFactor onConfirmPowerFactor;
 
   const PowerControlDialogWidget(
       {Key key,
       this.powerMax,
+      this.currentPower,
+      this.currentFactor,
       this.onConfirmActivePower,
       this.onConfirmPowerFactor})
       : super(key: key);
@@ -23,38 +28,27 @@ class PowerControlDialogWidget extends StatefulWidget {
 class _PowerControlDialogWidgetState extends State<PowerControlDialogWidget> {
   List<String> powerFactorList = [];
   List<String> activePowerList = [];
-
-  List<String> buildPowerFactorList() {
-    List<String> list = [];
-    for (var i = 0; i < 101; i++) {
-      var k = i / 100;
-      list.add(k.toStringAsFixed(2));
-    }
-    list = list.reversed.toList();
-    return list;
-  }
-
-  List<String> buildActivePowerList(int activePowerMax) {
-    List<String> list = [];
-    for (var i = 0; i < activePowerMax + 1; i++) {
-      list.add(i.toStringAsFixed(0));
-    }
-    list = list.reversed.toList();
-    return list;
-  }
+  int powerMax;
+  int currentPower;
+  double currentFactor;
+  
 
   @override
   void initState() {
-    powerFactorList = buildPowerFactorList();
-    activePowerList = buildActivePowerList(widget.powerMax);
+    powerMax = widget.powerMax ?? 0;
+    powerMax = (powerMax * 1.2).toInt();
+    currentPower = widget?.currentPower ?? 0;
+    currentPower = currentPower > powerMax  ? powerMax : currentPower;
+    currentFactor = widget?.currentFactor ?? 0.0;
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     return PowerControlDialog(
-      activePowerList: activePowerList,
-      powerFactorList: powerFactorList,
+      powerMax: powerMax,
+      currentPower: currentPower,
+      currentFactor: currentFactor,
       onConfirmActivePower: widget.onConfirmActivePower,
       onConfirmPowerFactor: widget.onConfirmPowerFactor,
     );
@@ -62,14 +56,18 @@ class _PowerControlDialogWidgetState extends State<PowerControlDialogWidget> {
 }
 
 class PowerControlDialog extends Dialog {
-  final List<String> powerFactorList;
-  final List<String> activePowerList;
+
+  final int powerMax;
+  final int currentPower;
+  final double currentFactor;
+  
   final PowControlDialogOnConfirmActivePower onConfirmActivePower;
   final PowControlDialogOnConfirmPowerFactor onConfirmPowerFactor;
 
   PowerControlDialog(
-      {this.activePowerList,
-      this.powerFactorList,
+      {this.powerMax,
+      this.currentPower,
+      this.currentFactor,
       this.onConfirmActivePower,
       this.onConfirmPowerFactor});
 
@@ -94,10 +92,15 @@ class PowerControlDialog extends Dialog {
             GestureDetector(
               onTap: () {
                 Navigator.of(context).pop();
-                showDataPicker(context, '请选择功率因数', powerFactorList,
-                    (String data) {
-                  if (onConfirmPowerFactor != null) onConfirmPowerFactor(data);
-                });
+                showNumberPicker(
+                  context,  (num data) {
+                    if (onConfirmPowerFactor != null) onConfirmPowerFactor(data);
+                  },
+                  title: '请选择功率因数',
+                  current : (currentFactor*100).toInt(),
+                  max : 100,
+                  decimal:2,
+                );
               },
             ),
           ],
@@ -127,10 +130,15 @@ class PowerControlDialog extends Dialog {
             GestureDetector(
               onTap: () {
                 Navigator.of(context).pop();
-                showDataPicker(context, '请选择有功功率(kW)', activePowerList,
-                    (String data) {
-                  if (onConfirmActivePower != null) onConfirmActivePower(data);
-                });
+                showNumberPicker(
+                  context,  (num data) {
+                    if (onConfirmActivePower != null) onConfirmActivePower(data);
+                  },
+                  title: '请选择有功功率(kW)',
+                  current : currentPower,
+                  max : powerMax,
+                  decimal:0,
+                );
               },
             ),
           ],
