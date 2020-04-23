@@ -279,7 +279,7 @@ class ControlModelDialog extends Dialog {
                           divider(12),
                           modelTile(context, '远程控制', true,ControlModelCurrentStatus.remoteOn,this.currentStatusStr),
                           divider(40),
-                          modelTile(context, '${deviceTerminal.intelligentControlScheme}', true,ControlModelCurrentStatus.remoteOff,this.currentStatusStr),
+                          modelTile(context, '${deviceTerminal?.intelligentControlScheme ?? '默认调节方案'}', true,ControlModelCurrentStatus.remoteOff,this.currentStatusStr),
 
                           // 分割线顶格
                           Container(
