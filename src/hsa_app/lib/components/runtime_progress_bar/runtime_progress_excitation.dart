@@ -153,7 +153,7 @@ class _RuntimeProgressExcitationState extends State<RuntimeProgressExcitation> w
                         child: AnimatedBuilder(
                           animation: controller,
                           builder: (BuildContext context, Widget child) => RichText(
-                            text: TextSpan(text:animation.value.toStringAsFixed(2),style: TextStyle(color: Colors.white,fontFamily: AppTheme().numberFontName,fontSize: 12)),
+                            text: TextSpan(text:animation.value.toStringAsFixed(2) + 'A',style: TextStyle(color: Colors.white,fontFamily: AppTheme().numberFontName,fontSize: 12)),
                           ),
                         ))),
                   ),
