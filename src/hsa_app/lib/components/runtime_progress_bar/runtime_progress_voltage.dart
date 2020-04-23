@@ -36,16 +36,22 @@ class _RuntimeProgressVoltageState extends State<RuntimeProgressVoltage> with Ti
 
   var maxWidth;
 
+  // 防止内存泄漏 当等于0时才触发动画
+  var canPlayAnimationOnZero = 2;
+
   void init(){
     this.seconds = widget?.seconds ?? 5;
-
     this.oldData = widget?.doubleList[0] ?? 0.0;
     this.newData = widget?.doubleList[1] ?? 0.0;
 
-    _controller = AnimationController(duration: Duration(seconds:seconds), vsync: this);
-    CurvedAnimation curvedAnimation = CurvedAnimation(parent: _controller, curve: Curves.fastOutSlowIn);
-    animation = Tween<double>(begin: oldData, end: newData).animate(curvedAnimation);
-    _controller.forward();
+    if(canPlayAnimationOnZero <= 0) {
+      _controller = AnimationController(duration: Duration(seconds:seconds), vsync: this);
+      CurvedAnimation curvedAnimation = CurvedAnimation(parent: _controller, curve: Curves.fastOutSlowIn);
+      animation = Tween<double>(begin: oldData, end: newData).animate(curvedAnimation);
+      _controller.forward();
+    }
+    canPlayAnimationOnZero --;
+
   }
 
   @override
@@ -133,7 +139,7 @@ class _RuntimeProgressVoltageState extends State<RuntimeProgressVoltage> with Ti
         children: <Widget>[
           // 左侧
           SizedBox(width: 10),
-          // 左侧电压
+          // 左侧文本
           Text(widget?.leftText ?? '',style: TextStyle(color: Colors.white, fontSize: 12)),
           // 间隔
           SizedBox(width: 6),
@@ -146,24 +152,12 @@ class _RuntimeProgressVoltageState extends State<RuntimeProgressVoltage> with Ti
               width: widget.barMaxWidth,
               child: Stack(
                 children: <Widget>[
-
                   // 渐变颜色条 红色
                   redAlaph(),
                   // 渐变颜色条 蓝色
                   blue(),
-
-                  // 文字交火动画
-                  Positioned(
-                    left: 0,right: 0,bottom: 0,
-                    child: Container(
-                      child: Center(
-                        child: AnimatedBuilder(
-                          animation: _controller,
-                          builder: (BuildContext context, Widget child) => RichText(
-                            text: TextSpan(text:animation.value.toStringAsFixed(2)+'V',style: TextStyle(color: Colors.white,fontFamily: AppTheme().numberFontName,fontSize: 12)),
-                          ),
-                        ))),
-                  ),
+                  // 文字动画
+                  animateNumberWidget(),
                 ],
               ),
             ),
@@ -174,4 +168,25 @@ class _RuntimeProgressVoltageState extends State<RuntimeProgressVoltage> with Ti
       ),
     );
   }
+
+  // 数字动画
+  Widget animateNumberWidget() {
+    final defaultValue = widget?.doubleList[0] ?? 0.0;
+    if(_controller == null || animation == null) {
+      return Positioned(
+        left: 0,right: 0,bottom: 0,
+        child: Center(child: RichText(text: TextSpan(text:defaultValue.toStringAsFixed(2)+'V',style: TextStyle(color: Colors.white,fontFamily: AppTheme().numberFontName,fontSize: 12)))));
+    }
+    else {
+      return Positioned(left: 0,right: 0,bottom: 0,child: Center(
+        child: AnimatedBuilder(
+          animation: _controller,
+          builder: (BuildContext context, Widget child) => RichText(
+            text: TextSpan(text:animation.value.toStringAsFixed(2)+'V',style: TextStyle(color: Colors.white,fontFamily: AppTheme().numberFontName,fontSize: 12)),
+          ),
+        )),
+      );
+    }
+  }
+  
 }

@@ -28,16 +28,22 @@ class _RuntimeProgressCurrentState extends State<RuntimeProgressCurrent> with Ti
   double newData ;
   int seconds ;
 
-  void init(){
-    this.seconds = widget?.seconds ?? 5;
+  // 防止内存泄漏 当等于0时才触发动画
+  var canPlayAnimationOnZero = 2;
 
+  void init(){
+
+    this.seconds = widget?.seconds ?? 5;
     this.oldData = widget?.doubleList[0] ?? 0.0;
     this.newData = widget?.doubleList[1] ?? 0.0;
+    if(canPlayAnimationOnZero <= 0) {
+      controller = AnimationController(duration: Duration(seconds:seconds), vsync: this);
+      CurvedAnimation curvedAnimation = CurvedAnimation(parent: controller, curve: Curves.fastOutSlowIn);
+      animation = Tween<double>(begin: oldData, end: newData).animate(curvedAnimation);
+      controller.forward();
+    }
+    canPlayAnimationOnZero --;
 
-    controller = AnimationController(duration: Duration(seconds:seconds), vsync: this);
-    CurvedAnimation curvedAnimation = CurvedAnimation(parent: controller, curve: Curves.fastOutSlowIn);
-    animation = Tween<double>(begin: oldData, end: newData).animate(curvedAnimation);
-    controller.forward();
   }
 
   @override
@@ -127,7 +133,7 @@ class _RuntimeProgressCurrentState extends State<RuntimeProgressCurrent> with Ti
         children: <Widget>[
           // 左侧
           SizedBox(width: 10),
-          // 左侧电压
+          // 左侧文本
           Text(widget?.leftText ?? '',style: TextStyle(color: Colors.white, fontSize: 12)),
           // 间隔
           SizedBox(width: 6),
@@ -140,28 +146,12 @@ class _RuntimeProgressCurrentState extends State<RuntimeProgressCurrent> with Ti
               width: widget.barMaxWidth,
               child: Stack(
                 children: <Widget>[
-
                   // 渐变颜色条 红色
                   redAlaph(),
-
                   // 渐变颜色条 蓝色
                   blue(),
-
-                  // 文字交火动画
-                  Positioned(
-                    left: 0,right: 0,bottom: 0,
-                    child: Container(
-                      child: Center(
-                        child: AnimatedBuilder(
-                          animation: controller,
-                          builder: (BuildContext context, Widget child) => RichText(
-                            text: TextSpan(text:animation.value.toStringAsFixed(2)+'A',style: TextStyle(color: Colors.white,fontFamily: AppTheme().numberFontName,fontSize: 12)),
-                          ),
-                        )
-                      )
-                    ),
-                  ),
-
+                  // 文字动画
+                  animateNumberWidget(),
                 ],
               ),
             ),
@@ -171,5 +161,25 @@ class _RuntimeProgressCurrentState extends State<RuntimeProgressCurrent> with Ti
         ],
       ),
     );
+  }
+
+  // 数字动画
+  Widget animateNumberWidget() {
+    final defaultValue = widget?.doubleList[0] ?? 0.0;
+    if(controller == null || animation == null) {
+      return Positioned(
+        left: 0,right: 0,bottom: 0,
+        child: Center(child: RichText(text: TextSpan(text:defaultValue.toStringAsFixed(2)+'A',style: TextStyle(color: Colors.white,fontFamily: AppTheme().numberFontName,fontSize: 12)))));
+    }
+    else {
+      return Positioned(left: 0,right: 0,bottom: 0,child: Center(
+        child: AnimatedBuilder(
+          animation: controller,
+          builder: (BuildContext context, Widget child) => RichText(
+            text: TextSpan(text:animation.value.toStringAsFixed(2)+'A',style: TextStyle(color: Colors.white,fontFamily: AppTheme().numberFontName,fontSize: 12)),
+          ),
+        )),
+      );
+    }
   }
 }
