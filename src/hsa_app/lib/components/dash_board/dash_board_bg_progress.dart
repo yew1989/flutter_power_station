@@ -67,21 +67,6 @@ class DashBoardBgProgressPainter extends CustomPainter {
       ..style = PaintingStyle.stroke;
     Rect rectPaintHzBg = Rect.fromCircle(center: Offset(0, 0), radius: 80.0);
     canvas.drawArc(rectPaintHzBg, -pi, 1.25 * pi, false, paintHzBg);
-
-    // 功率背景
-    Paint paintPowerBack = Paint();
-    paintPowerBack
-      ..strokeCap = StrokeCap.butt
-      ..color = Colors.white12
-      ..filterQuality = FilterQuality.high
-      ..isAntiAlias = true
-      ..strokeWidth = 24
-      ..style = PaintingStyle.stroke;
-
-    Path white24Path = Path();
-    white24Path.addArc(Rect.fromCircle(center: Offset(0, 0), radius: 54.0), -pi, (1.6) * pi);
-    canvas.drawPath(dashPath(white24Path,dashArray: CircularIntervalList<double>(<double>[1.0, 2.5])),paintPowerBack);
-
   }
 
   @override
