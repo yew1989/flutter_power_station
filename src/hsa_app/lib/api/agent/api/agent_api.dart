@@ -19,7 +19,7 @@ class AgentAPI {
       return;
     }
 
-    final checkPath = API.restHost + '/v1/Account/admin/Check/OperationPassword';
+    final checkPath = API.baseHost + '/v1/Account/admin/Check/OperationPassword';
     final encryptedPswd = await LDEncrypt.encryptedRSA(context, password);
 
     if(encryptedPswd == null || encryptedPswd.length == 0) {

@@ -67,7 +67,7 @@ class APIStation{
     param['pageSize'] = (pageSize != null ? pageSize : 20 );
 
     // 获取电站列表信息地址
-    final path = API.restHost + '/v1/HydropowerStation';
+    final path = API.baseHost + '/v1/HydropowerStation';
     
     HttpHelper.httpGET(path, param, (map,_){
 
@@ -106,7 +106,7 @@ class APIStation{
 
 
     // 获取电站列表信息地址
-    final path = API.restHost + '/v1/HydropowerStation/' + '$stationNo';
+    final path = API.baseHost + '/v1/HydropowerStation/' + '$stationNo';
     
     HttpHelper.httpGET(path, param, (map,_){
 
@@ -149,7 +149,7 @@ class APIStation{
 
     
     // 获取帐号信息地址
-    final path = API.restHost + '/v1/HydropowerStation/' + '$stationNo';
+    final path = API.baseHost + '/v1/HydropowerStation/' + '$stationNo';
     
     HttpHelper.httpGET(path, param, (map,_){
 
@@ -162,7 +162,7 @@ class APIStation{
   //取当前帐号关注的电站号列表
   static void currentAccountFavoriteStationNos({HttpSuccStrCallback onSucc,HttpFailCallback onFail}) async {
     
-    final path = API.restHost + '/v1/HydropowerStation/CurrentAccountFavoriteStationNos';
+    final path = API.baseHost + '/v1/HydropowerStation/CurrentAccountFavoriteStationNos';
     
     HttpHelper.httpPUT(path, null, (map,_){
 
@@ -175,7 +175,7 @@ class APIStation{
   //获取关注电站的电站编号数组
   static void getFavoriteStationNos({ListCallback onSucc,HttpFailCallback onFail}) async {
 
-    final path = API.restHost + '/v1/HydropowerStation/CurrentAccountFavoriteStationNos';
+    final path = API.baseHost + '/v1/HydropowerStation/CurrentAccountFavoriteStationNos';
     
     HttpHelper.httpGET(path, null, (map,_){
       //List<String> list = [];
@@ -210,7 +210,7 @@ class APIStation{
 
 
     // 获取电站列表信息地址
-    final path = API.restHost + '/v1/DeviceTerminal/' + '$terminalAddress';
+    final path = API.baseHost + '/v1/DeviceTerminal/' + '$terminalAddress';
     
     HttpHelper.httpGET(path, param, (map,_){
 
@@ -227,7 +227,7 @@ class APIStation{
       if(onFail != null) onFail('错误电站');
       return;
     }
-    final path = API.restHost + '/v1/HydropowerStation/' + '$stationNo'+'/SetFavorite/'+'$isFavorite';
+    final path = API.baseHost + '/v1/HydropowerStation/' + '$stationNo'+'/SetFavorite/'+'$isFavorite';
     
     HttpHelper.httpPUT(path, null, (map,_){
 

@@ -40,14 +40,18 @@ typedef WeatherCallback = void Function(Weather weather);
 
 class API {
 
+  // IP 地址或域名
+  // static final ip = '192.168.16.120'; // 开发环境 IP
+  static final ip = '27.148.136.253'; // 生产环境 IP
+
   // 通讯代理地址
-  static final agentHost    = 'http://192.168.16.120:8280';
+  static final agentHost    = 'http://' + ip + ':8280';
 
   // 基础信息地址
-  static final restHost     = 'http://192.168.16.120:8281';
+  static final baseHost     = 'http://' + ip + ':8281';
 
   // 动态数据地址
-  static final liveDataHost = 'http://192.168.16.120:8282';
+  static final liveDataHost = 'http://' + ip + ':8282';
 
   // 固定应用ID AppKey 由平台下发
   static final appKey = '3a769958-098a-46ff-a76a-de6062e079ee'; 
@@ -67,7 +71,7 @@ class API {
     }
     
     // 获取帐号信息地址
-    final path = restHost + '/v1/City/CurrentAccountHyStation/' + '$rangeLevel';
+    final path = baseHost + '/v1/City/CurrentAccountHyStation/' + '$rangeLevel';
     
     HttpHelper.httpGET(path, null, (map,_){
 
@@ -87,7 +91,7 @@ class API {
     }
     
     // 获取帐号信息地址
-    final path = restHost + '/v1/EnumAlarmEventERC/' + '$type';
+    final path = baseHost + '/v1/EnumAlarmEventERC/' + '$type';
     
     HttpHelper.httpGET(path, null, (map,_){
 
@@ -238,7 +242,7 @@ class API {
   //获取平台广告牌信息
   static void getAdvertisingBoard({BannerListCallback onSucc,HttpFailCallback onFail}) async {
 
-    final path = restHost + '/v1/SystemExtendInfo/AdvertisingBoard';
+    final path = baseHost + '/v1/SystemExtendInfo/AdvertisingBoard';
 
     HttpHelper.httpGET(path,null, (map,_){
       

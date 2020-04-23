@@ -34,7 +34,7 @@ class APILogin {
     }
 
     // 登录路径地址
-    final path = API.restHost + '/v1/Account/AuthenticationToken/Apply/' + API.appKey;
+    final path = API.baseHost + '/v1/Account/AuthenticationToken/Apply/' + API.appKey;
 
     // 发起请求
     var dio = HttpHelper.initDio();
@@ -80,7 +80,7 @@ class APILogin {
     }
     
     // 获取帐号信息地址
-    final path = API.restHost + '/v1/Account/' + name;
+    final path = API.baseHost + '/v1/Account/' + name;
     
     HttpHelper.httpGET(path, null, (map,_){
       final resp = AccountInfoResp.fromJson(map);
@@ -109,7 +109,7 @@ class APILogin {
     final oldPwd = await LDEncrypt.encryptedRSA(context,oldLoginPwd);
     final newPwd = await LDEncrypt.encryptedRSA(context,newLoginPwd);
 
-    final path = API.restHost + '/v1/Account/'+'$accountName'+'/Reset/LoginPassword';
+    final path = API.baseHost + '/v1/Account/'+'$accountName'+'/Reset/LoginPassword';
     var param = {'oldLoginPwd':oldPwd,'newLoginPwd':newPwd};
 
     HttpHelper.httpPATCH(path, param, (map,_){
