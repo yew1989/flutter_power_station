@@ -20,7 +20,7 @@ class  RuntimeProgressVoltage extends StatefulWidget {
 
 class _RuntimeProgressVoltageState extends State<RuntimeProgressVoltage> with TickerProviderStateMixin{
   
-  AnimationController _controller;
+  AnimationController controller;
   Animation<double> animation;
 
   double ratio;
@@ -45,10 +45,10 @@ class _RuntimeProgressVoltageState extends State<RuntimeProgressVoltage> with Ti
     this.newData = widget?.doubleList[1] ?? 0.0;
 
     if(canPlayAnimationOnZero <= 0  && mounted ) {
-      _controller = AnimationController(duration: Duration(seconds:seconds), vsync: this);
-      CurvedAnimation curvedAnimation = CurvedAnimation(parent: _controller, curve: Curves.fastOutSlowIn);
+      controller = AnimationController(duration: Duration(seconds:seconds), vsync: this);
+      CurvedAnimation curvedAnimation = CurvedAnimation(parent: controller, curve: Curves.fastOutSlowIn);
       animation = Tween<double>(begin: oldData, end: newData).animate(curvedAnimation);
-      _controller.forward();
+      controller.forward();
       canPlayAnimationOnZero = 0 ;
     }
     canPlayAnimationOnZero --;
@@ -66,9 +66,9 @@ class _RuntimeProgressVoltageState extends State<RuntimeProgressVoltage> with Ti
 
   @override
   void dispose() {
-    _controller?.stop();
-    _controller?.dispose();
+    controller?.dispose();
     eventBird?.off('NEAREST_DATA');
+    debugPrint('电压条释放OK');
     super.dispose();
   }
 
@@ -173,7 +173,7 @@ class _RuntimeProgressVoltageState extends State<RuntimeProgressVoltage> with Ti
   // 数字动画
   Widget animateNumberWidget() {
     final defaultValue = widget?.doubleList[0] ?? 0.0;
-    if(_controller == null || animation == null) {
+    if(controller == null || animation == null) {
       return Positioned(
         left: 0,right: 0,bottom: 0,
         child: Center(child: RichText(text: TextSpan(text:defaultValue.toStringAsFixed(2)+'V',style: TextStyle(color: Colors.white,fontFamily: AppTheme().numberFontName,fontSize: 12)))));
@@ -181,7 +181,7 @@ class _RuntimeProgressVoltageState extends State<RuntimeProgressVoltage> with Ti
     else {
       return Positioned(left: 0,right: 0,bottom: 0,child: Center(
         child: AnimatedBuilder(
-          animation: _controller,
+          animation: controller,
           builder: (BuildContext context, Widget child) => RichText(
             text: TextSpan(text:animation.value.toStringAsFixed(2)+'V',style: TextStyle(color: Colors.white,fontFamily: AppTheme().numberFontName,fontSize: 12)),
           ),
