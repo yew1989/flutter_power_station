@@ -1,4 +1,5 @@
 import 'dart:math' as math;
+import 'dart:math';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -36,6 +37,8 @@ class NumberPicker extends StatelessWidget {
     this.zeroPad = false,
     this.highlightSelectedValue = true,
     this.decoration,
+    this.defaultStyle,
+    this.selectedStyle,
   })  : assert(initialValue != null),
         assert(minValue != null),
         assert(maxValue != null),
@@ -122,6 +125,12 @@ class NumberPicker extends StatelessWidget {
   ///Amount of items
   final int integerItemCount;
 
+  //未选中
+  final TextStyle defaultStyle;
+
+  //选中
+  final TextStyle selectedStyle;
+
   //
   //----------------------------- PUBLIC ------------------------------
   //
@@ -163,9 +172,9 @@ class NumberPicker extends StatelessWidget {
   }
 
   Widget _integerListView(ThemeData themeData) {
-    TextStyle defaultStyle = themeData.textTheme.body1;
-    TextStyle selectedStyle =
-        themeData.textTheme.headline.copyWith(color: themeData.accentColor);
+    TextStyle defaultStyle = this.defaultStyle ?? themeData.textTheme.body1;
+    TextStyle selectedStyle = this.selectedStyle
+       ?? themeData.textTheme.headline.copyWith(color: themeData.accentColor);
 
     var listItemCount = integerItemCount + 2;
 
@@ -225,9 +234,9 @@ class NumberPicker extends StatelessWidget {
   
 
   Widget _integerInfiniteListView(ThemeData themeData) {
-    TextStyle defaultStyle = themeData.textTheme.body1;
-    TextStyle selectedStyle =
-        themeData.textTheme.headline.copyWith(color: themeData.accentColor);
+    TextStyle defaultStyle = this.defaultStyle ?? themeData.textTheme.body1;
+    TextStyle selectedStyle = this.selectedStyle 
+       ??  themeData.textTheme.headline.copyWith(color: themeData.accentColor);
 
     return Listener(
       onPointerUp: (ev) {
@@ -441,7 +450,7 @@ class NumberPickerRow extends StatefulWidget {
   //0-9999 最大值
   final int max;
 
-  //小数位数
+  //小数位数 0-3
   final int decimal;
 
   //当前值
@@ -458,6 +467,12 @@ class NumberPickerRow extends StatefulWidget {
 
   //应用于放置所选值的中央框
   final Decoration decoration;
+
+  //未选中
+  final TextStyle defaultStyle;
+
+  //选中
+  final TextStyle selectedStyle;
   
 
   ///constructor for integer values
@@ -469,19 +484,25 @@ class NumberPickerRow extends StatefulWidget {
     this.decoration,
     this.listViewWidth = 50,
     this.itemExtent = 50,
-  });
+    this.defaultStyle,
+    this.selectedStyle,
+  }): assert(decimal >=0 && decimal <= 3 ),
+      assert(max >=0 && max <= 9999 ),
+      assert(max >=0 && max <= 9999 );
 
   @override
   State<NumberPickerRow> createState() =>
-      new _NumberPickerRowControllerState(
-        max: max,
-        current:current,
-        decimal:decimal,
-        decoration:decoration,
-        listViewWidth:listViewWidth,
-        onChanged:onChanged,
-        itemExtent: itemExtent
-        );
+    new _NumberPickerRowControllerState(
+      max: max,
+      current:current,
+      decimal:decimal,
+      decoration:decoration,
+      listViewWidth:listViewWidth,
+      onChanged:onChanged,
+      itemExtent: itemExtent,
+      defaultStyle: defaultStyle,
+      selectedStyle: selectedStyle
+    );
 }
 
 class _NumberPickerRowControllerState extends State<NumberPickerRow> {
@@ -494,7 +515,9 @@ class _NumberPickerRowControllerState extends State<NumberPickerRow> {
     this.onChanged,
     this.listViewWidth,
     this.itemExtent,
-    });
+    this.defaultStyle,
+    this.selectedStyle
+  });
 
   
   int max;
@@ -503,6 +526,8 @@ class _NumberPickerRowControllerState extends State<NumberPickerRow> {
   double itemExtent;
   double listViewWidth;
   Decoration decoration;
+  TextStyle defaultStyle;
+  TextStyle selectedStyle;
   ValueChanged<num> onChanged;
   
   NumberPicker oneNumberPicker;
@@ -568,6 +593,8 @@ class _NumberPickerRowControllerState extends State<NumberPickerRow> {
       _currentFourValue = current%10;
       size = 1;
     }
+
+    onChanged(mathOnChanged());
   }
 
   //刷新数据
@@ -591,43 +618,48 @@ class _NumberPickerRowControllerState extends State<NumberPickerRow> {
       }
     }
     //刷新picker
-    _initializeNumberPickers(itemExtent,listViewWidth,decoration);
-    onChanged((_currentOneValue*1000+_currentTwoValue*100+_currentThreeValue*10+_currentFourValue)/(decimal > 0 ?  decimal*10 : 1));
+    _initializeNumberPickers();
+    onChanged(mathOnChanged());
   }
-  //初始化picker
-  NumberPicker newNumberPicker(){
-    return new NumberPicker.integer(
-      minValue: 0,
-      maxValue: oneMax,
-      infiniteLoop: true,
-      listViewWidth: listViewWidth,
-      decoration: decoration,
-      onChanged: (value) => setState(() {
-        _currentOneValue = value;
-        twoNumberPicker.animateIntToIndex(0);
-        reflashData();
-      }), 
-      initialValue: 0,
-    );
+
+  //计算回传数值
+  num mathOnChanged(){
+
+    if(size == 4){
+      return (_currentOneValue*1000+_currentTwoValue*100+_currentThreeValue*10+_currentFourValue)/(decimal > 0 ?  pow(10, decimal): 1);
+    }else if(size == 3){
+      return (_currentTwoValue*100+_currentThreeValue*10+_currentFourValue)/(decimal > 0 ?  pow(10, decimal) : 1);
+    }else if(size == 2){
+      return (_currentThreeValue*10+_currentFourValue)/(decimal > 0 ? pow(10, decimal) : 1);
+    }else if(size == 1){
+      return _currentFourValue;
+    }else{
+      return 0;
+    }
   }
 
   //初始化picker
-  void _initializeNumberPickers(
-      double itemExtent,
-      double listViewWidth,
-      Decoration decoration,
-    ) {
+  void _initializeNumberPickers() {
+      
+
     oneNumberPicker = new NumberPicker.integer(
       initialValue: _currentOneValue >= oneMax ? oneMax : _currentOneValue,
       minValue: 0,
       maxValue: oneMax,
-      infiniteLoop: true,
+      infiniteLoop: oneMax != 0,
       listViewWidth: listViewWidth,
       itemExtent:itemExtent,
       decoration: decoration,
+      defaultStyle: defaultStyle,
+      selectedStyle: selectedStyle,
       onChanged: (value) => setState(() {
         _currentOneValue = value;
         twoNumberPicker.animateIntToIndex(0);
+        _currentTwoValue = 0;
+        threeNumberPicker.animateIntToIndex(0);
+        _currentThreeValue = 0;
+        fourNumberPicker.animateIntToIndex(0);
+        _currentFourValue = 0;
         reflashData();
       }),
     );
@@ -635,13 +667,18 @@ class _NumberPickerRowControllerState extends State<NumberPickerRow> {
       initialValue: _currentTwoValue >= twoMax ? twoMax : _currentTwoValue,
       minValue: 0,
       maxValue: twoMax,
-      infiniteLoop: true,
+      infiniteLoop: twoMax != 0,
       listViewWidth: listViewWidth,
       itemExtent:itemExtent,
       decoration: decoration,
+      defaultStyle: defaultStyle,
+      selectedStyle: selectedStyle,
       onChanged: (value) => setState(() {
         _currentTwoValue = value;
         threeNumberPicker.animateIntToIndex(0);
+        _currentThreeValue = 0;
+        fourNumberPicker.animateIntToIndex(0);
+        _currentFourValue = 0;
         reflashData();
       }),
     );
@@ -649,13 +686,16 @@ class _NumberPickerRowControllerState extends State<NumberPickerRow> {
       initialValue: _currentThreeValue >= threeMax ? threeMax : _currentThreeValue,
       minValue: 0,
       maxValue: threeMax,
-      infiniteLoop: true,
+      infiniteLoop: threeMax != 0,
       listViewWidth: listViewWidth,
       itemExtent:itemExtent,
       decoration: decoration,
+      defaultStyle: defaultStyle,
+      selectedStyle: selectedStyle,
       onChanged: (value) => setState(() {
         _currentThreeValue = value;
         fourNumberPicker.animateIntToIndex(0);
+        _currentFourValue = 0;
         reflashData();
       }),
     );
@@ -663,13 +703,14 @@ class _NumberPickerRowControllerState extends State<NumberPickerRow> {
       initialValue: _currentFourValue >= fourMax ? fourMax : _currentFourValue,
       minValue: 0,
       maxValue: fourMax,
-      infiniteLoop: true,
+      infiniteLoop: fourMax != 0,
       listViewWidth: listViewWidth,
       itemExtent:itemExtent,
       decoration: decoration,
+      defaultStyle: defaultStyle,
+      selectedStyle: selectedStyle,
       onChanged: (value) => setState(() {
         _currentFourValue = value;
-        
         reflashData();
       }),
     );
@@ -704,14 +745,14 @@ class _NumberPickerRowControllerState extends State<NumberPickerRow> {
   }
 
   Widget decimalWidget(){
-    return Text('.',style: TextStyle(fontSize: 24,),);
+    return Text('.',style:selectedStyle ?? TextStyle(fontSize: 24,),);
   }
   
   
   @override
   Widget build(BuildContext context) {
     
-    _initializeNumberPickers(itemExtent,listViewWidth,decoration);
+    _initializeNumberPickers();
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       crossAxisAlignment: CrossAxisAlignment.center,
