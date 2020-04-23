@@ -1,7 +1,5 @@
 import 'dart:math';
-
 import 'package:flutter/material.dart';
-import 'package:path_drawing/path_drawing.dart';
 
 class DashBoardBgProgress extends StatefulWidget {
   @override

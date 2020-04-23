@@ -253,8 +253,7 @@ class ControlModelDialog extends Dialog {
                             child: SizedBox(
                               height: 43,
                               child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: <Widget>[
                                   RichText(

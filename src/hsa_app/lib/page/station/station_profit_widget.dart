@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:hsa_app/config/app_theme.dart';
 import 'package:hsa_app/event/app_event.dart';
 import 'package:hsa_app/event/event_bird.dart';
@@ -34,13 +33,6 @@ class _StationProfitWidgetState extends State<StationProfitWidget> with TickerPr
     controller.forward();
     }
     canPlayAnimationOnZero --;
-  }
-
-  void first(){
-    controller = AnimationController(duration: Duration(milliseconds:50), vsync: this);
-    CurvedAnimation curvedAnimation = CurvedAnimation(parent: controller, curve: Curves.fastOutSlowIn);
-    animation = Tween<double>(begin: 0, end: 0).animate(curvedAnimation);
-    controller.forward();
   }
 
   @override
