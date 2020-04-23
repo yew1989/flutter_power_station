@@ -13,8 +13,11 @@ class DashBoardOpen extends StatefulWidget {
 
 class _DashBoardOpenState extends State<DashBoardOpen> with TickerProviderStateMixin{
 
-  AnimationController openControllerStr;
+  AnimationController controller;
   Animation<double> animation;
+
+  // 防止内存泄漏 当等于0时才触发动画
+  var canPlayAnimationOnZero = 2;
 
   void init(){
     var openOld = widget?.openList[0] ?? 0.0;
@@ -22,27 +25,31 @@ class _DashBoardOpenState extends State<DashBoardOpen> with TickerProviderStateM
     var openNew = widget?.openList[1] ?? 0.0;
     openNew = openNew < 0 ?  -openNew: openNew;
 
-    openControllerStr = AnimationController(duration: Duration(milliseconds:5000), vsync: this);
-    CurvedAnimation curvedAnimation = CurvedAnimation(parent: openControllerStr, curve: Curves.fastOutSlowIn);
-    animation = Tween<double>(begin: openOld, end: openNew).animate(curvedAnimation);
-    openControllerStr.forward();
+    if(canPlayAnimationOnZero <= 0 && mounted) {
+      controller = AnimationController(duration: Duration(milliseconds:3000), vsync: this);
+      CurvedAnimation curvedAnimation = CurvedAnimation(parent: controller, curve: Curves.fastOutSlowIn);
+      animation = Tween<double>(begin: openOld, end: openNew).animate(curvedAnimation);
+      controller.forward();
+      canPlayAnimationOnZero = 0;
+    }
+    canPlayAnimationOnZero --;
+
   }
 
   @override
   void dispose() {
-    openControllerStr?.stop();
-    openControllerStr?.dispose();
+    controller?.dispose();
     eventBird?.off('NEAREST_DATA');
     super.dispose();
   }
 
   @override
   void initState() {
+    super.initState();
     init();
     eventBird?.on('NEAREST_DATA', (dt){
       init();   
     });
-    super.initState();
   }
 
   @override
@@ -52,17 +59,7 @@ class _DashBoardOpenState extends State<DashBoardOpen> with TickerProviderStateM
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
-          AnimatedBuilder(
-            animation: openControllerStr,
-            builder: (BuildContext context, Widget child) => RichText(
-              text: TextSpan(
-                children: 
-                [
-                  TextSpan(text:(animation.value*100).toStringAsFixed(1),style: TextStyle(color: Colors.white,fontFamily: AppTheme().numberFontName,fontSize: 24)),
-                ]
-              ),
-            ),
-          ),
+          animateNumberWidget(),
           SizedBox(
               height: 2,
               width: 52,
@@ -75,4 +72,36 @@ class _DashBoardOpenState extends State<DashBoardOpen> with TickerProviderStateM
       ),
     );
   }
+
+  // 数字动画
+  Widget animateNumberWidget() {
+
+    var openOld = widget?.openList[0] ?? 0.0;
+    openOld = openOld < 0 ?  -openOld: openOld;
+    final defaultValue = openOld ?? 0.0;
+
+      if(controller == null || animation == null) {
+      return RichText(text: TextSpan(
+        children: 
+          [
+            TextSpan(text:defaultValue.toStringAsFixed(1),style: TextStyle(color: Colors.white,fontFamily: AppTheme().numberFontName,fontSize: 24)),
+          ]
+        ),
+      );
+    }
+    else {
+      return AnimatedBuilder(
+        animation: controller,
+        builder: (BuildContext context, Widget child) => RichText(
+          text: TextSpan(
+            children: 
+            [
+              TextSpan(text:(animation.value*100).toStringAsFixed(1),style: TextStyle(color: Colors.white,fontFamily: AppTheme().numberFontName,fontSize: 24)),
+            ]
+          ),
+        ),
+      );
+    }
+  }
+
 }

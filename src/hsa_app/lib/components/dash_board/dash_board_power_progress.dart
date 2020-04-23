@@ -26,13 +26,19 @@ class _DashBoardPowerProgressState extends State<DashBoardPowerProgress> with Ti
   DeviceTerminal deviceTerminal;
   double powerMax = 0.0;
 
-  void initAnimationController(int seconds ,DeviceTerminal deviceTerminal,List<double> powerList ) async {
-    controller = AnimationController(vsync: this, duration: Duration(seconds: seconds));
+  // 防止内存泄漏 当等于0时才触发动画
+  var canPlayAnimationOnZero = 2;
 
-    eventBird?.on('NEAREST_DATA', (dt){
-        controller.value = 0;
-        judgeStats(seconds,powerList);
-    });
+  void initAnimationController(int seconds ,DeviceTerminal deviceTerminal,List<double> powerList ) async {
+
+    if(canPlayAnimationOnZero <= 0 && mounted ) {
+       controller = AnimationController(vsync: this, duration: Duration(seconds: seconds));
+       controller.value = 0;
+       judgeStats(seconds,powerList);
+       canPlayAnimationOnZero = 0;
+    }
+    canPlayAnimationOnZero --;
+
   }
   
 
@@ -48,12 +54,16 @@ class _DashBoardPowerProgressState extends State<DashBoardPowerProgress> with Ti
 
   @override
   void initState() {
+
+    super.initState();
     this.seconds = widget?.seconds ?? 5;
     this.deviceTerminal = widget?.deviceTerminal ?? DeviceTerminal();
     this.powerList = widget?.powerList ?? [0.0, 0.0];
     this.powerMax = widget?.powerMax ?? 0.0;
     initAnimationController(seconds,deviceTerminal,powerList);
-    super.initState();
+    eventBird?.on('NEAREST_DATA', (dt){
+      initAnimationController(seconds,deviceTerminal,powerList);
+    });
   }
 
   @override
@@ -91,7 +101,7 @@ class _DashBoardPowerProgressState extends State<DashBoardPowerProgress> with Ti
     }
 
 
-    return  AnimatedBuilder(
+    return  controller == null ? Container() : AnimatedBuilder(
       animation: controller,
       builder:  (context,child) => SfRadialGauge(
         axes: <RadialAxis>[

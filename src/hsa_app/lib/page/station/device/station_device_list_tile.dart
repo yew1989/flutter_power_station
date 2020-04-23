@@ -127,8 +127,7 @@ class _StationDeviceListTileState extends State<StationDeviceListTile> with Tick
     final oldPower = list[0] ?? 0.0;
     final powerNow = list[1] ?? 0.0;
 
-    if(canPlayAnimationOnZero <= 0) {
-      wordController?.dispose();
+    if(canPlayAnimationOnZero <= 0  && mounted) {
       wordController = AnimationController(duration: Duration(milliseconds:3000), vsync: this);
       CurvedAnimation curvedAnimation = CurvedAnimation(parent: wordController, curve: Curves.fastOutSlowIn);
       animation = Tween<double>(begin: oldPower, end: powerNow).animate(curvedAnimation);

@@ -18,27 +18,35 @@ class DashBoardOpenGateProgress extends StatefulWidget {
 
 class _DashBoardOpenGateProgressState extends State<DashBoardOpenGateProgress> with TickerProviderStateMixin{
 
-  AnimationController openController;
+  AnimationController controller;
+
+  // 防止内存泄漏 当等于0时才触发动画
+  var canPlayAnimationOnZero = 2;
 
   void initAnimationController(){
     int t = widget?.seconds ?? 5;
-    openController  = AnimationController(vsync: this, duration: Duration(seconds: t));
-    eventBird?.on('NEAREST_DATA', (dt){
-      openController.value = 0;
-      openController.forward();
-    });
+    if(canPlayAnimationOnZero <= 0 && mounted ) {
+      controller  = AnimationController(vsync: this, duration: Duration(seconds: t));
+      controller.value = 0;
+      controller.forward();
+      canPlayAnimationOnZero = 0;
+    }
+    canPlayAnimationOnZero --;
   }
 
 
   @override
   void initState() {
-    initAnimationController();
     super.initState();
+    initAnimationController();
+    eventBird?.on('NEAREST_DATA', (dt){
+      initAnimationController();
+    });
   }
 
   @override
   void dispose() {
-    openController?.dispose();
+    controller?.dispose();
     eventBird?.off('NEAREST_DATA');
     super.dispose();
   }
@@ -47,11 +55,11 @@ class _DashBoardOpenGateProgressState extends State<DashBoardOpenGateProgress> w
   Widget build(BuildContext context) {
     var openList = widget?.openList ?? [0.0,0.0];
     return Center(
-      child: AnimatedBuilder(
-        animation: openController,
+      child: controller == null ? Container() : AnimatedBuilder(
+        animation: controller,
         builder: (context,child) {
           return CustomPaint(
-          painter: DashBoardOpenGateProgressPainter(widget.deviceTerminal,openController,openList));
+          painter: DashBoardOpenGateProgressPainter(widget.deviceTerminal,controller,openList));
         }
       ),
     );

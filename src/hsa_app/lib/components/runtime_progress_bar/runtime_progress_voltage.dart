@@ -44,11 +44,12 @@ class _RuntimeProgressVoltageState extends State<RuntimeProgressVoltage> with Ti
     this.oldData = widget?.doubleList[0] ?? 0.0;
     this.newData = widget?.doubleList[1] ?? 0.0;
 
-    if(canPlayAnimationOnZero <= 0) {
+    if(canPlayAnimationOnZero <= 0  && mounted ) {
       _controller = AnimationController(duration: Duration(seconds:seconds), vsync: this);
       CurvedAnimation curvedAnimation = CurvedAnimation(parent: _controller, curve: Curves.fastOutSlowIn);
       animation = Tween<double>(begin: oldData, end: newData).animate(curvedAnimation);
       _controller.forward();
+      canPlayAnimationOnZero = 0 ;
     }
     canPlayAnimationOnZero --;
 

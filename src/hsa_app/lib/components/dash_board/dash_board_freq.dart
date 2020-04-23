@@ -13,36 +13,43 @@ class DashBoardFreq extends StatefulWidget {
 
 class _DashBoardFreqState extends State<DashBoardFreq> with TickerProviderStateMixin{
 
-  AnimationController freqControllerStr;
+  AnimationController controller;
   Animation<double> animation;
 
+  // 防止内存泄漏 当等于0时才触发动画
+  var canPlayAnimationOnZero = 2;
+
+
   void init(){
+
     final freqOld = widget?.freqList[0] ?? 0.0;
     final freqnew = widget?.freqList[1] ?? 0.0;
 
-
-    freqControllerStr = AnimationController(duration: Duration(milliseconds:5000), vsync: this);
-    CurvedAnimation curvedAnimation = CurvedAnimation(parent: freqControllerStr, curve: Curves.fastOutSlowIn);
-    animation = Tween<double>(begin: freqOld, end: freqnew).animate(curvedAnimation);
-    freqControllerStr.forward();
+    if(canPlayAnimationOnZero <= 0 && mounted) {
+      controller = AnimationController(duration: Duration(milliseconds:3000), vsync: this);
+      CurvedAnimation curvedAnimation = CurvedAnimation(parent: controller, curve: Curves.fastOutSlowIn);
+      animation = Tween<double>(begin: freqOld, end: freqnew).animate(curvedAnimation);
+      controller.forward();
+      canPlayAnimationOnZero = 0 ;
+    }
+    canPlayAnimationOnZero --;
     
   }
   
   @override
   void dispose() {
-    freqControllerStr?.stop();
-    freqControllerStr?.dispose();
+    controller?.dispose();
     eventBird?.off('NEAREST_DATA');
     super.dispose();
   }
 
   @override
   void initState() {
+    super.initState();
     init();
     eventBird?.on('NEAREST_DATA', (dt){
       init();
     });
-    super.initState();
   }
 
   @override
@@ -53,17 +60,7 @@ class _DashBoardFreqState extends State<DashBoardFreq> with TickerProviderStateM
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
-          AnimatedBuilder(
-            animation: freqControllerStr,
-            builder: (BuildContext context, Widget child) => RichText(
-              text: TextSpan(
-                children: 
-                [
-                  TextSpan(text:animation.value.toStringAsFixed(2),style: TextStyle(color: Colors.white,fontFamily: AppTheme().numberFontName,fontSize: 24)),
-                ]
-              ),
-            ),
-          ),
+          animateNumberWidget(),
           SizedBox(
               height: 2,
               width: 52,
@@ -75,5 +72,32 @@ class _DashBoardFreqState extends State<DashBoardFreq> with TickerProviderStateM
           ],
       ),
     );
+  }
+
+  // 数字动画
+  Widget animateNumberWidget() {
+    final defaultValue = widget?.freqList[0] ?? 0.0;
+      if(controller == null || animation == null) {
+      return RichText(text: TextSpan(
+        children: 
+          [
+            TextSpan(text:defaultValue.toStringAsFixed(2),style: TextStyle(color: Colors.white,fontFamily: AppTheme().numberFontName,fontSize: 24)),
+          ]
+        ),
+      );
+    }
+    else {
+      return AnimatedBuilder(
+        animation: controller,
+        builder: (BuildContext context, Widget child) => RichText(
+          text: TextSpan(
+            children: 
+            [
+              TextSpan(text:animation.value.toStringAsFixed(2),style: TextStyle(color: Colors.white,fontFamily: AppTheme().numberFontName,fontSize: 24)),
+            ]
+          ),
+        ),
+      );
+    }
   }
 }

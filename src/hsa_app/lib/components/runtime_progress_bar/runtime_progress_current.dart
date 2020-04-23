@@ -36,11 +36,12 @@ class _RuntimeProgressCurrentState extends State<RuntimeProgressCurrent> with Ti
     this.seconds = widget?.seconds ?? 5;
     this.oldData = widget?.doubleList[0] ?? 0.0;
     this.newData = widget?.doubleList[1] ?? 0.0;
-    if(canPlayAnimationOnZero <= 0) {
+    if(canPlayAnimationOnZero <= 0  && mounted) {
       controller = AnimationController(duration: Duration(seconds:seconds), vsync: this);
       CurvedAnimation curvedAnimation = CurvedAnimation(parent: controller, curve: Curves.fastOutSlowIn);
       animation = Tween<double>(begin: oldData, end: newData).animate(curvedAnimation);
       controller.forward();
+      canPlayAnimationOnZero = 0 ;
     }
     canPlayAnimationOnZero --;
 

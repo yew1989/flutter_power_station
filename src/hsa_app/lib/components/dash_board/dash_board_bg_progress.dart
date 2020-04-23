@@ -9,16 +9,6 @@ class DashBoardBgProgress extends StatefulWidget {
 class _DashBoardBgProgressState extends State<DashBoardBgProgress>  {
 
   @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Center(
       child: CustomPaint(
