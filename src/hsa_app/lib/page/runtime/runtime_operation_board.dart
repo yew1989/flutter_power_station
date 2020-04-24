@@ -450,7 +450,7 @@ class _RunTimeOperationBoardState extends State<RunTimeOperationBoard> {
 
                                 GestureDetector(
                                 onTap: () {
-                                  pushToPage(context,MorePage(addressId: widget?.addressId ??''));
+                                  pushToPage(context,MorePage(deviceTerminal: deviceTerminal));
                                 },
                               ),
 

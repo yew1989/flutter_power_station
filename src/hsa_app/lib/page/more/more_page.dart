@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hsa_app/model/model/all_model.dart';
 import 'package:hsa_app/model/model/more_data.dart';
 import 'package:hsa_app/page/more/more_page_tile.dart';
 import 'package:hsa_app/service/umeng_analytics.dart';
@@ -7,8 +8,8 @@ import 'package:ovprogresshud/progresshud.dart';
 
 class MorePage extends StatefulWidget {
 
-  final String addressId;
-  const MorePage({Key key, this.addressId}) : super(key: key);
+  final DeviceTerminal deviceTerminal;
+  const MorePage({Key key, this.deviceTerminal}) : super(key: key);
   
   @override
   _MorePageState createState() => _MorePageState();
@@ -17,6 +18,7 @@ class MorePage extends StatefulWidget {
 class _MorePageState extends State<MorePage> {
  
   List<MoreItem> moreItems = [];
+  DeviceTerminal deviceTerminal;
 
   @override
   void initState() {
@@ -34,12 +36,14 @@ class _MorePageState extends State<MorePage> {
   // 请求更多数据
   void requestMoreData() {
     Progresshud.showWithStatus('读取数据中...');
-    var address = widget.addressId ?? '';
+    deviceTerminal = widget?.deviceTerminal;
 
-    if(address.length == 0) {
+    if(deviceTerminal == null) {
       Progresshud.showInfoWithStatus('获取更多信息失败');
       return;
     }
+
+    moreData(deviceTerminal);
     // API.moreData(address,(List<MoreItem> items){
     //   Progresshud.dismiss();
     //   setState(() {
@@ -50,6 +54,18 @@ class _MorePageState extends State<MorePage> {
     //   debugPrint(msg);
     // });
 
+  }
+
+  void moreData(DeviceTerminal deviceTerminal){
+    
+    moreItems = MoreData().fromData(deviceTerminal);
+    if(moreItems.isEmpty){
+      Progresshud.showInfoWithStatus('获取更多信息失败');
+    }else{
+      Progresshud.dismiss();
+      setState(() {});
+    }
+    
   }
 
   @override
@@ -71,7 +87,7 @@ class _MorePageState extends State<MorePage> {
                 itemCount: moreItems?.length ?? 0,
                 itemBuilder: (_,index) {
                   var item = moreItems[index];
-                  return MorePageTile(item: item,index: index);
+                  return MorePageTile(item: item);
                 },
               ),
           ),

@@ -5,9 +5,8 @@ import 'package:hsa_app/config/app_theme.dart';
 class MorePageTile extends StatefulWidget { 
 
   final MoreItem item;
-  final int index;
 
-  const MorePageTile({Key key, this.item, this.index}) : super(key: key);
+  const MorePageTile({Key key, this.item}) : super(key: key);
   @override
   _MorePageTileState createState() => _MorePageTileState();
 }
@@ -29,14 +28,14 @@ class _MorePageTileState extends State<MorePageTile> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
-              Text(item.mItem1 ?? '',
+              Text(item.nameZh ?? '',
                 style: TextStyle(
                   color: Colors.white,
                   fontFamily: AppTheme().numberFontName,
                   fontSize: 18,
                   ),
               ),
-              Text(item.mItem2 ?? '',
+              Text(item.dataStr ?? '',
                 style: TextStyle(
                   color: Colors.white54,
                   fontFamily: AppTheme().numberFontName,
