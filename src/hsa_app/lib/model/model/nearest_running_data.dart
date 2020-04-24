@@ -5,8 +5,12 @@ class NearestRunningData{
 
   // 电压
   double voltage;
+  double voltageB;
+  double voltageC;
   // 电流
   double current;
+  double currentB;
+  double currentC;
   // 励磁电流
   double fieldCurrent;
   // 功率因数
@@ -15,14 +19,40 @@ class NearestRunningData{
   double frequency;
   // 开度
   double openAngle;
-  // 功率
+  // 有功功率
   double power;
+  double powerA;
+  double powerB;
+  double powerC;
+  // 有功功率
+  double reactivePower;
+  double reactivePowerA;
+  double reactivePowerB;
+  double reactivePowerC;
   // 水位
   double waterStage;
   // 温度
   double temperature;
   // 转速
   double speed;
+  //电网电压
+  double netVoltage;
+  //电网电压
+  double netFrequency;
+
+  //累计有功电能
+  int totalActivePower;
+  //累计无功电能
+  int totalReactivePower;
+  //当日有功电能
+  int dayActivePower;
+  //当日无功电能
+  int dayReactivePower;
+  //当月有功电能
+  int monthActivePower;
+  //当月无功电能
+  int monthReactivePower;
+
 
   // 是否允许远程控制
   bool isAllowRemoteControl;
@@ -40,15 +70,34 @@ class NearestRunningData{
 
   NearestRunningData(
     { this.voltage,
+      this.voltageB,
+      this.voltageC,
       this.current,
+      this.currentB,
+      this.currentC,
       this.fieldCurrent,
       this.powerFactor,
       this.frequency,
       this.openAngle,
       this.power,
+      this.powerA,
+      this.powerB,
+      this.powerC,
       this.temperature,
       this.speed,
-      this.waterStage
+      this.waterStage,
+      this.netVoltage,
+      this.netFrequency,
+      this.totalActivePower,
+      this.totalReactivePower,
+      this.dayActivePower,
+      this.dayReactivePower,
+      this.monthActivePower,
+      this.monthReactivePower,
+      this.reactivePower,
+      this.reactivePowerA,
+      this.reactivePowerB,
+      this.reactivePowerC,
     });
 
 
@@ -57,20 +106,46 @@ class NearestRunningData{
     // 电气量 BASE
     if(isBase == true) {
       voltage        = json['terminal-'+'$terminalAddress'+'.afn0c.f9.p0'] != null ? json['terminal-'+'$terminalAddress'+'.afn0c.f9.p0']['发电机A相电压'] ?? 0.0 : 0.0;
+      voltageB       = json['terminal-'+'$terminalAddress'+'.afn0c.f9.p0'] != null ? json['terminal-'+'$terminalAddress'+'.afn0c.f9.p0']['发电机B相电压'] ?? 0.0 : 0.0;
+      voltageC       = json['terminal-'+'$terminalAddress'+'.afn0c.f9.p0'] != null ? json['terminal-'+'$terminalAddress'+'.afn0c.f9.p0']['发电机C相电压'] ?? 0.0 : 0.0;
       current        = json['terminal-'+'$terminalAddress'+'.afn0c.f9.p0'] != null ? json['terminal-'+'$terminalAddress'+'.afn0c.f9.p0']['发电机A相电流'] ?? 0.0 : 0.0;
+      currentB       = json['terminal-'+'$terminalAddress'+'.afn0c.f9.p0'] != null ? json['terminal-'+'$terminalAddress'+'.afn0c.f9.p0']['发电机B相电流'] ?? 0.0 : 0.0;
+      currentC       = json['terminal-'+'$terminalAddress'+'.afn0c.f9.p0'] != null ? json['terminal-'+'$terminalAddress'+'.afn0c.f9.p0']['发电机C相电流'] ?? 0.0 : 0.0;
       frequency      = json['terminal-'+'$terminalAddress'+'.afn0c.f9.p0'] != null ? json['terminal-'+'$terminalAddress'+'.afn0c.f9.p0']['发电机电压频率'] ?? 0.0 : 0.0;
       power          = json['terminal-'+'$terminalAddress'+'.afn0c.f9.p0'] != null ? json['terminal-'+'$terminalAddress'+'.afn0c.f9.p0']['发电机总有功功率'] ?? 0.0 : 0.0;
+      powerA         = json['terminal-'+'$terminalAddress'+'.afn0c.f9.p0'] != null ? json['terminal-'+'$terminalAddress'+'.afn0c.f9.p0']['发电机A相有功功率'] ?? 0.0 : 0.0;
+      powerB         = json['terminal-'+'$terminalAddress'+'.afn0c.f9.p0'] != null ? json['terminal-'+'$terminalAddress'+'.afn0c.f9.p0']['发电机B相有功功率'] ?? 0.0 : 0.0;
+      powerC         = json['terminal-'+'$terminalAddress'+'.afn0c.f9.p0'] != null ? json['terminal-'+'$terminalAddress'+'.afn0c.f9.p0']['发电机C相有功功率'] ?? 0.0 : 0.0;
       powerFactor    = json['terminal-'+'$terminalAddress'+'.afn0c.f9.p0'] != null ? json['terminal-'+'$terminalAddress'+'.afn0c.f9.p0']['发电机总功率因数'] ?? 0.0 : 0.0;
       dataCachedTime = json['terminal-'+'$terminalAddress'+'.afn0c.f9.p0'] != null ? json['terminal-'+'$terminalAddress'+'.afn0c.f9.p0']['dataCachedTime'] ?? '' : '' ;
+      netVoltage     = json['terminal-'+'$terminalAddress'+'.afn0c.f9.p0'] != null ? json['terminal-'+'$terminalAddress'+'.afn0c.f9.p0']['电网电压'] ?? 0.0 : 0.0;
+      netFrequency   = json['terminal-'+'$terminalAddress'+'.afn0c.f9.p0'] != null ? json['terminal-'+'$terminalAddress'+'.afn0c.f9.p0']['电网电压频率'] ?? 0.0 : 0.0;
+      reactivePower  = json['terminal-'+'$terminalAddress'+'.afn0c.f9.p0'] != null ? json['terminal-'+'$terminalAddress'+'.afn0c.f9.p0']['发电机总无功功率'] ?? 0.0 : 0.0;
+      reactivePowerA = json['terminal-'+'$terminalAddress'+'.afn0c.f9.p0'] != null ? json['terminal-'+'$terminalAddress'+'.afn0c.f9.p0']['发电机A相无功功率'] ?? 0.0 : 0.0;
+      reactivePowerB = json['terminal-'+'$terminalAddress'+'.afn0c.f9.p0'] != null ? json['terminal-'+'$terminalAddress'+'.afn0c.f9.p0']['发电机B相无功功率'] ?? 0.0 : 0.0;
+      reactivePowerC = json['terminal-'+'$terminalAddress'+'.afn0c.f9.p0'] != null ? json['terminal-'+'$terminalAddress'+'.afn0c.f9.p0']['发电机C相无功功率'] ?? 0.0 : 0.0;
     }
     // 电气量 PRO
     else {
       voltage        = json['terminal-'+'$terminalAddress'+'.afn0c.f30.p0'] != null ? json['terminal-'+'$terminalAddress'+'.afn0c.f30.p0']['发电机A相电压'] ?? 0.0 : 0.0;
+      voltageB       = json['terminal-'+'$terminalAddress'+'.afn0c.f30.p0'] != null ? json['terminal-'+'$terminalAddress'+'.afn0c.f30.p0']['发电机B相电压'] ?? 0.0 : 0.0;
+      voltageC       = json['terminal-'+'$terminalAddress'+'.afn0c.f30.p0'] != null ? json['terminal-'+'$terminalAddress'+'.afn0c.f30.p0']['发电机C相电压'] ?? 0.0 : 0.0;
       current        = json['terminal-'+'$terminalAddress'+'.afn0c.f30.p0'] != null ? json['terminal-'+'$terminalAddress'+'.afn0c.f30.p0']['发电机A相电流'] ?? 0.0 : 0.0;
+      currentB       = json['terminal-'+'$terminalAddress'+'.afn0c.f30.p0'] != null ? json['terminal-'+'$terminalAddress'+'.afn0c.f30.p0']['发电机B相电流'] ?? 0.0 : 0.0;
+      currentC       = json['terminal-'+'$terminalAddress'+'.afn0c.f30.p0'] != null ? json['terminal-'+'$terminalAddress'+'.afn0c.f30.p0']['发电机C相电流'] ?? 0.0 : 0.0;
       frequency      = json['terminal-'+'$terminalAddress'+'.afn0c.f30.p0'] != null ? json['terminal-'+'$terminalAddress'+'.afn0c.f30.p0']['发电机电压频率'] ?? 0.0 : 0.0;
       power          = json['terminal-'+'$terminalAddress'+'.afn0c.f30.p0'] != null ? json['terminal-'+'$terminalAddress'+'.afn0c.f30.p0']['发电机总有功功率'] ?? 0.0 : 0.0;
+      powerA         = json['terminal-'+'$terminalAddress'+'.afn0c.f30.p0'] != null ? json['terminal-'+'$terminalAddress'+'.afn0c.f30.p0']['发电机A相有功功率'] ?? 0.0 : 0.0;
+      powerB         = json['terminal-'+'$terminalAddress'+'.afn0c.f30.p0'] != null ? json['terminal-'+'$terminalAddress'+'.afn0c.f30.p0']['发电机B相有功功率'] ?? 0.0 : 0.0;
+      powerC         = json['terminal-'+'$terminalAddress'+'.afn0c.f30.p0'] != null ? json['terminal-'+'$terminalAddress'+'.afn0c.f30.p0']['发电机C相有功功率'] ?? 0.0 : 0.0;
       powerFactor    = json['terminal-'+'$terminalAddress'+'.afn0c.f30.p0'] != null ? json['terminal-'+'$terminalAddress'+'.afn0c.f30.p0']['发电机总功率因数'] ?? 0.0 : 0.0;
       dataCachedTime = json['terminal-'+'$terminalAddress'+'.afn0c.f30.p0'] != null ? json['terminal-'+'$terminalAddress'+'.afn0c.f30.p0']['dataCachedTime'] ?? '' : '' ;
+      netVoltage     = json['terminal-'+'$terminalAddress'+'.afn0c.f30.p0'] != null ? json['terminal-'+'$terminalAddress'+'.afn0c.f30.p0']['电网电压'] ?? 0.0 : 0.0;
+      netFrequency   = json['terminal-'+'$terminalAddress'+'.afn0c.f30.p0'] != null ? json['terminal-'+'$terminalAddress'+'.afn0c.f30.p0']['电网电压频率'] ?? 0.0 : 0.0;
+      reactivePower  = json['terminal-'+'$terminalAddress'+'.afn0c.f30.p0'] != null ? json['terminal-'+'$terminalAddress'+'.afn0c.f30.p0']['发电机总无功功率'] ?? 0.0 : 0.0;
+      reactivePowerA = json['terminal-'+'$terminalAddress'+'.afn0c.f30.p0'] != null ? json['terminal-'+'$terminalAddress'+'.afn0c.f30.p0']['发电机A相无功功率'] ?? 0.0 : 0.0;
+      reactivePowerB = json['terminal-'+'$terminalAddress'+'.afn0c.f30.p0'] != null ? json['terminal-'+'$terminalAddress'+'.afn0c.f30.p0']['发电机B相无功功率'] ?? 0.0 : 0.0;
+      reactivePowerC = json['terminal-'+'$terminalAddress'+'.afn0c.f30.p0'] != null ? json['terminal-'+'$terminalAddress'+'.afn0c.f30.p0']['发电机C相无功功率'] ?? 0.0 : 0.0;
     }
 
     // 通用参数 : 
@@ -92,6 +167,16 @@ class NearestRunningData{
 
     // 温度值获取
     temperature = getTemperature(json,terminalAddress);
+
+    //有功电能  
+    totalActivePower = json['terminal-'+'$terminalAddress'+'.afn0c.f22.p0'] != null ? json['terminal-'+'$terminalAddress'+'.afn0c.f22.p0']['正向总有功电能'] ?? 0 : 0;
+    dayActivePower = json['terminal-'+'$terminalAddress'+'.afn0c.f20.p0'] != null ? json['terminal-'+'$terminalAddress'+'.afn0c.f20.p0']['正向总有功电能'] ?? 0 : 0;
+    monthActivePower = json['terminal-'+'$terminalAddress'+'.afn0c.f21.p0'] != null ? json['terminal-'+'$terminalAddress'+'.afn0c.f21.p0']['正向总有功电能'] ?? 0 : 0;
+
+    //有功电能  
+    totalReactivePower = json['terminal-'+'$terminalAddress'+'.afn0c.f22.p0'] != null ? json['terminal-'+'$terminalAddress'+'.afn0c.f22.p0']['正向总无功电能'] ?? 0 : 0;
+    dayReactivePower = json['terminal-'+'$terminalAddress'+'.afn0c.f20.p0'] != null ? json['terminal-'+'$terminalAddress'+'.afn0c.f20.p0']['正向总无功电能'] ?? 0 : 0;
+    monthReactivePower = json['terminal-'+'$terminalAddress'+'.afn0c.f21.p0'] != null ? json['terminal-'+'$terminalAddress'+'.afn0c.f21.p0']['正向总无功电能'] ?? 0 : 0;
 
     // 发电收入值获取
     if(price == null) {
