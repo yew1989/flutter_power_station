@@ -234,6 +234,9 @@ class NearestRunningData{
       result = tempDatas[findIndex];
 
     }
+    if(result > 1000) {
+      return 0.0;
+    }
     return result;
   }
 
