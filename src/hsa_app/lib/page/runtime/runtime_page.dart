@@ -222,7 +222,6 @@ class _RuntimePageState extends State<RuntimePage> with TickerProviderStateMixin
             }
             getRealtimeData();
           },onFail: (msg){},
-          searchDirection : 'Backward',
           terminalAddress : addressId,
           ercVersions: '0',
           limitSize : 10,
