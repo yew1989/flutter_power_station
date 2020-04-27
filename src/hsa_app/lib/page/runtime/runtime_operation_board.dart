@@ -350,12 +350,14 @@ class _RunTimeOperationBoardState extends State<RunTimeOperationBoard> {
                                         currentPower: deviceTerminal?.nearestRunningData?.power?.toInt() ?? 0,
                                         currentFactor: deviceTerminal?.nearestRunningData?.powerFactor ?? 0.0,
                                         onConfirmActivePower:(num activePower) {
+                                          Navigator.of(context).pop();
                                           debugPrint('功率因数:' + activePower.toString());
                                           if(widget.onSholdRequestRemoteCommand != null) {
                                             widget.onSholdRequestRemoteCommand(TaskName.remoteSettingActivePower,activePower.toString());
                                           }
                                         },
                                         onConfirmPowerFactor:(num powerFactor) {
+                                          Navigator.of(context).pop();
                                           debugPrint('功率因数:' + powerFactor.toString());
                                           var hundred = double.parse(powerFactor.toString()) * 100;
                                           var hundredStr = hundred.toStringAsFixed(0);
