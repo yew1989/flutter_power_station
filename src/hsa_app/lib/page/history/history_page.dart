@@ -135,7 +135,6 @@ class _HistoryPageState extends State<HistoryPage> {
     final address = widget?.singleTerminal?.terminalAddress ?? '';
 
     API.getTerminalAlertList(
-      searchDirection : 'Backward',
       endDateTime : currentStartDateTime   + '  00:00:00',
       startDateTime : currentEndDateTime   + '  23:59:59',
       stationNos : this.isSingleDevice == true ? null :  stationNos ,
