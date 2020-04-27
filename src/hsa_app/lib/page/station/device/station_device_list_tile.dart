@@ -38,7 +38,7 @@ class _StationDeviceListTileState extends State<StationDeviceListTile> with Tick
 
   void showProgressCyanBar() async {
 
-    await Future.delayed(Duration(milliseconds: 200 + widget.index *(200)));
+    await Future.delayed(Duration(milliseconds: 100 + widget.index *(100)));
 
     if(mounted) {
       setState(() {
@@ -72,7 +72,7 @@ class _StationDeviceListTileState extends State<StationDeviceListTile> with Tick
 
     void showProgressRedBar() async {
 
-    await Future.delayed(Duration(milliseconds: 200 +widget.index *(200)));
+    await Future.delayed(Duration(milliseconds: 100 + widget.index *(100)));
 
     if(mounted) {
       setState(() {
@@ -108,6 +108,7 @@ class _StationDeviceListTileState extends State<StationDeviceListTile> with Tick
   }
 
   void initFanAnimtaionController() {
+    fanAnimationController?.dispose();
     fanAnimationController  = AnimationController(duration: const Duration(seconds: 2), vsync: this);
     fanAnimationController.forward();
     fanAnimationController.addStatusListener((status) {
@@ -128,6 +129,7 @@ class _StationDeviceListTileState extends State<StationDeviceListTile> with Tick
     final powerNow = list[1] ?? 0.0;
 
     if(canPlayAnimationOnZero <= 0  && mounted) {
+      wordController?.dispose();
       wordController = AnimationController(duration: Duration(milliseconds:3000), vsync: this);
       CurvedAnimation curvedAnimation = CurvedAnimation(parent: wordController, curve: Curves.fastOutSlowIn);
       animation = Tween<double>(begin: oldPower, end: powerNow).animate(curvedAnimation);
@@ -139,13 +141,12 @@ class _StationDeviceListTileState extends State<StationDeviceListTile> with Tick
 
   @override
   void initState() {
-    // showProgressCyanBar();
-    // showProgressRedBar();
+    showProgressCyanBar();
+    showProgressRedBar();
     initFanAnimtaionController();
     initWordAnimtaionController();
     eventBird?.on('REFLASH_DATA', (_){
       initWordAnimtaionController();
-      // debugPrint('Device List Tile REFLASH_DATA');
     });
     super.initState();
   }

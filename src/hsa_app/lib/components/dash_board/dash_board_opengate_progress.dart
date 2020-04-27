@@ -26,6 +26,7 @@ class _DashBoardOpenGateProgressState extends State<DashBoardOpenGateProgress> w
   void initAnimationController(){
     int t = widget?.seconds ?? 5;
     if(canPlayAnimationOnZero <= 0 && mounted ) {
+      controller?.dispose();
       controller  = AnimationController(vsync: this, duration: Duration(seconds: t));
       controller.value = 0;
       controller.forward();

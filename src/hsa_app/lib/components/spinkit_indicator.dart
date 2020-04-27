@@ -12,6 +12,21 @@ class SpinkitIndicator extends StatefulWidget {
 
 class _SpinkitIndicatorState extends State<SpinkitIndicator> with TickerProviderStateMixin{
   
+  AnimationController controller;
+
+  @override
+  void initState() {
+    controller?.dispose();
+    controller = AnimationController(vsync: this, duration: const Duration(milliseconds: 1200));
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    controller?.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -28,7 +43,7 @@ class _SpinkitIndicatorState extends State<SpinkitIndicator> with TickerProvider
                 SpinKitFadingCircle(
                   color: Colors.white,
                   size: 50.0,
-                  controller: AnimationController(vsync: this, duration: const Duration(milliseconds: 1200)),
+                  controller: controller,
                 ),
                 SizedBox(height: 20),
                 Text(widget.title ??'',style: TextStyle(color: Colors.white70,fontSize: 16)),

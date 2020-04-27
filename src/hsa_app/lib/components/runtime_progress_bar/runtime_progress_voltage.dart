@@ -45,6 +45,7 @@ class _RuntimeProgressVoltageState extends State<RuntimeProgressVoltage> with Ti
     this.newData = widget?.doubleList[1] ?? 0.0;
 
     if(canPlayAnimationOnZero <= 0  && mounted ) {
+      controller?.dispose();
       controller = AnimationController(duration: Duration(seconds:seconds), vsync: this);
       CurvedAnimation curvedAnimation = CurvedAnimation(parent: controller, curve: Curves.fastOutSlowIn);
       animation = Tween<double>(begin: oldData, end: newData).animate(curvedAnimation);
@@ -68,7 +69,6 @@ class _RuntimeProgressVoltageState extends State<RuntimeProgressVoltage> with Ti
   void dispose() {
     controller?.dispose();
     eventBird?.off('NEAREST_DATA');
-    debugPrint('电压条释放OK');
     super.dispose();
   }
 

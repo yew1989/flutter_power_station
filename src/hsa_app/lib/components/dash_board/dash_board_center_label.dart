@@ -26,6 +26,7 @@ class _DashBoardCenterLabelState extends State<DashBoardCenterLabel> with Ticker
     final powerNow = widget?.powerNowList[1] ?? 0.0;
 
     if(canPlayAnimationOnZero <= 0) {
+      controller?.dispose();
       controller = AnimationController(duration: Duration(milliseconds:5000), vsync: this);
       CurvedAnimation curvedAnimation = CurvedAnimation(parent: controller, curve: Curves.fastOutSlowIn);
       animation = Tween<double>(begin: oldPower, end: powerNow).animate(curvedAnimation);

@@ -26,6 +26,7 @@ class _DashBoardOpenState extends State<DashBoardOpen> with TickerProviderStateM
     openNew = openNew < 0 ?  -openNew: openNew;
 
     if(canPlayAnimationOnZero <= 0 && mounted) {
+      controller?.dispose();
       controller = AnimationController(duration: Duration(milliseconds:3000), vsync: this);
       CurvedAnimation curvedAnimation = CurvedAnimation(parent: controller, curve: Curves.fastOutSlowIn);
       animation = Tween<double>(begin: openOld, end: openNew).animate(curvedAnimation);

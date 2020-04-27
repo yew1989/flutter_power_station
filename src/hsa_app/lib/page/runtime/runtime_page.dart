@@ -435,6 +435,7 @@ class _RuntimePageState extends State<RuntimePage> with TickerProviderStateMixin
 
   //温度 转速 水位数据处理
   void terminalBriefFooterData(){
+    footerDataController?.dispose();
     footerDataController = AnimationController(duration: Duration(seconds:this.seconds), vsync: this);
     CurvedAnimation curvedAnimation = CurvedAnimation(parent: footerDataController, curve: Curves.fastOutSlowIn);
     animationTemp = Tween<double>(begin: temperatureList[0], end: temperatureList[1]).animate(curvedAnimation);

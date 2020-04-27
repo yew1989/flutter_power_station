@@ -38,6 +38,7 @@ class _RuntimeProgressFactoryState extends State<RuntimeProgressFactory> with Ti
     this.newData = widget?.doubleList[1] ?? 0.0;
 
     if(canPlayAnimationOnZero <= 0  && mounted ) {
+      controller?.dispose();
       controller = AnimationController(duration: Duration(seconds:seconds), vsync: this);
       CurvedAnimation curvedAnimation = CurvedAnimation(parent: controller, curve: Curves.fastOutSlowIn);
       animation = Tween<double>(begin: oldData, end: newData).animate(curvedAnimation);
