@@ -51,6 +51,7 @@ class _CountingLabelState extends State<CountingLabel> with TickerProviderStateM
 
   @override
   Widget build(BuildContext context) {
+    _controller?.dispose();
     _controller = AnimationController(duration: widget.duration, vsync: this);
     CurvedAnimation curvedAnimation = CurvedAnimation(parent: _controller, curve: widget.curve);
     _animation = Tween<double>(begin: widget.begin, end: widget.end).animate(curvedAnimation);

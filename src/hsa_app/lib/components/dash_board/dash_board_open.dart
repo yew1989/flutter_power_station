@@ -17,7 +17,7 @@ class _DashBoardOpenState extends State<DashBoardOpen> with TickerProviderStateM
   Animation<double> animation;
 
   // 防止内存泄漏 当等于0时才触发动画
-  var canPlayAnimationOnZero = 2;
+  var canPlayAnimationOnZero = 1;
 
   void init(){
     var openOld = widget?.openList[0] ?? 0.0;
@@ -26,6 +26,7 @@ class _DashBoardOpenState extends State<DashBoardOpen> with TickerProviderStateM
     openNew = openNew < 0 ?  -openNew: openNew;
 
     if(canPlayAnimationOnZero <= 0 && mounted) {
+      controller?.dispose();
       controller = AnimationController(duration: Duration(milliseconds:3000), vsync: this);
       CurvedAnimation curvedAnimation = CurvedAnimation(parent: controller, curve: Curves.fastOutSlowIn);
       animation = Tween<double>(begin: openOld, end: openNew).animate(curvedAnimation);

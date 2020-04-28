@@ -22,13 +22,13 @@ class _DashBoardFreqProgressState extends State<DashBoardFreqProgress> with Tick
   AnimationController controller;
 
   // 防止内存泄漏 当等于0时才触发动画
-  var canPlayAnimationOnZero = 2;
+  var canPlayAnimationOnZero = 1;
   
   void initAnimationController(){
     int t = widget?.seconds ?? 5;
     if(canPlayAnimationOnZero <= 0 && mounted ) {
+      controller?.dispose();
       controller  = AnimationController(vsync: this, duration: Duration(seconds: t));
-      controller.value = 0;
       controller.forward();
       canPlayAnimationOnZero = 0;
     }
@@ -39,7 +39,7 @@ class _DashBoardFreqProgressState extends State<DashBoardFreqProgress> with Tick
   void initState() {
     super.initState();
     initAnimationController();
-    eventBird?.on('NEAREST_DATA', (dt){
+    eventBird?.on('NEAREST_DATA', (_){
       initAnimationController();
     });
   }
@@ -79,16 +79,16 @@ class DashBoardFreqProgressPainter extends CustomPainter {
     var freqMax  = 50.0;
     var freqPencentOld   = RuntimeDataAdapter.caclulatePencent(freqList[0],freqMax) ?? 0.0;
     var freqPencentNew   = RuntimeDataAdapter.caclulatePencent(freqList[1],freqMax) ?? 0.0;
-    
+
     //线起始
-    double startAngle;
+    double startAngle = 0.0;
     //线变化
-    double sweepAngle;
+    double sweepAngle = 0.0;
     //线补充
-    double sweepAngleOld;
+    double sweepAngleOld = 0.0;
 
     //后数据>前数据(顺时针)
-    if(freqList[1] > freqList[0]){
+    if(freqList[1] >= freqList[0]){
       startAngle = pi * freqPencentOld + (-pi);
       sweepAngle = freqController.value * (freqPencentNew - freqPencentOld) * pi ;
       sweepAngleOld = pi * freqPencentOld;
@@ -99,6 +99,7 @@ class DashBoardFreqProgressPainter extends CustomPainter {
       sweepAngle = (1 - freqController.value) * (freqPencentOld - freqPencentNew) * pi ;
       sweepAngleOld = pi * freqPencentNew;
     }
+
     // 真实频率填充
     Paint paintHzRealOld = Paint();
     paintHzRealOld

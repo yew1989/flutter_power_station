@@ -27,13 +27,13 @@ class _DashBoardPowerProgressState extends State<DashBoardPowerProgress> with Ti
   double powerMax = 0.0;
 
   // 防止内存泄漏 当等于0时才触发动画
-  var canPlayAnimationOnZero = 2;
+  var canPlayAnimationOnZero = 1;
 
   void initAnimationController(int seconds ,DeviceTerminal deviceTerminal,List<double> powerList ) async {
 
-    if(canPlayAnimationOnZero <= 0 && mounted ) {
+    if(canPlayAnimationOnZero <= 0 && mounted) {
+       controller?.dispose();
        controller = AnimationController(vsync: this, duration: Duration(seconds: seconds));
-       controller.value = 0;
        judgeStats(seconds,powerList);
        canPlayAnimationOnZero = 0;
     }
@@ -46,6 +46,7 @@ class _DashBoardPowerProgressState extends State<DashBoardPowerProgress> with Ti
   void judgeStats(int seconds,List<double> powerList) async {
       
     if(this.powerMax > 0){
+      controller?.dispose();
       controller = AnimationController(vsync: this, duration: Duration(seconds: seconds));
       controller?.forward();
     }

@@ -21,13 +21,13 @@ class _DashBoardOpenGateProgressState extends State<DashBoardOpenGateProgress> w
   AnimationController controller;
 
   // 防止内存泄漏 当等于0时才触发动画
-  var canPlayAnimationOnZero = 2;
+  var canPlayAnimationOnZero = 1;
 
   void initAnimationController(){
     int t = widget?.seconds ?? 5;
     if(canPlayAnimationOnZero <= 0 && mounted ) {
+      controller?.dispose();
       controller  = AnimationController(vsync: this, duration: Duration(seconds: t));
-      controller.value = 0;
       controller.forward();
       canPlayAnimationOnZero = 0;
     }
@@ -82,14 +82,14 @@ class DashBoardOpenGateProgressPainter extends CustomPainter {
     
 
     //线起始
-    double startAngle;
+    double startAngle = 0.0;
     //线变化
-    double sweepAngle;
+    double sweepAngle  = 0.0;
     //线补充
-    double sweepAngleOld;
+    double sweepAngleOld  = 0.0;
 
     //后数据>前数据(顺时针)
-    if(openList[1] > openList[0]){
+    if(openList[1] >= openList[0]){
       startAngle = pi * openPencentOld + (- 0.5 * pi);
       sweepAngle = openController.value * (openPencentNew - openPencentOld) * pi ;
       sweepAngleOld = pi * openPencentOld;

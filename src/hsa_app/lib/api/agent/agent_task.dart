@@ -75,7 +75,6 @@ class AgentTask {
       // 控制指令 - 先获取操作票
       if(isControlCmd == true) {
         AgentAPI.getCheckOperation(context, password, (ticket,msg){
-          debugPrint('操作票: ' +ticket.toString());
           // 再下发指令
           AgentAPI.getCommandId(address: address,afn: afn,func: func,param:param,operationTicket: ticket,onFail:(_){
           if(onFail != null) onFail('命令发送失败');

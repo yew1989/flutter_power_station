@@ -105,7 +105,7 @@ class _RuntimePageState extends State<RuntimePage> with TickerProviderStateMixin
   }
 
   // 更新弹出框
-  void updateProgressDialog(String message) async{
+  void updateProgressDialog(String message) async {
     progressDialog.update(
         message: message,
         progress: 0.0,
@@ -122,7 +122,7 @@ class _RuntimePageState extends State<RuntimePage> with TickerProviderStateMixin
   }
 
   // 关闭弹出框
-  void finishProgressDialog(String message, bool isSuccess) async{
+  void finishProgressDialog(String message, bool isSuccess) async {
 
     var progressWidget = isSuccess
         ? Icon(Icons.check_circle_outline, color: Colors.greenAccent, size: 46)
@@ -310,7 +310,7 @@ class _RuntimePageState extends State<RuntimePage> with TickerProviderStateMixin
                 leftText: '电压',
                 maxData: voltageMax,
                 doubleList: voltageList,
-                seconds: seconds,),
+                seconds: seconds),
               RuntimeProgressExcitation(
                 barMaxWidth: barMaxWidth,
                 leftText: '励磁电流',
@@ -435,6 +435,7 @@ class _RuntimePageState extends State<RuntimePage> with TickerProviderStateMixin
 
   //温度 转速 水位数据处理
   void terminalBriefFooterData(){
+    footerDataController?.dispose();
     footerDataController = AnimationController(duration: Duration(seconds:this.seconds), vsync: this);
     CurvedAnimation curvedAnimation = CurvedAnimation(parent: footerDataController, curve: Curves.fastOutSlowIn);
     animationTemp = Tween<double>(begin: temperatureList[0], end: temperatureList[1]).animate(curvedAnimation);
@@ -491,7 +492,7 @@ class _RuntimePageState extends State<RuntimePage> with TickerProviderStateMixin
                 text: TextSpan(
                   children: 
                   [
-                    TextSpan(text:animationDouble.value.toStringAsFixed(2),style: TextStyle(color: Colors.white,fontFamily: AppTheme().numberFontName,fontSize: 24)),
+                    TextSpan(text:animationDouble.value.toStringAsFixed(1),style: TextStyle(color: Colors.white,fontFamily: AppTheme().numberFontName,fontSize: 24)),
                   ]
                 ),
               ),
@@ -603,11 +604,15 @@ class _RuntimePageState extends State<RuntimePage> with TickerProviderStateMixin
       barrierDismissible: false,
       builder: (BuildContext context) {
         return PasswordDialog((String pswd) {
-          //检查操作密码
+
+          updateProgressDialog('正在验证操作密码');
+
           AgentControlAPI.startTask(context,param,taskName,widget.address,pswd,
-            (String succString) {
+            (String succString) async {
+              await Future.delayed(Duration(milliseconds: 3000));
               finishProgressDialog(succString, true);
-            }, (String failString) {
+            }, (String failString) async {
+              await Future.delayed(Duration(milliseconds: 3000));
               finishProgressDialog(failString, false);
             }, (String loadingString) {
               updateProgressDialog(loadingString);

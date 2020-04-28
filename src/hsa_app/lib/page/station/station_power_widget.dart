@@ -20,7 +20,7 @@ class _StationPowerWidgetState extends State<StationPowerWidget> with TickerProv
   Animation<double> animation;
 
   // 防止内存泄漏 当等于0时才触发动画
-  var canPlayAnimationOnZero = 2;
+  var canPlayAnimationOnZero = 1;
 
   void initPowerWordController(){
 
@@ -33,10 +33,10 @@ class _StationPowerWidgetState extends State<StationPowerWidget> with TickerProv
     final powerNow = list[1] ?? 0.0;
     
     if(canPlayAnimationOnZero <= 0  && mounted) {
+      controller?.dispose();
       controller = AnimationController(duration: Duration(milliseconds:3000), vsync: this);
       CurvedAnimation curvedAnimation = CurvedAnimation(parent: controller, curve: Curves.fastOutSlowIn);
       animation = Tween<double>(begin: oldPower, end: powerNow).animate(curvedAnimation);
-      controller.value = 0;
       controller.forward();
       canPlayAnimationOnZero = 0 ;
     }
@@ -57,7 +57,6 @@ class _StationPowerWidgetState extends State<StationPowerWidget> with TickerProv
     initPowerWordController();
     eventBird?.on('REFLASH_DATA', (_){
       initPowerWordController();
-      debugPrint('Station Power Widget REFLASH_DATA');
     });
   }
 

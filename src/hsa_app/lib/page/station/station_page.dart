@@ -111,7 +111,7 @@ class _StationPageState extends State<StationPage> {
         }
         });
       }
-
+      getRealtimeData();
     }, onFail: (String msg) {
       refreshController.refreshFailed();
       Progresshud.showInfoWithStatus('获取电站信息失败');

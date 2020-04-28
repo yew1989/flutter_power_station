@@ -19,7 +19,7 @@ class _StationProfitWidgetState extends State<StationProfitWidget> with TickerPr
   Animation<double> animation;
 
   // 防止内存泄漏 当等于0时才触发动画
-  var canPlayAnimationOnZero = 2;
+  var canPlayAnimationOnZero = 1;
 
   void initAnimateController() {
 
@@ -27,6 +27,7 @@ class _StationProfitWidgetState extends State<StationProfitWidget> with TickerPr
     final profit    = widget?.profit[1] ?? 0.0;
     
     if(canPlayAnimationOnZero <= 0  && mounted ) {
+      controller?.dispose();
       controller = AnimationController(duration: Duration(milliseconds:3000), vsync: this);
       CurvedAnimation curvedAnimation = CurvedAnimation(parent: controller, curve: Curves.fastOutSlowIn);
       animation = Tween<double>(begin: oldProfit, end: profit).animate(curvedAnimation);
