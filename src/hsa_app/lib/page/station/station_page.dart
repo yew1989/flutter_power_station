@@ -50,6 +50,21 @@ class _StationPageState extends State<StationPage> {
     super.dispose();
   }
 
+  // 过滤掉没有绑定过的设备
+  StationInfo filtUnBindDevices(StationInfo station) {
+    var result = station;
+    List<WaterTurbine> turbines = [];
+    for (var turbine in station.waterTurbines) {
+      if(turbine.deviceTerminal != null) {
+        turbines.add(turbine);
+      }
+    }
+    if(station.waterTurbines.length > 0) {
+       result.waterTurbines = turbines;
+    }
+    return result;
+  }
+
   // 请求电站概要
   void reqeustStationInfo() { 
     Progresshud.showWithStatus('读取数据中...');
@@ -63,6 +78,8 @@ class _StationPageState extends State<StationPage> {
     List<String> param;
     APIStation.getStationInfo(stationNo:stationId,
       isIncludeCustomer:true,isIncludeWaterTurbine:true,isIncludeFMD:true,isIncludeLiveLink:true,onSucc: (StationInfo station) {
+      
+      station  = filtUnBindDevices(station);
       
       Progresshud.dismiss();
       refreshController.refreshCompleted();
