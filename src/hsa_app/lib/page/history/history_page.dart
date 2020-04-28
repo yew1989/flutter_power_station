@@ -2,6 +2,7 @@ import 'package:date_format/date_format.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_cupertino_date_picker/flutter_cupertino_date_picker.dart';
+import 'package:hsa_app/api/apis/api_history.dart';
 import 'package:hsa_app/components/empty_page.dart';
 import 'package:hsa_app/components/segment_control.dart';
 import 'package:hsa_app/components/spinkit_indicator.dart';
@@ -65,6 +66,11 @@ class _HistoryPageState extends State<HistoryPage> {
   List<ERCFlagType> evnetTypesList = List<ERCFlagType>();
   // 曲线点
   List<HistoryChartValue> points = List<HistoryChartValue>();
+  
+  List<StatisticalPower> statisticalPowerList;
+  //柱状图初始
+  List<ChartSampleData> chartData = List<ChartSampleData>();
+
 
   // 是否是单台设备
   bool isSingleDevice = false;
@@ -172,59 +178,141 @@ class _HistoryPageState extends State<HistoryPage> {
     if(will.isAfter(now)) {
       endDateTime = formatDate(now, [yyyy, '-', mm, '-', dd,' ',hh, ':', nn, ':', ss]);
     }
-
-    API.getTurbineWaterAndPowerAndState(
-      stationNo : stationNos,
-      terminalAddress : this.isSingleDevice == true ? address : null,
-      startDateTime:  currentStartDateTime  + ' 00:00:00',
-      endDateTime: endDateTime,
-      minuteInterval:this.minuteInterval.toString(), 
-      onSucc: (turbinelist){
-      
-      this.isChartLoadFinsh = true;
-
-      setState(() {
+    if(segmentIndex == 0 || segmentIndex == 1){
+      API.getTurbineWaterAndPowerAndState(
+        stationNo : stationNos,
+        terminalAddress : this.isSingleDevice == true ? address : null,
+        startDateTime:  currentStartDateTime  + ' 00:00:00',
+        endDateTime: endDateTime,
+        minuteInterval:this.minuteInterval.toString(), 
+        onSucc: (turbinelist){
         
-        this.turbinelList = turbinelist;
+          this.isChartLoadFinsh = true;
 
-        var waterMax     = widget?.stationInfo?.reservoirAlarmWaterStage ?? 0.0;
+          setState(() {
+            
+            this.turbinelList = turbinelist;
 
-        List<HistoryChartValue> originalPoints = [];
+            var waterMax     = widget?.stationInfo?.reservoirAlarmWaterStage ?? 0.0;
 
-        // 单台机组
-        if(this.isSingleDevice) {
-          final ratePower = widget?.singleTerminal?.waterTurbine?.ratedPowerKW ?? 0.0;
-          for (final t in turbinelList) {
-            var value = HistoryChartValue(DateTime.parse(t.freezeTime));
-            value.powerMax = ratePower;
-            value.waterMax = waterMax;
-            value.power = t.turbineElectricalPower.generatorActivePowerAll;
-            value.water = t.turbineRuningStage.measuringWaterLevel;
-            originalPoints.add(value);
-          }
-        }
-        // 整个电站
-        else {
-          var totalPower = 0.0;
-          for (final waterTurbine in widget.stationInfo.waterTurbines) {
-            totalPower += waterTurbine.ratedPowerKW;
-          }
-          for (final t in turbinelList) {
-            var value = HistoryChartValue(DateTime.parse(t.freezeTime));
-            value.powerMax = totalPower;
-            value.waterMax = waterMax;
-            value.power = t.turbineElectricalPower.generatorActivePowerAll;
-            value.water = t.turbineRuningStage.measuringWaterLevel;
-            originalPoints.add(value);
-          }
-        }
+            List<HistoryChartValue> originalPoints = [];
 
-        this.points  = originalPoints;
+            // 单台机组
+            if(this.isSingleDevice) {
+              final ratePower = widget?.singleTerminal?.waterTurbine?.ratedPowerKW ?? 0.0;
+              for (final t in turbinelList) {
+                var value = HistoryChartValue(DateTime.parse(t.freezeTime));
+                value.powerMax = ratePower;
+                value.waterMax = waterMax;
+                value.power = t.turbineElectricalPower.generatorActivePowerAll;
+                value.water = t.turbineRuningStage.measuringWaterLevel;
+                originalPoints.add(value);
+              }
+            }
+            // 整个电站
+            else {
+              var totalPower = 0.0;
+              for (final waterTurbine in widget.stationInfo.waterTurbines) {
+                totalPower += waterTurbine.ratedPowerKW;
+              }
+              for (final t in turbinelList) {
+                var value = HistoryChartValue(DateTime.parse(t.freezeTime));
+                value.powerMax = totalPower;
+                value.waterMax = waterMax;
+                value.power = t.turbineElectricalPower.generatorActivePowerAll;
+                value.water = t.turbineRuningStage.measuringWaterLevel;
+                originalPoints.add(value);
+              }
+            }
 
-      });
-    },onFail:(msg){});
+            this.points  = originalPoints;
+
+          });
+        },onFail:(msg){});
+    }
+    else if(segmentIndex == 2){
+      APIHistory.activePowerPointsMonth(
+        stationNos: stationNos, 
+        startDate: currentStartDateTime  + ' 00:00:00', 
+        endDate: endDateTime,
+        terminalAddress: this.isSingleDevice == true ? address : null,
+        onSucc: (data){
+          setState(() {
+            statisticalPowerList = data;
+            chartData.clear();
+            changeData();
+          });
+        }, onFail: (msg){});
+    }
+
+    else if(segmentIndex == 3){
+      List<int> intList = List<int>();
+      intList.add(DateTime.parse(endDateTime).year);
+      APIHistory.activePowerPointsYear(
+        stationNos: stationNos, 
+        years: intList,
+        terminalAddress: this.isSingleDevice == true ? address : null,
+        onSucc: (data){
+          setState(() {
+            statisticalPowerList = data;
+            chartData.clear();
+            changeData();
+          });
+        }, onFail: (msg){},);
+    }
   }
 
+  //处理月数据和年数据
+  void changeData(){
+    
+    //月数据
+    if(segmentIndex == 2){
+      int day = getDay();
+      for(int i = 0 ; i < day ; i++){
+        chartData.add(ChartSampleData(x:'${i+1}日',y: 0));
+        for(int j = 0 ; j < statisticalPowerList.length ; j++){
+          StatisticalPower statisticalPower = statisticalPowerList[j];
+          if(i+1 == statisticalPower.day){
+            chartData[i] = ChartSampleData(x:'${i+1}日',y: statisticalPower.power);
+            break;
+          }
+        }
+      }
+    }
+    //年数据
+    else if(segmentIndex == 3){
+      for(int i = 0 ; i < 12 ; i++){
+        chartData.add(ChartSampleData(x:'${i+1}月',y: 0));
+        for(int j = 0 ; j < statisticalPowerList.length ; j++){
+          StatisticalPower statisticalPower = statisticalPowerList[j];
+          if(i+1 == statisticalPower.month){
+            chartData[i] = ChartSampleData(x:'${i+1}月',y: statisticalPower.power);
+            break;
+          }
+        }
+      }
+    }
+  }
+
+
+  
+  //获取当月总天数
+  int getDay(){
+
+    DateTime startDate = DateTime.parse(currentEndDateTime);
+    //DateTime获取年和月
+    var dateTime = new DateTime.fromMillisecondsSinceEpoch(
+        startDate.millisecondsSinceEpoch);
+    //通过DateTime获取当月的下个月第一天。
+    var dateNextMonthDate = new DateTime(dateTime.year, dateTime.month + 1, 1);
+    //下一个月的第一天时间戳减去一天的时间戳就是当前月的最后一天的时间戳
+    int nextTimeSamp =
+        dateNextMonthDate.millisecondsSinceEpoch - 24 * 60 * 60 * 1000;
+    //取得了下一个月1号码时间戳
+    var dateTimeeee = new DateTime.fromMillisecondsSinceEpoch(nextTimeSamp);
+
+    return dateTimeeee.day;
+  }
 
   void onTapFilterButton(BuildContext context) {
     if (this.evnetTypesList.length == 0) return;
@@ -289,29 +377,31 @@ class _HistoryPageState extends State<HistoryPage> {
 
     // 选择 日
     if (segmentIndex == 0) {
-      DatePicker.showDatePicker(context,
-          dateFormat: 'yyyy-MM-dd',
-          maxDateTime: max,
-          minDateTime: min,
-          pickerMode: DateTimePickerMode.date,
-          pickerTheme: DateTimePickerTheme(
-            cancel: Center(
-                child: Text('取消',
-                    style: TextStyle(color: Colors.white54, fontSize: 18))),
-            confirm: Center(
-                child: Text('确定',
-                    style: TextStyle(color: Colors.white, fontSize: 18))),
-            backgroundColor: Color.fromRGBO(53, 117, 191, 1),
-            itemTextStyle: TextStyle(
-                color: Colors.white, fontFamily: AppTheme().numberFontName, fontSize: 22),
-          ), onConfirm: (selectDate, _) {
-        setState(() {
-          this.currentStartDateTime  = formatDate(selectDate, [yyyy, '-', mm, '-', dd]);
-          this.currentEndDateTime    = formatDate(selectDate, [yyyy, '-', mm, '-', dd]);
-        });
-        requestEventListData();
-        requestChartHistory();
-      });
+      DatePicker.showDatePicker(
+        context,
+        dateFormat: 'yyyy-MM-dd',
+        maxDateTime: max,
+        minDateTime: min,
+        pickerMode: DateTimePickerMode.date,
+        pickerTheme: DateTimePickerTheme(
+          cancel: Center(
+            child: Text('取消',
+                style: TextStyle(color: Colors.white54, fontSize: 18))),
+          confirm: Center(
+            child: Text('确定',
+                style: TextStyle(color: Colors.white, fontSize: 18))),
+          backgroundColor: Color.fromRGBO(53, 117, 191, 1),
+          itemTextStyle: TextStyle(
+              color: Colors.white, fontFamily: AppTheme().numberFontName, fontSize: 22),
+        ), onConfirm: (selectDate, _) {
+          setState(() {
+            this.currentStartDateTime  = formatDate(selectDate, [yyyy, '-', mm, '-', dd]);
+            this.currentEndDateTime    = formatDate(selectDate, [yyyy, '-', mm, '-', dd]);
+          });
+          requestEventListData();
+          requestChartHistory();
+        }
+      );
     }
     // 选择 周
     else if (segmentIndex == 1) {
@@ -490,40 +580,42 @@ class _HistoryPageState extends State<HistoryPage> {
 
           Container(
             height: 264,
-            child: SfCartesianChart(
+            child: 
+            (segmentIndex == 0 || segmentIndex == 1) ?
+            SfCartesianChart(
 
-                plotAreaBorderWidth: 0,
-                zoomPanBehavior: ZoomPanBehavior(
-                  enablePinching: true,
-                  enablePanning: true,
-                  zoomMode: ZoomMode.x,
+              plotAreaBorderWidth: 0,
+              zoomPanBehavior: ZoomPanBehavior(
+                enablePinching: true,
+                enablePanning: true,
+                zoomMode: ZoomMode.x,
+              ),
+              primaryXAxis: DateTimeAxis(
+                axisLine: AxisLine(
+                  color: Colors.white60,
+                  width: 0.5
                 ),
-                primaryXAxis: DateTimeAxis(
-                  axisLine: AxisLine(
-                    color: Colors.white60,
-                    width: 0.5
-                  ),
-                  labelStyle: ChartTextStyle(
-                    color: Colors.white,
-                    fontFamily:'ArialNarrow',
-                  ),
-                  majorGridLines: MajorGridLines(width: 0),
-                  minorGridLines: MinorGridLines(width: 0),
-                  majorTickLines: MajorTickLines(width: 0),
-                  minorTickLines: MinorTickLines(width: 0),
-                  dateFormat: getDateFormat(),
+                labelStyle: ChartTextStyle(
+                  color: Colors.white,
+                  fontFamily:'ArialNarrow',
                 ),
-                primaryYAxis: NumericAxis(
-                  name:'power',opposedPosition: true,
-                  axisLine: AxisLine(color: Colors.transparent),
-                  labelStyle: ChartTextStyle(color: Colors.white,fontFamily:'ArialNarrow'),
-                  majorGridLines: MajorGridLines(width: 0.5,color: Colors.white60),
-                  minorGridLines: MinorGridLines(width: 0),
-                  majorTickLines: MajorTickLines(width: 0),
-                  minorTickLines: MinorTickLines(width: 0),
-                ),
-                axes:[
-                  NumericAxis(
+                majorGridLines: MajorGridLines(width: 0),
+                minorGridLines: MinorGridLines(width: 0),
+                majorTickLines: MajorTickLines(width: 0),
+                minorTickLines: MinorTickLines(width: 0),
+                dateFormat: getDateFormat(),
+              ),
+              primaryYAxis: NumericAxis(
+                name:'power',opposedPosition: true,
+                axisLine: AxisLine(color: Colors.transparent),
+                labelStyle: ChartTextStyle(color: Colors.white,fontFamily:'ArialNarrow'),
+                majorGridLines: MajorGridLines(width: 0.5,color: Colors.white60),
+                minorGridLines: MinorGridLines(width: 0),
+                majorTickLines: MajorTickLines(width: 0),
+                minorTickLines: MinorTickLines(width: 0),
+              ),
+              axes:[
+                NumericAxis(
                   name: 'water',opposedPosition: false,
                   axisLine: AxisLine(color: Colors.transparent),
                   labelStyle: ChartTextStyle(color: Colors.white,fontFamily:'ArialNarrow'),
@@ -532,12 +624,67 @@ class _HistoryPageState extends State<HistoryPage> {
                   majorTickLines: MajorTickLines(width: 0),
                   minorTickLines: MinorTickLines(width: 0),
                 ),
-                ],
-                series: drawChartSeries()),
+              ],
+              series: drawChartSeries(),
+              // tooltipBehavior: TooltipBehavior(
+              //   enable: true, 
+              //   canShowMarker: false,
+              //   header: '',
+              //   format: 'point.x : point.ykW',
+              //   color: HexColor('#2296F2')
+              // ),
+            )  
+            : SfCartesianChart(
+              plotAreaBorderWidth: 0,
+              primaryXAxis: CategoryAxis(
+                majorGridLines: MajorGridLines(width: 0,color: Colors.white60),
+                labelStyle: ChartTextStyle(
+                  color: Colors.white,
+                  fontFamily:'ArialNarrow',
+                ),
+              ),
+              primaryYAxis: NumericAxis(
+                labelStyle: ChartTextStyle(
+                  color: Colors.white,
+                  fontFamily:'ArialNarrow',
+                ),
+                axisLine: AxisLine(width: 0,color: Colors.white60),
+                labelFormat: '{value}',
+                majorTickLines: MajorTickLines(size: 0)
+              ),
+              series: getDefaultColumnSeries(),
+              tooltipBehavior: TooltipBehavior(
+                enable: true, 
+                canShowMarker: false,
+                header: '',
+                format: 'point.x : point.ykW',
+                //color: HexColor('#2296F2')
+              ),
+            )
           ),
         ],
       ),
     );
+  }
+
+
+  //柱状图
+  List<ColumnSeries<ChartSampleData, String>> getDefaultColumnSeries() {
+    return <ColumnSeries<ChartSampleData, String>>[
+      ColumnSeries<ChartSampleData, String>(
+        enableTooltip: true,
+        dataSource: chartData,
+        xValueMapper: (ChartSampleData sales, _) => sales.x,
+        yValueMapper: (ChartSampleData sales, _) => sales.y,
+        //color: HexColor('#2296F2'),
+        yAxisName: 'power',
+        width: 1,
+        spacing: 0.2,
+        dataLabelSettings: DataLabelSettings(
+          isVisible: false, textStyle: ChartTextStyle(fontSize: 10,color: Colors.white),
+        )
+      )
+    ];
   }
 
   // draw 绘制曲线
@@ -610,8 +757,10 @@ class _HistoryPageState extends State<HistoryPage> {
         normalBackgroundColor: Colors.transparent,
         activeBackgroundColor: Color.fromRGBO(72, 114, 222, 1),
         selected: (int index, String valueM) {
-          segmentIndex = index;
-          onTapToggleButton();
+          setState(() {
+            segmentIndex = index;
+            onTapToggleButton();
+          });
         },
         tabs: <String>['日', '周', '月', '年'],
       ),
@@ -646,5 +795,10 @@ class _HistoryPageState extends State<HistoryPage> {
   }
 }
 
-
-
+//柱状图入参
+class ChartSampleData {
+  final dynamic x;
+  final num y;
+  
+  ChartSampleData({this.x,this.y,});
+}
