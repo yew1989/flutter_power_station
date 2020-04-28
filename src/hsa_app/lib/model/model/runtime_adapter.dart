@@ -166,8 +166,14 @@ class RuntimeDataAdapter {
 
   // 温度
    var temperature  =  data?.nearestRunningData?.temperature ?? 0.0 ;
+   
    // 转速
-   var speed = data?.nearestRunningData?.speed ?? 0.0;
+   // var speed = data?.nearestRunningData?.speed ?? 0.0;
+
+   // 转速获取逻辑 修改成 额定功率 x 频率占空比
+   final rateRPM = data?.waterTurbine?.ratedSpeedRPM ?? 0.0;
+   var speed = freqPercent * rateRPM;
+   
    // 水位
    var waterStage = data?.nearestRunningData?.waterStage ?? 0.0;
 
