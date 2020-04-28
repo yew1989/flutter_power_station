@@ -82,14 +82,14 @@ class DashBoardOpenGateProgressPainter extends CustomPainter {
     
 
     //线起始
-    double startAngle;
+    double startAngle = 0.0;
     //线变化
-    double sweepAngle;
+    double sweepAngle  = 0.0;
     //线补充
-    double sweepAngleOld;
+    double sweepAngleOld  = 0.0;
 
     //后数据>前数据(顺时针)
-    if(openList[1] > openList[0]){
+    if(openList[1] >= openList[0]){
       startAngle = pi * openPencentOld + (- 0.5 * pi);
       sweepAngle = openController.value * (openPencentNew - openPencentOld) * pi ;
       sweepAngleOld = pi * openPencentOld;
