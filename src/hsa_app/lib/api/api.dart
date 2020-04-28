@@ -41,8 +41,8 @@ typedef WeatherCallback = void Function(Weather weather);
 class API {
 
   // IP 地址或域名
-  // static final ip = '192.168.16.120'; // 开发环境 IP
-  static final ip = '27.148.136.253'; // 生产环境 IP
+  static final ip = '192.168.16.120'; // 开发环境 IP
+  // static final ip = '27.148.136.253'; // 生产环境 IP
 
   // 通讯代理地址
   static final agentHost    = 'http://' + ip + ':8280';
