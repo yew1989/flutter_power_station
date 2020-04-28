@@ -35,6 +35,8 @@ typedef TurbineCallback = void Function(List<Turbine> turbines);
 typedef BannerListCallback = void Function(List<BannerModel> turbines);
 //天气
 typedef WeatherCallback = void Function(Weather weather);
+// 有功曲线列表
+typedef StatisticalPowerListCallback = void Function(List<StatisticalPower> statisticalPowerList);
 
 
 

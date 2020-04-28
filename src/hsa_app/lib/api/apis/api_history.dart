@@ -106,4 +106,95 @@ class APIHistory{
     }, onFail);
   }
   
+
+   // 历史月电能列表
+  static void activePowerPointsMonth({
+    @required String stationNos,
+    String terminalAddress,
+    @required String startDate,
+    @required String endDate,
+    StatisticalPowerListCallback onSucc,HttpFailCallback onFail}) async {
+
+    // 输入检查
+    if(stationNos == null) {
+      if(onFail != null) onFail('参数缺失');
+      return;
+    }
+
+    if(startDate == null) {
+      if(onFail != null) onFail('参数缺失');
+      return;
+    }
+
+    if(endDate == null) {
+      if(onFail != null) onFail('参数缺失');
+      return;
+    }
+
+    // 获取帐号信息地址
+    final path = API.liveDataHost + '/v1/StatisticalPower/Day';
+    
+    var param = Map<String, dynamic>();
+
+    if(startDate != null) {
+      param['StartDate'] = startDate;
+    }
+    if(endDate != null) {
+      param['EndDate'] = endDate;
+    }
+    if(stationNos != null) {
+      param['StationNos'] = stationNos;
+    }
+    if(terminalAddress != null) {
+      param['TerminalAddress'] = terminalAddress;
+    }
+
+    HttpHelper.httpGET(path, param, (map,_){
+
+      final resp = StatisticalPowerResp.fromJson(map);
+      if(onSucc != null) onSucc(resp.data.statisticalPowerList);
+      
+    }, onFail);
+  }
+
+   // 历史年电能列表
+  static void activePowerPointsYear({
+    @required String stationNos,
+    String terminalAddress,
+    @required List<int> years,
+    StatisticalPowerListCallback onSucc,HttpFailCallback onFail}) async {
+
+    // 输入检查
+    if(stationNos == null) {
+      if(onFail != null) onFail('参数缺失');
+      return;
+    }
+
+    if(years.isEmpty) {
+      if(onFail != null) onFail('参数缺失');
+      return;
+    }
+
+    // 获取帐号信息地址
+    final path = API.liveDataHost + '/v1/StatisticalPower/Month';
+    
+    var param = Map<String, dynamic>();
+
+    if(years != null) {
+      param['years'] = years;
+    }
+    if(stationNos != null) {
+      param['stationNos'] = stationNos;
+    }
+    if(terminalAddress != null) {
+      param['terminalAddress'] = terminalAddress;
+    }
+
+    HttpHelper.httpGET(path, param, (map,_){
+
+      final resp = StatisticalPowerYearResp.fromJson(map);
+      if(onSucc != null) onSucc(resp.statisticalPowerList);
+      
+    }, onFail);
+  }
 }
