@@ -298,7 +298,6 @@ class _RunTimeOperationBoardState extends State<RunTimeOperationBoard> {
                                     builder: (_) => ControlModelDialogWidget(
                                       deviceTerminal: deviceTerminal,
                                       onChoose: (ControlModelCurrentStatus status ,String currentStatusStr) {
-                                        debugPrint(status.toString());
                                         if(status == ControlModelCurrentStatus.remoteOn) {
                                           if(widget.onSholdRequestRemoteCommand != null) {
                                           widget.onSholdRequestRemoteCommand(TaskName.remoteSwitchRemoteModeOn,null);
