@@ -17,7 +17,7 @@ class _DashBoardOpenState extends State<DashBoardOpen> with TickerProviderStateM
   Animation<double> animation;
 
   // 防止内存泄漏 当等于0时才触发动画
-  var canPlayAnimationOnZero = 2;
+  var canPlayAnimationOnZero = 1;
 
   void init(){
     var openOld = widget?.openList[0] ?? 0.0;

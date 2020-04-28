@@ -21,14 +21,13 @@ class _DashBoardOpenGateProgressState extends State<DashBoardOpenGateProgress> w
   AnimationController controller;
 
   // 防止内存泄漏 当等于0时才触发动画
-  var canPlayAnimationOnZero = 2;
+  var canPlayAnimationOnZero = 1;
 
   void initAnimationController(){
     int t = widget?.seconds ?? 5;
     if(canPlayAnimationOnZero <= 0 && mounted ) {
       controller?.dispose();
       controller  = AnimationController(vsync: this, duration: Duration(seconds: t));
-      controller.value = 0;
       controller.forward();
       canPlayAnimationOnZero = 0;
     }

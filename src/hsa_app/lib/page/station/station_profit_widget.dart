@@ -19,7 +19,7 @@ class _StationProfitWidgetState extends State<StationProfitWidget> with TickerPr
   Animation<double> animation;
 
   // 防止内存泄漏 当等于0时才触发动画
-  var canPlayAnimationOnZero = 2;
+  var canPlayAnimationOnZero = 1;
 
   void initAnimateController() {
 
