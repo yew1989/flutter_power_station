@@ -100,10 +100,6 @@ class DashBoardFreqProgressPainter extends CustomPainter {
       sweepAngleOld = pi * freqPencentNew;
     }
 
-    debugPrint('startAngle ' + startAngle.toString());
-    debugPrint('sweepAngle ' + sweepAngle.toString());
-    debugPrint('sweepAngleOld ' + sweepAngleOld.toString());
-
     // 真实频率填充
     Paint paintHzRealOld = Paint();
     paintHzRealOld
