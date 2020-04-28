@@ -29,9 +29,9 @@ class _RuntimeProgressFactoryState extends State<RuntimeProgressFactory> with Ti
   int seconds ;
 
   // 防止内存泄漏 当等于0时才触发动画
-  var canPlayAnimationOnZero = 2;
+  var canPlayAnimationOnZero = 1;
 
-  void init(){
+  void initAnimateController(){
 
     this.seconds = widget?.seconds ?? 5;
     this.oldData = widget?.doubleList[0] ?? 0.0;
@@ -51,11 +51,11 @@ class _RuntimeProgressFactoryState extends State<RuntimeProgressFactory> with Ti
 
   @override
   void initState() {
-    init();
-    eventBird?.on('NEAREST_DATA', (dt){
-      init();
-    });
     super.initState();
+    initAnimateController();
+    eventBird?.on('NEAREST_DATA', (dt){
+      initAnimateController();
+    });
   }
 
   @override

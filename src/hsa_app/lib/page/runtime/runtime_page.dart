@@ -310,7 +310,7 @@ class _RuntimePageState extends State<RuntimePage> with TickerProviderStateMixin
                 leftText: '电压',
                 maxData: voltageMax,
                 doubleList: voltageList,
-                seconds: seconds,),
+                seconds: seconds),
               RuntimeProgressExcitation(
                 barMaxWidth: barMaxWidth,
                 leftText: '励磁电流',

@@ -34,17 +34,11 @@ class _SpinkitIndicatorState extends State<SpinkitIndicator> with TickerProvider
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
-                
-                SpinKitFadingCircle(
-                  color: Colors.white,
-                  size: 50.0,
-                  controller: AnimationController(vsync: this, duration: const Duration(milliseconds: 1200)),
-                ),
+                SpinKitFadingCircle(color: Colors.white,size: 50.0,controller: AnimationController(vsync: this, duration: const Duration(milliseconds: 1200))),
                 SizedBox(height: 20),
                 Text(widget.title ??'',style: TextStyle(color: Colors.white70,fontSize: 16)),
                 SizedBox(height: 4),
                 Text(widget.subTitle ??'',style: TextStyle(color: Colors.white38,fontSize: 12)),
-
             ],
           ),
         ),
