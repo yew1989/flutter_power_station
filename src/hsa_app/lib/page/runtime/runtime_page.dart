@@ -15,6 +15,7 @@ import 'package:hsa_app/components/runtime_progress_bar/runtime_progress_factory
 import 'package:hsa_app/components/runtime_progress_bar/runtime_progress_voltage.dart';
 import 'package:hsa_app/components/shawdow_widget.dart';
 import 'package:hsa_app/components/smart_refresher_style.dart';
+import 'package:hsa_app/config/app_config.dart';
 import 'package:hsa_app/config/app_theme.dart';
 import 'package:hsa_app/event/event_bird.dart';
 import 'package:hsa_app/model/model/all_model.dart';
@@ -80,9 +81,6 @@ class _RuntimePageState extends State<RuntimePage> with TickerProviderStateMixin
   Animation<double> animationSpeed;
   Animation<double> animationWaterStage;
   Animation<double> animationVoltage;
-
-  //动画过程时间
-  int seconds = 5;
 
 
   // 初始化弹出框
@@ -240,7 +238,7 @@ class _RuntimePageState extends State<RuntimePage> with TickerProviderStateMixin
     runtimTasker = AgentRunTimeDataLoopTimerTasker(
       isBase: widget?.isBase == true ?  true: false,
       terminalAddress: addressId,
-      timerInterval: this.seconds,
+      timerInterval: AppConfig.getInstance().deviceQureyTimeInterval,
     );
     runtimTasker.start((data){
       if(mounted) {
@@ -310,13 +308,13 @@ class _RuntimePageState extends State<RuntimePage> with TickerProviderStateMixin
                 leftText: '电压',
                 maxData: voltageMax,
                 doubleList: voltageList,
-                seconds: seconds),
+                seconds: AppConfig.getInstance().runtimePageAnimationDuration),
               RuntimeProgressExcitation(
                 barMaxWidth: barMaxWidth,
                 leftText: '励磁电流',
                 maxData: excitationMax,
                 doubleList: excitationList,
-                seconds: seconds),
+                seconds: AppConfig.getInstance().runtimePageAnimationDuration),
             ],
           ),
           Row(
@@ -328,13 +326,13 @@ class _RuntimePageState extends State<RuntimePage> with TickerProviderStateMixin
                 leftText: '电流',
                 maxData: currentMax,
                 doubleList: currentList,
-                seconds: seconds),
+                seconds: AppConfig.getInstance().runtimePageAnimationDuration),
               RuntimeProgressFactory(
                 barMaxWidth: barMaxWidth,
                 leftText: '功率因数',
                 maxData: powerFactorMax,
                 doubleList: factorList,
-                seconds: seconds),
+                seconds: AppConfig.getInstance().runtimePageAnimationDuration),
             ],
           ),
         ],
@@ -425,9 +423,7 @@ class _RuntimePageState extends State<RuntimePage> with TickerProviderStateMixin
           DashBoardWidget(deviceTerminal: deviceTerminal,
                           powerNowList: powerNowList,
                           freqList:freqList,
-                          openList:openList,
-                          seconds:seconds
-                          ),
+                          openList:openList),
         ],
       ),
     );
@@ -436,7 +432,7 @@ class _RuntimePageState extends State<RuntimePage> with TickerProviderStateMixin
   //温度 转速 水位数据处理
   void terminalBriefFooterData(){
     footerDataController?.dispose();
-    footerDataController = AnimationController(duration: Duration(seconds:this.seconds), vsync: this);
+    footerDataController = AnimationController(duration: Duration(seconds:AppConfig.getInstance().runtimePageAnimationDuration), vsync: this);
     CurvedAnimation curvedAnimation = CurvedAnimation(parent: footerDataController, curve: Curves.fastOutSlowIn);
     animationTemp = Tween<double>(begin: temperatureList[0], end: temperatureList[1]).animate(curvedAnimation);
     animationSpeed = Tween<double>(begin: speedList[0], end: speedList[1]).animate(curvedAnimation);
