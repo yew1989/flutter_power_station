@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hsa_app/api/leancloud/leancloud_api.dart';
+import 'package:hsa_app/api/share_instance.dart';
 import 'package:hsa_app/config/app_config.dart';
 import 'package:hsa_app/util/device_inspector.dart';
 import 'package:jpush_flutter/jpush_flutter.dart';
@@ -27,6 +28,8 @@ class JpushService {
       if(regId == null) return;
       if(regId.length == 0) return;
       debugPrint('🐦推送RegID :' + regId);
+      // 保存推送ID
+      ShareInstance.getInstance().regId = regId;
     });
 
     jpush.addEventHandler(

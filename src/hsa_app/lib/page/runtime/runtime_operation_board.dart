@@ -3,7 +3,6 @@ import 'package:hsa_app/api/agent/agent_task.dart';
 import 'package:hsa_app/components/public_tool.dart';
 import 'package:hsa_app/model/model/all_model.dart';
 import 'package:hsa_app/page/dialog/control_model_dialog.dart';
-import 'package:hsa_app/page/dialog/device_control_dialog.dart';
 import 'package:hsa_app/page/dialog/power_control_dialog.dart';
 import 'package:hsa_app/page/more/more_page.dart';
 import 'package:ovprogresshud/progresshud.dart';
