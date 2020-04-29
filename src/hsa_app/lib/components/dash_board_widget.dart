@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hsa_app/components/dash_board/dash_board_opengate_progress.dart';
+import 'package:hsa_app/config/app_config.dart';
 import 'package:hsa_app/model/model/all_model.dart';
 import 'dash_board/dash_board_bg_progress.dart';
 import 'dash_board/dash_board_center_label.dart';
@@ -12,9 +13,8 @@ class DashBoardWidget extends StatefulWidget {
   final List<double> powerNowList;
   final List<double> freqList;
   final List<double> openList;
-  final int seconds;
 
-  const DashBoardWidget({Key key, this.deviceTerminal,this.powerNowList,this.freqList,this.openList,this.seconds}) : super(key: key);
+  const DashBoardWidget({Key key, this.deviceTerminal,this.powerNowList,this.freqList,this.openList}) : super(key: key);
   @override
   _DashBoardWidgetState createState() => _DashBoardWidgetState();
 }
@@ -44,7 +44,7 @@ class _DashBoardWidgetState extends State<DashBoardWidget> with TickerProviderSt
     var powerMax = widget?.deviceTerminal?.waterTurbine?.ratedPowerKW ?? 0.0;
     var powerMaxStr = powerMax.toStringAsFixed(0) + 'kW';
 
-    int seconds = widget?.seconds ?? 5;
+    int seconds = AppConfig.getInstance().runtimePageAnimationDuration;
 
     return Container(
         color: Colors.transparent,

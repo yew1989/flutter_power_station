@@ -221,19 +221,38 @@ class NearestRunningData{
       List tempStatus = json['terminal-'+'$terminalAddress'+'.afn0c.f13.p0'] != null ? json['terminal-'+'$terminalAddress'+'.afn0c.f13.p0']['测量状态'] ?? [] : [];
       List tempDatas  = json['terminal-'+'$terminalAddress'+'.afn0c.f13.p0'] != null ? json['terminal-'+'$terminalAddress'+'.afn0c.f13.p0']['温度数据'] ?? [] : [];
       
-      int findIndex = 0;
-      
-      for (int i = 0 ; i < tempStatus.length ; i ++) {
+      // 温度获取 取首个 Normal 状态的温度值 (废弃)
+      // int findIndex = 0;
+      // for (int i = 0 ; i < tempStatus.length ; i ++) {
+      //   final status = tempStatus[i];
+      //   if(status == 'Normal') {
+      //     findIndex = i;
+      //     break;
+      //   }
+      // }
+      // result = tempDatas[findIndex];
+
+
+      // 温度获取 取 Normal 状态的温度值(多路) 中的最大值
+
+      List temps = [];
+      // 取出所有Norml状态的温度值
+      for (var i = 0; i < tempStatus.length; i++) {
         final status = tempStatus[i];
         if(status == 'Normal') {
-          findIndex = i;
-          break;
+          final value = tempDatas[i];
+          // 排除开路干扰 开路时温度大于 1000
+          if(value < 1000) {
+            temps.add(value);
+          }
         }
       }
-
-      result = tempDatas[findIndex];
+      // 取出最大值
+      temps.sort((a, b) => (b.toDouble()-a.toDouble()).toInt());
+      result  = temps?.first ?? 0.0;
 
     }
+    // 排除开路干扰 开路时温度大于 1000
     if(result > 1000) {
       return 0.0;
     }

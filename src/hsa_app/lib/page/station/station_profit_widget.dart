@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hsa_app/config/app_config.dart';
 import 'package:hsa_app/config/app_theme.dart';
 import 'package:hsa_app/event/app_event.dart';
 import 'package:hsa_app/event/event_bird.dart';
@@ -28,7 +29,7 @@ class _StationProfitWidgetState extends State<StationProfitWidget> with TickerPr
     
     if(canPlayAnimationOnZero <= 0  && mounted ) {
       controller?.dispose();
-      controller = AnimationController(duration: Duration(milliseconds:3000), vsync: this);
+      controller = AnimationController(duration: Duration(milliseconds:AppConfig.getInstance().stationPageAnimationDuration), vsync: this);
       CurvedAnimation curvedAnimation = CurvedAnimation(parent: controller, curve: Curves.fastOutSlowIn);
       animation = Tween<double>(begin: oldProfit, end: profit).animate(curvedAnimation);
       controller.forward();

@@ -11,12 +11,22 @@ class AppConfig {
   String localDisplayVersionString    = '';
   int    localBuildVersion            = 0;
   TargetPlatform platform;
+  
+  // 设备召测的时间间隔(默认值)
+  int deviceQureyTimeInterval;
+  // 电站概要页动画播放时间持续时间
+  int stationPageAnimationDuration;
+  // 运行参数页动画播放时间持续时间
+  int runtimePageAnimationDuration;
 
   static initConfig(LeanCloudEnv env) async {
     AppConfig.getInstance().env     = env ?? LeanCloudEnv.test;
     AppConfig.getInstance().remotePackage = Package();
     AppConfig.getInstance().localVersion();
     AppConfig.getInstance().platform = defaultTargetPlatform;
+    AppConfig.getInstance().deviceQureyTimeInterval = 5;
+    AppConfig.getInstance().stationPageAnimationDuration = 3;
+    AppConfig.getInstance().runtimePageAnimationDuration = 4;
   }
 
   void localVersion() async {

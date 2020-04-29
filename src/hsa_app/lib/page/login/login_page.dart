@@ -48,7 +48,7 @@ class LoginPageState extends State<LoginPage> {
       login(context);
     }
   }
-
+  
   void login(BuildContext context) async {
 
     Progresshud.showWithStatus('正在登录...');
@@ -70,6 +70,7 @@ class LoginPageState extends State<LoginPage> {
       ShareManager.instance.saveIsSavePassword(checkBoxValue);
       Progresshud.dismiss();
       Progresshud.showSuccessWithStatus('登录成功');
+
       var route = CupertinoPageRoute(
          builder: (_) => RootPage(),
           );

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:hsa_app/api/agent/agent_fake.dart';
 import 'package:hsa_app/api/agent/agent_timer_tasker.dart';
 import 'package:hsa_app/components/smart_refresher_style.dart';
 import 'package:hsa_app/api/apis/api_station.dart';
+import 'package:hsa_app/config/app_config.dart';
 import 'package:hsa_app/model/model/all_model.dart';
 import 'package:hsa_app/model/model/station.dart';
 import 'package:hsa_app/event/app_event.dart';
@@ -50,6 +50,21 @@ class _StationPageState extends State<StationPage> {
     super.dispose();
   }
 
+  // 过滤掉没有绑定过的设备
+  StationInfo filtUnBindDevices(StationInfo station) {
+    var result = station;
+    List<WaterTurbine> turbines = [];
+    for (var turbine in station.waterTurbines) {
+      if(turbine.deviceTerminal != null) {
+        turbines.add(turbine);
+      }
+    }
+    if(station.waterTurbines.length > 0) {
+       result.waterTurbines = turbines;
+    }
+    return result;
+  }
+
   // 请求电站概要
   void reqeustStationInfo() { 
     Progresshud.showWithStatus('读取数据中...');
@@ -64,6 +79,8 @@ class _StationPageState extends State<StationPage> {
     APIStation.getStationInfo(stationNo:stationId,
       isIncludeCustomer:true,isIncludeWaterTurbine:true,isIncludeFMD:true,isIncludeLiveLink:true,onSucc: (StationInfo station) {
       
+      station  = filtUnBindDevices(station);
+
       Progresshud.dismiss();
       refreshController.refreshCompleted();
 
@@ -122,7 +139,7 @@ class _StationPageState extends State<StationPage> {
   void getRealtimeData() { 
     stationTasker = AgentStationInfoDataLoopTimerTasker(
       stationInfo,
-      timerInterval:5,
+      timerInterval:AppConfig.getInstance().deviceQureyTimeInterval,
     );
     stationTasker.start((stationInfo){
       if(mounted) {

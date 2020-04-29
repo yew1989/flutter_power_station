@@ -22,19 +22,11 @@ class _StationDeviceListState extends State<StationDeviceList> {
   @override
   void initState() {
     super.initState();
-    listenEvent();
   }
 
   @override
   void dispose() {
-    eventBird?.off(AppEvent.onTapDevice);
     super.dispose();
-  }
-
-  void listenEvent() {
-    eventBird?.on(AppEvent.onTapDevice, (index) { 
-      pushToPage(context, RuntimeTabbarPage(waterTurbines: widget?.stationInfo?.waterTurbines ?? null,selectIndex: index,stationInfo:widget?.stationInfo));
-    });
   }
 
   @override
@@ -53,7 +45,9 @@ class _StationDeviceListState extends State<StationDeviceList> {
         shrinkWrap: true,
         physics: NeverScrollableScrollPhysics(),
         itemCount: waterTurbines?.length ?? 0,
-        itemBuilder: (context, index) => StationDeviceListTile(waterTurbines[index],index),
+        itemBuilder: (context, index) => StationDeviceListTile(waterTurbines[index],index,(){
+            pushToPage(context, RuntimeTabbarPage(waterTurbines: widget?.stationInfo?.waterTurbines ?? null,selectIndex: index,stationInfo:widget?.stationInfo));
+        }),
       ),
     );
   }

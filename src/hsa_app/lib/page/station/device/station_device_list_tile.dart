@@ -1,7 +1,6 @@
 import 'package:flui/flui.dart';
 import 'package:flutter/material.dart';
 import 'package:hsa_app/model/model/all_model.dart';
-import 'package:hsa_app/event/app_event.dart';
 import 'package:hsa_app/event/event_bird.dart';
 import 'package:native_color/native_color.dart';
 import 'package:hsa_app/config/app_theme.dart';
@@ -9,10 +8,11 @@ import 'package:date_format/date_format.dart';
 
 class StationDeviceListTile extends StatefulWidget {
 
+  final Function onTap;
   final WaterTurbine waterTurbine;
   final int index;
 
-  const StationDeviceListTile(this.waterTurbine, this.index,{Key key}) : super(key: key);
+  const StationDeviceListTile(this.waterTurbine, this.index,this.onTap,{Key key}) : super(key: key);
 
   @override
   _StationDeviceListTileState createState() => _StationDeviceListTileState();
@@ -244,7 +244,9 @@ class _StationDeviceListTileState extends State<StationDeviceListTile> with Tick
            // 点击进入机组详情页
            GestureDetector(
              onTap: (){
-               eventBird?.emit(AppEvent.onTapDevice,widget.index);
+               if(widget?.onTap != null) {
+                 widget?.onTap();
+               }
              },
            )
         ],

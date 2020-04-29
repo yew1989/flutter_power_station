@@ -36,7 +36,11 @@ class StationInfo {
 
   double totalActivePower;   // 总有功
   double totalMoney;        // 总收益
-  
+
+  // 是否是力得样板电站 - 通过后台配置
+  bool fjLeadBrandCertified;
+  // 是否允许快速远程召测 - 快速召测 5 秒 , 不允许快速召测,召测频率 20秒
+  bool isAllowHighSpeedNetworkSwitching;
 
   StationInfo(
       {this.stationNo,
@@ -70,6 +74,8 @@ class StationInfo {
       this.isCurrentAccountFavorite,
       this.totalActivePower,
       this.totalMoney,
+      this.fjLeadBrandCertified,
+      this.isAllowHighSpeedNetworkSwitching,
       });
 
   StationInfo.fromJson(Map<String, dynamic> json) {
@@ -109,16 +115,18 @@ class StationInfo {
     reservoirAlarmWaterStage = json['reservoirAlarmWaterStage'];
     reservoirBasicWaterStage = json['reservoirBasicWaterStage'];
     reservoirArea = json['reservoirArea'];
-    coolingPondWaterStage = json['coolingPondWaterStage'];
-    stagnantPoolWaterStage = json['stagnantPoolWaterStage'];
-    tailraceWaterStage = json['tailraceWaterStage'];
-    peakElectricityPrice = json['peakElectricityPrice'];
-    spikeElectricityPrice = json['spikeElectricityPrice'];
-    flatElectricityPrice = json['flatElectricityPrice'];
-    valleyElectricityPrice = json['valleyElectricityPrice'];
-    isCurrentAccountFavorite = json['isCurrentAccountFavorite'];
+    coolingPondWaterStage = json['coolingPondWaterStage'] ?? 0.0;
+    stagnantPoolWaterStage = json['stagnantPoolWaterStage'] ?? 0.0;
+    tailraceWaterStage = json['tailraceWaterStage'] ?? 0.0;
+    peakElectricityPrice = json['peakElectricityPrice'] ?? 0.0;
+    spikeElectricityPrice = json['spikeElectricityPrice'] ?? 0.0;
+    flatElectricityPrice = json['flatElectricityPrice'] ?? 0.0;
+    valleyElectricityPrice = json['valleyElectricityPrice'] ?? 0.0;
+    isCurrentAccountFavorite = json['isCurrentAccountFavorite'] ?? false;
     totalActivePower = json['totalActivePower'] ?? 0.0;
     totalMoney = json['totoalMoney']  ?? 0.0;
+    fjLeadBrandCertified = json['fjLeadBrandCertified'] ?? false;
+    isAllowHighSpeedNetworkSwitching = json['isAllowHighSpeedNetworkSwitching']  ?? false;
   }
 
   Map<String, dynamic> toJson() {
@@ -164,6 +172,8 @@ class StationInfo {
     data['isCurrentAccountFavorite'] = this.isCurrentAccountFavorite;
     data['totalActivePower'] = this.totalActivePower;
     data['totalMoney'] = this.totalMoney;
+    data['fjLeadBrandCertified'] = this.fjLeadBrandCertified;
+    data['isAllowHighSpeedNetworkSwitching'] = this.isAllowHighSpeedNetworkSwitching;
     return data;
   }
 

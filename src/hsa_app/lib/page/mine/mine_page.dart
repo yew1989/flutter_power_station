@@ -8,6 +8,7 @@ import 'package:hsa_app/page/about/about_page.dart';
 import 'package:hsa_app/page/login/login_page.dart';
 import 'package:hsa_app/page/search/search_page.dart';
 import 'package:hsa_app/page/password/modifypswd_page.dart';
+import 'package:hsa_app/service/push/push_api.dart';
 import 'package:hsa_app/service/umeng_analytics.dart';
 import 'package:hsa_app/theme/theme_gradient_background.dart';
 import 'package:hsa_app/components/public_tool.dart';
@@ -29,6 +30,7 @@ class _MinePageState extends State<MinePage> {
   void initState() {
     super.initState();
     requestUserInfo();
+    bindPushService();
     UMengAnalyticsService.enterPage('我的');
   }
 
@@ -36,6 +38,15 @@ class _MinePageState extends State<MinePage> {
   void dispose() {
     UMengAnalyticsService.exitPage('我的');
     super.dispose();
+  }
+
+    // 绑定推送服务
+  void bindPushService() async {
+    PushAPI.bindRegId((msg){
+      debugPrint(msg);
+    }, (msg){
+      debugPrint(msg);
+    });
   }
 
   void requestUserInfo() async {
