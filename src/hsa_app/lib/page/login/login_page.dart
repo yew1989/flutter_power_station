@@ -71,19 +71,17 @@ class LoginPageState extends State<LoginPage> {
       Progresshud.dismiss();
       Progresshud.showSuccessWithStatus('登录成功');
 
-      var route = CupertinoPageRoute(
-         builder: (_) => RootPage(),
-          );
-         Navigator.of(context,rootNavigator: true).pushAndRemoveUntil(route, (route) => route == null);
+      var route = CupertinoPageRoute(builder: (_) => RootPage());
+      Navigator.of(context,rootNavigator: true).pushAndRemoveUntil(route, (route) => route == null);
       return;
     }
     debugPrint('❌登录失败');
     Progresshud.dismiss();
-    Progresshud.showInfoWithStatus('登录失败,请检查您的信息');
+    Progresshud.showInfoWithStatus('账户不存在或密码错误');
     },onFail: (msg){
       debugPrint('❌登录失败');
       Progresshud.dismiss();
-      Progresshud.showInfoWithStatus('登录失败,请检查网络');
+      Progresshud.showInfoWithStatus('账户不存在或密码错误');
     });
 
   }
