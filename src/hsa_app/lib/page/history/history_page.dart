@@ -152,10 +152,11 @@ class _HistoryPageState extends State<HistoryPage> {
 
         this.isEventLoadFinsh = true;
         this.isEventEmpty = events.length == 0 ? true : false;
-
-        setState(() {
+        if(mounted) {
+          setState(() {
           this.showEvents = events;
-        });
+          });
+        }
 
       },onFail: (msg){});
 
@@ -188,7 +189,9 @@ class _HistoryPageState extends State<HistoryPage> {
         
           this.isChartLoadFinsh = true;
 
-          setState(() {
+          if(mounted) {
+
+            setState(() {
             
             this.turbinelList = turbinelist;
 
@@ -225,8 +228,9 @@ class _HistoryPageState extends State<HistoryPage> {
             }
 
             this.points  = originalPoints;
-
           });
+
+          }
         },onFail:(msg){});
     }
     else if(segmentIndex == 2){
@@ -236,11 +240,13 @@ class _HistoryPageState extends State<HistoryPage> {
         endDate: endDateTime,
         terminalAddress: this.isSingleDevice == true ? address : null,
         onSucc: (data){
-          setState(() {
-            statisticalPowerList = data;
-            chartData.clear();
-            changeData();
-          });
+          if(mounted) {
+            setState(() {
+              statisticalPowerList = data;
+              chartData.clear();
+              changeData();
+            });
+          }
         }, onFail: (msg){});
     }
 
@@ -252,11 +258,13 @@ class _HistoryPageState extends State<HistoryPage> {
         years: intList,
         terminalAddress: this.isSingleDevice == true ? address : null,
         onSucc: (data){
-          setState(() {
+          if(mounted) {
+            setState(() {
             statisticalPowerList = data;
             chartData.clear();
             changeData();
-          });
+           });
+          }
         }, onFail: (msg){},);
     }
   }
@@ -393,10 +401,12 @@ class _HistoryPageState extends State<HistoryPage> {
           itemTextStyle: TextStyle(
               color: Colors.white, fontFamily: AppTheme().numberFontName, fontSize: 22),
         ), onConfirm: (selectDate, _) {
-          setState(() {
+          if(mounted) {
+            setState(() {
             this.currentStartDateTime  = formatDate(selectDate, [yyyy, '-', mm, '-', dd]);
             this.currentEndDateTime    = formatDate(selectDate, [yyyy, '-', mm, '-', dd]);
           });
+          }
           requestEventListData();
           requestChartHistory();
         }
@@ -423,15 +433,14 @@ class _HistoryPageState extends State<HistoryPage> {
         final year = selectDate.year;
         final month = selectDate.month;
         final day = selectDate.day;
-        final end =
-            formatDate(DateTime(year, month, day), [yyyy, '-', mm, '-', dd]);
-        final start = formatDate(
-            DateTime(year, month, day).subtract(Duration(days: 6)),
-            [yyyy, '-', mm, '-', dd]);
-        setState(() {
+        final end = formatDate(DateTime(year, month, day), [yyyy, '-', mm, '-', dd]);
+        final start = formatDate( DateTime(year, month, day).subtract(Duration(days: 6)),[yyyy, '-', mm, '-', dd]);
+        if(mounted) {
+          setState(() {
           this.currentStartDateTime = start;
           this.currentEndDateTime   = end;
-        });
+          });
+        }
         requestEventListData();
         requestChartHistory();
       });
@@ -465,10 +474,12 @@ class _HistoryPageState extends State<HistoryPage> {
         } else {
           end = formatDate(endDate, [yyyy, '-', mm, '-', dd]);
         }
-        setState(() {
-          this.currentStartDateTime = start;
-          this.currentEndDateTime   = end;
-        });
+        if(mounted) {
+          setState(() {
+            this.currentStartDateTime = start;
+            this.currentEndDateTime   = end;
+          });
+        }
         requestEventListData();
         requestChartHistory();
       });
@@ -498,10 +509,12 @@ class _HistoryPageState extends State<HistoryPage> {
         } else {
           end = formatDate(endDate, [yyyy, '-', mm, '-', dd]);
         }
-        setState(() {
-          this.currentStartDateTime = start;
-          this.currentEndDateTime   = end;
-        });
+        if(mounted) {
+          setState(() {
+            this.currentStartDateTime = start;
+            this.currentEndDateTime   = end;
+          });
+        }
         requestEventListData();
         requestChartHistory();
       });
@@ -756,10 +769,12 @@ class _HistoryPageState extends State<HistoryPage> {
         normalBackgroundColor: Colors.transparent,
         activeBackgroundColor: Color.fromRGBO(72, 114, 222, 1),
         selected: (int index, String valueM) {
-          setState(() {
+          if(mounted) {
+            setState(() {
             segmentIndex = index;
             onTapToggleButton();
           });
+          }
         },
         tabs: <String>['日', '周', '月', '年'],
       ),
