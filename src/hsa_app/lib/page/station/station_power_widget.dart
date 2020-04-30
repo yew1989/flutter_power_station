@@ -35,7 +35,7 @@ class _StationPowerWidgetState extends State<StationPowerWidget> with TickerProv
     
     if(canPlayAnimationOnZero <= 0  && mounted) {
       controller?.dispose();
-      controller = AnimationController(duration: Duration(milliseconds:AppConfig.getInstance().stationPageAnimationDuration), vsync: this);
+      controller = AnimationController(duration: Duration(seconds:AppConfig.getInstance().stationPageAnimationDuration), vsync: this);
       CurvedAnimation curvedAnimation = CurvedAnimation(parent: controller, curve: Curves.fastOutSlowIn);
       animation = Tween<double>(begin: oldPower, end: powerNow).animate(curvedAnimation);
       controller.forward();
