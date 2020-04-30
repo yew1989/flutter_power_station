@@ -1,5 +1,6 @@
 import 'package:flui/flui.dart';
 import 'package:flutter/material.dart';
+import 'package:hsa_app/config/app_config.dart';
 import 'package:hsa_app/model/model/all_model.dart';
 import 'package:hsa_app/event/event_bird.dart';
 import 'package:native_color/native_color.dart';
@@ -38,7 +39,7 @@ class _StationDeviceListTileState extends State<StationDeviceListTile> with Tick
 
   void showProgressCyanBar() async {
 
-    await Future.delayed(Duration(milliseconds: 100 + widget.index *(100)));
+    // await Future.delayed(Duration(milliseconds: 100 + widget.index *(100)));
 
     if(mounted) {
       setState(() {
@@ -72,7 +73,7 @@ class _StationDeviceListTileState extends State<StationDeviceListTile> with Tick
 
     void showProgressRedBar() async {
 
-    await Future.delayed(Duration(milliseconds: 100 + widget.index *(100)));
+    // await Future.delayed(Duration(milliseconds: 100 + widget.index *(100)));
 
     if(mounted) {
       setState(() {
@@ -130,7 +131,7 @@ class _StationDeviceListTileState extends State<StationDeviceListTile> with Tick
 
     if(canPlayAnimationOnZero <= 0  && mounted) {
       wordController?.dispose();
-      wordController = AnimationController(duration: Duration(milliseconds:3000), vsync: this);
+      wordController = AnimationController(duration: Duration(seconds:AppConfig.getInstance().stationPageAnimationDuration), vsync: this);
       CurvedAnimation curvedAnimation = CurvedAnimation(parent: wordController, curve: Curves.fastOutSlowIn);
       animation = Tween<double>(begin: oldPower, end: powerNow).animate(curvedAnimation);
       wordController.forward();
@@ -146,6 +147,8 @@ class _StationDeviceListTileState extends State<StationDeviceListTile> with Tick
     initFanAnimtaionController();
     initWordAnimtaionController();
     eventBird?.on('REFLASH_DATA', (_){
+      showProgressCyanBar();
+      showProgressRedBar();
       initWordAnimtaionController();
     });
     super.initState();
@@ -281,7 +284,7 @@ class _StationDeviceListTileState extends State<StationDeviceListTile> with Tick
       } else {
         return SizedBox(width: 54,child: Align(alignment: Alignment.centerRight,
           child: AnimatedBuilder(animation: controller,builder: (BuildContext context, Widget child) => 
-          Text(text,style:TextStyle(color: Colors.white,fontFamily: AppTheme().numberFontName,fontSize: 28)))));
+          Text(animation?.value?.toStringAsFixed(0) ?? '0.0',style:TextStyle(color: Colors.white,fontFamily: AppTheme().numberFontName,fontSize: 28)))));
       }
     }
   }
@@ -314,7 +317,7 @@ class _StationDeviceListTileState extends State<StationDeviceListTile> with Tick
           child: AnimatedContainer(
               width: barRight,
               curve: Curves.easeOutSine,
-              duration: Duration(milliseconds: 500),
+              duration: Duration(seconds: AppConfig.getInstance().stationPageAnimationDuration),
               decoration: BoxDecoration(
               gradient: LinearGradient(
               colors: [HexColor('4778f7'), HexColor('66f7f9')])))),
@@ -323,7 +326,7 @@ class _StationDeviceListTileState extends State<StationDeviceListTile> with Tick
             child: AnimatedContainer(
               width: barLeft,
               curve: Curves.easeOutSine,
-              duration: Duration(milliseconds: 500),
+              duration: Duration(seconds: AppConfig.getInstance().stationPageAnimationDuration),
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                   colors: [HexColor('fff8083a'),HexColor('ff7A0009')])))),
@@ -344,7 +347,7 @@ class _StationDeviceListTileState extends State<StationDeviceListTile> with Tick
             child: AnimatedContainer(
               transform: Matrix4.translationValues(barRight - 20, 0, 0),
               curve: Curves.easeOutSine, 
-              duration: Duration(milliseconds: 500),
+              duration: Duration(seconds: AppConfig.getInstance().stationPageAnimationDuration),
               child: isShowCyanComet ? SizedBox(width: 35,height: 19, child: Image.asset('images/station/cyan_comet.png')) : Container())),
             // 红色超发部分
             Positioned(
@@ -352,7 +355,7 @@ class _StationDeviceListTileState extends State<StationDeviceListTile> with Tick
                 child: AnimatedContainer(
                 transform: Matrix4.translationValues(-barLeft + 20, 0, 0),
                 curve: Curves.easeOutSine,
-                duration: Duration(milliseconds: 500),
+                duration: Duration(seconds: AppConfig.getInstance().stationPageAnimationDuration),
                 child: isShowRedComet ? SizedBox(width: 35,height: 19, child: Image.asset('images/station/red_comet.png')) : Container())),
           ],
       ) : Container();
