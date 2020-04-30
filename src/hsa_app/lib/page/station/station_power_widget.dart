@@ -72,7 +72,6 @@ class _StationPowerWidgetState extends State<StationPowerWidget> with TickerProv
   Widget richTextWrapWidget() {
 
     final max = widget?.stationInfo?.totalEquippedKW ?? 0.0;
-    final current = animation?.value?.toStringAsFixed(1) ?? '0';
 
     if(animation == null || controller == null) {
       return RichText(
@@ -94,7 +93,7 @@ class _StationPowerWidgetState extends State<StationPowerWidget> with TickerProv
           text: TextSpan(
           children: 
             [ 
-              TextSpan(text:current,style: TextStyle(color: Colors.white,fontFamily: AppTheme().numberFontName,fontSize: 25)),
+              TextSpan(text:animation?.value?.toStringAsFixed(1) ?? '0.0',style: TextStyle(color: Colors.white,fontFamily: AppTheme().numberFontName,fontSize: 25)),
               TextSpan(text:'/',style: TextStyle(color: Colors.white,fontFamily: AppTheme().numberFontName,fontSize: 18)),
               TextSpan(text:max.toString(),style: TextStyle(color: Colors.white,fontFamily: AppTheme().numberFontName,fontSize: 18)),
               TextSpan(text:'kW',style: TextStyle(color: Colors.white,fontFamily: AppTheme().numberFontName,fontSize: 16)),
