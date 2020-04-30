@@ -192,6 +192,7 @@ class _RuntimePageState extends State<RuntimePage> with TickerProviderStateMixin
     isIncludeHydropowerStation:true,
     isIncludeCustomer:true,
     onSucc: (dt){
+      Progresshud.dismiss();
       this.deviceTerminal = dt;
       switch(deviceTerminal.deviceVersion){
         case 'S1-Base': 
@@ -205,12 +206,12 @@ class _RuntimePageState extends State<RuntimePage> with TickerProviderStateMixin
         break;
       }
       APIStation.getMultipleAFNFnpn(terminalAddress:addressId,paramList: param,onSucc: (nearestRunningData){
-        
+
         this.deviceTerminal.nearestRunningData = nearestRunningData;
-        
+
         API.getTerminalAlertList(
           onSucc: (events){
-            Progresshud.dismiss();
+            
             refreshController.refreshCompleted();
             if(mounted) {
               setState(() {
@@ -225,10 +226,13 @@ class _RuntimePageState extends State<RuntimePage> with TickerProviderStateMixin
         );
 
       },onFail: (msg){
-        Progresshud.showInfoWithStatus('获取实时机组数据失败');
         refreshController.refreshFailed();
       });
-    });
+    },
+    onFail: (msg) {
+      Progresshud.showInfoWithStatus('数据获取失败');
+      }
+    );
   }
 
   //获取实时数据

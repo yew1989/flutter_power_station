@@ -248,8 +248,11 @@ class NearestRunningData{
         }
       }
       // 取出最大值
-      temps.sort((a, b) => (b.toDouble()-a.toDouble()).toInt());
-      result  = temps?.first ?? 0.0;
+      if(temps.length > 0) {
+        temps.sort((a, b) => (b.toDouble()-a.toDouble()).toInt());
+        result  = temps?.first ?? 0.0;
+      }
+
 
     }
     // 排除开路干扰 开路时温度大于 1000
