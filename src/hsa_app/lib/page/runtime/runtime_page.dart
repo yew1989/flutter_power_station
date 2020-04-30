@@ -23,6 +23,7 @@ import 'package:hsa_app/page/dialog/password_dialog.dart';
 import 'package:hsa_app/page/runtime/runtime_event_tile.dart';
 import 'package:hsa_app/page/runtime/runtime_operation_board.dart';
 import 'package:hsa_app/page/runtime/runtime_squre_master_widget.dart';
+import 'package:hsa_app/util/date_tool.dart';
 import 'package:ovprogresshud/progresshud.dart';
 import 'package:progress_dialog/progress_dialog.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
@@ -209,9 +210,15 @@ class _RuntimePageState extends State<RuntimePage> with TickerProviderStateMixin
 
         this.deviceTerminal.nearestRunningData = nearestRunningData;
 
+        // 查出一周内的最后10条告警信息
         API.getTerminalAlertList(
+          terminalAddress : addressId,
+          ercVersions: '0',
+          limitSize : 10,
+          startDateTime: DateTool.getLastWeekTimeStamp(),
+          endDateTime: DateTool.getTodayTimeStamp(),
+
           onSucc: (events){
-            
             refreshController.refreshCompleted();
             if(mounted) {
               setState(() {
@@ -220,9 +227,6 @@ class _RuntimePageState extends State<RuntimePage> with TickerProviderStateMixin
             }
             getRealtimeData();
           },onFail: (msg){},
-          terminalAddress : addressId,
-          ercVersions: '0',
-          limitSize : 10,
         );
 
       },onFail: (msg){
@@ -233,7 +237,7 @@ class _RuntimePageState extends State<RuntimePage> with TickerProviderStateMixin
       Progresshud.showInfoWithStatus('数据获取失败');
       }
     );
-  }
+  }  
 
   //获取实时数据
   void getRealtimeData(){
