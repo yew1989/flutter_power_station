@@ -39,8 +39,6 @@ class _StationDeviceListTileState extends State<StationDeviceListTile> with Tick
 
   void showProgressCyanBar() async {
 
-    // await Future.delayed(Duration(milliseconds: 100 + widget.index *(100)));
-
     if(mounted) {
       setState(() {
       
@@ -72,8 +70,6 @@ class _StationDeviceListTileState extends State<StationDeviceListTile> with Tick
   }
 
     void showProgressRedBar() async {
-
-    // await Future.delayed(Duration(milliseconds: 100 + widget.index *(100)));
 
     if(mounted) {
       setState(() {
@@ -142,8 +138,8 @@ class _StationDeviceListTileState extends State<StationDeviceListTile> with Tick
 
   @override
   void initState() {
-    showProgressCyanBar();
-    showProgressRedBar();
+    super.initState();
+    showProgress();
     initFanAnimtaionController();
     initWordAnimtaionController();
     eventBird?.on('REFLASH_DATA', (_){
@@ -151,7 +147,12 @@ class _StationDeviceListTileState extends State<StationDeviceListTile> with Tick
       showProgressRedBar();
       initWordAnimtaionController();
     });
-    super.initState();
+  }
+
+  void showProgress() async{
+    await Future.delayed(Duration(milliseconds:50)); // 这句的目的是为了解决界面未加载就从MediaQuery获取设备宽引起报错
+    showProgressCyanBar();
+    showProgressRedBar();
   }
 
   @override
