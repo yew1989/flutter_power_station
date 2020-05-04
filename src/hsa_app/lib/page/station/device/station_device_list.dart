@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:hsa_app/components/public_tool.dart';
 import 'package:hsa_app/model/model/all_model.dart';
 import 'package:hsa_app/model/model/station.dart';
-import 'package:hsa_app/event/app_event.dart';
-import 'package:hsa_app/event/event_bird.dart';
 import 'package:hsa_app/page/runtime/runtime_tabbar_page.dart';
 import 'package:hsa_app/page/station/device/station_device_list_tile.dart';
 
