@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:hsa_app/components/public_tool.dart';
 import 'package:hsa_app/config/app_theme.dart';
+import 'package:hsa_app/model/model/all_model.dart';
 import 'package:hsa_app/page/live/live_player_page.dart';
 import 'package:hsa_app/service/umeng_analytics.dart';
 import 'package:hsa_app/theme/theme_gradient_background.dart';
 
 class LiveListPage extends StatefulWidget {
   
-  final List<String> openLives;
+  final List<LiveLink> openLives;
   final String stationName;
   const LiveListPage({Key key, this.openLives, this.stationName}) : super(key: key);
   @override
@@ -16,11 +17,11 @@ class LiveListPage extends StatefulWidget {
 
 class _LiveListPageState extends State<LiveListPage> {
 
-  List<String> openLiveList = [];
+  List<LiveLink> openLiveList = [];
 
   @override
   void initState() {
-    openLiveList = widget?.openLives ?? List<String>();
+    openLiveList = widget?.openLives ?? List<LiveLink>();
     UMengAnalyticsService.enterPage('直播源列表');
     super.initState();
   }
@@ -57,8 +58,8 @@ class _LiveListPageState extends State<LiveListPage> {
 
   Widget liveListTile(BuildContext context,int index){
 
-    final liveStr = '直播源 ' +(index + 1).toString();
-    final liveUrl = openLiveList[index];
+    final liveStr = openLiveList[index].liveLinkName;
+    final liveUrl = openLiveList[index].m3u8Url;
 
     return Material(
       color: Colors.transparent,

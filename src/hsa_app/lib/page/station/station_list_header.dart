@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:hsa_app/components/public_tool.dart';
+import 'package:hsa_app/model/model/all_model.dart';
 import 'package:hsa_app/page/live/live_list_page.dart';
 
 class StationListHeader extends StatefulWidget {
 
   final String weather;
-  final List<String> openLive;
+  final List<LiveLink> openLive;
   final String stationName;
 
   const StationListHeader(this.weather, this.openLive, this.stationName,{Key key}) : super(key: key);

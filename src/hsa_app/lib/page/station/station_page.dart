@@ -28,7 +28,7 @@ class _StationPageState extends State<StationPage> {
   
   StationInfo stationInfo = StationInfo();
   
-  List<String> openLive = [];
+  List<LiveLink> liveLinkList = [];
   RefreshController refreshController = RefreshController(initialRefresh: false);
   // 实时有功和收益任务
   AgentStationInfoDataLoopTimerTasker stationTasker;
@@ -87,45 +87,43 @@ class _StationPageState extends State<StationPage> {
       if (station == null) return;
       eventBird?.emit(AppEvent.eventGotStationInfo,station);
       if(mounted) {
-       setState(() {
-        this.stationInfo = station;
-        if(stationInfo.waterTurbines != null){
-          for( int i = 0 ;stationInfo.waterTurbines.length > i; i++){
+        setState(() {
+          this.stationInfo = station;
+          if(stationInfo.waterTurbines != null){
+            for( int i = 0 ;stationInfo.waterTurbines.length > i; i++){
 
-            String terminalAddress = stationInfo.waterTurbines[i]?.deviceTerminal?.terminalAddress ?? '';
-            terminalAddressList.add(terminalAddress);
-            bool isBase = true;
-            switch(stationInfo.waterTurbines[i]?.deviceTerminal?.deviceVersion){
-              case 'S1-Base': 
-                param =  ["AFN0C.F7.p0", "AFN0C.F9.p0", "AFN0C.F10.p0", "AFN0C.F11.p0", 
-                          "AFN0C.F13.p0", "AFN0C.F24.p0", "AFN0C.F20.p0", "AFN0C.F21.p0", "AFN0C.F22.p0"] ;
-                isBase = true;
-              break;
-              
-              case 'S1-Pro':
-                param = ["AFN0C.F28.p0", "AFN0C.F30.p0", "AFN0C.F10.p0", "AFN0C.F11.p0",
-                        "AFN0C.F13.p0", "AFN0C.F24.p0", "AFN0C.F20.p0", "AFN0C.F21.p0", "AFN0C.F22.p0"] ;
-                isBase = false;
-              break;
-            }
-            isBaseList.add(isBase);
-            if(terminalAddress != ''){
-              APIStation.getMultipleAFNFnpn(terminalAddress:terminalAddress,
-              paramList:param,
-              isBase:isBase,
-              onSucc: (nearestRunningData){
-                stationInfo.waterTurbines[i].deviceTerminal.nearestRunningData = nearestRunningData;
-              },onFail: (msg){
+              String terminalAddress = stationInfo.waterTurbines[i]?.deviceTerminal?.terminalAddress ?? '';
+              terminalAddressList.add(terminalAddress);
+              bool isBase = true;
+              switch(stationInfo.waterTurbines[i]?.deviceTerminal?.deviceVersion){
+                case 'S1-Base': 
+                  param =  ["AFN0C.F7.p0", "AFN0C.F9.p0", "AFN0C.F10.p0", "AFN0C.F11.p0", 
+                            "AFN0C.F13.p0", "AFN0C.F24.p0", "AFN0C.F20.p0", "AFN0C.F21.p0", "AFN0C.F22.p0"] ;
+                  isBase = true;
+                break;
                 
-              });
+                case 'S1-Pro':
+                  param = ["AFN0C.F28.p0", "AFN0C.F30.p0", "AFN0C.F10.p0", "AFN0C.F11.p0",
+                          "AFN0C.F13.p0", "AFN0C.F24.p0", "AFN0C.F20.p0", "AFN0C.F21.p0", "AFN0C.F22.p0"] ;
+                  isBase = false;
+                break;
+              }
+              isBaseList.add(isBase);
+              if(terminalAddress != ''){
+                APIStation.getMultipleAFNFnpn(terminalAddress:terminalAddress,
+                paramList:param,
+                isBase:isBase,
+                onSucc: (nearestRunningData){
+                  stationInfo.waterTurbines[i].deviceTerminal.nearestRunningData = nearestRunningData;
+                },onFail: (msg){
+                  
+                });
+              }
             }
           }
-        }
-        if (station.liveLinks != null) {
-          station.liveLinks.map((liveLink){
-            openLive.add(liveLink.m3u8Url ?? '' );
-          }).toList();
-        }
+          if (station.liveLinks != null) {
+            liveLinkList = station.liveLinks;
+          }
         });
       }
       getRealtimeData();
@@ -170,7 +168,7 @@ class _StationPageState extends State<StationPage> {
         child: ListView(
           children: <Widget>[
             StationBigPool(stationInfo:stationInfo,profitList:profitList),
-            StationListHeader(widget.weather.name, openLive, stationInfo.stationName),
+            StationListHeader(widget.weather.name, liveLinkList, stationInfo.stationName),
             StationDeviceList(stationInfo),
           ],
         ),
