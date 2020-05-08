@@ -30,6 +30,7 @@ class _RuntimeTabbarPageState extends State<RuntimeTabbarPage> {
 
   @override
   void initState() {
+    super.initState();
     stationInfo = widget.stationInfo;
     currentIndex = widget?.selectIndex ?? 0;
     currentWaterTurbine = widget?.waterTurbines[currentIndex];
@@ -38,7 +39,6 @@ class _RuntimeTabbarPageState extends State<RuntimeTabbarPage> {
     pageController = PageController(initialPage: currentIndex);
     badgeName = (currentIndex + 1).toString() + '#';
     UMengAnalyticsService.enterPage('机组实时');
-    super.initState();
   }
 
   @override
@@ -47,8 +47,6 @@ class _RuntimeTabbarPageState extends State<RuntimeTabbarPage> {
     UMengAnalyticsService.exitPage('机组实时');
     super.dispose();
   }
-
-  
 
   @override
   Widget build(BuildContext context) {
@@ -79,16 +77,20 @@ class _RuntimeTabbarPageState extends State<RuntimeTabbarPage> {
               physics: AlwaysScrollableScrollPhysics(),
               controller: pageController,
               itemCount: widget?.waterTurbines?.length ?? 0,
-              itemBuilder: (BuildContext context, int index) => 
-              RuntimePage(
+              itemBuilder: (BuildContext context, int index) {
+
+                currentWaterTurbine = widget?.waterTurbines[currentIndex];
+                
+                return RuntimePage(
                 title: currentWaterTurbine.deviceTerminal.deviceName,
                 address:currentWaterTurbine.deviceTerminal.terminalAddress,
                 alias:(index+1).toString() + '#',
-                isOnline:isOnline,
+                isOnline:currentWaterTurbine.deviceTerminal.isOnLine,
                 isBase: currentWaterTurbine.deviceTerminal.deviceVersion.compareTo('S1-Pro') == 0  ? false : true,
                 isMaster:currentWaterTurbine.deviceTerminal.isMaster,
-                stationInfo: widget.stationInfo,
-              ),
+                isAllowHighSpeedNetworkSwitching: this.stationInfo?.isAllowHighSpeedNetworkSwitching ?? false,
+                );
+              },
               onPageChanged: (int index) {
                 currentIndex = index;
                 currentWaterTurbine = widget?.waterTurbines[currentIndex];

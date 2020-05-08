@@ -69,9 +69,9 @@ class _StationTabbarPageState extends State<StationTabbarPage> {
       setState(() {});
     }
 
-    var msg = '地理位置:' + stationInfo.hyStationLongtitude.toString() + ',' + stationInfo.hyStationLatitude.toString() + '\n';
-    msg +=  '天气:' +this.weather.name + '   类型：' +this.weather.type.toString();
-    debugPrint(msg);
+    // var msg = '地理位置:' + stationInfo.hyStationLongtitude.toString() + ',' + stationInfo.hyStationLatitude.toString() + '\n';
+    // msg +=  '天气:' +this.weather.name + '   类型：' +this.weather.type.toString();
+    // debugPrint(msg);
   }
 
   @override
@@ -115,7 +115,9 @@ class _StationTabbarPageState extends State<StationTabbarPage> {
                   physics: AlwaysScrollableScrollPhysics(),
                   controller: pageController,
                   itemCount: widget.stations.length,
-                  itemBuilder: (BuildContext context, int index) => StationPage(widget.stations[index].stationNo.toString(),this.weather),
+                  itemBuilder: (BuildContext context, int index){
+                    return StationPage(widget.stations[index].stationNo.toString(),this.weather);
+                  },
                   onPageChanged: (int index) {
                     currentIndex = index;
                     currentStation = widget?.stations[currentIndex];

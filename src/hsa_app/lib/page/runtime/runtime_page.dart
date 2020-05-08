@@ -31,15 +31,15 @@ import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class RuntimePage extends StatefulWidget {
 
+  final bool isAllowHighSpeedNetworkSwitching;
   final String title;
   final String address;
   final String alias;
   final bool isOnline;
   final bool isBase;      // 是否是Base版本
-  final StationInfo stationInfo;
   final bool isMaster;    // 是否是主机
 
-  RuntimePage({this.title, this.address, this.alias, this.isOnline, this.isBase,this.stationInfo,this.isMaster});
+  RuntimePage({this.title, this.address, this.alias, this.isOnline, this.isBase,this.isAllowHighSpeedNetworkSwitching,this.isMaster});
 
   @override
   _RuntimePageState createState() => _RuntimePageState();
@@ -167,15 +167,15 @@ class _RuntimePageState extends LifecycleState<RuntimePage> with TickerProviderS
 
   @override
   void initState() {
+    super.initState();
     initProgressDialog();
     requestRunTimeData();
-    super.initState();
   }
 
   @override
   void dispose() {
-    runtimTasker?.stop();
     footerDataController?.dispose();
+    runtimTasker?.dispose();
     Progresshud.dismiss();
     super.dispose();
   }
@@ -183,20 +183,22 @@ class _RuntimePageState extends LifecycleState<RuntimePage> with TickerProviderS
    @override
   void onResume() {
     super.onResume();
-    if(this.deviceTerminal.nearestRunningData != null) {
-      getRealtimeData();
-    }
+    requestRunTimeData();
+    debugPrint('onResume');
   }
 
   @override
   void onPause() {
-    super.onPause();
-    runtimTasker?.stop();
+    runtimTasker?.dispose();
     Progresshud.dismiss();
+    super.onPause();
   }
 
   // 请求实时数据
   void requestRunTimeData() {
+
+    runtimTasker?.dispose();
+
     Progresshud.showWithStatus('读取数据中...');
 
     final addressId = widget.address ?? '';
@@ -227,8 +229,20 @@ class _RuntimePageState extends LifecycleState<RuntimePage> with TickerProviderS
       APIStation.getMultipleAFNFnpn(terminalAddress:addressId,paramList: param,onSucc: (nearestRunningData){
 
         this.deviceTerminal.nearestRunningData = nearestRunningData;
+        getRealtimeData();
+        getTerminalAlertList(addressId);
+      },onFail: (msg){
+        refreshController.refreshFailed();
+      });
+    },
+    onFail: (msg) {
+      Progresshud.showInfoWithStatus('数据获取失败');
+      }
+    );
+  }  
 
-        // 查出一周内的最后10条告警信息
+      // 查出一周内的最后10条告警信息
+  void getTerminalAlertList(String addressId) async {
         API.getTerminalAlertList(
           terminalAddress : addressId,
           ercVersions: '0',
@@ -243,31 +257,22 @@ class _RuntimePageState extends LifecycleState<RuntimePage> with TickerProviderS
               this.showEvents = events;
               });
             }
-            getRealtimeData();
           },onFail: (msg){},
         );
-
-      },onFail: (msg){
-        refreshController.refreshFailed();
-      });
-    },
-    onFail: (msg) {
-      Progresshud.showInfoWithStatus('数据获取失败');
-      }
-    );
-  }  
+  }
 
   //获取实时数据
-  void getRealtimeData(){
-    final addressId = widget.address ?? '';
+  void getRealtimeData() async{
+    runtimTasker?.dispose();
+    await Future.delayed(Duration(seconds:1));
+    var addressId = widget.address ?? '';
     if(addressId == '') return;
-    runtimTasker = AgentRunTimeDataLoopTimerTasker(
-      isBase: widget?.isBase == true ?  true: false,
-      terminalAddress: addressId,
-      isAllowHighSpeedNetworkSwitching: widget?.stationInfo?.isAllowHighSpeedNetworkSwitching ?? false,
-      timerInterval: AppConfig.getInstance().deviceQureyTimeInterval,
-    );
-    runtimTasker.start((data){
+    runtimTasker = AgentRunTimeDataLoopTimerTasker();
+    runtimTasker.listen(addressId,
+    widget?.isBase == true ?  true : false,
+    widget?.isAllowHighSpeedNetworkSwitching ?? false
+    ,AppConfig.getInstance().deviceQureyTimeInterval,
+    (data){
       if(mounted) {
         setState(() {
         // this.deviceTerminal?.nearestRunningData = AgentFake.fakeNearestRunningData(data);

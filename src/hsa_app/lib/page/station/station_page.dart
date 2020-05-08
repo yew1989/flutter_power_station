@@ -40,16 +40,14 @@ class _StationPageState extends LifecycleState<StationPage> {
  @override
   void onResume() {
     super.onResume();
-    if(stationInfo.waterTurbines != null) {
-      getRealtimeData();
-    }
+    getRealtimeData();
   }
 
   @override
   void onPause() {
-    super.onPause();
-    stationTasker?.stop();
+    stationTasker?.dispose();
     Progresshud.dismiss();
+    super.onPause();
   }
 
   @override
@@ -61,7 +59,7 @@ class _StationPageState extends LifecycleState<StationPage> {
   @override
   void dispose() {
     refreshController?.dispose();
-    stationTasker?.stop();
+    stationTasker?.dispose();
     Progresshud.dismiss();
     super.dispose();
   }
@@ -83,6 +81,9 @@ class _StationPageState extends LifecycleState<StationPage> {
 
   // 请求电站概要
   void reqeustStationInfo() { 
+
+    stationTasker?.dispose();
+
     Progresshud.showWithStatus('读取数据中...');
 
     final stationId = widget?.stationId ?? '';
@@ -150,14 +151,15 @@ class _StationPageState extends LifecycleState<StationPage> {
   }
   
   //实时数据获取
-  void getRealtimeData() { 
-    if(stationInfo.waterTurbines == null) return;
-    stationTasker = AgentStationInfoDataLoopTimerTasker(
-      stationInfo,
-      isAllowHighSpeedNetworkSwitching:stationInfo?.isAllowHighSpeedNetworkSwitching ?? false,
-      timerInterval:AppConfig.getInstance().deviceQureyTimeInterval,
-    );
-    stationTasker.start((stationInfo){
+  void getRealtimeData() async{
+    stationTasker?.dispose();
+    await Future.delayed(Duration(seconds: 1)); 
+    if(this.stationInfo.waterTurbines == null) return;
+    stationTasker = AgentStationInfoDataLoopTimerTasker();
+    stationTasker.listen(
+      this.stationInfo,
+      this.stationInfo?.isAllowHighSpeedNetworkSwitching ?? false,
+      AppConfig.getInstance().deviceQureyTimeInterval,(stationInfo){
       if(mounted) {
         setState(() {
           // 若开启此处,用于假数据调试动画
