@@ -610,17 +610,17 @@ class _RuntimePageState extends LifecycleState<RuntimePage> with TickerProviderS
       return;
     }
     // 远程控制检测
-    var isRemoteControl = false;
+    var isAllowControl = false;
     // 如果是远程控制模式开关
     if (taskName == TaskName.remoteSwitchRemoteModeOn || taskName == TaskName.remoteSwitchRemoteModeOff) {
-      isRemoteControl = deviceTerminal.isOnLine == true && deviceTerminal.nearestRunningData.controlType == '智能';
+      isAllowControl =  deviceTerminal.nearestRunningData.controlType == '智能';
     }
     // 其他指令 必须在远程控制模式打开情况下 有效
     else {
-      isRemoteControl = deviceTerminal.isOnLine == true && deviceTerminal.nearestRunningData.controlType == '智能' && deviceTerminal.nearestRunningData.isAllowRemoteControl == true;
+      isAllowControl =  deviceTerminal.nearestRunningData.controlType == '智能' && deviceTerminal.nearestRunningData.isAllowRemoteControl == true;
     }
 
-    if (isRemoteControl == false) {
+    if (isAllowControl == false) {
       Progresshud.showInfoWithStatus('请先切换到远程控制模式');
       return;
     }
