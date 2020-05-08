@@ -213,7 +213,7 @@ class _MinePageState extends State<MinePage> {
               
               itemTile('修改密码', 'images/mine/My_Change_pwd_icon.png', () => onTapChangePswd(context)),
               itemTile('关于智能电站', 'images/mine/My_about_icon.png', () =>  onTapAbout(context)),
-              itemTile('SOS', 'images/mine/My_sos_icon.png', () =>  onTapSOSCall(context)),
+              itemTile('电站抢修', 'images/mine/My_sos_icon.png', () =>  onTapSOSCall(context)),
               itemTile('搜索电站', 'images/history/History_selt_btn.png', () =>  onTapSearchStations(context)),
               
               // 分割线(最后一条)
