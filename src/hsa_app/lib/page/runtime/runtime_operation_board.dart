@@ -47,12 +47,12 @@ class _RunTimeOperationBoardState extends State<RunTimeOperationBoard> {
 
   //当前模式
   static String getCurrentStatus(DeviceTerminal data){
-    if(data.controlType != null){
-      if(data.controlType.compareTo('智能') == 0){
+    if(data?.nearestRunningData?.controlType != null){
+      if(data.nearestRunningData.controlType.compareTo('智能') == 0){
         return '智        能';
-      }else if(data.controlType.compareTo('手动') == 0){
+      }else if(data.nearestRunningData.controlType.compareTo('手动') == 0){
         return '手        动';
-      }else if(data.controlType.compareTo('自动') == 0){
+      }else if(data.nearestRunningData.controlType.compareTo('自动') == 0){
         return '自        动';
       }else{
         return '未        知';
