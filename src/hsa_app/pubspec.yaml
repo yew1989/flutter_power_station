@@ -47,7 +47,6 @@ dependencies:
   loading: 1.0.2
   pull_to_refresh: 1.5.8
   pin_code_text_field: 1.5.1
-  flutter_cupertino_data_picker: 0.8.6
   progress_dialog: 1.2.2
   loading_indicator: 1.1.0
   page_view_indicator: 2.0.3
