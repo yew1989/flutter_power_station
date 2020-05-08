@@ -86,6 +86,8 @@ class _RuntimeTabbarPageState extends State<RuntimeTabbarPage> {
                 alias:(index+1).toString() + '#',
                 isOnline:isOnline,
                 isBase: currentWaterTurbine.deviceTerminal.deviceVersion.compareTo('S1-Pro') == 0  ? false : true,
+                isMaster:currentWaterTurbine.deviceTerminal.isMaster,
+                stationInfo: widget.stationInfo,
               ),
               onPageChanged: (int index) {
                 currentIndex = index;

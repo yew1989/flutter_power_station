@@ -137,6 +137,7 @@ class _StationPageState extends State<StationPage> {
   void getRealtimeData() { 
     stationTasker = AgentStationInfoDataLoopTimerTasker(
       stationInfo,
+      isAllowHighSpeedNetworkSwitching:stationInfo?.isAllowHighSpeedNetworkSwitching ?? false,
       timerInterval:AppConfig.getInstance().deviceQureyTimeInterval,
     );
     stationTasker.start((stationInfo){

@@ -61,7 +61,7 @@ class _HistoryPageState extends State<HistoryPage> {
   // 事件列表是否首次数据加载完毕
   bool isEventLoadFinsh = false;
   // 图表是否首次数据加载完毕
-  bool isChartLoadFinsh = false;
+  bool isChartLoading = true;
   // ERC列表
   List<ERCFlagType> evnetTypesList = List<ERCFlagType>();
   // 曲线点
@@ -165,7 +165,7 @@ class _HistoryPageState extends State<HistoryPage> {
   // 获取曲线列表图
   void requestChartHistory() {
 
-    this.isChartLoadFinsh = false;
+    this.isChartLoading = true;
 
     final stationNos = widget?.stationInfo?.stationNo ?? '';
     final address = widget?.singleWaterTurbine?.deviceTerminal?.terminalAddress ?? '';
@@ -187,7 +187,7 @@ class _HistoryPageState extends State<HistoryPage> {
         minuteInterval:this.minuteInterval.toString(), 
         onSucc: (turbinelist){
         
-          this.isChartLoadFinsh = true;
+          this.isChartLoading = false;
 
           if(mounted) {
 
@@ -240,6 +240,9 @@ class _HistoryPageState extends State<HistoryPage> {
         endDate: endDateTime,
         terminalAddress: this.isSingleDevice == true ? address : null,
         onSucc: (data){
+
+          this.isChartLoading = false;
+
           if(mounted) {
             setState(() {
               statisticalPowerList = data;
@@ -258,6 +261,9 @@ class _HistoryPageState extends State<HistoryPage> {
         years: intList,
         terminalAddress: this.isSingleDevice == true ? address : null,
         onSucc: (data){
+
+          this.isChartLoading = false;
+          
           if(mounted) {
             setState(() {
             statisticalPowerList = data;
@@ -586,7 +592,7 @@ class _HistoryPageState extends State<HistoryPage> {
           HistoryCalendarBar(
             startDateTime: this.currentStartDateTime,
             endDateTime: this.currentEndDateTime,
-            isLoading: this.isChartLoadFinsh,
+            isLoading: this.isChartLoading,
             onChoose: () => showPickerPopWindow(),
           ),
 
