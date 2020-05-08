@@ -25,9 +25,9 @@ class HistoryPage extends StatefulWidget {
 
   final StationInfo stationInfo;        // 电站信息
   final bool isSingleDevice;            // 是否是单台设备
-  final DeviceTerminal singleTerminal;  // 如果是单台设备,从这里取数据
+  final WaterTurbine singleWaterTurbine;  // 如果是单台设备,从这里取数据
 
-  const HistoryPage({Key key,@required this.stationInfo,@required  this.isSingleDevice,this.singleTerminal}) : super(key: key);
+  const HistoryPage({Key key,@required this.stationInfo,@required  this.isSingleDevice,this.singleWaterTurbine}) : super(key: key);
 
   @override
   _HistoryPageState createState() => _HistoryPageState();
@@ -138,7 +138,7 @@ class _HistoryPageState extends State<HistoryPage> {
     // 电站号 
     final stationNos = widget?.stationInfo?.stationNo ?? '';
     // 单台机组地址
-    final address = widget?.singleTerminal?.terminalAddress ?? '';
+    final address = widget?.singleWaterTurbine?.deviceTerminal?.terminalAddress ?? '';
 
     API.getTerminalAlertList(
       endDateTime : currentStartDateTime   + '  00:00:00',
@@ -168,7 +168,7 @@ class _HistoryPageState extends State<HistoryPage> {
     this.isChartLoadFinsh = false;
 
     final stationNos = widget?.stationInfo?.stationNo ?? '';
-    final address = widget?.singleTerminal?.terminalAddress ?? '';
+    final address = widget?.singleWaterTurbine?.deviceTerminal?.terminalAddress ?? '';
 
     var endDateTime = currentEndDateTime  + ' 23:59:59';
 
@@ -195,13 +195,13 @@ class _HistoryPageState extends State<HistoryPage> {
             
             this.turbinelList = turbinelist;
 
-            var waterMax     = widget?.stationInfo?.reservoirAlarmWaterStage ?? 0.0;
+            var waterMax     =  widget?.stationInfo?.reservoirAlarmWaterStage ?? 0.0;
 
             List<HistoryChartValue> originalPoints = [];
 
             // 单台机组
             if(this.isSingleDevice) {
-              final ratePower = widget?.singleTerminal?.waterTurbine?.ratedPowerKW ?? 0.0;
+              final ratePower = widget?.singleWaterTurbine?.ratedPowerKW ?? 0.0;
               for (final t in turbinelList) {
                 var value = HistoryChartValue(DateTime.parse(t.freezeTime));
                 value.powerMax = ratePower;
@@ -595,7 +595,12 @@ class _HistoryPageState extends State<HistoryPage> {
             child: 
             (segmentIndex == 0 || segmentIndex == 1) ?
             SfCartesianChart(
-
+              legend: Legend(
+                isVisible:  true,
+                overflowMode: LegendItemOverflowMode.wrap,
+                position: LegendPosition.bottom,
+                textStyle: ChartTextStyle(color: Colors.white,fontSize: 10),
+              ),
               plotAreaBorderWidth: 0,
               zoomPanBehavior: ZoomPanBehavior(
                 enablePinching: true,
@@ -617,18 +622,23 @@ class _HistoryPageState extends State<HistoryPage> {
                 minorTickLines: MinorTickLines(width: 0),
                 dateFormat: getDateFormat(),
               ),
-              primaryYAxis: NumericAxis(
-                name:'power',opposedPosition: true,
-                axisLine: AxisLine(color: Colors.transparent),
-                labelStyle: ChartTextStyle(color: Colors.white,fontFamily:'ArialNarrow'),
-                majorGridLines: MajorGridLines(width: 0.5,color: Colors.white60),
-                minorGridLines: MinorGridLines(width: 0),
-                majorTickLines: MajorTickLines(width: 0),
-                minorTickLines: MinorTickLines(width: 0),
-              ),
+
               axes:[
                 NumericAxis(
-                  name: 'water',opposedPosition: false,
+                  //maximum: points != null && points.length > 0 ? points[0].powerMax * 1.4 : 0.0,
+                  name:'power',
+                  opposedPosition: false,
+                  axisLine: AxisLine(color: Colors.transparent),
+                  labelStyle: ChartTextStyle(color: Colors.white,fontFamily:'ArialNarrow'),
+                  majorGridLines: MajorGridLines(width: 0.5,color: Colors.white60),
+                  minorGridLines: MinorGridLines(width: 0),
+                  majorTickLines: MajorTickLines(width: 0),
+                  minorTickLines: MinorTickLines(width: 0),
+                ),
+                NumericAxis(
+                  //maximum: points != null && points.length > 0 ? points[0].waterMax * 1.8 : 0.0,
+                  name: 'water',
+                  opposedPosition: true,
                   axisLine: AxisLine(color: Colors.transparent),
                   labelStyle: ChartTextStyle(color: Colors.white,fontFamily:'ArialNarrow'),
                   majorGridLines: MajorGridLines(width: 0),
@@ -637,14 +647,18 @@ class _HistoryPageState extends State<HistoryPage> {
                   minorTickLines: MinorTickLines(width: 0),
                 ),
               ],
+              
               series: drawChartSeries(),
-              // tooltipBehavior: TooltipBehavior(
-              //   enable: true, 
-              //   canShowMarker: false,
-              //   header: '',
-              //   format: 'point.x : point.ykW',
-              //   color: HexColor('#2296F2')
-              // ),
+              
+              trackballBehavior: TrackballBehavior(
+                enable: true,
+                lineColor: Colors.white60,
+                activationMode: ActivationMode.singleTap,
+                tooltipDisplayMode:  TrackballDisplayMode.groupAllPoints,
+                tooltipSettings: InteractiveTooltip(
+                  color: Colors.black54,),
+                shouldAlwaysShow: true,
+              ),
             )  
             : SfCartesianChart(
               plotAreaBorderWidth: 0,
@@ -669,8 +683,9 @@ class _HistoryPageState extends State<HistoryPage> {
                 enable: true, 
                 canShowMarker: false,
                 header: '',
-                format: 'point.x : point.ykW',
-                //color: HexColor('#2296F2')
+                format: 'point.x : point.y kW',
+                color: Colors.black,
+                opacity:0.54
               ),
             )
           ),
@@ -678,7 +693,6 @@ class _HistoryPageState extends State<HistoryPage> {
       ),
     );
   }
-
 
   //柱状图
   List<ColumnSeries<ChartSampleData, String>> getDefaultColumnSeries() {
@@ -688,14 +702,15 @@ class _HistoryPageState extends State<HistoryPage> {
         dataSource: chartData,
         xValueMapper: (ChartSampleData sales, _) => sales.x,
         yValueMapper: (ChartSampleData sales, _) => sales.y,
-        //color: HexColor('#2296F2'),
+        color: HexColor('9903a9f4'),
         yAxisName: 'power',
         width: 1,
         spacing: 0.2,
         dataLabelSettings: DataLabelSettings(
           isVisible: false, textStyle: ChartTextStyle(fontSize: 10,color: Colors.white),
         )
-      )
+      ),
+
     ];
   }
 
@@ -703,20 +718,35 @@ class _HistoryPageState extends State<HistoryPage> {
    List<ChartSeries> drawChartSeries() {
 
     return <ChartSeries>[
+      
 
-      // 有功曲线
-      SplineSeries<HistoryChartValue, DateTime>(
-        emptyPointSettings: EmptyPointSettings(mode: EmptyPointMode.average),
-        dataSource: this.points,
-        splineType: SplineType.natural,
-        color: HexColor('ee2e3b'),
+      // 水位告警曲线 = 告警水位水位
+      LineSeries<HistoryChartValue, DateTime>(
+        name: '告警水位(m)',
+        dataSource: points,
+        // dashArray: <double>[10, 10],
+        color: HexColor('9903a9f4'),
+        width: 0.8,
         xValueMapper: (HistoryChartValue point, _) => point.time,
-        yValueMapper: (HistoryChartValue point, _) => point.power,
-        yAxisName: 'power',
+        yValueMapper: (HistoryChartValue point, _) => point.waterMax,
+        yAxisName: 'water'
+      ),
+
+      // 有功告警曲线 = 额定 或 额定和
+      LineSeries<HistoryChartValue, DateTime>(
+        name: '额定功率(kW)',
+        dataSource: points,
+        // dashArray: <double>[10, 10],
+        color: HexColor('ee2e3b'),
+        width: 0.8,
+        xValueMapper: (HistoryChartValue point, _) => point.time,
+        yValueMapper: (HistoryChartValue point, _) => point.powerMax,
+        yAxisName: 'power'
       ),
 
       // 水位高度
       SplineAreaSeries<HistoryChartValue, DateTime>(
+        name: '水位(m)',
         dataSource: points,
         borderDrawMode: BorderDrawMode.excludeBottom,
         gradient: LinearGradient(
@@ -724,29 +754,19 @@ class _HistoryPageState extends State<HistoryPage> {
         ),
         xValueMapper: (HistoryChartValue point, _) => point.time,
         yValueMapper: (HistoryChartValue point, _) => point.water,
-        yAxisName: 'water'
+        yAxisName: 'water',
       ),
 
-      // 有功告警曲线 = 额定 或 额定和
-      LineSeries<HistoryChartValue, DateTime>(
-        dataSource: points,
-        // dashArray: <double>[10, 10],
+      // 有功曲线
+      SplineSeries<HistoryChartValue, DateTime>(
+        name: '功率(kW)',
+        emptyPointSettings: EmptyPointSettings(mode: EmptyPointMode.average),
+        dataSource: this.points,
+        splineType: SplineType.natural,
         color: HexColor('ee2e3b'),
-        width: 0.5,
         xValueMapper: (HistoryChartValue point, _) => point.time,
-        yValueMapper: (HistoryChartValue point, _) => point.powerMax,
-        yAxisName: 'power'
-      ),
-
-      // 水位告警曲线 = 告警水位水位
-      LineSeries<HistoryChartValue, DateTime>(
-        dataSource: points,
-        // dashArray: <double>[10, 10],
-        color: HexColor('9903a9f4'),
-        width: 0.5,
-        xValueMapper: (HistoryChartValue point, _) => point.time,
-        yValueMapper: (HistoryChartValue point, _) => point.waterMax,
-        yAxisName: 'water'
+        yValueMapper: (HistoryChartValue point, _) => point.power,
+        yAxisName: 'power',
       ),
     ];
   }

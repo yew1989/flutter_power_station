@@ -51,7 +51,7 @@ dependencies:
   progress_dialog: 1.2.2
   loading_indicator: 1.1.0
   page_view_indicator: 2.0.3
-  flutter_cupertino_date_picker: 1.0.12
+  flutter_cupertino_date_picker: 1.0.24
   wave: 0.0.8
   flui: 0.9.0
   syncfusion_flutter_gauges: ^18.1.42
