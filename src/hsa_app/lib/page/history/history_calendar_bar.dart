@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hsa_app/config/app_theme.dart';
+import 'package:loading_indicator/loading_indicator.dart';
 
 class HistoryCalendarBar extends StatefulWidget {
 
@@ -28,12 +29,12 @@ class _HistoryCalendarBarState extends State<HistoryCalendarBar> {
             child: SizedBox(
               height: 20,
               width: 20,
-              child: widget.isLoading == false ? null
-              // LoadingIndicator(
-              //   indicatorType: Indicator.ballPulse, 
-              //   color: Colors.white70,
-              // ) 
-              : null),
+              child: widget.isLoading == false ? Container() :
+              LoadingIndicator(
+                indicatorType: Indicator.ballPulse, 
+                color: Colors.white70,
+              )
+            ),
           ),
         ),
         Container(
