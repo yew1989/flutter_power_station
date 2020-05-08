@@ -40,7 +40,6 @@ class _StationPageState extends LifecycleState<StationPage> {
  @override
   void onResume() {
     super.onResume();
-    debugPrint('onResume');
     if(stationInfo.waterTurbines != null) {
       getRealtimeData();
     }
@@ -49,7 +48,6 @@ class _StationPageState extends LifecycleState<StationPage> {
   @override
   void onPause() {
     super.onPause();
-    debugPrint('onPause');
     stationTasker?.stop();
     Progresshud.dismiss();
   }
