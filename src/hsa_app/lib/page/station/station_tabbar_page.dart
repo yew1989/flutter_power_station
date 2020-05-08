@@ -102,9 +102,9 @@ class _StationTabbarPageState extends State<StationTabbarPage> {
 
                 GestureDetector(
                 onTap: stationInfo?.waterTurbines == null ? null : () => pushToPage(context, HistoryPage(stationInfo: stationInfo, isSingleDevice: false)),
-                child: Center(child: Text('历史分析',style:TextStyle(color: Colors.white, fontSize: 16)))),
+                child: Image.asset('images/history/Histor_icon.png',scale: 1.6)),
                 
-                SizedBox(width: 20),
+                SizedBox(width: 10),
               ],
             ),
             body: Stack(

@@ -22,7 +22,7 @@ class RuntimeTabbarPage extends StatefulWidget {
 class _RuntimeTabbarPageState extends State<RuntimeTabbarPage> {
   StationInfo stationInfo;
   int currentIndex;
-  DeviceTerminal currentDevice;
+  WaterTurbine currentWaterTurbine;
   int pageLength;
   String title;
   PageController pageController;
@@ -32,9 +32,9 @@ class _RuntimeTabbarPageState extends State<RuntimeTabbarPage> {
   void initState() {
     stationInfo = widget.stationInfo;
     currentIndex = widget?.selectIndex ?? 0;
-    currentDevice = widget?.waterTurbines[currentIndex].deviceTerminal;
+    currentWaterTurbine = widget?.waterTurbines[currentIndex];
     pageLength = widget?.waterTurbines?.length ?? 0;
-    title = currentDevice?.deviceName ?? '';
+    title = currentWaterTurbine?.deviceTerminal?.deviceName ?? '';
     pageController = PageController(initialPage: currentIndex);
     badgeName = (currentIndex + 1).toString() + '#';
     UMengAnalyticsService.enterPage('机组实时');
@@ -52,7 +52,7 @@ class _RuntimeTabbarPageState extends State<RuntimeTabbarPage> {
 
   @override
   Widget build(BuildContext context) {
-    final isOnline = currentDevice?.isOnLine;
+    final isOnline = currentWaterTurbine?.deviceTerminal?.isOnLine;
     return ThemeGradientBackground(
       child: Scaffold(
         backgroundColor: Colors.transparent,
@@ -67,9 +67,9 @@ class _RuntimeTabbarPageState extends State<RuntimeTabbarPage> {
                   fontSize: AppTheme().navigationAppBarFontSize)),
           actions: <Widget>[
             GestureDetector(
-                onTap: () => pushToPage(context, HistoryPage(stationInfo:stationInfo, isSingleDevice: true,singleTerminal: currentDevice)),
-                child: Center(child: Text('历史分析',style: TextStyle(color: Colors.white, fontSize: 16)))),
-            SizedBox(width: 20),
+                onTap: () => pushToPage(context, HistoryPage(stationInfo:stationInfo, isSingleDevice: true,singleWaterTurbine: currentWaterTurbine)),
+                child: Image.asset('images/history/Histor_icon.png',scale: 1.6,)),
+            SizedBox(width: 10),
           ],
         ),
         body: Stack(
@@ -81,18 +81,18 @@ class _RuntimeTabbarPageState extends State<RuntimeTabbarPage> {
               itemCount: widget?.waterTurbines?.length ?? 0,
               itemBuilder: (BuildContext context, int index) => 
               RuntimePage(
-                title: currentDevice.deviceName,
-                address:currentDevice.terminalAddress,
+                title: currentWaterTurbine.deviceTerminal.deviceName,
+                address:currentWaterTurbine.deviceTerminal.terminalAddress,
                 alias:(index+1).toString() + '#',
                 isOnline:isOnline,
-                isBase: currentDevice.deviceVersion.compareTo('S1-Pro') == 0  ? false : true,
+                isBase: currentWaterTurbine.deviceTerminal.deviceVersion.compareTo('S1-Pro') == 0  ? false : true,
               ),
               onPageChanged: (int index) {
                 currentIndex = index;
-                currentDevice = widget?.waterTurbines[currentIndex].deviceTerminal;
+                currentWaterTurbine = widget?.waterTurbines[currentIndex];
                 badgeName = (currentIndex + 1).toString() + '#';
                 setState(() {
-                  title = currentDevice.deviceName;
+                  title = currentWaterTurbine.deviceTerminal.deviceName;
                 });
               },
             ),
