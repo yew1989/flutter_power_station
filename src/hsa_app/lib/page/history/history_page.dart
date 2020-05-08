@@ -71,6 +71,9 @@ class _HistoryPageState extends State<HistoryPage> {
   //柱状图初始
   List<ChartSampleData> chartData = List<ChartSampleData>();
 
+  //告警水位
+  num waterMax = 0;
+
 
   // 是否是单台设备
   bool isSingleDevice = false;
@@ -195,7 +198,7 @@ class _HistoryPageState extends State<HistoryPage> {
             
             this.turbinelList = turbinelist;
 
-            var waterMax     =  widget?.stationInfo?.reservoirAlarmWaterStage ?? 0.0;
+            this.waterMax = widget?.stationInfo?.reservoirAlarmWaterStage ?? 0.0;
 
             List<HistoryChartValue> originalPoints = [];
 
@@ -662,6 +665,7 @@ class _HistoryPageState extends State<HistoryPage> {
                 activationMode: ActivationMode.singleTap,
                 tooltipDisplayMode:  TrackballDisplayMode.groupAllPoints,
                 tooltipSettings: InteractiveTooltip(
+                  borderColor:Colors.black54,
                   color: Colors.black54,),
                 shouldAlwaysShow: true,
               ),
@@ -721,60 +725,61 @@ class _HistoryPageState extends State<HistoryPage> {
   }
 
   // draw 绘制曲线
-   List<ChartSeries> drawChartSeries() {
+  List<ChartSeries> drawChartSeries() {
+    List<ChartSeries> list = List<ChartSeries>();
+    // 水位告警曲线 = 告警水位水位
+    //waterMax > 0 ?? 
+    list.add(LineSeries<HistoryChartValue, DateTime>(
+      name: '告警水位(m)',
+      dataSource: points,
+      // dashArray: <double>[10, 10],
+      color: HexColor('9903a9f4'),
+      width: 0.8,
+      xValueMapper: (HistoryChartValue point, _) => point.time,
+      yValueMapper: (HistoryChartValue point, _) => point.waterMax,
+      yAxisName: 'water'
+    ));
 
-    return <ChartSeries>[
-      
+    // 有功告警曲线 = 额定 或 额定和
+    list.add(LineSeries<HistoryChartValue, DateTime>(
+      name: '额定功率(kW)',
+      dataSource: points,
+      // dashArray: <double>[10, 10],
+      color: HexColor('ee2e3b'),
+      width: 0.8,
+      xValueMapper: (HistoryChartValue point, _) => point.time,
+      yValueMapper: (HistoryChartValue point, _) => point.powerMax,
+      yAxisName: 'power'
+    ));
 
-      // 水位告警曲线 = 告警水位水位
-      LineSeries<HistoryChartValue, DateTime>(
-        name: '告警水位(m)',
-        dataSource: points,
-        // dashArray: <double>[10, 10],
-        color: HexColor('9903a9f4'),
-        width: 0.8,
-        xValueMapper: (HistoryChartValue point, _) => point.time,
-        yValueMapper: (HistoryChartValue point, _) => point.waterMax,
-        yAxisName: 'water'
+    // 水位高度
+    //waterMax > 0 ?? 
+    list.add(SplineAreaSeries<HistoryChartValue, DateTime>(
+      name: '水位(m)',
+      dataSource: points,
+      borderDrawMode: BorderDrawMode.excludeBottom,
+      gradient: LinearGradient(
+        colors: [HexColor('0003a9f4'),HexColor('9903a9f4')]
       ),
+      xValueMapper: (HistoryChartValue point, _) => point.time,
+      yValueMapper: (HistoryChartValue point, _) => point.water,
+      yAxisName: 'water',
+    ));
 
-      // 有功告警曲线 = 额定 或 额定和
-      LineSeries<HistoryChartValue, DateTime>(
-        name: '额定功率(kW)',
-        dataSource: points,
-        // dashArray: <double>[10, 10],
-        color: HexColor('ee2e3b'),
-        width: 0.8,
-        xValueMapper: (HistoryChartValue point, _) => point.time,
-        yValueMapper: (HistoryChartValue point, _) => point.powerMax,
-        yAxisName: 'power'
-      ),
+    // 有功曲线
+    list.add(SplineSeries<HistoryChartValue, DateTime>(
+      name: '功率(kW)',
+      emptyPointSettings: EmptyPointSettings(mode: EmptyPointMode.average),
+      dataSource: this.points,
+      splineType: SplineType.natural,
+      color: HexColor('ee2e3b'),
+      xValueMapper: (HistoryChartValue point, _) => point.time,
+      yValueMapper: (HistoryChartValue point, _) => point.power,
+      yAxisName: 'power',
+    ));
 
-      // 水位高度
-      SplineAreaSeries<HistoryChartValue, DateTime>(
-        name: '水位(m)',
-        dataSource: points,
-        borderDrawMode: BorderDrawMode.excludeBottom,
-        gradient: LinearGradient(
-          colors: [HexColor('0003a9f4'),HexColor('9903a9f4')]
-        ),
-        xValueMapper: (HistoryChartValue point, _) => point.time,
-        yValueMapper: (HistoryChartValue point, _) => point.water,
-        yAxisName: 'water',
-      ),
 
-      // 有功曲线
-      SplineSeries<HistoryChartValue, DateTime>(
-        name: '功率(kW)',
-        emptyPointSettings: EmptyPointSettings(mode: EmptyPointMode.average),
-        dataSource: this.points,
-        splineType: SplineType.natural,
-        color: HexColor('ee2e3b'),
-        xValueMapper: (HistoryChartValue point, _) => point.time,
-        yValueMapper: (HistoryChartValue point, _) => point.power,
-        yAxisName: 'power',
-      ),
-    ];
+    return list;
   }
 
   Widget divLine() {

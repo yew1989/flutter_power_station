@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hsa_app/config/app_config.dart';
+import 'package:hsa_app/config/app_theme.dart';
 import 'package:hsa_app/service/umeng_analytics.dart';
 import 'package:hsa_app/theme/theme_gradient_background.dart';
 
@@ -42,7 +43,7 @@ class _AboutPageState extends State<AboutPage> {
             backgroundColor: Colors.transparent,
             elevation: 0,
             centerTitle: true,
-            title: Text('关于智能电站',style: TextStyle(color: Colors.white,fontWeight: FontWeight.normal,fontSize: 18)),
+            title: Text('关于智能电站',style: TextStyle(color: Colors.white,fontWeight: FontWeight.normal,fontSize: AppTheme().navigationAppBarFontSize)),
           ),
           body: SafeArea(
             child: Container(
