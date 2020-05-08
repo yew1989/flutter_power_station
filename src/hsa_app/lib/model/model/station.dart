@@ -39,7 +39,7 @@ class StationInfo {
 
   // 是否是力得样板电站 - 通过后台配置
   bool fjLeadBrandCertified;
-  // 是否允许快速远程召测 - 快速召测 5 秒 , 不允许快速召测,召测频率 20秒
+  // 是否允许快速远程召测
   bool isAllowHighSpeedNetworkSwitching;
 
   StationInfo(
