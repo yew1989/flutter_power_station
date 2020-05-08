@@ -24,7 +24,7 @@ class _SearchBarState extends State<SearchBar> {
        margin: EdgeInsets.symmetric(vertical: 10,horizontal: 20),
        decoration: BoxDecoration(
          border: Border.all(color: Colors.white38),
-         borderRadius: BorderRadius.all(Radius.circular(35)),
+         borderRadius: BorderRadius.all(Radius.circular(10)),
        ),
        child: TextFormField(
          enabled: isEditEnable,
