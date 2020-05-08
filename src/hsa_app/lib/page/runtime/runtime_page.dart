@@ -35,8 +35,10 @@ class RuntimePage extends StatefulWidget {
   final String alias;
   final bool isOnline;
   final bool isBase;      // 是否是Base版本
+  final StationInfo stationInfo;
+  final bool isMaster;    // 是否是主机
 
-  RuntimePage({this.title, this.address, this.alias, this.isOnline, this.isBase});
+  RuntimePage({this.title, this.address, this.alias, this.isOnline, this.isBase,this.stationInfo,this.isMaster});
 
   @override
   _RuntimePageState createState() => _RuntimePageState();
@@ -245,6 +247,7 @@ class _RuntimePageState extends State<RuntimePage> with TickerProviderStateMixin
     runtimTasker = AgentRunTimeDataLoopTimerTasker(
       isBase: widget?.isBase == true ?  true: false,
       terminalAddress: addressId,
+      isAllowHighSpeedNetworkSwitching: widget?.stationInfo?.isAllowHighSpeedNetworkSwitching ?? false,
       timerInterval: AppConfig.getInstance().deviceQureyTimeInterval,
     );
     runtimTasker.start((data){
@@ -555,8 +558,8 @@ class _RuntimePageState extends State<RuntimePage> with TickerProviderStateMixin
                       SizedBox(height: 12),
                       terminalBriefHeader(),
                       RuntimeSqureMasterWidget(
-                        isMaster: deviceTerminal?.isMaster ?? false,
-                        aliasName: widget.alias ?? '',
+                        isMaster: widget?.isMaster ?? false,
+                        aliasName: widget?.alias ?? '',
                       ),
                       dashBoardWidget(),
                       terminalBriefFooter(),

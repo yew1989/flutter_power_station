@@ -22,30 +22,33 @@ typedef StationInfoDataCallBack = void Function(StationInfo station);
 // 持续获取指定终端实时运行数据
 class AgentRunTimeDataLoopTimerTasker {
   
-   AgentRunTimeDataLoopTimerTasker({this.isBase,this.terminalAddress,this.timerInterval = 5});
+   AgentRunTimeDataLoopTimerTasker({this.isBase,this.terminalAddress,this.timerInterval = 5,this.isAllowHighSpeedNetworkSwitching = false});
 
    // 周期间隔 单位 s 秒
    final int timerInterval;
    Timer timer;
    final String terminalAddress;
    final bool isBase;
-
+   // 是否允许快速远程召测
+   final bool isAllowHighSpeedNetworkSwitching;
 
   void start (NearestRunningDataCallBack onGetRuntimeData) {
 
-    runTimeDataOnce(null, onGetRuntimeData);
+    runTimeDataOnce(null, onGetRuntimeData,this.isAllowHighSpeedNetworkSwitching);
 
     timer = Timer.periodic(Duration(seconds: timerInterval), (t) {
-      
-      runTimeDataOnce(t, onGetRuntimeData);
-
+      runTimeDataOnce(t, onGetRuntimeData,this.isAllowHighSpeedNetworkSwitching);
     });
   }
 
   // 运行时数据
-  void runTimeDataOnce(Timer t, NearestRunningDataCallBack onGetRuntimeData) {
-    AgentQueryAPI.remoteMeasuringRunTimeData(terminalAddress, isBase);
-    
+  void runTimeDataOnce(Timer t, NearestRunningDataCallBack onGetRuntimeData,bool isAllowHighSpeedNetworkSwitching) {
+
+    // 仅允许高速告诉召测标志开启才能对终端进行召测
+    if(isAllowHighSpeedNetworkSwitching == true) {
+      AgentQueryAPI.remoteMeasuringRunTimeData(terminalAddress, isBase);
+    }
+    // 获取缓存数据
     AgentQueryAPI.qureryTerminalNearestRunningData(address: terminalAddress, isBase: isBase,onFail: (_){
       t?.cancel();
     },
@@ -65,7 +68,9 @@ class AgentRunTimeDataLoopTimerTasker {
 class AgentStationInfoDataLoopTimerTasker {
   
    final StationInfo station;
-   AgentStationInfoDataLoopTimerTasker(this.station, {this.timerInterval = 5});
+      // 是否允许快速远程召测
+   final bool isAllowHighSpeedNetworkSwitching;
+   AgentStationInfoDataLoopTimerTasker(this.station, {this.timerInterval = 5,this.isAllowHighSpeedNetworkSwitching = false});
 
    // 周期间隔 单位 s 秒
    final int timerInterval;
@@ -93,19 +98,17 @@ class AgentStationInfoDataLoopTimerTasker {
     if(isBaseList.length == 0)return;
     if(terminalAddressList.length != isBaseList.length) return;
 
-    stationInfOnce(_money, _totalActivePower, datas, unResponeseAck, onGetStationInfo);
+    stationInfOnce(_money, _totalActivePower, datas, unResponeseAck,this.isAllowHighSpeedNetworkSwitching,onGetStationInfo);
     
     // 定时读取
     timer = Timer.periodic(Duration(seconds: timerInterval), (t) {
-
-    stationInfOnce(_money, _totalActivePower, datas, unResponeseAck, onGetStationInfo);
-
+      stationInfOnce(_money, _totalActivePower, datas, unResponeseAck,this.isAllowHighSpeedNetworkSwitching, onGetStationInfo);
     }
     
     );
   }
 
-   void stationInfOnce(double _money, double _totalActivePower, List<ActivePowerRunTimeData> datas, int unResponeseAck, StationInfoDataCallBack onGetStationInfo) {
+   void stationInfOnce(double _money, double _totalActivePower, List<ActivePowerRunTimeData> datas, int unResponeseAck,bool isAllowHighSpeedNetworkSwitching,StationInfoDataCallBack onGetStationInfo) {
 
     var stationResult = station;
 
@@ -124,13 +127,17 @@ class AgentStationInfoDataLoopTimerTasker {
      datas = [];
      unResponeseAck = terminalAddressList.length;
      
-     // 并发召测当前有功和电量、预估值
-     for (int i = 0 ; i < terminalAddressList.length ; i++) {
-       final terminalAddress = terminalAddressList[i];
-       final isBase = isBaseList[i];
-       AgentQueryAPI.remoteMeasuringElectricParam(terminalAddress, isBase);
+     // 仅允许高速告诉召测标志开启才能对终端进行召测
+     if(isAllowHighSpeedNetworkSwitching == true) {
+        // 并发召测当前有功和电量、预估值
+        for (int i = 0 ; i < terminalAddressList.length ; i++) {
+          final terminalAddress = terminalAddressList[i];
+          final isBase = isBaseList[i];
+          AgentQueryAPI.remoteMeasuringElectricParam(terminalAddress, isBase);
+        }
      }
      
+     // 获取缓存数据
      for (int j = 0; j < terminalAddressList.length; j++) {
      
          final terminalAddress = terminalAddressList[j];
