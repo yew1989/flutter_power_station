@@ -23,6 +23,7 @@ import 'package:hsa_app/page/dialog/password_dialog.dart';
 import 'package:hsa_app/page/runtime/runtime_event_tile.dart';
 import 'package:hsa_app/page/runtime/runtime_operation_board.dart';
 import 'package:hsa_app/page/runtime/runtime_squre_master_widget.dart';
+import 'package:hsa_app/service/life_cycle/lifecycle_state.dart';
 import 'package:hsa_app/util/date_tool.dart';
 import 'package:ovprogresshud/progresshud.dart';
 import 'package:progress_dialog/progress_dialog.dart';
@@ -44,7 +45,7 @@ class RuntimePage extends StatefulWidget {
   _RuntimePageState createState() => _RuntimePageState();
 }
 
-class _RuntimePageState extends State<RuntimePage> with TickerProviderStateMixin{
+class _RuntimePageState extends LifecycleState<RuntimePage> with TickerProviderStateMixin{
 
   RefreshController refreshController = RefreshController(initialRefresh: false);
 
@@ -179,6 +180,21 @@ class _RuntimePageState extends State<RuntimePage> with TickerProviderStateMixin
     super.dispose();
   }
 
+   @override
+  void onResume() {
+    super.onResume();
+    if(this.deviceTerminal.nearestRunningData != null) {
+      getRealtimeData();
+    }
+  }
+
+  @override
+  void onPause() {
+    super.onPause();
+    runtimTasker?.stop();
+    Progresshud.dismiss();
+  }
+
   // 请求实时数据
   void requestRunTimeData() {
     Progresshud.showWithStatus('读取数据中...');
@@ -244,6 +260,7 @@ class _RuntimePageState extends State<RuntimePage> with TickerProviderStateMixin
   //获取实时数据
   void getRealtimeData(){
     final addressId = widget.address ?? '';
+    if(addressId == '') return;
     runtimTasker = AgentRunTimeDataLoopTimerTasker(
       isBase: widget?.isBase == true ?  true: false,
       terminalAddress: addressId,

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hsa_app/app/boot.dart';
 import 'package:hsa_app/page/welcome/welcome_page.dart';
+import 'package:hsa_app/service/life_cycle/lifecycle_state.dart';
 
 class MyApp extends StatefulWidget {
   @override
@@ -20,6 +21,7 @@ class _MyAppState extends State<MyApp> {
     return MaterialApp(
       title: '智能电站',
       debugShowCheckedModeBanner: false,
+      navigatorObservers: [routeObserver],
       home: WelcomePage(),
     );
   }

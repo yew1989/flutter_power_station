@@ -11,6 +11,7 @@ import 'package:hsa_app/page/station/caiyun_weather.dart';
 import 'package:hsa_app/page/station/device/station_device_list.dart';
 import 'package:hsa_app/page/station/station_big_pool.dart';
 import 'package:hsa_app/page/station/station_list_header.dart';
+import 'package:hsa_app/service/life_cycle/lifecycle_state.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:ovprogresshud/progresshud.dart';
 
@@ -24,7 +25,7 @@ class StationPage extends StatefulWidget {
   _StationPageState createState() => _StationPageState();
 }
 
-class _StationPageState extends State<StationPage> {
+class _StationPageState extends LifecycleState<StationPage> {
   
   StationInfo stationInfo = StationInfo();
   
@@ -35,6 +36,21 @@ class _StationPageState extends State<StationPage> {
   List<String> terminalAddressList = List<String>();
   List<bool> isBaseList = List<bool>();
   List<num> profitList = [0.0,0.0];
+
+ @override
+  void onResume() {
+    super.onResume();
+    if(stationInfo.waterTurbines != null) {
+      getRealtimeData();
+    }
+  }
+
+  @override
+  void onPause() {
+    super.onPause();
+    stationTasker?.stop();
+    Progresshud.dismiss();
+  }
 
   @override
   void initState() {
@@ -135,6 +151,7 @@ class _StationPageState extends State<StationPage> {
   
   //实时数据获取
   void getRealtimeData() { 
+    if(stationInfo.waterTurbines == null) return;
     stationTasker = AgentStationInfoDataLoopTimerTasker(
       stationInfo,
       isAllowHighSpeedNetworkSwitching:stationInfo?.isAllowHighSpeedNetworkSwitching ?? false,
