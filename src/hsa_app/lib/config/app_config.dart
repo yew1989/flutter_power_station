@@ -25,8 +25,8 @@ class AppConfig {
     AppConfig.getInstance().localVersion();
     AppConfig.getInstance().platform = defaultTargetPlatform;
     AppConfig.getInstance().deviceQureyTimeInterval = 5;
-    AppConfig.getInstance().stationPageAnimationDuration = 3;
-    AppConfig.getInstance().runtimePageAnimationDuration = 4;
+    AppConfig.getInstance().stationPageAnimationDuration = 5;
+    AppConfig.getInstance().runtimePageAnimationDuration = 5;
   }
 
   void localVersion() async {
