@@ -43,9 +43,9 @@ typedef StatisticalPowerListCallback = void Function(List<StatisticalPower> stat
 class API {
 
   // IP 地址或域名
-  // static final ip = '192.168.16.120'; // 开发环境 IP
+  static final ip = '192.168.16.120'; // 开发环境 IP
   // static final ip = '27.148.136.253'; // 生产和测试环境 IP
-  static final ip = 'devops.hsa.fjlead.com';  // 生产和测试环境 IP (线上用这个)
+  // static final ip = 'devops.hsa.fjlead.com';  // 生产和测试环境 IP (线上用这个)
 
   // 通讯代理地址
   static final agentHost    = 'http://' + ip + ':8280';
@@ -111,7 +111,7 @@ class API {
   
   // 获取终端告警列表
   static void getTerminalAlertList({
-        String seachAnchorDateTime,
+        String searchAnchorDateTime,
         String searchDirection,
         String startDateTime,
         String endDateTime,
@@ -127,9 +127,9 @@ class API {
 
     var param = Map<String, dynamic>();
 
-    // SeachAnchorDateTime	string	否	时间锚点
-    if(seachAnchorDateTime != null) {
-      param['seachAnchorDateTime'] = seachAnchorDateTime;
+    // searchAnchorDateTime	string	否	时间锚点
+    if(searchAnchorDateTime != null) {
+      param['searchAnchorDateTime'] = searchAnchorDateTime;
     }
     // SearchDirection	string	否	Backward(上一页)或Forward(下一页) 依赖于时间锚点，默认Forward
     if(searchDirection != null) {
@@ -190,7 +190,7 @@ class API {
 
   static void getTurbineWaterAndPowerAndState({
     @required String stationNo,
-    String seachAnchorDateTime,
+    String searchAnchorDateTime,
     String searchDirection,
     String startDateTime,
     String endDateTime,
@@ -201,9 +201,9 @@ class API {
 
     var param = Map<String, dynamic>();
 
-    // SeachAnchorDateTime	string	否	时间锚点
-    if(seachAnchorDateTime != null) {
-      param['seachAnchorDateTime'] = seachAnchorDateTime;
+    // searchAnchorDateTime	string	否	时间锚点
+    if(searchAnchorDateTime != null) {
+      param['searchAnchorDateTime'] = searchAnchorDateTime;
     }
     // SearchDirection	string	否	Backward(上一页)或Forward(下一页) 依赖于时间锚点，默认Forward
     if(searchDirection != null) {
