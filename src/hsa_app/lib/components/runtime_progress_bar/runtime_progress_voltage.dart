@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:hsa_app/config/app_theme.dart';
 import 'package:hsa_app/event/event_bird.dart';
 import 'package:hsa_app/model/model/runtime_adapter.dart';
-import 'package:hsa_app/service/life_cycle/lifecycle_state.dart';
 import 'package:native_color/native_color.dart';
 
 class  RuntimeProgressVoltage extends StatefulWidget {

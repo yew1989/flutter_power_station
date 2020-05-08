@@ -50,7 +50,7 @@ class _RuntimeTabbarPageState extends State<RuntimeTabbarPage> {
 
   @override
   Widget build(BuildContext context) {
-    final isOnline = currentWaterTurbine?.deviceTerminal?.isOnLine;
+
     return ThemeGradientBackground(
       child: Scaffold(
         backgroundColor: Colors.transparent,
@@ -74,7 +74,9 @@ class _RuntimeTabbarPageState extends State<RuntimeTabbarPage> {
           children: <Widget>[
             
             PageView.builder(
-              physics: AlwaysScrollableScrollPhysics(),
+              // 仍然有 bug ,暂时屏蔽左右滑动入口
+              // physics: AlwaysScrollableScrollPhysics(),
+              physics:NeverScrollableScrollPhysics(),
               controller: pageController,
               itemCount: widget?.waterTurbines?.length ?? 0,
               itemBuilder: (BuildContext context, int index) {
@@ -95,8 +97,8 @@ class _RuntimeTabbarPageState extends State<RuntimeTabbarPage> {
                 });
               },
             ),
-
-            Positioned(
+            // 仍然有 bug ,暂时屏蔽左右滑动入口
+            true ? Container (): Positioned(
               top: -6.0,left: 0.0,right: 0.0,
               child: Container(
                 child: Center(
