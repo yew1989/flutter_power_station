@@ -32,14 +32,10 @@ import 'package:pull_to_refresh/pull_to_refresh.dart';
 class RuntimePage extends StatefulWidget {
 
   final bool isAllowHighSpeedNetworkSwitching;
-  final String title;
-  final String address;
   final String alias;
-  final bool isOnline;
-  final bool isBase;      // 是否是Base版本
-  final bool isMaster;    // 是否是主机
+  final WaterTurbine waterTurbine;
 
-  RuntimePage({this.title, this.address, this.alias, this.isOnline, this.isBase,this.isAllowHighSpeedNetworkSwitching,this.isMaster});
+  RuntimePage({this.waterTurbine,this.alias,this.isAllowHighSpeedNetworkSwitching});
 
   @override
   _RuntimePageState createState() => _RuntimePageState();
@@ -67,6 +63,9 @@ class _RuntimePageState extends LifecycleState<RuntimePage> with TickerProviderS
 
   final pageIndexNotifier = ValueNotifier<int>(0);
 
+  // 防止内存泄漏 当等于0时才触发动画
+  var canPlayAnimationOnZero = 1;
+
   //0旧数据临时储存 1新入数据
   List<double> powerNowList = [0.0,0.0];
   List<double> freqList = [0.0,0.0];
@@ -79,12 +78,10 @@ class _RuntimePageState extends LifecycleState<RuntimePage> with TickerProviderS
   List<double> currentList = [0.0,0.0];
   List<double> factorList = [0.0,0.0];
 
-  AnimationController footerDataController;
+  AnimationController controller;
   Animation<double> animationTemp;
   Animation<double> animationSpeed;
   Animation<double> animationWaterStage;
-  Animation<double> animationVoltage;
-
 
   // 初始化弹出框
   void initProgressDialog() async {
@@ -174,7 +171,7 @@ class _RuntimePageState extends LifecycleState<RuntimePage> with TickerProviderS
 
   @override
   void dispose() {
-    footerDataController?.dispose();
+    controller?.dispose();
     runtimTasker?.dispose();
     Progresshud.dismiss();
     super.dispose();
@@ -195,26 +192,33 @@ class _RuntimePageState extends LifecycleState<RuntimePage> with TickerProviderS
   }
 
   // 请求实时数据
-  void requestRunTimeData() {
+  void requestRunTimeData() async {
 
     runtimTasker?.dispose();
+    
+    await Future.delayed(Duration(milliseconds: 500));
 
     Progresshud.showWithStatus('读取数据中...');
 
-    final addressId = widget.address ?? '';
+    final terminalAddress = widget?.waterTurbine?.deviceTerminal?.terminalAddress ?? '';
+
     List<String> param ;
-    if (addressId.length == 0) {
+    if (terminalAddress.length == 0) {
       Progresshud.showInfoWithStatus('获取实时机组数据失败');
       return;
     }
     APIStation.getDeviceTerminalInfo(
-    terminalAddress: addressId,
+    terminalAddress: terminalAddress,
     isIncludeWaterTurbine : true,
     isIncludeHydropowerStation:true,
     isIncludeCustomer:true,
     onSucc: (dt){
+      if(mounted) {
+        setState(() {
+           this.deviceTerminal = dt;
+        });
+      }
       Progresshud.dismiss();
-      this.deviceTerminal = dt;
       switch(deviceTerminal.deviceVersion){
         case 'S1-Base': 
           param =  ["AFN0C.F7.p0", "AFN0C.F9.p0", "AFN0C.F10.p0", "AFN0C.F11.p0", 
@@ -226,11 +230,12 @@ class _RuntimePageState extends LifecycleState<RuntimePage> with TickerProviderS
                   "AFN0C.F13.p0", "AFN0C.F24.p0", "AFN0C.F20.p0", "AFN0C.F21.p0", "AFN0C.F22.p0"] ;
         break;
       }
-      APIStation.getMultipleAFNFnpn(terminalAddress:addressId,paramList: param,onSucc: (nearestRunningData){
+      APIStation.getMultipleAFNFnpn(terminalAddress:terminalAddress,paramList: param,onSucc: (nearestRunningData){
 
         this.deviceTerminal.nearestRunningData = nearestRunningData;
         getRealtimeData();
-        getTerminalAlertList(addressId);
+        getTerminalAlertList(terminalAddress);
+
       },onFail: (msg){
         refreshController.refreshFailed();
       });
@@ -264,12 +269,14 @@ class _RuntimePageState extends LifecycleState<RuntimePage> with TickerProviderS
   //获取实时数据
   void getRealtimeData() async{
     runtimTasker?.dispose();
-    await Future.delayed(Duration(seconds:1));
-    var addressId = widget.address ?? '';
-    if(addressId == '') return;
+    await Future.delayed(Duration(milliseconds: 500)); 
+    final terminalAddress = widget?.waterTurbine?.deviceTerminal?.terminalAddress ?? '';
+    final isBase = widget?.waterTurbine?.deviceTerminal?.deviceVersion?.compareTo('S1-Pro') == 0  ? false : true;
+
+    if(terminalAddress == '') return;
     runtimTasker = AgentRunTimeDataLoopTimerTasker();
-    runtimTasker.listen(addressId,
-    widget?.isBase == true ?  true : false,
+    runtimTasker.listen(terminalAddress,
+    isBase,
     widget?.isAllowHighSpeedNetworkSwitching ?? false
     ,AppConfig.getInstance().deviceQureyTimeInterval,
     (data){
@@ -288,7 +295,8 @@ class _RuntimePageState extends LifecycleState<RuntimePage> with TickerProviderS
         addToList(currentList,this.deviceTerminal?.nearestRunningData?.current ?? 0.0);
         addToList(factorList,this.deviceTerminal?.nearestRunningData?.powerFactor ?? 0.0);
         eventBird?.emit('NEAREST_DATA',this.deviceTerminal);
-        terminalBriefFooterData();
+        // debugPrint('NEAREST_DATA POST');
+        initController();
         });
       }
     });
@@ -316,11 +324,11 @@ class _RuntimePageState extends LifecycleState<RuntimePage> with TickerProviderS
     barMaxWidth = deviceWidth / denominator;
 
     // 电压
-    var voltageMax     = deviceTerminal?.waterTurbine?.ratedVoltageV?.toDouble() ?? 0.0;
+    var voltageMax     = this.deviceTerminal?.waterTurbine?.ratedVoltageV?.toDouble() ?? 0.0;
     // 电流
-    var currentMax     = deviceTerminal?.waterTurbine?.ratedCurrentA?.toDouble() ?? 0.0;
+    var currentMax     = this.deviceTerminal?.waterTurbine?.ratedCurrentA?.toDouble() ?? 0.0;
     // 励磁电流
-    var excitationMax  = deviceTerminal?.waterTurbine?.ratedExcitationCurrentA?.toDouble() ?? 0.0;
+    var excitationMax  = this.deviceTerminal?.waterTurbine?.ratedExcitationCurrentA?.toDouble() ?? 0.0;
     // 功率因数
     var powerFactorMax = 1.0;
 
@@ -462,15 +470,18 @@ class _RuntimePageState extends LifecycleState<RuntimePage> with TickerProviderS
   }
 
   //温度 转速 水位数据处理
-  void terminalBriefFooterData(){
-    footerDataController?.dispose();
-    footerDataController = AnimationController(duration: Duration(seconds:AppConfig.getInstance().runtimePageAnimationDuration), vsync: this);
-    CurvedAnimation curvedAnimation = CurvedAnimation(parent: footerDataController, curve: Curves.fastOutSlowIn);
-    animationTemp = Tween<double>(begin: temperatureList[0], end: temperatureList[1]).animate(curvedAnimation);
-    animationSpeed = Tween<double>(begin: speedList[0], end: speedList[1]).animate(curvedAnimation);
-    animationWaterStage = Tween<double>(begin: waterStageList[0], end: waterStageList[1]).animate(curvedAnimation);
-    animationVoltage = Tween<double>(begin: voltageList[0], end: voltageList[1]).animate(curvedAnimation);
-    footerDataController.forward();
+  void initController(){
+    if(canPlayAnimationOnZero <= 0  && mounted ) {
+      controller?.dispose();
+      controller = AnimationController(duration: Duration(seconds:AppConfig.getInstance().runtimePageAnimationDuration), vsync: this);
+      CurvedAnimation curvedAnimation = CurvedAnimation(parent: controller, curve: Curves.fastOutSlowIn);
+      animationTemp = Tween<double>(begin: temperatureList[0], end: temperatureList[1]).animate(curvedAnimation);
+      animationSpeed = Tween<double>(begin: speedList[0], end: speedList[1]).animate(curvedAnimation);
+      animationWaterStage = Tween<double>(begin: waterStageList[0], end: waterStageList[1]).animate(curvedAnimation);
+      controller.forward();
+      canPlayAnimationOnZero = 0 ;
+    }
+    canPlayAnimationOnZero --;
   }
 
   //  设备概要尾
@@ -515,7 +526,7 @@ class _RuntimePageState extends LifecycleState<RuntimePage> with TickerProviderS
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
             AnimatedBuilder(
-              animation: footerDataController,
+              animation: controller,
               builder: (BuildContext context, Widget child) => RichText(
                 text: TextSpan(
                   children: 
@@ -565,6 +576,10 @@ class _RuntimePageState extends LifecycleState<RuntimePage> with TickerProviderS
     final safeHeight = safeContentHeight - kToolbarHeight - kBottomNavigationBarHeight;
     final isIphone5S = deviceWidth == 320.0 ? true : false;
     final eventListHeight = safeHeight - (isIphone5S ? 350 : 400) - 140;
+    
+    final terminalAddress = widget?.waterTurbine?.deviceTerminal?.terminalAddress ?? ''; 
+    final isMaster = widget?.waterTurbine?.deviceTerminal?.isMaster ?? ''; 
+
     return Scaffold(
       backgroundColor: Colors.transparent,
       body: Stack(
@@ -579,10 +594,7 @@ class _RuntimePageState extends LifecycleState<RuntimePage> with TickerProviderS
                     children: <Widget>[
                       SizedBox(height: 12),
                       terminalBriefHeader(),
-                      RuntimeSqureMasterWidget(
-                        isMaster: widget?.isMaster ?? false,
-                        aliasName: widget?.alias ?? '',
-                      ),
+                      RuntimeSqureMasterWidget(isMaster: isMaster ?? false,aliasName: widget?.alias ?? ''),
                       dashBoardWidget(),
                       terminalBriefFooter(),
                       SizedBox(height: 8),
@@ -593,18 +605,19 @@ class _RuntimePageState extends LifecycleState<RuntimePage> with TickerProviderS
               ),
             Positioned(left: 0,right: 0,top: isIphone5S ? 350 : 400,child:isIphone5S ? Container() :Container(height:eventListHeight,child: Container(child: eventList()))),
             Positioned(left: 0,right: 0,bottom: 139,child: RunTimeLightDarkShawdow()),
-            Positioned(left: 0,right: 0,bottom: 0,child: RunTimeOperationBoard(deviceTerminal,widget.address,(taskName,param) => requestRemoteControlCommand(context, taskName, param))),
+            Positioned(left: 0,right: 0,bottom: 0,child: RunTimeOperationBoard(deviceTerminal,terminalAddress,(taskName,param) => requestRemoteControlCommand(context, taskName, param))),
           ],
       ),
     );
   }
 
   // 远程控制
-  void requestRemoteControlCommand(
-      BuildContext context, TaskName taskName, String param) async {
+  void requestRemoteControlCommand(BuildContext context, TaskName taskName, String param) async {
+
+    final terminalAddress = widget?.waterTurbine?.deviceTerminal?.terminalAddress ?? ''; 
+    final isOnline = widget?.waterTurbine?.deviceTerminal?.isOnLine ?? false; 
+
     progressDialog.hide();
-    // 终端在线状态检测
-    final isOnline = widget.isOnline ?? false;
     if (isOnline == false) {
       Progresshud.showInfoWithStatus('终端不在线,远程操作被取消');
       return;
@@ -635,7 +648,7 @@ class _RuntimePageState extends LifecycleState<RuntimePage> with TickerProviderS
 
           updateProgressDialog('正在验证操作密码');
 
-          AgentControlAPI.startTask(context,param,taskName,widget.address,pswd,
+          AgentControlAPI.startTask(context,param,taskName,terminalAddress,pswd,
             (String succString) async {
               await Future.delayed(Duration(milliseconds: 3000));
               finishProgressDialog(succString, true);

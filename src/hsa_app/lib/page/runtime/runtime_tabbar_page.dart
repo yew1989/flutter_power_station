@@ -79,18 +79,13 @@ class _RuntimeTabbarPageState extends State<RuntimeTabbarPage> {
               itemCount: widget?.waterTurbines?.length ?? 0,
               itemBuilder: (BuildContext context, int index) {
 
-                currentWaterTurbine = widget?.waterTurbines[currentIndex];
-                
                 return RuntimePage(
-                title: currentWaterTurbine.deviceTerminal.deviceName,
-                address:currentWaterTurbine.deviceTerminal.terminalAddress,
                 alias:(index+1).toString() + '#',
-                isOnline:currentWaterTurbine.deviceTerminal.isOnLine,
-                isBase: currentWaterTurbine.deviceTerminal.deviceVersion.compareTo('S1-Pro') == 0  ? false : true,
-                isMaster:currentWaterTurbine.deviceTerminal.isMaster,
+                waterTurbine: currentWaterTurbine,
                 isAllowHighSpeedNetworkSwitching: this.stationInfo?.isAllowHighSpeedNetworkSwitching ?? false,
                 );
               },
+              
               onPageChanged: (int index) {
                 currentIndex = index;
                 currentWaterTurbine = widget?.waterTurbines[currentIndex];

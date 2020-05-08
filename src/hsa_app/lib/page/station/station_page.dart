@@ -153,7 +153,7 @@ class _StationPageState extends LifecycleState<StationPage> {
   //实时数据获取
   void getRealtimeData() async{
     stationTasker?.dispose();
-    await Future.delayed(Duration(seconds: 1)); 
+    await Future.delayed(Duration(milliseconds: 500)); 
     if(this.stationInfo.waterTurbines == null) return;
     stationTasker = AgentStationInfoDataLoopTimerTasker();
     stationTasker.listen(
