@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hsa_app/config/app_theme.dart';
 import 'package:hsa_app/page/home/home_station_list.dart';
 import 'package:hsa_app/page/search/search_bar.dart';
 import 'package:hsa_app/service/umeng_analytics.dart';
@@ -34,7 +35,7 @@ class _SearchPageState extends State<SearchPage> {
           centerTitle: true,
           elevation: 0,
           backgroundColor: Colors.transparent,
-          title: Text('搜索电站',style: TextStyle(color: Colors.white,fontWeight: FontWeight.normal,fontSize: 20)),
+          title: Text('搜索电站',style: TextStyle(color: Colors.white,fontWeight: FontWeight.normal,fontSize: AppTheme().navigationAppBarFontSize)),
         ),
         body: Column(
           mainAxisAlignment: MainAxisAlignment.center,

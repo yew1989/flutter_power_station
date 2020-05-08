@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hsa_app/api/apis/api_login.dart';
+import 'package:hsa_app/config/app_theme.dart';
 import 'package:hsa_app/service/umeng_analytics.dart';
 import 'package:hsa_app/theme/theme_gradient_background.dart';
 import 'package:hsa_app/components/public_tool.dart';
@@ -80,7 +81,7 @@ class _ModifyPswdPageState extends State<ModifyPswdPage> {
           centerTitle: true,
           title: Text(
             '修改密码',
-            style: TextStyle(fontSize: 17),
+            style: TextStyle(fontSize: AppTheme().navigationAppBarFontSize),
           ),
           backgroundColor: Colors.transparent,
           elevation: 0,
