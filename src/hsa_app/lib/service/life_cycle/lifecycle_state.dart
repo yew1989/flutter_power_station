@@ -14,8 +14,6 @@ abstract class LifecycleState<T extends StatefulWidget> extends State<T>
   void initState() {
     super.initState();
     onCreate();
-    onResume();
-    onLoadData();
     WidgetsBinding.instance.addObserver(this);
   }
 
@@ -30,7 +28,6 @@ abstract class LifecycleState<T extends StatefulWidget> extends State<T>
     switch (state) {
       case AppLifecycleState.resumed:
         if (_isTop) {
-          onForeground();
           onResume();
         }
         break;
@@ -38,7 +35,6 @@ abstract class LifecycleState<T extends StatefulWidget> extends State<T>
         break;
       case AppLifecycleState.paused:
         if (_isTop) {
-          onBackground();
           onPause();
         }
         break;
@@ -93,20 +89,10 @@ abstract class LifecycleState<T extends StatefulWidget> extends State<T>
   void onResume() {
   }
 
-  void onLoadData() {
-  }
-
   void onPause() {
   }
-
+  
   void onDestroy() {
-  }
-
-  void onBackground() {
-  }
-
-  void onForeground() {
-
   }
 
 }
