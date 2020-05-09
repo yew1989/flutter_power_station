@@ -26,19 +26,18 @@ class _RuntimeProgressExcitationState extends State<RuntimeProgressExcitation> w
   double ratio;
   double oldData ;
   double newData ;
-  int seconds ;
   
   // 防止内存泄漏 当等于0时才触发动画
   var canPlayAnimationOnZero = 1;
 
   void initAnimateController(){
-    this.seconds = widget?.seconds ?? 5;
+
     this.oldData = widget?.doubleList[0] ?? 0.0;
     this.newData = widget?.doubleList[1] ?? 0.0;
 
     if(canPlayAnimationOnZero <= 0  && mounted ) {
       controller?.dispose();
-      controller = AnimationController(duration: Duration(seconds:seconds), vsync: this);
+      controller = AnimationController(duration: Duration(seconds:widget.seconds), vsync: this);
       CurvedAnimation curvedAnimation = CurvedAnimation(parent: controller, curve: Curves.fastOutSlowIn);
       animation = Tween<double>(begin: oldData, end: newData).animate(curvedAnimation);
       controller.forward();
@@ -98,7 +97,7 @@ class _RuntimeProgressExcitationState extends State<RuntimeProgressExcitation> w
         width: maxWidth ,
         margin: EdgeInsets.only(right: 0 ,left:  0),
         curve: Curves.easeOutSine,
-        duration: Duration(seconds:seconds ),
+        duration: Duration(seconds:widget.seconds ),
         decoration: BoxDecoration(
           gradient: LinearGradient(
             colors: [
@@ -114,7 +113,7 @@ class _RuntimeProgressExcitationState extends State<RuntimeProgressExcitation> w
       return AnimatedContainer(
         width: maxWidth - right,
         curve: Curves.easeOutSine,
-        duration: Duration(milliseconds: seconds*1000),
+        duration: Duration(seconds:widget.seconds),
         decoration: BoxDecoration(
           gradient: LinearGradient(
             colors: [

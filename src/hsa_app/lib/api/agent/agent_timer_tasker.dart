@@ -1,5 +1,6 @@
 // 获取实时参数定时任务
 import 'dart:async';
+import 'package:flutter/material.dart';
 import 'package:hsa_app/api/agent/agent.dart';
 import 'package:hsa_app/model/model/all_model.dart';
 
@@ -22,42 +23,46 @@ typedef StationInfoDataCallBack = void Function(StationInfo station);
 // 持续获取指定终端实时运行数据
 class AgentRunTimeDataLoopTimerTasker {
   
-   AgentRunTimeDataLoopTimerTasker({this.isBase,this.terminalAddress,this.timerInterval = 5,this.isAllowHighSpeedNetworkSwitching = false});
-
-   // 周期间隔 单位 s 秒
-   final int timerInterval;
+   int timerInterval;// 周期间隔 单位 s 秒
+   String terminalAddress;
+   bool isBase;
+   bool isAllowHighSpeedNetworkSwitching;// 是否允许快速远程召测
    Timer timer;
-   final String terminalAddress;
-   final bool isBase;
-   // 是否允许快速远程召测
-   final bool isAllowHighSpeedNetworkSwitching;
 
-  void start (NearestRunningDataCallBack onGetRuntimeData) {
+   void listen(String terminalAddress,bool isBase,bool isAllowHighSpeedNetworkSwitching,int timerInterval,NearestRunningDataCallBack onData) {
 
-    runTimeDataOnce(null, onGetRuntimeData,this.isAllowHighSpeedNetworkSwitching);
+     this.terminalAddress = terminalAddress;
+     this.isBase = isBase;
+     this.isAllowHighSpeedNetworkSwitching = isAllowHighSpeedNetworkSwitching;
+     this.timerInterval = timerInterval;
 
-    timer = Timer.periodic(Duration(seconds: timerInterval), (t) {
-      runTimeDataOnce(t, onGetRuntimeData,this.isAllowHighSpeedNetworkSwitching);
+    runTimeDataOnce(onData,null);
+
+    timer = Timer.periodic(Duration(seconds: this.timerInterval), (t) {
+      runTimeDataOnce(onData,(){
+        t?.cancel();
+      });
     });
   }
 
   // 运行时数据
-  void runTimeDataOnce(Timer t, NearestRunningDataCallBack onGetRuntimeData,bool isAllowHighSpeedNetworkSwitching) {
+  void runTimeDataOnce(NearestRunningDataCallBack onGetRuntimeData,void Function() onFail) {
 
     // 仅允许高速告诉召测标志开启才能对终端进行召测
-    if(isAllowHighSpeedNetworkSwitching == true) {
-      AgentQueryAPI.remoteMeasuringRunTimeData(terminalAddress, isBase);
+    if(this.isAllowHighSpeedNetworkSwitching == true) {
+      AgentQueryAPI.remoteMeasuringRunTimeData(this.terminalAddress, this.isBase);
     }
+
     // 获取缓存数据
-    AgentQueryAPI.qureryTerminalNearestRunningData(address: terminalAddress, isBase: isBase,onFail: (_){
-      t?.cancel();
+    AgentQueryAPI.qureryTerminalNearestRunningData(address: this.terminalAddress, isBase: this.isBase,onFail: (_){
+      if(onFail != null)onFail();
     },
     onSucc: (data,msg){
       if(onGetRuntimeData != null) onGetRuntimeData(data);
     });
   }
   
-  void stop () {
+  void dispose () {
     timer?.cancel();
   }
 
@@ -66,31 +71,30 @@ class AgentRunTimeDataLoopTimerTasker {
 
  // 持续获取某个电站下,多个终端运行数据 获取当前有功和电量、预估值, 仅支持在线的终端
 class AgentStationInfoDataLoopTimerTasker {
-  
-   final StationInfo station;
-      // 是否允许快速远程召测
-   final bool isAllowHighSpeedNetworkSwitching;
-   AgentStationInfoDataLoopTimerTasker(this.station, {this.timerInterval = 5,this.isAllowHighSpeedNetworkSwitching = false});
-
-   // 周期间隔 单位 s 秒
-   final int timerInterval;
 
    Timer timer;
- 
-   void start (StationInfoDataCallBack onGetStationInfo) {
+   StationInfo station;
+   bool isAllowHighSpeedNetworkSwitching;
+   int timerInterval;// 周期间隔 单位 s 秒
 
-   // 总收益
-   double _money = 0.0;
-   // 当前有功
-   List<ActivePowerRunTimeData> datas = [];
-   // 总有功
-   double _totalActivePower = 0.0;
+   void listen (StationInfo station,bool isAllowHighSpeedNetworkSwitching,int timerInterval,StationInfoDataCallBack onData) {
 
-   // 剩余未返回次数
-   int unResponeseAck = 0;
+    this.station =station;
+    this.timerInterval = timerInterval;
+    this.isAllowHighSpeedNetworkSwitching = isAllowHighSpeedNetworkSwitching;
 
-    final terminalAddressList = station.waterTurbines.map((w)=>w.deviceTerminal.terminalAddress).toList();
-    final isBaseList = station.waterTurbines.map((w)=>w.deviceTerminal.deviceVersion.compareTo('S1-Pro') == 0  ? false : true).toList();
+    // 总收益
+    double _money = 0.0;
+    // 当前有功
+    List<ActivePowerRunTimeData> datas = [];
+    // 总有功
+    double _totalActivePower = 0.0;
+
+    // 剩余未返回次数
+    int unResponeseAck = 0;
+
+    final terminalAddressList = this.station.waterTurbines.map((w)=>w.deviceTerminal.terminalAddress).toList();
+    final isBaseList = this.station.waterTurbines.map((w)=>w.deviceTerminal.deviceVersion.compareTo('S1-Pro') == 0  ? false : true).toList();
 
     if(terminalAddressList == null)return;
     if(isBaseList == null)return;
@@ -98,11 +102,11 @@ class AgentStationInfoDataLoopTimerTasker {
     if(isBaseList.length == 0)return;
     if(terminalAddressList.length != isBaseList.length) return;
 
-    stationInfOnce(_money, _totalActivePower, datas, unResponeseAck,this.isAllowHighSpeedNetworkSwitching,onGetStationInfo);
+    stationInfOnce(_money, _totalActivePower, datas, unResponeseAck,this.isAllowHighSpeedNetworkSwitching,onData);
     
     // 定时读取
-    timer = Timer.periodic(Duration(seconds: timerInterval), (t) {
-      stationInfOnce(_money, _totalActivePower, datas, unResponeseAck,this.isAllowHighSpeedNetworkSwitching, onGetStationInfo);
+    timer = Timer.periodic(Duration(seconds: this.timerInterval), (t) {
+      stationInfOnce(_money, _totalActivePower, datas, unResponeseAck,this.isAllowHighSpeedNetworkSwitching, onData);
     }
     
     );
@@ -219,7 +223,7 @@ class AgentStationInfoDataLoopTimerTasker {
     return result;
   }
   
-  void stop () {
+  void dispose () {
     timer?.cancel();
   }
  

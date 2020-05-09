@@ -50,6 +50,7 @@ class _DashBoardCenterLabelState extends State<DashBoardCenterLabel> with Ticker
     super.initState();
     init();
     eventBird?.on('NEAREST_DATA', (dt){
+      // debugPrint('NEAREST_DATA RECV CENTER!');
       init();
     });
   }

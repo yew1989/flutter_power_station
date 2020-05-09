@@ -68,8 +68,8 @@ class _DebugAgentTestPageState extends State<AgentTestPage> {
 
   @override
   void dispose() {
-    runtimTasker?.stop();
-    stationTasker?.stop();
+    runtimTasker?.dispose();
+    stationTasker?.dispose();
     super.dispose();
   }
 
@@ -373,18 +373,15 @@ class _DebugAgentTestPageState extends State<AgentTestPage> {
 
    // '持续获取指定终端运行实时数据(开启)',
     else if(index == 20) {
-      runtimTasker = AgentRunTimeDataLoopTimerTasker(
-        isBase: true,
-        terminalAddress: teminalBase,
-        timerInterval: 5,
-      );
-      runtimTasker.start((data){
+      runtimTasker?.dispose();
+      runtimTasker = AgentRunTimeDataLoopTimerTasker();
+      runtimTasker.listen(this.teminalAddress,true,true,5,(data){
         showToast(data.toString());
       });
     }
     // '持续获取指定终端运行实时数据(关闭)',      
     else if(index == 21) {
-      runtimTasker?.stop();
+      runtimTasker?.dispose();
     }
     // '持续获取多台终端运行实时功率和收益(开启)',
     else if(index == 22) {
@@ -409,14 +406,8 @@ class _DebugAgentTestPageState extends State<AgentTestPage> {
     }
     // '持续获取多台终端运行实时功率和收益(关闭)',
     else if(index == 23) {
-      stationTasker?.stop();
+      stationTasker?.dispose();
     }
-
-
-
-
-
-
   }
 
   @override

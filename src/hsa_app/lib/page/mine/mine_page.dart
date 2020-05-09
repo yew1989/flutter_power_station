@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:hsa_app/api/apis/api_login.dart';
+import 'package:hsa_app/api/operation_func_code/operation_func_code.dart';
 import 'package:hsa_app/components/shawdow_widget.dart';
 import 'package:hsa_app/config/app_config.dart';
 import 'package:hsa_app/page/about/about_page.dart';
@@ -57,7 +58,12 @@ class _MinePageState extends State<MinePage> {
         this.stationCount = account.accountStationRelation.length;
         this.userName = account.accountName;  
       });
+      requestOperationFuncCode(this.userName);
     });
+  }
+
+  void requestOperationFuncCode(String userName) async {
+    OperationFuncCode.getOperationFuncCode(accountName: userName);
   }
 
   // 用户资料信息
