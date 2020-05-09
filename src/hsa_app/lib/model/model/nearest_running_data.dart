@@ -208,21 +208,9 @@ class NearestRunningData{
 
   // 获取开度
   double getOpenAngle(Map<String,dynamic> json,String terminalAddress) {
-    double result = 0.0;
     double openAngle1 = json['terminal-'+'$terminalAddress'+'.afn0c.f11.p0'] != null ? json['terminal-'+'$terminalAddress'+'.afn0c.f11.p0']['开度1'] ?? 0.0 : 0.0;
-    double openAngle2 = json['terminal-'+'$terminalAddress'+'.afn0c.f11.p0'] != null ? json['terminal-'+'$terminalAddress'+'.afn0c.f11.p0']['开度2'] ?? 0.0 : 0.0;
-    // 开度 2取不到或者为 0 时 , 取开度 1 的绝对值
-    if(openAngle2 == 0.0) {
-      result = openAngle1;
-      result = result.abs();
-      return result;
-    }
-    // 开度 1 开度 2 都存在时候 取得他们的绝对值的平均值
-    openAngle1 = openAngle1.abs();
-    openAngle2 = openAngle2.abs();
-    final average = (openAngle1 + openAngle2) / 2.0;
-    result = average;
-    return result;
+    if(openAngle1 < 0) openAngle1 = 0.0;
+    return openAngle1;
   }
 
   // 获取温度值
