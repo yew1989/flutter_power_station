@@ -608,7 +608,7 @@ class _HistoryPageState extends State<HistoryPage> {
                 isVisible:  true,
                 overflowMode: LegendItemOverflowMode.wrap,
                 position: LegendPosition.bottom,
-                textStyle: ChartTextStyle(color: Colors.white,fontSize: 10),
+                textStyle: ChartTextStyle(color: Colors.white,fontSize: 9),
               ),
               plotAreaBorderWidth: 0,
               zoomPanBehavior: ZoomPanBehavior(
