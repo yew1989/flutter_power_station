@@ -74,9 +74,8 @@ class _RuntimeTabbarPageState extends State<RuntimeTabbarPage> {
           children: <Widget>[
             
             PageView.builder(
-              // 仍然有 bug ,暂时屏蔽左右滑动入口
-              // physics: AlwaysScrollableScrollPhysics(),
-              physics:NeverScrollableScrollPhysics(),
+              
+              physics: AlwaysScrollableScrollPhysics(),
               controller: pageController,
               itemCount: widget?.waterTurbines?.length ?? 0,
               itemBuilder: (BuildContext context, int index) {
@@ -98,7 +97,7 @@ class _RuntimeTabbarPageState extends State<RuntimeTabbarPage> {
               },
             ),
             // 仍然有 bug ,暂时屏蔽左右滑动入口
-            true ? Container (): Positioned(
+            Positioned(
               top: -6.0,left: 0.0,right: 0.0,
               child: Container(
                 child: Center(

@@ -41,7 +41,10 @@ class RuntimePage extends StatefulWidget {
   _RuntimePageState createState() => _RuntimePageState();
 }
 
-class _RuntimePageState extends LifecycleState<RuntimePage> with TickerProviderStateMixin{
+class _RuntimePageState extends LifecycleState<RuntimePage> with TickerProviderStateMixin,AutomaticKeepAliveClientMixin{
+
+  @override
+  bool get wantKeepAlive => true;
 
   RefreshController refreshController = RefreshController(initialRefresh: false);
 
