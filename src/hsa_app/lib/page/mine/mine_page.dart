@@ -8,6 +8,7 @@ import 'package:hsa_app/page/about/about_page.dart';
 import 'package:hsa_app/page/login/login_page.dart';
 import 'package:hsa_app/page/search/search_page.dart';
 import 'package:hsa_app/page/password/modifypswd_page.dart';
+import 'package:hsa_app/page/update/update_page.dart';
 import 'package:hsa_app/service/push/push_api.dart';
 import 'package:hsa_app/service/umeng_analytics.dart';
 import 'package:hsa_app/theme/theme_gradient_background.dart';
@@ -194,6 +195,12 @@ class _MinePageState extends State<MinePage> {
     pushToPage(context, SearchPage());
   }
 
+  // 电站升级
+  void onTapUpdateStations(BuildContext context) async {
+    await Future.delayed(Duration(milliseconds: 250));
+    pushToPage(context, UpdatePage());
+  }
+
   // 界面构建
   @override
   Widget build(BuildContext context) {
@@ -215,6 +222,7 @@ class _MinePageState extends State<MinePage> {
               itemTile('关于智能电站', 'images/mine/My_about_icon.png', () =>  onTapAbout(context)),
               itemTile('电站抢修', 'images/mine/My_sos_icon.png', () =>  onTapSOSCall(context)),
               itemTile('搜索电站', 'images/history/History_selt_btn.png', () =>  onTapSearchStations(context)),
+              //itemTile('电站升级', 'images/history/History_selt_btn.png', () =>  onTapUpdateStations(context)),
               
               // 分割线(最后一条)
               SizedBox(height: 0.3,child: Container(color:Colors.white24)),
