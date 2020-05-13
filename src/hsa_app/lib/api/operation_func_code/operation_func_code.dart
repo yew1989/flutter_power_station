@@ -11,7 +11,7 @@ class OperationFuncCode {
     final path = API.baseHost + '/v1/OperationFuncCode/RelationAccount/' + '$accountName';
     HttpHelper.httpGET(path, null, (map,_){
       var resp = OperationFuncCodeResp.fromJson(map);
-      if(resp.code != 200) return;
+      if(resp.code != 0) return;
       final data = resp.data;
       OperationManager.getInstance().data = data;
     }, null);

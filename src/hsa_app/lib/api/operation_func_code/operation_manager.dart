@@ -67,6 +67,9 @@ class OperationManager {
   // 拥有查看电量图表的权限
   bool haveElectricQuantityGraph(String stationNo) => _havePermissionWithStation(stationNo,'RuningData-GetTurbineStatisticalPower');
 
+  // 全局权限:
+  bool get haveWaterAndPowerHomePage => _havePermission('RuningData-GetTurbineWaterAndPowerAndState');
+
   // ---- 事件告警 ----
   // 拥有查看事件告警的权限
   bool haveGetTerminalAlarmEvent(String stationNo) => _havePermissionWithStation(stationNo,'RuningData-GetTerminalAlarmEvent');
