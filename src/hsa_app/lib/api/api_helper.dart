@@ -95,9 +95,11 @@ class HttpHelper {
       if(onSucc != null) onSucc(response.data, '请求成功');
       return;
     } catch (e) {
-      if(onFail != null) onFail('请求错误');
+
       debugPrint(e.toString());
-      return;
+      handleDioError(e,(String msg) {
+        if(onFail != null) onFail(msg);
+      });
     }
   }
 
@@ -155,9 +157,10 @@ class HttpHelper {
       }
       if(onSucc != null) onSucc(response.data, '请求成功');
     } catch (e) {
-      if(onFail != null) onFail('请求错误');
       debugPrint(e.toString());
-      return;
+      handleDioError(e,(String msg) {
+       if(onFail != null)  onFail(msg);
+      });
     }
   }
 
@@ -203,9 +206,10 @@ class HttpHelper {
       }
       if(onSucc != null) onSucc(response.data, '请求成功');
     } catch (e) {
-      if(onFail != null) onFail('请求错误');
       debugPrint(e.toString());
-      return;
+      handleDioError(e,(String msg) {
+       if(onFail != null)  onFail(msg);
+      });
     }
   }
 
@@ -251,9 +255,10 @@ class HttpHelper {
       }
       if(onSucc != null) onSucc(response.data, '请求成功');
     } catch (e) {
-      if(onFail != null) onFail('请求错误');
       debugPrint(e.toString());
-      return;
+      handleDioError(e,(String msg) {
+       if(onFail != null)  onFail(msg);
+      });
     }
   }
 
@@ -298,8 +303,10 @@ class HttpHelper {
       }
       onSucc(response.data, '请求成功');
     } catch (e) {
-      handleDioError(e,(String msg) => onFail(msg));
-      onFail('请求错误');
+      debugPrint(e.toString());
+      handleDioError(e,(String msg) {
+       if(onFail != null)  onFail(msg);
+      });
     }
   }
 
