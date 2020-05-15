@@ -37,7 +37,12 @@ typedef BannerListCallback = void Function(List<BannerModel> turbines);
 typedef WeatherCallback = void Function(Weather weather);
 // 有功曲线列表
 typedef StatisticalPowerListCallback = void Function(List<StatisticalPower> statisticalPowerList);
-
+// 升级文件类型列表
+typedef UpgradeFileTypeCallback = void Function(List<String> upgradeFileType);
+// 升级文件列表
+typedef UpgradeFileListCallback = void Function(List<UpdateFile> upgradeFileList);
+// 升级任务列表
+typedef UpgradeTaskListCallback = void Function(List<UpdateTask> upgradeTaskList);
 
 
 class API {

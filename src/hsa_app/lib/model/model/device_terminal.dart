@@ -11,6 +11,7 @@ class DeviceTerminal {
   String deviceName;  
   String intelligentControlScheme;
   String simCardNumber;  //设备绑定的SIM卡号
+  String hardwareVersion; //硬件版本号
   bool isOnLine;  //是否连接到通讯服务
   bool isLinkSDU;  //是否允当链路设备
   bool isMaster;
@@ -31,6 +32,7 @@ class DeviceTerminal {
       this.deviceName,
       this.intelligentControlScheme,
       this.simCardNumber,
+      this.hardwareVersion,
       this.isOnLine,
       this.isLinkSDU,
       this.isMaster,
@@ -52,6 +54,7 @@ class DeviceTerminal {
     deviceName = json['deviceName'];
     intelligentControlScheme = json['intelligentControlScheme'];
     simCardNumber = json['simCardNumber'];
+    hardwareVersion = json['hardwareVersion'];
     isOnLine = json['isOnLine'];
     isLinkSDU = json['isLinkSDU'];
     isMaster = json['isMaster'];
@@ -78,6 +81,7 @@ class DeviceTerminal {
     data['deviceName'] = this.deviceName;
     data['intelligentControlScheme'] = this.intelligentControlScheme;
     data['simCardNumber'] = this.simCardNumber;
+    data['hardwareVersion'] = this.hardwareVersion;
     data['isOnLine'] = this.isOnLine;
     data['isLinkSDU'] = this.isLinkSDU;
     data['isMaster'] = this.isMaster;

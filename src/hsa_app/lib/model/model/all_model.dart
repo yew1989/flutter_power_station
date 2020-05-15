@@ -16,3 +16,5 @@ export 'package:hsa_app/model/model/weather.dart';
 export 'package:hsa_app/model/model/electricity_price.dart';
 export 'package:hsa_app/model/model/runtime_adapter.dart';
 export 'package:hsa_app/model/model/statistical_power.dart';
+export 'package:hsa_app/model/model/update_file.dart';
+export 'package:hsa_app/model/model/update_task.dart';

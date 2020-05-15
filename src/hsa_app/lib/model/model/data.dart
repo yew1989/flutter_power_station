@@ -13,8 +13,12 @@ class Data {
   String reservoirCurrentWaterStage;
   double totalActivePower;
   List<StatisticalPower> statisticalPowerList;
+  List<UpdateTask> updateTaskList;
+  
 
-  Data({this.total, this.stationInfo});
+
+  Data({this.total, this.stationInfo,this.reservoirAlarmWaterStage,this.banners,this.reservoirBasicWaterStage,this.reservoirCurrentWaterStage,this.statisticalPowerList,
+      this.totalActivePower,this.turbine,this.updateTaskList});
 
   Data.fromJson(Map<String, dynamic> json,String state) {
     total = json['total'];
@@ -59,6 +63,16 @@ class Data {
       if(json['stations'] != null ){
         json['stations'].forEach((v) {
           stationInfo.add(new StationInfo.fromJson(v));
+        });
+      }
+    }
+
+    if(state == 'updateTask'){
+      updateTaskList = new List<UpdateTask>();
+
+      if(json['rows'] != null ){
+        json['rows'].forEach((v) {
+          updateTaskList.add(new UpdateTask.fromJson(v));
         });
       }
     }

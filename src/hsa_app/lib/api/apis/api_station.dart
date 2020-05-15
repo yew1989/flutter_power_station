@@ -7,6 +7,7 @@ class APIStation{
 
   // 获取电站列表信息
   static void getStationList({bool isIncludeCustomer,bool isIncludeWaterTurbine,bool isIncludeFMD,bool isIncludeLiveLink,
+      bool isIncludeOtherTerminal,
       String partStationName,String partStationNamePinYin,String stationNoPrefix,String proviceAreaCityNameOfDotSeparated,
       List<String> arrayOfCustomerNoOptAny, List<String> arrayOfStationNoOptAny,
       int page,int pageSize, StationListCallback onSucc,HttpFailCallback onFail}) async {
@@ -79,7 +80,7 @@ class APIStation{
 
   //单条电站信息
   static void getStationInfo({String stationNo,
-    bool isIncludeCustomer,bool isIncludeWaterTurbine,bool isIncludeFMD,bool isIncludeLiveLink,
+    bool isIncludeCustomer,bool isIncludeWaterTurbine,bool isIncludeFMD,bool isIncludeLiveLink,bool isIncludeOtherTerminal,
     StationInfoCallback onSucc,HttpFailCallback onFail})async {
 
     Map<String, dynamic> param = new Map<String, dynamic>();
@@ -104,6 +105,10 @@ class APIStation{
       param['isIncludeLiveLink'] = isIncludeLiveLink;
     }
 
+    //结果中是否要包含其他终端
+    if(isIncludeOtherTerminal != null){
+      param['isIncludeOtherTerminal'] = isIncludeOtherTerminal;
+    }
 
     // 获取电站列表信息地址
     final path = API.baseHost + '/v1/HydropowerStation/' + '$stationNo';

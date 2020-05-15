@@ -10,6 +10,7 @@ class StationInfo {
   List<LiveLink> liveLinks; 
   List<WaterTurbine> waterTurbines;  //水轮机
   List<DeviceTerminal> deviceTerminalsOfFMD;  //监测终端
+  List<DeviceTerminal> deviceTerminalsOfOther;
   String address;
   int waterTurbineCount;
   int undisposedAlarmEventCount;
@@ -49,6 +50,7 @@ class StationInfo {
       this.liveLinks,
       this.waterTurbines,
       this.deviceTerminalsOfFMD,
+      this.deviceTerminalsOfOther,
       this.address,
       this.waterTurbineCount,
       this.undisposedAlarmEventCount,
@@ -100,6 +102,12 @@ class StationInfo {
         deviceTerminalsOfFMD.add(new DeviceTerminal.fromJson(v));
       });
     }
+    if (json['deviceTerminalsOfOther'] != null) {
+      deviceTerminalsOfOther = new List<DeviceTerminal>();
+      json['deviceTerminalsOfOther'].forEach((v) {
+        deviceTerminalsOfOther.add(new DeviceTerminal.fromJson(v));
+      });
+    }
     address = json['address'];
     waterTurbineCount = json['waterTurbineCount'];
     undisposedAlarmEventCount = json['undisposedAlarmEventCount'];
@@ -146,6 +154,10 @@ class StationInfo {
     if (this.deviceTerminalsOfFMD != null) {
       data['deviceTerminalsOfFMD'] =
           this.deviceTerminalsOfFMD.map((v) => v.toJson()).toList();
+    }
+    if (this.deviceTerminalsOfOther != null) {
+      data['deviceTerminalsOfOther'] =
+          this.deviceTerminalsOfOther.map((v) => v.toJson()).toList();
     }
     data['address'] = this.address;
     data['waterTurbineCount'] = this.waterTurbineCount;
