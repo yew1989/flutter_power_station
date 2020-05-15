@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:hsa_app/components/empty_page.dart';
-import 'package:hsa_app/components/public_tool.dart';
 import 'package:hsa_app/components/smart_refresher_style.dart';
 import 'package:hsa_app/components/spinkit_indicator.dart';
 import 'package:hsa_app/api/apis/api_station.dart';
 import 'package:hsa_app/model/model/all_model.dart';
 import 'package:hsa_app/event/app_event.dart';
 import 'package:hsa_app/event/event_bird.dart';
-import 'package:hsa_app/page/station/station_tabbar_page.dart';
+import 'package:hsa_app/page/update/update_station_info.dart';
+import 'package:persistent_bottom_nav_bar/persistent-tab-view.widget.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class UpdateStationList extends StatefulWidget {
@@ -31,6 +31,8 @@ class _UpdateStationListState extends State<UpdateStationList> {
   String provinceName = '';
   String keyWord = '';
 
+
+  
   //是否是英文和数字
   bool isEngOrNum ;
   //是否是数字
@@ -117,6 +119,7 @@ class _UpdateStationListState extends State<UpdateStationList> {
       if(widget.onFirstLoadFinish != null) widget.onFirstLoadFinish();
     },
     isIncludeWaterTurbine:true,
+    
     page:currentPage,
     pageSize:pageRowsMax,
     proviceAreaCityNameOfDotSeparated:provinceName,
@@ -259,7 +262,7 @@ class _UpdateStationListState extends State<UpdateStationList> {
       onRefresh: ()=> loadFirst(null,this.isEngOrNum),
       controller: refreshController,
       child: ListView.builder(
-        itemCount: this.stations?.length ?? 0,
+        itemCount: this.stations?.length ?? 0 ,
         itemBuilder: (BuildContext context, int index) => stationTile(context,index),
       ),
     );
@@ -270,28 +273,33 @@ class _UpdateStationListState extends State<UpdateStationList> {
     var station = stations[index];
 
     return Container(
-      height: 90,
+      height: 60,
       width: double.infinity,
       padding: EdgeInsets.symmetric(horizontal: 20),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
-
           GestureDetector(
             onTap: (){
               // 新版电站滑块
-              pushToPage(context,StationTabbarPage(stations: stations,selectIndex: index));
-              
+              pushNewScreen(
+                context,
+                screen: UpdateStationInfoPage(stations[index].stationNo),
+                platformSpecific: true, 
+                withNavBar: true, 
+              );
+              //pushToPage(context,UpdateStationInfoPage(stations[index].stationNo));
             },
             child: Container(
               child: SizedBox(
-                  height: 75,
+                  height: 55,
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: <Widget>[
                       stationTileTop(station),
+                     
                     ],
                 ),
               ),
@@ -307,9 +315,11 @@ class _UpdateStationListState extends State<UpdateStationList> {
   Widget stationTileTop(StationInfo station) {
     // 离线在线状态
     var isOnline = station?.terminalOnLineCount == 0 ? false : true  ;
+    var width = MediaQuery.of(context).size.width;
+    
 
     return SizedBox(
-      height: 72,
+      height: 55,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -329,39 +339,48 @@ class _UpdateStationListState extends State<UpdateStationList> {
               ),
               SizedBox(width: 10),
               Text(station.stationName,style: TextStyle(color: Colors.white, fontSize: 16)),
-              
             ],
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.end,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
-              SizedBox(height: 24,width: 24,
-                child: isOnline 
-                ? Image.asset('images/home/Home_online_icon.png')
-                : Image.asset('images/home/Home_offline_icon.png'),
-                
-              ),
-              SizedBox(width: 8),
-              Text(isOnline ? '在线' : '离线',style: TextStyle(color: Colors.white,fontSize: 15)),
-              SizedBox(width: 8),
               SizedBox(
-                height: 22,
-                width: 22,
-                child: Image.asset('images/mine/My_next_btn.png'),
+                width:width/2-20,
+                child:Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: <Widget>[
+                    SizedBox(
+                      height: 24,width: 24,
+                    ),
+                    SizedBox(width: 10),
+                    Text(station.stationNo,style: TextStyle(color: Colors.white54, fontSize: 16)),
+                  ],
+                ),
               ),
-            ],
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: <Widget>[
               SizedBox(
-                height: 24,width: 24,
+                width:width/2-20,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: <Widget>[
+                    SizedBox(height: 24,width: 24,
+                      child: isOnline 
+                      ? Image.asset('images/home/Home_online_icon.png')
+                      : Image.asset('images/home/Home_offline_icon.png'),
+                    ),
+                    SizedBox(width: 8),
+                    Text(isOnline ? '在线' : '离线',style: TextStyle(color: Colors.white,fontSize: 15)),
+                    SizedBox(width: 8),
+                    SizedBox(
+                      height: 22,
+                      width: 22,
+                      child: Image.asset('images/mine/My_next_btn.png'),
+                    ),
+                  ]
+                ),
               ),
-              SizedBox(width: 10),
-              Text(station.stationNo,style: TextStyle(color: Colors.white54, fontSize: 16)),
-              
             ],
           ),
         ],

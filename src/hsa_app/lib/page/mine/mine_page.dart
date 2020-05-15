@@ -10,12 +10,14 @@ import 'package:hsa_app/page/login/login_page.dart';
 import 'package:hsa_app/page/search/search_page.dart';
 import 'package:hsa_app/page/password/modifypswd_page.dart';
 import 'package:hsa_app/page/update/update_page.dart';
+import 'package:hsa_app/page/update/update_root.dart';
 import 'package:hsa_app/service/push/push_api.dart';
 import 'package:hsa_app/service/umeng_analytics.dart';
 import 'package:hsa_app/theme/theme_gradient_background.dart';
 import 'package:hsa_app/components/public_tool.dart';
 import 'package:hsa_app/util/share.dart';
 import 'package:native_color/native_color.dart';
+import 'package:persistent_bottom_nav_bar/persistent-tab-view.widget.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class MinePage extends StatefulWidget {
@@ -204,7 +206,13 @@ class _MinePageState extends State<MinePage> {
   // 电站升级
   void onTapUpdateStations(BuildContext context) async {
     await Future.delayed(Duration(milliseconds: 250));
-    pushToPage(context, UpdatePage());
+    pushToPage(context, UpdateRootPage());
+    // pushNewScreen(
+    //     context,
+    //     screen: UpdateRootPage(),
+    //     platformSpecific: false, // OPTIONAL VALUE. False by default, which means the bottom nav bar will persist
+    //     withNavBar: true, // OPTIONAL VALUE. True by default.
+    // );
   }
 
   // 界面构建
@@ -228,7 +236,7 @@ class _MinePageState extends State<MinePage> {
               itemTile('关于智能电站', 'images/mine/My_about_icon.png', () =>  onTapAbout(context)),
               itemTile('电站抢修', 'images/mine/My_sos_icon.png', () =>  onTapSOSCall(context)),
               itemTile('搜索电站', 'images/history/History_selt_btn.png', () =>  onTapSearchStations(context)),
-              //itemTile('电站升级', 'images/history/History_selt_btn.png', () =>  onTapUpdateStations(context)),
+              itemTile('设备升级', 'images/update/Update.png', () =>  onTapUpdateStations(context)),
               
               // 分割线(最后一条)
               SizedBox(height: 0.3,child: Container(color:Colors.white24)),
