@@ -41,8 +41,8 @@ class _HistoryCalendarBarState extends State<HistoryCalendarBar> {
           child: Align(
               alignment: Alignment.centerRight,
               child: SizedBox(
-                  height: 22,
-                  width: 22,
+                  height: 18,
+                  width: 18,
                   child:
                       Image.asset('images/history/History_calendar_btn.png'))),
         ),
@@ -54,7 +54,7 @@ class _HistoryCalendarBarState extends State<HistoryCalendarBar> {
             child: Text(
               '${widget.startDateTime} ～ ${widget.endDateTime}',
               style: TextStyle(
-                  color: Colors.white, fontFamily: AppTheme().numberFontName, fontSize: 16),
+                  color: Colors.white, fontFamily: AppTheme().numberFontName, fontSize: 14),
             ),
           ),
         ),

@@ -608,7 +608,7 @@ class _HistoryPageState extends State<HistoryPage> {
                 isVisible:  true,
                 overflowMode: LegendItemOverflowMode.wrap,
                 position: LegendPosition.bottom,
-                textStyle: ChartTextStyle(color: Colors.white,fontSize: 9),
+                textStyle: ChartTextStyle(color: Colors.white,fontSize: 8),
               ),
               plotAreaBorderWidth: 0,
               zoomPanBehavior: ZoomPanBehavior(
@@ -662,6 +662,7 @@ class _HistoryPageState extends State<HistoryPage> {
               trackballBehavior: TrackballBehavior(
                 enable: true,
                 lineColor: Colors.white60,
+                tooltipAlignment:ChartAlignment.near,
                 activationMode: ActivationMode.singleTap,
                 tooltipDisplayMode:  TrackballDisplayMode.groupAllPoints,
                 tooltipSettings: InteractiveTooltip(
@@ -669,6 +670,7 @@ class _HistoryPageState extends State<HistoryPage> {
                   color: Colors.black54,),
                 shouldAlwaysShow: true,
               ),
+              
             )  
             : SfCartesianChart(
               plotAreaBorderWidth: 0,
@@ -697,6 +699,7 @@ class _HistoryPageState extends State<HistoryPage> {
                 color: Colors.black,
                 opacity:0.54
               ),
+              
             )
           ),
         ],
