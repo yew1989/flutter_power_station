@@ -11,3 +11,6 @@ export 'package:hsa_app/model/response/turbine_resp.dart';
 export 'package:hsa_app/model/response/banner_resp.dart';
 export 'package:hsa_app/model/response/weather_resp.dart';
 export 'package:hsa_app/model/response/statistical_power_resp.dart';
+export 'package:hsa_app/model/response/update_file_type_resp.dart';
+export 'package:hsa_app/model/response/update_file_resp.dart';
+export 'package:hsa_app/model/response/update_task_resp.dart';
