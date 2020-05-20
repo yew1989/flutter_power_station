@@ -1,14 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:hsa_app/api/apis/api_update.dart';
 import 'package:hsa_app/components/public_tool.dart';
 import 'package:hsa_app/components/smart_refresher_style.dart';
 import 'package:hsa_app/api/apis/api_station.dart';
 import 'package:hsa_app/config/app_theme.dart';
+import 'package:hsa_app/event/event_bird.dart';
 import 'package:hsa_app/model/model/all_model.dart';
 import 'package:hsa_app/model/model/station.dart';
 import 'package:hsa_app/page/update/update_choose_file.dart';
+import 'package:hsa_app/page/update/update_task_list.dart';
 import 'package:hsa_app/service/life_cycle/lifecycle_state.dart';
 import 'package:hsa_app/theme/theme_gradient_background.dart';
 import 'package:native_color/native_color.dart';
+import 'package:persistent_bottom_nav_bar/persistent-tab-view.widget.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:ovprogresshud/progresshud.dart';
 
@@ -56,6 +60,20 @@ class _UpdateDeviceInfoPageState extends LifecycleState<UpdateDeviceInfoPage> {
     refreshController?.dispose();
     Progresshud.dismiss();
     super.dispose();
+  }
+
+  void _pushUpgradeFile(String upgradeFileId,String terminalAddress){
+    APIUpdate.pushUpgradeFile(
+      upgradeFileId : upgradeFileId,
+      terminalAddress : terminalAddress,
+      onSucc: (msg,_){
+
+      },
+      onFail: (_){
+        
+      }
+
+    );
   }
 
   // 请求电站概要
@@ -206,7 +224,7 @@ class _UpdateDeviceInfoPageState extends LifecycleState<UpdateDeviceInfoPage> {
                     SizedBox(height: 30,),
                     chooseFile(),
                     SizedBox(height: 10,),
-                    isChoosedFile ? updateFileInfo() : Container(),
+                    isChoosedFile ? updateFileInfo(context) : Container(),
                     
 
                   ],
@@ -235,6 +253,7 @@ class _UpdateDeviceInfoPageState extends LifecycleState<UpdateDeviceInfoPage> {
             onPressed: () {  
               pushToPage(context, 
                 UpdateChooseFilePage(
+                  deviceTerminal : deviceTerminal,
                   onChoose: (UpdateFile updateFile){
                     setState(() {
                       this.updateFile = updateFile;
@@ -251,7 +270,7 @@ class _UpdateDeviceInfoPageState extends LifecycleState<UpdateDeviceInfoPage> {
       
   }
 
-  Widget updateFileInfo(){
+  Widget updateFileInfo(BuildContext context){
     return Column(
       children: [
         Row(
@@ -316,7 +335,21 @@ class _UpdateDeviceInfoPageState extends LifecycleState<UpdateDeviceInfoPage> {
                 splashColor: Colors.white,color: HexColor('6699ff'),
                 child: Text('确认升级',style: TextStyle(color: Colors.white,fontSize: 20),), 
                 onPressed: () {  
-                  
+                  showAlertViewDouble(
+                    context,'确认升级','确认升级文件是否正确?',
+                    () {
+                      _pushUpgradeFile(updateFile.upgradeFileId,deviceTerminal.terminalAddress);
+                      setState(() {
+                        eventBird?.emit('TaskReady');
+                        // pushNewScreen(
+                        //   context,
+                        //   screen: UpdateTaskPage(context),
+                        //   platformSpecific: true, 
+                        //   withNavBar: true, 
+                        // );
+                      });
+                    }
+                  );
                 },
               )
             )

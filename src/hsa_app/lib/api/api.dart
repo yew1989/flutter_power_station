@@ -43,6 +43,8 @@ typedef UpgradeFileTypeCallback = void Function(List<String> upgradeFileType);
 typedef UpgradeFileListCallback = void Function(List<UpdateFile> upgradeFileList);
 // 升级任务列表
 typedef UpgradeTaskListCallback = void Function(List<UpdateTask> upgradeTaskList);
+// 升级任务信息
+typedef UpgradeTaskInfoCallback = void Function(UpdateTask upgradeTaskInfo);
 
 
 class API {

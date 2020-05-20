@@ -9,10 +9,11 @@ import 'package:hsa_app/components/public_tool.dart';
 
 class UpdateChooseFilePage extends StatefulWidget {
 
+  final DeviceTerminal deviceTerminal;
   //当选择的值改变时调用
   final ValueChanged<UpdateFile> onChoose;
 
-  UpdateChooseFilePage({this.onChoose});
+  UpdateChooseFilePage({this.deviceTerminal,this.onChoose});
 
   @override
   _UpdateChooseFileState createState() => _UpdateChooseFileState(onChoose:onChoose);
@@ -25,21 +26,22 @@ class _UpdateChooseFileState extends State<UpdateChooseFilePage>{
   //当选择的值改变时调用
   final ValueChanged<UpdateFile> onChoose;
 
-  // 省份列表
-  List<String> provinces = [];
+  // 类型列表
+  List<String> types = [];
 
   // UI分节列表
   List<String> sections = ['全部'];
+
+  DeviceTerminal deviceTerminal = DeviceTerminal();
 
 
   //省份列表(新)
   void requestProvinces(){
     APIUpdate.upgradeFileType(
       onSucc: (list){
-
         setState(() {
-          this.provinces = list.map((v) => v).toList();
-          this.sections.addAll(provinces.map((name) => name).toList());
+          this.types = list.map((v) => v).toList();
+          this.sections.addAll(types.map((name) => name).toList());
         });
 
       },onFail: (msg){
@@ -85,7 +87,9 @@ class _UpdateChooseFileState extends State<UpdateChooseFilePage>{
             return Container(
               height: double.infinity,
               width: double.infinity,
-              child: UpdateFileList(upgradeFileType : name,
+              child: UpdateFileList(
+                upgradeFileType : name,
+                deviceTerminal : deviceTerminal,
                 onChoose:(UpdateFile updateFile){
                   onChoose(updateFile);
                   Navigator.pop(context);
@@ -99,6 +103,7 @@ class _UpdateChooseFileState extends State<UpdateChooseFilePage>{
 
   @override
   Widget build(BuildContext context) {
+    deviceTerminal = widget?.deviceTerminal ?? DeviceTerminal();
     return ThemeGradientBackground(
       child: Scaffold(
         backgroundColor: Colors.transparent,

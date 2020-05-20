@@ -49,8 +49,8 @@ class APIUpdate{
   }
 
   //获取升级任务列表
-  static void upgradeTaskList({String stationNo, String terminalAddress, List<String> upgradeTaskStates,
-      int page,int pageSize,String startDateTime,String endDateTime,
+  static void upgradeTaskList({String stationNo, String terminalAddress, String upgradeMissionId ,List<String> upgradeTaskStates,
+      int page,int pageSize,String startDateTime,String endDateTime,String str,
       UpgradeTaskListCallback onSucc,HttpFailCallback onFail}) async {
 
     Map<String, dynamic> param = new Map<String, dynamic>();
@@ -86,8 +86,55 @@ class APIUpdate{
     
     HttpHelper.httpGET(path, param, (map,_){
 
-      var list = UpdateTaskResp.fromJson(map);
+      var list = UpdateTaskResp.fromJson(map,'updateTaskList');
       if(onSucc != null) onSucc(list.data.updateTaskList);
+      
+    }, onFail);
+  }
+
+  //提交终端在线升级任务
+  static void pushUpgradeFile({String upgradeFileId, String terminalAddress ,HttpSuccCallback onSucc,HttpFailCallback onFail}) async {
+    
+    final path = API.baseHost + '/v1/DeviceTerminalOtaFileManage/PushUpgradeFile/' + upgradeFileId + '/To/' + terminalAddress;
+    
+    HttpHelper.httpPOST(path, null, (map,_){
+
+      var list = UpdateTaskResp.fromJson(map,'pushAndCancel');
+      if(onSucc != null) onSucc(list.data.operationResult,_);
+      
+    }, onFail);
+  }
+
+  //取消终端在线升级任务
+  static void cancelUpgradeMission({String upgradeMissionId,HttpSuccCallback onSucc,HttpFailCallback onFail}) async {
+    
+    final path = API.baseHost + '/v1/DeviceTerminalOtaFileManage/CancelUpgradeMission/' + upgradeMissionId ;
+    
+    HttpHelper.httpPUT(path, null, (map,_){
+
+      var list = UpdateTaskResp.fromJson(map,'pushAndCancel');
+      if(onSucc != null) onSucc(list.data.operationResult,_);
+      
+    }, onFail);
+  }
+
+  //获取升级任务列表
+  static void upgradeTaskInfo({String upgradeMissionId ,
+      UpgradeTaskInfoCallback onSucc,HttpFailCallback onFail}) async {
+
+    
+    var path = API.baseHost + '/v1/DeviceTerminalOtaFileManage/GetUpgradeMissionState' ;
+
+
+    if(upgradeMissionId != null){
+      path = path + '/' + upgradeMissionId;
+    }
+
+    
+    HttpHelper.httpGET(path, null, (map,_){
+      
+      var list = UpdateTaskResp.fromJson(map,'updateTask');
+      if(onSucc != null) onSucc(list.updateTask);
       
     }, onFail);
   }

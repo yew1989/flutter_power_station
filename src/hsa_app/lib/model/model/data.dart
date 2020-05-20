@@ -14,7 +14,9 @@ class Data {
   double totalActivePower;
   List<StatisticalPower> statisticalPowerList;
   List<UpdateTask> updateTaskList;
-  
+
+  bool operationResult;
+  UpdateTask upgradeLog;
 
 
   Data({this.total, this.stationInfo,this.reservoirAlarmWaterStage,this.banners,this.reservoirBasicWaterStage,this.reservoirCurrentWaterStage,this.statisticalPowerList,
@@ -67,7 +69,7 @@ class Data {
       }
     }
 
-    if(state == 'updateTask'){
+    if(state == 'updateTaskList'){
       updateTaskList = new List<UpdateTask>();
 
       if(json['rows'] != null ){
@@ -76,6 +78,11 @@ class Data {
         });
       }
     }
+    if(state == 'pushAndCancel'){
+      operationResult =  json['operationResult'];
+      upgradeLog = UpdateTask.fromJson(json['upgradeLog']);
+    }
+    
   }
 
   Map<String, dynamic> toJson() {

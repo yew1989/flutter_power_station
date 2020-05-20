@@ -2,6 +2,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:hsa_app/api/agent/agent.dart';
+import 'package:hsa_app/api/apis/api_update.dart';
 import 'package:hsa_app/model/model/all_model.dart';
 
 // 供展示的实时有功数据体
@@ -19,6 +20,12 @@ typedef NearestRunningDataCallBack = void Function(NearestRunningData runtimeDat
 
 // 电站概要页返回 - 当前有功,电站总有功,当日电站总收益
 typedef StationInfoDataCallBack = void Function(StationInfo station);
+
+// 升级任务列表 - 当前进度
+typedef UpdateTaskListCallBack = void Function(List<UpdateTask> updateTaskList);
+
+// 升级任务详情 - 当前进度
+typedef UpdateTaskInfoCallBack = void Function(UpdateTask updateTask);
 
 // 持续获取指定终端实时运行数据
 class AgentRunTimeDataLoopTimerTasker {
@@ -62,7 +69,7 @@ class AgentRunTimeDataLoopTimerTasker {
     });
   }
   
-  void dispose () {
+  void dispose() {
     timer?.cancel();
   }
 
@@ -223,9 +230,98 @@ class AgentStationInfoDataLoopTimerTasker {
     return result;
   }
   
-  void dispose () {
+  void dispose() {
     timer?.cancel();
   }
  
+
+}
+
+
+class GetUpgradeMissionState {
+  
+   int timerInterval;// 周期间隔 单位 s 秒
+   String terminalAddress;
+   String upgradeMissionId;
+   List<String> upgradeTaskStates;
+   Timer timer;
+
+   void listen(String terminalAddress,String upgradeMissionId,List<String> taskProcessingStates,int timerInterval,UpdateTaskListCallBack onData) {
+
+    this.terminalAddress = terminalAddress;
+    this.upgradeMissionId = upgradeMissionId;
+    this.timerInterval = timerInterval;
+    this.upgradeTaskStates =taskProcessingStates;
+    runTimeDataOnce(onData,null);
+
+    timer = Timer.periodic(Duration(seconds: this.timerInterval), (t) {
+      runTimeDataOnce(onData,(){
+        t?.cancel();
+      });
+    });
+  }
+
+  // 运行时数据
+  void runTimeDataOnce(UpdateTaskListCallBack onGetRuntimeData,void Function() onFail) {
+
+
+    // 获取缓存数据
+    APIUpdate.upgradeTaskList(
+
+      terminalAddress: this.terminalAddress,
+      upgradeMissionId: this.upgradeMissionId,
+      upgradeTaskStates: this.upgradeTaskStates,
+      onFail: (_){
+        if(onFail != null)onFail();
+      },
+      onSucc: (data){
+        if(onGetRuntimeData != null) onGetRuntimeData(data);
+      });
+  }
+  
+  void dispose() {
+    timer?.cancel();
+  }
+
+}
+
+class GetUpgradeMissionStateSingle {
+  
+   int timerInterval;// 周期间隔 单位 s 秒
+   String upgradeMissionId;
+   Timer timer;
+
+   void listen(String upgradeMissionId,int timerInterval,UpdateTaskInfoCallBack onData) {
+
+    this.upgradeMissionId = upgradeMissionId;
+    this.timerInterval = timerInterval;
+    runTimeDataOnce(onData,null);
+
+    timer = Timer.periodic(Duration(seconds: this.timerInterval), (t) {
+      runTimeDataOnce(onData,(){
+        t?.cancel();
+      });
+    });
+  }
+
+  // 运行时数据
+  void runTimeDataOnce(UpdateTaskInfoCallBack onGetRuntimeData,void Function() onFail) {
+
+
+    // 获取缓存数据
+    APIUpdate.upgradeTaskInfo(
+
+      upgradeMissionId: this.upgradeMissionId,
+      onFail: (_){
+        if(onFail != null)onFail();
+      },
+      onSucc: (data){
+        if(onGetRuntimeData != null) onGetRuntimeData(data);
+      });
+  }
+  
+  void dispose() {
+    timer?.cancel();
+  }
 
 }

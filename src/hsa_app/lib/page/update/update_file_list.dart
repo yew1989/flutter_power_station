@@ -5,11 +5,12 @@ import 'package:ovprogresshud/progresshud.dart';
 
 class UpdateFileList extends StatefulWidget {
 
+  final DeviceTerminal deviceTerminal;
   final String upgradeFileType;
   //当选择的值改变时调用
   final ValueChanged<UpdateFile> onChoose;
 
-  UpdateFileList({this.upgradeFileType,this.onChoose});
+  UpdateFileList({this.deviceTerminal,this.upgradeFileType,this.onChoose});
   @override
   _UpdateFileListState createState() => _UpdateFileListState(onChoose:onChoose);
 }
@@ -37,10 +38,11 @@ class _UpdateFileListState extends State<UpdateFileList> {
   void reqeustUpdateFileList() { 
     //width = MediaQuery.of(context).size.width;
     Progresshud.showWithStatus('读取数据中...');
-
+    
     APIUpdate.upgradeFileList(
       upgradeFileType : widget?.upgradeFileType == '全部' ? null : widget?.upgradeFileType ?? null,
-       
+      deviceType: widget?.deviceTerminal?.deviceType ?? null,
+      deviceVersion: widget?.deviceTerminal?.deviceVersion ?? null,
       onSucc: (List<UpdateFile> updateFileList) {
       
         updateFileList  = updateFileList;

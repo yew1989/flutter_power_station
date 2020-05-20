@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:flutter/services.dart';
 import 'package:hsa_app/api/leancloud/leancloud_api.dart';
 import 'package:hsa_app/config/app_config.dart';
 import 'package:syncfusion_flutter_core/core.dart';
@@ -12,6 +13,8 @@ class BootApp {
     SyncfusionLicense.registerLicense("NT8mJyc2IWhia31ifWN9Z2FoYmF8YGJ8ampqanNiYmlmamlmanMDHmhia2NnZWNmYGJqYBNiZWB9MDw+");
     // 外网连接尝试
     touch('http://www.baidu.com');
+    //强制竖屏
+    SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
   }
 
   // Touch 外网 用于 IOS 下触发网络权限对话框

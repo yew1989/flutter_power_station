@@ -279,30 +279,31 @@ class _RuntimePageState extends LifecycleState<RuntimePage> with TickerProviderS
     if(terminalAddress == '') return;
     runtimTasker = AgentRunTimeDataLoopTimerTasker();
     runtimTasker.listen(terminalAddress,
-    isBase,
-    widget?.isAllowHighSpeedNetworkSwitching ?? false
-    ,AppConfig.getInstance().deviceQureyTimeInterval,
-    (data){
-      if(mounted) {
-        setState(() {
-        // this.deviceTerminal?.nearestRunningData = AgentFake.fakeNearestRunningData(data);
-        this.deviceTerminal?.nearestRunningData =  data;
-        addToList(powerNowList,this.deviceTerminal?.nearestRunningData?.power ?? 0.0);
-        addToList(freqList,this.deviceTerminal?.nearestRunningData?.frequency ?? 0.0);
-        addToList(openList,this.deviceTerminal?.nearestRunningData?.openAngle ?? 0.0);
-        addToList(temperatureList,this.deviceTerminal?.nearestRunningData?.temperature ?? 0.0);
-        addToList(speedList,this.deviceTerminal?.nearestRunningData?.speed ?? 0.0);
-        addToList(waterStageList,this.deviceTerminal?.nearestRunningData?.waterStage ?? 0.0);
-        addToList(voltageList,this.deviceTerminal?.nearestRunningData?.voltage ?? 0.0);
-        addToList(excitationList,this.deviceTerminal?.nearestRunningData?.fieldCurrent ?? 0.0);
-        addToList(currentList,this.deviceTerminal?.nearestRunningData?.current ?? 0.0);
-        addToList(factorList,this.deviceTerminal?.nearestRunningData?.powerFactor ?? 0.0);
-        eventBird?.emit('NEAREST_DATA',this.deviceTerminal);
-        // debugPrint('NEAREST_DATA POST');
-        initController();
-        });
+      isBase,
+      widget?.isAllowHighSpeedNetworkSwitching ?? false,
+      AppConfig.getInstance().deviceQureyTimeInterval,
+      (data){
+        if(mounted) {
+          setState(() {
+          // this.deviceTerminal?.nearestRunningData = AgentFake.fakeNearestRunningData(data);
+          this.deviceTerminal?.nearestRunningData =  data;
+          addToList(powerNowList,this.deviceTerminal?.nearestRunningData?.power ?? 0.0);
+          addToList(freqList,this.deviceTerminal?.nearestRunningData?.frequency ?? 0.0);
+          addToList(openList,this.deviceTerminal?.nearestRunningData?.openAngle ?? 0.0);
+          addToList(temperatureList,this.deviceTerminal?.nearestRunningData?.temperature ?? 0.0);
+          addToList(speedList,this.deviceTerminal?.nearestRunningData?.speed ?? 0.0);
+          addToList(waterStageList,this.deviceTerminal?.nearestRunningData?.waterStage ?? 0.0);
+          addToList(voltageList,this.deviceTerminal?.nearestRunningData?.voltage ?? 0.0);
+          addToList(excitationList,this.deviceTerminal?.nearestRunningData?.fieldCurrent ?? 0.0);
+          addToList(currentList,this.deviceTerminal?.nearestRunningData?.current ?? 0.0);
+          addToList(factorList,this.deviceTerminal?.nearestRunningData?.powerFactor ?? 0.0);
+          eventBird?.emit('NEAREST_DATA',this.deviceTerminal);
+          // debugPrint('NEAREST_DATA POST');
+          initController();
+          });
+        }
       }
-    });
+    );
   }
 
   //list处理

@@ -55,6 +55,36 @@ class _UpdateStationListState extends State<UpdateStationList> {
           if(mounted) {
             setState(() {
               isLoadFinsh = true;
+              refreshController.loadComplete();
+              if(msg?.stationInfo != null){
+                for(int i = 0; msg.stationInfo.length > i ;i ++){
+                  this.stations[i].totalActivePower = msg?.stationInfo[i]?.totalActivePower ?? 0.0; 
+                  this.stations[i].reservoirCurrentWaterStage = msg?.stationInfo[i]?.reservoirCurrentWaterStage ?? 0.0; 
+                }
+              }
+            });
+          }
+        },
+        onFail: (msg){}
+      );
+    }else{
+      setState(() {
+        isLoadFinsh = true;
+        refreshController.refreshFailed();
+      });
+    }
+  
+  }
+
+  void firstCurrent(){
+
+    if(stationNos != null && stationNos != ''){
+      APIStation.getCurrentTotalActivePowerAndWaterStage(
+        stationNos: stationNos,
+        onSucc: (msg){
+          if(mounted) {
+            setState(() {
+              isLoadFinsh = true;
               refreshController.refreshCompleted();
               if(msg?.stationInfo != null){
                 for(int i = 0; msg.stationInfo.length > i ;i ++){
@@ -106,7 +136,7 @@ class _UpdateStationListState extends State<UpdateStationList> {
         }
       }
       
-      loadCurrent();
+      firstCurrent();
       if(stations.length == 0) {
         this.isEmpty = true;
       }
@@ -156,7 +186,7 @@ class _UpdateStationListState extends State<UpdateStationList> {
       }
       else{
         this.stations.addAll(msg.stationInfo);
-        refreshController.loadComplete();
+        
         this.stationNos = '';
         stations.forEach((st) => this.stationNos = this.stationNos + ',' + st.stationNo.toString());
         if(this.stationNos != ''){
@@ -165,7 +195,7 @@ class _UpdateStationListState extends State<UpdateStationList> {
       }
 
       loadCurrent();
-
+      refreshController.loadComplete();
       if(widget.onFirstLoadFinish != null) widget.onFirstLoadFinish();
     },onFail: (msg){
       isLoadFinsh = true;

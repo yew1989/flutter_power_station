@@ -29,7 +29,6 @@ class HomeStationList extends StatefulWidget {
 class _HomeStationListState extends State<HomeStationList> {
   
   int pageRowsMax = 20;
-  //List<Stations> stations = [];
   List<StationInfo> stations = [];
   RefreshController refreshController = RefreshController(initialRefresh: false);
   int currentPage = 1;
@@ -61,7 +60,6 @@ class _HomeStationListState extends State<HomeStationList> {
           if(mounted) {
             setState(() {
               isLoadFinsh = true;
-              refreshController.refreshCompleted();
               if(msg?.stationInfo != null){
                 for(int i = 0; msg.stationInfo.length > i ;i ++){
                   this.stations[i].totalActivePower = msg?.stationInfo[i]?.totalActivePower ?? 0.0; 
@@ -74,12 +72,8 @@ class _HomeStationListState extends State<HomeStationList> {
         onFail: (msg){}
       );
     }else{
-      setState(() {
-        isLoadFinsh = true;
-        refreshController.refreshCompleted();
-      });
+      isLoadFinsh = true;
     }
-  
   }
 
 
@@ -111,8 +105,12 @@ class _HomeStationListState extends State<HomeStationList> {
           this.stationNos = this.stationNos.substring(1);
         }
       }
-      
-      loadCurrent();
+      if(mounted) {
+        setState(() {
+          loadCurrent();
+          refreshController.refreshCompleted();
+        });
+      }
       if(stations.length == 0) {
         this.isEmpty = true;
       }
@@ -152,40 +150,47 @@ class _HomeStationListState extends State<HomeStationList> {
     }else if(isEngOrNum == false){
       partStationName = keyWord;
     }
-    APIStation.getStationList(onSucc: (msg){
+    APIStation.getStationList(
+      onSucc: (msg){
       
-      isLoadFinsh = true;
+        isLoadFinsh = true;
 
-      if(stations == null || stations?.length == 0) {
-        refreshController.loadNoData();
-      }
-      else{
-        this.stations.addAll(msg.stationInfo);
-        refreshController.loadComplete();
-        this.stationNos = '';
-        stations.forEach((st) => this.stationNos = this.stationNos + ',' + st.stationNo.toString());
-        if(this.stationNos != ''){
-          this.stationNos = this.stationNos.substring(1);
+        if(stations == null || stations?.length == 0) {
+          refreshController.loadNoData();
         }
-      }
+        else{
+          this.stations.addAll(msg.stationInfo);
+          
+          this.stationNos = '';
+          stations.forEach((st) => this.stationNos = this.stationNos + ',' + st.stationNo.toString());
+          if(this.stationNos != ''){
+            this.stationNos = this.stationNos.substring(1);
+          }
+        }
 
-      loadCurrent();
+        if(mounted) {
+          setState(() {
+            loadCurrent();
+            refreshController.loadComplete();
+          });
+        }
+        
+        
+        if(widget.onFirstLoadFinish != null) widget.onFirstLoadFinish();
+      },onFail: (msg){
+        isLoadFinsh = true;
+        refreshController.refreshFailed();
 
-      if(widget.onFirstLoadFinish != null) widget.onFirstLoadFinish();
-    },onFail: (msg){
-      isLoadFinsh = true;
-      refreshController.refreshFailed();
-
-      if(widget.onFirstLoadFinish != null) widget.onFirstLoadFinish();
-    },
-    isIncludeWaterTurbine:true,
-    page:currentPage,
-    pageSize:pageRowsMax,
-    proviceAreaCityNameOfDotSeparated:provinceName,
-    arrayOfStationNoOptAny: list,
-    partStationNamePinYin:partStationNamePinYin,
-    partStationName:partStationName,
-    stationNoPrefix:stationNoPrefix
+        if(widget.onFirstLoadFinish != null) widget.onFirstLoadFinish();
+      },
+      isIncludeWaterTurbine:true,
+      page:currentPage,
+      pageSize:pageRowsMax,
+      proviceAreaCityNameOfDotSeparated:provinceName,
+      arrayOfStationNoOptAny: list,
+      partStationNamePinYin:partStationNamePinYin,
+      partStationName:partStationName,
+      stationNoPrefix:stationNoPrefix
     );
   }
 
