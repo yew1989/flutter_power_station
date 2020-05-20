@@ -3,13 +3,13 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:hsa_app/api/apis/api_login.dart';
 import 'package:hsa_app/api/operation_func_code/operation_func_code.dart';
+import 'package:hsa_app/api/operation_func_code/operation_manager.dart';
 import 'package:hsa_app/components/shawdow_widget.dart';
 import 'package:hsa_app/config/app_config.dart';
 import 'package:hsa_app/page/about/about_page.dart';
 import 'package:hsa_app/page/login/login_page.dart';
 import 'package:hsa_app/page/search/search_page.dart';
 import 'package:hsa_app/page/password/modifypswd_page.dart';
-import 'package:hsa_app/page/update/update_page.dart';
 import 'package:hsa_app/page/update/update_root.dart';
 import 'package:hsa_app/service/push/push_api.dart';
 import 'package:hsa_app/service/umeng_analytics.dart';
@@ -17,7 +17,6 @@ import 'package:hsa_app/theme/theme_gradient_background.dart';
 import 'package:hsa_app/components/public_tool.dart';
 import 'package:hsa_app/util/share.dart';
 import 'package:native_color/native_color.dart';
-import 'package:persistent_bottom_nav_bar/persistent-tab-view.widget.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class MinePage extends StatefulWidget {
@@ -65,7 +64,11 @@ class _MinePageState extends State<MinePage> {
   }
 
   void requestOperationFuncCode(String userName) async {
-    OperationFuncCode.getOperationFuncCode(accountName: userName);
+    OperationFuncCode.getOperationFuncCode(accountName: userName, 
+    onFinish: (){
+      setState(() {
+      });
+    });
   }
 
   // 用户资料信息
@@ -236,7 +239,7 @@ class _MinePageState extends State<MinePage> {
               itemTile('关于智能电站', 'images/mine/My_about_icon.png', () =>  onTapAbout(context)),
               itemTile('电站抢修', 'images/mine/My_sos_icon.png', () =>  onTapSOSCall(context)),
               itemTile('搜索电站', 'images/history/History_selt_btn.png', () =>  onTapSearchStations(context)),
-              itemTile('设备升级', 'images/update/Update.png', () =>  onTapUpdateStations(context)),
+              OperationManager.getInstance().haveEngineeringModeUIAccess ?  itemTile('工程模式', 'images/update/Update.png', () =>  onTapUpdateStations(context)) : Container(),
               
               // 分割线(最后一条)
               SizedBox(height: 0.3,child: Container(color:Colors.white24)),

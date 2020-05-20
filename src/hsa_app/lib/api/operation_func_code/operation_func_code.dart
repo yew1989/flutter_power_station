@@ -6,14 +6,20 @@ import 'package:hsa_app/api/operation_func_code/operation_manager.dart';
 
 class OperationFuncCode {
   
-  static void getOperationFuncCode({@required String accountName}) {
+  static void getOperationFuncCode({@required Function onFinish,@required String accountName}) {
     if(accountName == null) return;
     final path = API.baseHost + '/v1/OperationFuncCode/RelationAccount/' + '$accountName';
     HttpHelper.httpGET(path, null, (map,_){
       var resp = OperationFuncCodeResp.fromJson(map);
-      if(resp.code != 0) return;
+      if(resp.code != 0) {
+        if(onFinish != null) onFinish();
+        return;
+      }
       final data = resp.data;
       OperationManager.getInstance().data = data;
-    }, null);
+      if(onFinish != null) onFinish();
+    }, (msg){
+      if(onFinish != null) onFinish();
+    });
   }
 }
