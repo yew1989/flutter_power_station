@@ -15,6 +15,7 @@ class OperationManager {
 
   // 是否有某个功能的权限码权限
   bool _havePermission(String input) {
+    if(data.accountAllRolesContainedFuncCodes == null) return false;
     for(final code in data.accountAllRolesContainedFuncCodes) {
       if(code.compareTo(input) == 0) return true;
     }
@@ -23,6 +24,7 @@ class OperationManager {
 
   // 是否有某个功能的权限码权限(带电站号)
   bool _havePermissionWithStation(String stationNo,String input) {
+     if(data.accountAllRolesContainedFuncCodes == null) return false;
      final dict = data.hyStationContainedFuncCodeDictionary;
      if(dict != null) {
        for (String key in dict.keys) {
