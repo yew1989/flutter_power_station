@@ -445,7 +445,7 @@ class _HomeStationListState extends State<HomeStationList> {
             children: <Widget>[
               WaveBall(station:station),
               SizedBox(height: 4),
-              Text(waterStr,style: TextStyle(color: Colors.white,fontFamily: AppTheme().numberFontName,fontSize: 16)),
+              Text(waterStr,style: TextStyle(color: isOnline ? Colors.white : Colors.grey,fontFamily: AppTheme().numberFontName,fontSize: 16)),
             ],
           ),
 
@@ -458,13 +458,13 @@ class _HomeStationListState extends State<HomeStationList> {
               // 在线状态
               Row(
                 children: [
-                SizedBox(height: 24,width: 24,
-                  child: isOnline 
-                  ? Image.asset('images/home/Home_online_icon.png')
-                  : Image.asset('images/home/Home_offline_icon.png'),
-                ),
-                SizedBox(width: 8),
-                Text(isOnline ? '在线' : '离线',style: TextStyle(color: Colors.white,fontSize: 15)),
+                  SizedBox(height: 24,width: 24,
+                    child: isOnline 
+                    ? Image.asset('images/home/Home_online_icon.png')
+                    : Image.asset('images/home/Home_offline_icon.png'),
+                  ),
+                  SizedBox(width: 8),
+                  Text(isOnline ? '在线' : '离线',style: TextStyle(color: Colors.white ,fontSize: 15)),
                 ]
               ),
 

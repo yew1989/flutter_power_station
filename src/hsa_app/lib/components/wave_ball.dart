@@ -78,6 +78,7 @@ class _WaveBallState extends State<WaveBall> {
     var waterRatio = WaveValuePack.caculateWaveRatio(widget.station);
     var wavePack = WaveValuePack.caculateUIWave(waterRatio);
     var powerRatio = PowerValuePack.caculateWaveRatio(widget.station);
+    var isOnline = widget.station?.terminalOnLineCount == 0 ? false : true  ;
 
     return SizedBox(
       height: 120,
@@ -150,10 +151,10 @@ class _WaveBallState extends State<WaveBall> {
             children: <Widget>[
               Center(
                   child: Text(widget.station?.totalActivePower.toString() ??'0.0',
-                      style: TextStyle(color: Colors.white, fontSize: 35,fontFamily: AppTheme().numberFontName))),
+                      style: TextStyle(color: isOnline ? Colors.white : Colors.grey, fontSize: 35,fontFamily: AppTheme().numberFontName))),
               Center(
                   child: Text('kW',
-                      style: TextStyle(color: Colors.white, fontSize: 15,fontFamily: AppTheme().numberFontName))),
+                      style: TextStyle(color: isOnline ? Colors.white : Colors.grey, fontSize: 15,fontFamily: AppTheme().numberFontName))),
             ],
           ),
         ],
