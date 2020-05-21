@@ -125,8 +125,6 @@ class _UpdateDeviceListState extends State<UpdateDeviceList> {
               );
             },
           ),
-          // 底部分割线
-          SizedBox(height: 1, child: Container(color: Colors.white24)),
         ],
       ),
     );
@@ -158,7 +156,6 @@ class _UpdateDeviceListState extends State<UpdateDeviceList> {
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
-              //SizedBox(width: 5),
               Text(name ?? '',style: TextStyle(color: Colors.white, fontSize: 16)),
               SizedBox(width: 15),
               Text(dtNo ?? '',style: TextStyle(color: Colors.white54, fontSize: 12)),
@@ -206,6 +203,8 @@ class _UpdateDeviceListState extends State<UpdateDeviceList> {
               ),
             ],
           ),
+          // 底部分割线
+          SizedBox(height: 1, child: Container(color: Colors.white24)),
         ],
       ),
     );

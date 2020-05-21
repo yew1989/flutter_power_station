@@ -244,8 +244,7 @@ class _UpdateStationListState extends State<UpdateStationList> {
               );
             },
           ),
-          // 底部分割线
-          SizedBox(height: 1, child: Container(color: Colors.white24)),
+          
         ],
       ),
     );
@@ -263,6 +262,7 @@ class _UpdateStationListState extends State<UpdateStationList> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
+          
           // 行
           Row(
             mainAxisAlignment: MainAxisAlignment.start,
@@ -321,6 +321,8 @@ class _UpdateStationListState extends State<UpdateStationList> {
               ),
             ],
           ),
+          // 底部分割线
+          SizedBox(height: 1, child: Container(color: Colors.white24)),
         ],
       ),
     );

@@ -299,8 +299,7 @@ class _UpdateTaskPageState extends State<UpdateTaskPage> {
               );
             },
           ),
-          // 底部分割线
-          SizedBox(height: 1, child: Container(color: Colors.white24)),
+          
         ],
       ),
     );
@@ -373,6 +372,8 @@ class _UpdateTaskPageState extends State<UpdateTaskPage> {
               ),
             ],
           ),
+          // 底部分割线
+          SizedBox(height: 1, child: Container(color: Colors.white24)),
         ],
       ),
     );

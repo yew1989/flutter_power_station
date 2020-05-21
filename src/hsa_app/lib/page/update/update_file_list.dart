@@ -96,8 +96,7 @@ class _UpdateFileListState extends State<UpdateFileList> {
               onChoose(updateFile);
             },
           ),
-          // 底部分割线
-          SizedBox(height: 1, child: Container(color: Colors.white24)),
+          
         ],
       ),
     );
@@ -155,6 +154,8 @@ class _UpdateFileListState extends State<UpdateFileList> {
               
             ],
           ),
+          // 底部分割线
+          SizedBox(height: 1, child: Container(color: Colors.white24)),
         ],
       ),
     );
