@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:hsa_app/components/shawdow_widget.dart';
 import 'package:hsa_app/config/app_theme.dart';
 import 'package:hsa_app/page/search/search_bar.dart';
 import 'package:hsa_app/page/update/update_station_list.dart';
-import 'package:hsa_app/service/umeng_analytics.dart';
 import 'package:hsa_app/theme/theme_gradient_background.dart';
 
 class UpdatePage extends StatefulWidget {
+
   final BuildContext parentContext;
 
   const UpdatePage(this.parentContext,{Key key}) : super(key: key);
+
   @override
   _UpdatePageState createState() => _UpdatePageState();
 }
@@ -62,7 +62,6 @@ class _UpdatePageState extends State<UpdatePage> {
                 },
               )
             ),
-            //TabBarLineShawdow(),
           ],
         ),
       ),

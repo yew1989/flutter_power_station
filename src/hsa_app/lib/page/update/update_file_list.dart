@@ -11,6 +11,7 @@ class UpdateFileList extends StatefulWidget {
   final ValueChanged<UpdateFile> onChoose;
 
   UpdateFileList({this.deviceTerminal,this.upgradeFileType,this.onChoose});
+
   @override
   _UpdateFileListState createState() => _UpdateFileListState(onChoose:onChoose);
 }
@@ -34,9 +35,9 @@ class _UpdateFileListState extends State<UpdateFileList> {
     super.dispose();
   }
 
-  // 请求电站概要
+  // 请求文件列表
   void reqeustUpdateFileList() { 
-    //width = MediaQuery.of(context).size.width;
+
     Progresshud.showWithStatus('读取数据中...');
     
     APIUpdate.upgradeFileList(
@@ -67,39 +68,33 @@ class _UpdateFileListState extends State<UpdateFileList> {
     return Container(
       child: ListView.builder(
         itemCount: updateFileList.length ?? 0,
-        itemBuilder: (context, index) => deviceTerminalTile(context,index),
+        itemBuilder: (context, index) => updateFileTile(context,index),
       ),
     );
   }
 
-  Widget deviceTerminalTile(BuildContext context, int index) {
+
+  Widget updateFileTile(BuildContext context, int index) {
 
     UpdateFile updateFile = updateFileList[index];
 
     return Container(
-      height: 75,
+      height: 70,
       width: double.infinity,
       padding: EdgeInsets.symmetric(horizontal: 20),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.center,
+      child: Stack(
         children: <Widget>[
+          Container(
+            alignment:Alignment.center,
+            child: SizedBox(
+                height: 62,
+                child: tileTop(updateFile.upgradeFileName,updateFile.uploadDateTime,updateFile.upgradeFileType,updateFile.deviceVersion),
+            ),
+          ),
           GestureDetector(
             onTap: (){
               onChoose(updateFile);
             },
-            child: Container(
-              child: SizedBox(
-                  height: 70,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: <Widget>[
-                      tileTop(updateFile.upgradeFileName,updateFile.uploadDateTime,updateFile.upgradeFileType,updateFile.deviceVersion),
-                    ],
-                ),
-              ),
-            ),
           ),
           // 底部分割线
           SizedBox(height: 1, child: Container(color: Colors.white24)),

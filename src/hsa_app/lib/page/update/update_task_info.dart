@@ -209,19 +209,19 @@ class _UpdateTaskInfoPageState extends LifecycleState<UpdateTaskInfoPage> {
                     ),
                     divLine(0),
                     SizedBox(height: 10,),
-                    Row(
-                      children: [
-                        SizedBox(width: 25,),
-                        Text('任务编号: ',style: TextStyle(color: Colors.white,fontSize: 15),),
+                    // Row(
+                    //   children: [
+                    //     SizedBox(width: 25,),
+                    //     Text('任务编号: ',style: TextStyle(color: Colors.white,fontSize: 15),),
                         
-                      ],
-                    ),
-                    Row(
-                      children: [
-                        SizedBox(width: 30,),
-                        Text(updateTask?.deviceUpgradeMissionId ?? '',style: TextStyle(color: Colors.white,fontSize: 15),),
-                      ],
-                    ),
+                    //   ],
+                    // ),
+                    // Row(
+                    //   children: [
+                    //     SizedBox(width: 30,),
+                    //     Text(updateTask?.deviceUpgradeMissionId ?? '',style: TextStyle(color: Colors.white,fontSize: 15),),
+                    //   ],
+                    // ),
                     Row(
                       children: [
                         SizedBox(width: 25,),

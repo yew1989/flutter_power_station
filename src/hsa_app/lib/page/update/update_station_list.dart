@@ -17,6 +17,7 @@ class UpdateStationList extends StatefulWidget {
   final Function onFirstLoadFinish;
 
   const UpdateStationList({Key key, this.homeParam,this.isFromSearch,this.onFirstLoadFinish}) : super(key: key);
+
   @override
   _UpdateStationListState createState() => _UpdateStationListState();
 
@@ -30,8 +31,6 @@ class _UpdateStationListState extends State<UpdateStationList> {
   int currentPage = 1;
   String provinceName = '';
   String keyWord = '';
-
-
   
   //是否是英文和数字
   bool isEngOrNum ;
@@ -44,71 +43,10 @@ class _UpdateStationListState extends State<UpdateStationList> {
   //电站号拼接
   String stationNos = '';
 
-
-
-  void loadCurrent(){
-
-    if(stationNos != null && stationNos != ''){
-      APIStation.getCurrentTotalActivePowerAndWaterStage(
-        stationNos: stationNos,
-        onSucc: (msg){
-          if(mounted) {
-            setState(() {
-              isLoadFinsh = true;
-              refreshController.loadComplete();
-              if(msg?.stationInfo != null){
-                for(int i = 0; msg.stationInfo.length > i ;i ++){
-                  this.stations[i].totalActivePower = msg?.stationInfo[i]?.totalActivePower ?? 0.0; 
-                  this.stations[i].reservoirCurrentWaterStage = msg?.stationInfo[i]?.reservoirCurrentWaterStage ?? 0.0; 
-                }
-              }
-            });
-          }
-        },
-        onFail: (msg){}
-      );
-    }else{
-      setState(() {
-        isLoadFinsh = true;
-        refreshController.refreshFailed();
-      });
-    }
   
-  }
-
-  void firstCurrent(){
-
-    if(stationNos != null && stationNos != ''){
-      APIStation.getCurrentTotalActivePowerAndWaterStage(
-        stationNos: stationNos,
-        onSucc: (msg){
-          if(mounted) {
-            setState(() {
-              isLoadFinsh = true;
-              refreshController.refreshCompleted();
-              if(msg?.stationInfo != null){
-                for(int i = 0; msg.stationInfo.length > i ;i ++){
-                  this.stations[i].totalActivePower = msg?.stationInfo[i]?.totalActivePower ?? 0.0; 
-                  this.stations[i].reservoirCurrentWaterStage = msg?.stationInfo[i]?.reservoirCurrentWaterStage ?? 0.0; 
-                }
-              }
-            });
-          }
-        },
-        onFail: (msg){}
-      );
-    }else{
-      setState(() {
-        isLoadFinsh = true;
-        refreshController.refreshCompleted();
-      });
-    }
-  
-  }
-
 
   // 按省获取电站列表 加载首页
-  void loadFirst(List<String> list,bool isEngOrNum) async {
+  void loadFirst(bool isEngOrNum) async {
     
     this.currentPage = 1;
     this.isEmpty = false;
@@ -136,11 +74,15 @@ class _UpdateStationListState extends State<UpdateStationList> {
         }
       }
       
-      firstCurrent();
       if(stations.length == 0) {
         this.isEmpty = true;
       }
 
+      if(mounted) {
+        setState(() {
+          refreshController.refreshCompleted();
+        });
+      }
       if(widget.onFirstLoadFinish != null) widget.onFirstLoadFinish();
     },onFail: (msg){
       isLoadFinsh = true;
@@ -153,7 +95,6 @@ class _UpdateStationListState extends State<UpdateStationList> {
     page:currentPage,
     pageSize:pageRowsMax,
     proviceAreaCityNameOfDotSeparated:provinceName,
-    arrayOfStationNoOptAny: list,
     partStationNamePinYin:partStationNamePinYin,
     partStationName:partStationName,
     stationNoPrefix:stationNoPrefix
@@ -162,7 +103,7 @@ class _UpdateStationListState extends State<UpdateStationList> {
 
 
   // 刷新下一页
-  void loadNext(List<String> list,bool isEngOrNum) async {
+  void loadNext(bool isEngOrNum) async {
 
     currentPage++ ;
     var partStationNamePinYin;
@@ -177,57 +118,44 @@ class _UpdateStationListState extends State<UpdateStationList> {
     }else if(isEngOrNum == false){
       partStationName = keyWord;
     }
-    APIStation.getStationList(onSucc: (msg){
+    APIStation.getStationList(
+      onSucc: (msg){
       
-      isLoadFinsh = true;
+        isLoadFinsh = true;
 
-      if(stations == null || stations?.length == 0) {
-        refreshController.loadNoData();
-      }
-      else{
-        this.stations.addAll(msg.stationInfo);
-        
-        this.stationNos = '';
-        stations.forEach((st) => this.stationNos = this.stationNos + ',' + st.stationNo.toString());
-        if(this.stationNos != ''){
-          this.stationNos = this.stationNos.substring(1);
+        if(stations == null || stations?.length == 0) {
+          refreshController.loadNoData();
         }
-      }
+        else{
+          this.stations.addAll(msg.stationInfo);
+          
+          this.stationNos = '';
+          stations.forEach((st) => this.stationNos = this.stationNos + ',' + st.stationNo.toString());
+          if(this.stationNos != ''){
+            this.stationNos = this.stationNos.substring(1);
+          }
+        }
+        if(mounted) {
+          setState(() {
+            refreshController.loadComplete();
+          });
+        }
 
-      loadCurrent();
-      refreshController.loadComplete();
-      if(widget.onFirstLoadFinish != null) widget.onFirstLoadFinish();
-    },onFail: (msg){
-      isLoadFinsh = true;
-      refreshController.refreshFailed();
+        if(widget.onFirstLoadFinish != null) widget.onFirstLoadFinish();
+      },onFail: (msg){
+        isLoadFinsh = true;
+        refreshController.refreshFailed();
 
-      if(widget.onFirstLoadFinish != null) widget.onFirstLoadFinish();
-    },
-    isIncludeWaterTurbine:true,
-    page:currentPage,
-    pageSize:pageRowsMax,
-    proviceAreaCityNameOfDotSeparated:provinceName,
-    arrayOfStationNoOptAny: list,
-    partStationNamePinYin:partStationNamePinYin,
-    partStationName:partStationName,
-    stationNoPrefix:stationNoPrefix
+        if(widget.onFirstLoadFinish != null) widget.onFirstLoadFinish();
+      },
+      isIncludeWaterTurbine:true,
+      page:currentPage,
+      pageSize:pageRowsMax,
+      proviceAreaCityNameOfDotSeparated:provinceName,
+      partStationNamePinYin:partStationNamePinYin,
+      partStationName:partStationName,
+      stationNoPrefix:stationNoPrefix
     );
-  }
-
-  //获取关注列表
-  void getStations(){
-    initPage(); 
-    if(this.widget.isFromSearch == true) {
-      eventBird?.on(AppEvent.searchKeyWord, (text){
-        this.keyWord = text;
-        this.isEngOrNum = isEnglishOrNumber(keyWord);
-        this.isNum = isNumber(keyWord);
-        initPage();
-      });
-    }else{
-      this.isEngOrNum = null;
-      initPage(); 
-    }
   }
 
   //判断全部是英文和数字
@@ -247,21 +175,11 @@ class _UpdateStationListState extends State<UpdateStationList> {
   @override
   void initState() {
     super.initState();
-    getStations();
+    initPage();
   }
 
   void initPage() {
-    
-    if(isEngOrNum == false){
-      isLoadFinsh = false;
-      loadFirst(null,isEngOrNum);
-    }else if(isEngOrNum== true){
-      isLoadFinsh = false;
-      loadFirst(null,isEngOrNum);
-    }else{
-      isLoadFinsh = false;
-      loadFirst(null,null);
-    }
+    loadFirst(isEngOrNum);
   }
 
   @override
@@ -274,8 +192,8 @@ class _UpdateStationListState extends State<UpdateStationList> {
 
   @override
   Widget build(BuildContext context) {
-    if(isLoadFinsh == false) return SpinkitIndicator(title: '正在加载',subTitle: '请稍后');
-    if(isEmpty == true) return EmptyPage(title: '暂无数据',subTitle: '');
+    //if(isLoadFinsh == false) return SpinkitIndicator(title: '正在加载',subTitle: '请稍后');
+    //if(isEmpty == true) return EmptyPage(title: '暂无数据',subTitle: '');
     return stationListView(context);
   }
 
@@ -288,8 +206,8 @@ class _UpdateStationListState extends State<UpdateStationList> {
       footer: appRefreshFooter(),
       enablePullDown: true,
       enablePullUp: true,
-      onLoading: ()=> loadNext(null,this.isEngOrNum),
-      onRefresh: ()=> loadFirst(null,this.isEngOrNum),
+      onLoading: ()=> loadNext(this.isEngOrNum),
+      onRefresh: ()=> loadFirst(this.isEngOrNum),
       controller: refreshController,
       child: ListView.builder(
         itemCount: this.stations?.length ?? 0 ,
@@ -306,10 +224,15 @@ class _UpdateStationListState extends State<UpdateStationList> {
       height: 60,
       width: double.infinity,
       padding: EdgeInsets.symmetric(horizontal: 20),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.center,
+      child: Stack(
         children: <Widget>[
+          Container(
+            alignment:Alignment.center,
+            child: SizedBox(
+                height: 55,
+                child: stationTileTop(station),
+            ),
+          ),
           GestureDetector(
             onTap: (){
               // 新版电站滑块
@@ -319,21 +242,7 @@ class _UpdateStationListState extends State<UpdateStationList> {
                 platformSpecific: true, 
                 withNavBar: true, 
               );
-              //pushToPage(context,UpdateStationInfoPage(stations[index].stationNo));
             },
-            child: Container(
-              child: SizedBox(
-                  height: 55,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: <Widget>[
-                      stationTileTop(station),
-                     
-                    ],
-                ),
-              ),
-            ),
           ),
           // 底部分割线
           SizedBox(height: 1, child: Container(color: Colors.white24)),
@@ -354,7 +263,6 @@ class _UpdateStationListState extends State<UpdateStationList> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
-
           // 行
           Row(
             mainAxisAlignment: MainAxisAlignment.start,
@@ -401,7 +309,7 @@ class _UpdateStationListState extends State<UpdateStationList> {
                       : Image.asset('images/home/Home_offline_icon.png'),
                     ),
                     SizedBox(width: 8),
-                    Text(isOnline ? '在线' : '离线',style: TextStyle(color: Colors.white,fontSize: 15)),
+                    Text(isOnline ? '在线' : '离线',style: TextStyle(color: isOnline ?  Colors.white : Colors.grey ,fontSize: 15)),
                     SizedBox(width: 8),
                     SizedBox(
                       height: 22,

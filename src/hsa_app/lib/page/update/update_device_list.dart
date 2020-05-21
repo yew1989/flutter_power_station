@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:hsa_app/components/public_tool.dart';
 import 'package:hsa_app/model/model/all_model.dart';
 import 'package:hsa_app/model/model/station.dart';
 import 'package:hsa_app/page/update/update_device_info.dart';
@@ -34,6 +33,7 @@ class _UpdateDeviceListState extends State<UpdateDeviceList> {
     super.dispose();
   }
 
+  //调整电站数据 确保终端数量正确
   StationInfo filtUnBindDevices(StationInfo station) {
     var result = station;
     List<WaterTurbine> turbines = [];
@@ -70,6 +70,7 @@ class _UpdateDeviceListState extends State<UpdateDeviceList> {
     );
   }
 
+  //终端列表
   Widget deviceTerminalTile(BuildContext context, int index) {
     DeviceTerminal deviceTerminal = DeviceTerminal(); 
     String name = '';
@@ -102,37 +103,27 @@ class _UpdateDeviceListState extends State<UpdateDeviceList> {
     }
 
     return Container(
-      height: 75,
+      height: 70,
       width: double.infinity,
       padding: EdgeInsets.symmetric(horizontal: 20),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.center,
+      child: Stack(
         children: <Widget>[
+          Container(
+            alignment:Alignment.center,
+            child: SizedBox(
+                height: 65,
+                child: tileTop(name,dtNo,isOnline,tpye,version),
+            ),
+          ),
           GestureDetector(
             onTap: (){
-              // 新版电站滑块
               pushNewScreen(
                 context,
                 screen: UpdateDeviceInfoPage(dtNo),
                 platformSpecific: false, 
                 withNavBar: true, 
               );
-              //pushToPage(context,UpdateDeviceInfoPage(dtNo));
-
             },
-            child: Container(
-              child: SizedBox(
-                  height: 70,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: <Widget>[
-                      tileTop(name,dtNo,isOnline,tpye,version),
-                    ],
-                ),
-              ),
-            ),
           ),
           // 底部分割线
           SizedBox(height: 1, child: Container(color: Colors.white24)),
@@ -141,6 +132,7 @@ class _UpdateDeviceListState extends State<UpdateDeviceList> {
     );
   }
 
+  
   Widget tileTop(String name ,String dtNo,bool isOnline,String tpye,String version) {  
     String hardwareVersion1 = '';
     String hardwareVersion2 = '';
@@ -161,7 +153,6 @@ class _UpdateDeviceListState extends State<UpdateDeviceList> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
-
           // 行
           Row(
             mainAxisAlignment: MainAxisAlignment.start,
@@ -203,7 +194,7 @@ class _UpdateDeviceListState extends State<UpdateDeviceList> {
                       : Image.asset('images/home/Home_offline_icon.png'),
                     ),
                     SizedBox(width: 8),
-                    Text(isOnline ? '在线' : '离线',style: TextStyle(color: Colors.white,fontSize: 15)),
+                    Text(isOnline ? '在线' : '离线',style: TextStyle(color: isOnline ? Colors.white : Colors.grey ,fontSize: 15)),
                     SizedBox(width: 8),
                     SizedBox(
                       height: 16,

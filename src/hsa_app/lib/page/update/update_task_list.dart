@@ -1,7 +1,3 @@
-// Copyright 2019 The Flutter team. All rights reserved.
-// Use of this source code is governed by a BSD-style license that can be
-// found in the LICENSE file.
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hsa_app/api/agent/agent_timer_tasker.dart';
@@ -281,36 +277,27 @@ class _UpdateTaskPageState extends State<UpdateTaskPage> {
     var updateTask = list[index];
 
     return Container(
-      height: 50,
+      height: 60,
       width: double.infinity,
       padding: EdgeInsets.symmetric(horizontal: 20),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.center,
+      child: Stack(
         children: <Widget>[
+          Container(
+            alignment:Alignment.center,
+            child: SizedBox(
+                height: 50,
+                child: taskTileTop(updateTask),
+            ),
+          ),
           GestureDetector(
             onTap: (){
-              // 新版电站滑块
               pushNewScreen(
                 context,
                 screen: UpdateTaskInfoPage(updateTask.deviceUpgradeMissionId),//UpdateStationInfoPage(stations[index].stationNo),
                 platformSpecific: true, 
                 withNavBar: true, 
               );
-              //pushToPage(context,UpdateStationInfoPage(stations[index].stationNo));
             },
-            child: Container(
-              child: SizedBox(
-                  height: 45,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: <Widget>[
-                      taskTileTop(updateTask),
-                    ],
-                ),
-              ),
-            ),
           ),
           // 底部分割线
           SizedBox(height: 1, child: Container(color: Colors.white24)),
@@ -324,7 +311,7 @@ class _UpdateTaskPageState extends State<UpdateTaskPage> {
     var width = MediaQuery.of(context).size.width;
 
     return SizedBox(
-      height: 40,
+      height: 50,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         crossAxisAlignment: CrossAxisAlignment.center,

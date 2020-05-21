@@ -8,11 +8,9 @@ import 'package:hsa_app/event/event_bird.dart';
 import 'package:hsa_app/model/model/all_model.dart';
 import 'package:hsa_app/model/model/station.dart';
 import 'package:hsa_app/page/update/update_choose_file.dart';
-import 'package:hsa_app/page/update/update_task_list.dart';
 import 'package:hsa_app/service/life_cycle/lifecycle_state.dart';
 import 'package:hsa_app/theme/theme_gradient_background.dart';
 import 'package:native_color/native_color.dart';
-import 'package:persistent_bottom_nav_bar/persistent-tab-view.widget.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:ovprogresshud/progresshud.dart';
 
@@ -31,6 +29,7 @@ class _UpdateDeviceInfoPageState extends LifecycleState<UpdateDeviceInfoPage> {
   
   RefreshController refreshController = RefreshController(initialRefresh: false);
 
+  //是否已选择文件
   bool isChoosedFile = false;
 
   UpdateFile updateFile = UpdateFile();
@@ -51,7 +50,7 @@ class _UpdateDeviceInfoPageState extends LifecycleState<UpdateDeviceInfoPage> {
 
   @override
   void initState() {
-    reqeustStationInfo();
+    reqeustDeviceTerminalInfo();
     super.initState();
   }
 
@@ -67,18 +66,16 @@ class _UpdateDeviceInfoPageState extends LifecycleState<UpdateDeviceInfoPage> {
       upgradeFileId : upgradeFileId,
       terminalAddress : terminalAddress,
       onSucc: (msg,_){
-
+        
       },
       onFail: (_){
         
       }
-
     );
   }
 
-  // 请求电站概要
-  void reqeustStationInfo() async { 
-
+  // 请求终端信息
+  void reqeustDeviceTerminalInfo() async { 
 
     Progresshud.showWithStatus('读取数据中...');
 
@@ -154,7 +151,7 @@ class _UpdateDeviceInfoPageState extends LifecycleState<UpdateDeviceInfoPage> {
               child: SmartRefresher(
                 header: appRefreshHeader(),
                 enablePullDown: true,
-                onRefresh: reqeustStationInfo,
+                onRefresh: reqeustDeviceTerminalInfo,
                 controller: refreshController,
                 child: ListView(
                   children: <Widget>[
@@ -237,6 +234,7 @@ class _UpdateDeviceInfoPageState extends LifecycleState<UpdateDeviceInfoPage> {
     );
   }
 
+  //选择文件按钮
   Widget chooseFile(){
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
@@ -267,9 +265,9 @@ class _UpdateDeviceInfoPageState extends LifecycleState<UpdateDeviceInfoPage> {
         )
       ],
     );
-      
   }
 
+  //已选文件信息
   Widget updateFileInfo(BuildContext context){
     return Column(
       children: [
@@ -322,6 +320,8 @@ class _UpdateDeviceInfoPageState extends LifecycleState<UpdateDeviceInfoPage> {
           ],
         ),
         SizedBox(height: 30,),
+
+        //确认升级
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -341,12 +341,6 @@ class _UpdateDeviceInfoPageState extends LifecycleState<UpdateDeviceInfoPage> {
                       _pushUpgradeFile(updateFile.upgradeFileId,deviceTerminal.terminalAddress);
                       setState(() {
                         eventBird?.emit('TaskReady');
-                        // pushNewScreen(
-                        //   context,
-                        //   screen: UpdateTaskPage(context),
-                        //   platformSpecific: true, 
-                        //   withNavBar: true, 
-                        // );
                       });
                     }
                   );

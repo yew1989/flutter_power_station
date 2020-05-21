@@ -35,15 +35,14 @@ class _UpdateChooseFileState extends State<UpdateChooseFilePage>{
   DeviceTerminal deviceTerminal = DeviceTerminal();
 
 
-  //省份列表(新)
-  void requestProvinces(){
+  //文件类型列表
+  void requestTypes(){
     APIUpdate.upgradeFileType(
       onSucc: (list){
         setState(() {
           this.types = list.map((v) => v).toList();
           this.sections.addAll(types.map((name) => name).toList());
         });
-
       },onFail: (msg){
         showToast(msg);
         progressShowError('升级文件类型获取失败');
@@ -53,7 +52,7 @@ class _UpdateChooseFileState extends State<UpdateChooseFilePage>{
   @override
   void initState() {
     super.initState();
-    requestProvinces();
+    requestTypes();
   }
 
   @override

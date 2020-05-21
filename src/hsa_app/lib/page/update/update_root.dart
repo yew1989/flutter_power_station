@@ -1,16 +1,14 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:hsa_app/config/app_theme.dart';
 import 'package:hsa_app/event/app_event.dart';
 import 'package:hsa_app/event/event_bird.dart';
-import 'package:hsa_app/page/login/login_page.dart';
-import 'package:hsa_app/components/public_tool.dart';
 import 'package:hsa_app/page/update/update_page.dart';
 import 'package:hsa_app/page/update/update_task_list.dart';
 import 'package:hsa_app/theme/theme_gradient_background.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 
 class UpdateRootPage extends StatefulWidget {
+
   @override
   _UpdateRootPageState createState() => _UpdateRootPageState();
 }
@@ -29,6 +27,7 @@ class _UpdateRootPageState extends State<UpdateRootPage> with SingleTickerProvid
       ..add(UpdatePage(context))
       ..add(UpdateTaskPage(context));
     
+    //确认升级后跳转到任务队列
     eventBird?.on('TaskReady', (arg) { 
       setState(() {
         _controller.jumpToTab(1);
@@ -57,10 +56,8 @@ class _UpdateRootPageState extends State<UpdateRootPage> with SingleTickerProvid
           iconSize: 26.0,
           navBarStyle: NavBarStyle.style1, 
           onItemSelected: (index) {
-            
             setState(() {
               _currentIndex = index;
-              
             });
           },
         )

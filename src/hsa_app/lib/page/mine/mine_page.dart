@@ -7,6 +7,7 @@ import 'package:hsa_app/api/operation_func_code/operation_manager.dart';
 import 'package:hsa_app/components/shawdow_widget.dart';
 import 'package:hsa_app/config/app_config.dart';
 import 'package:hsa_app/page/about/about_page.dart';
+import 'package:hsa_app/page/engineering/engineering_mode.dart';
 import 'package:hsa_app/page/login/login_page.dart';
 import 'package:hsa_app/page/search/search_page.dart';
 import 'package:hsa_app/page/password/modifypswd_page.dart';
@@ -206,16 +207,10 @@ class _MinePageState extends State<MinePage> {
     pushToPage(context, SearchPage());
   }
 
-  // 电站升级
-  void onTapUpdateStations(BuildContext context) async {
+  // 工程模式
+  void onTapEngineeringModePage(BuildContext context) async {
     await Future.delayed(Duration(milliseconds: 250));
-    pushToPage(context, UpdateRootPage());
-    // pushNewScreen(
-    //     context,
-    //     screen: UpdateRootPage(),
-    //     platformSpecific: false, // OPTIONAL VALUE. False by default, which means the bottom nav bar will persist
-    //     withNavBar: true, // OPTIONAL VALUE. True by default.
-    // );
+    pushToPage(context, EngineeringModePage());
   }
 
   // 界面构建
@@ -239,7 +234,7 @@ class _MinePageState extends State<MinePage> {
               itemTile('关于智能电站', 'images/mine/My_about_icon.png', () =>  onTapAbout(context)),
               itemTile('电站抢修', 'images/mine/My_sos_icon.png', () =>  onTapSOSCall(context)),
               itemTile('搜索电站', 'images/history/History_selt_btn.png', () =>  onTapSearchStations(context)),
-              OperationManager.getInstance().haveEngineeringModeUIAccess ?  itemTile('工程模式', 'images/update/Update.png', () =>  onTapUpdateStations(context)) : Container(),
+              OperationManager.getInstance().haveEngineeringModeUIAccess ?  itemTile('工程模式', 'images/update/Setting.png', () =>  onTapEngineeringModePage(context)) : Container(),
               
               // 分割线(最后一条)
               SizedBox(height: 0.3,child: Container(color:Colors.white24)),

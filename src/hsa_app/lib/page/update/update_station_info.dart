@@ -5,7 +5,6 @@ import 'package:hsa_app/config/app_theme.dart';
 import 'package:hsa_app/model/model/all_model.dart';
 import 'package:hsa_app/model/model/station.dart';
 import 'package:hsa_app/page/update/update_device_list.dart';
-import 'package:hsa_app/service/life_cycle/lifecycle_state.dart';
 import 'package:hsa_app/theme/theme_gradient_background.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:ovprogresshud/progresshud.dart';
@@ -13,35 +12,22 @@ import 'package:ovprogresshud/progresshud.dart';
 class UpdateStationInfoPage extends StatefulWidget {
   
   final String stationId;
-  //final CaiyunWeatherData weather;
+
   UpdateStationInfoPage(this.stationId);
 
   @override
   _UpdateStationInfoPageState createState() => _UpdateStationInfoPageState();
 }
 
-class _UpdateStationInfoPageState extends LifecycleState<UpdateStationInfoPage> {
+class _UpdateStationInfoPageState extends State<UpdateStationInfoPage> {
   
   StationInfo stationInfo = StationInfo();
   
   RefreshController refreshController = RefreshController(initialRefresh: false);
-  // 实时有功和收益任务
 
 
   int currentIndex;
   StationInfo currentStation;
-
- @override
-  void onResume() {
-    super.onResume();
-    //getRealtimeData();
-  }
-
-  @override
-  void onPause() {
-    Progresshud.dismiss();
-    super.onPause();
-  }
 
   @override
   void initState() {
@@ -58,7 +44,6 @@ class _UpdateStationInfoPageState extends LifecycleState<UpdateStationInfoPage> 
 
   // 请求电站概要
   void reqeustStationInfo() { 
-
 
     Progresshud.showWithStatus('读取数据中...');
 
@@ -77,21 +62,21 @@ class _UpdateStationInfoPageState extends LifecycleState<UpdateStationInfoPage> 
 
       onSucc: (StationInfo station) {
       
-      station  = station;
+        station  = station;
 
-      Progresshud.dismiss();
-      refreshController.refreshCompleted();
+        Progresshud.dismiss();
+        refreshController.refreshCompleted();
 
-      if (station == null) return;
-      if(mounted) {
-        setState(() {
-          this.stationInfo = station;
-        });
-      }
-    }, onFail: (String msg) {
-      refreshController.refreshFailed();
-      Progresshud.showInfoWithStatus('获取电站信息失败');
-    });
+        if (station == null) return;
+        if(mounted) {
+          setState(() {
+            this.stationInfo = station;
+          });
+        }
+      }, onFail: (String msg) {
+        refreshController.refreshFailed();
+        Progresshud.showInfoWithStatus('获取电站信息失败');
+      });
   }
   
   // 分割线
@@ -159,8 +144,6 @@ class _UpdateStationInfoPageState extends LifecycleState<UpdateStationInfoPage> 
                     ),
                     divLine(0),
                     SizedBox(height: 10,),
-                    //StationBigPool(stationInfo:stationInfo,profitList:profitList),
-                    //StationListHeader(widget.weather.name, liveLinkList, stationInfo.stationName),
                     UpdateDeviceList(stationInfo),
                   ],
                 ),
