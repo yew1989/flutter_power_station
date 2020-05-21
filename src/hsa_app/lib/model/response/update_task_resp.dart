@@ -15,6 +15,9 @@ class UpdateTaskResp {
     if('updateTaskList' == str){
       data = json['data'] != null ? new Data.fromJson(json['data'],str) : null;
     }
+    if('upgradeLog' == str){
+      data = json['data'] != null ? new Data.fromJson(json['data'],str) : null;
+    }
     if('updateTask' == str){
       updateTask = json['data'] != null ? new UpdateTask.fromJson(json['data']) : null;
     }

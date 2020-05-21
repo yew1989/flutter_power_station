@@ -158,7 +158,7 @@ class _UpdateDeviceListState extends State<UpdateDeviceList> {
             children: <Widget>[
               Text(name ?? '',style: TextStyle(color: Colors.white, fontSize: 16)),
               SizedBox(width: 15),
-              Text(dtNo ?? '',style: TextStyle(color: Colors.white54, fontSize: 12)),
+              Text(dtNo ?? '',style: TextStyle(color: Colors.white54, fontSize: 16)),
               SizedBox(width: 15),
               Text(tpye ?? '',style: TextStyle(color: Colors.white54, fontSize: 12)),
             ],
@@ -188,15 +188,15 @@ class _UpdateDeviceListState extends State<UpdateDeviceList> {
                     SizedBox(height: 20,width: 20,
                       child: isOnline 
                       ? Image.asset('images/home/Home_online_icon.png')
-                      : Image.asset('images/home/Home_offline_icon.png'),
+                      : Image.asset('images/home/Home_offline_icon.png',color:Colors.grey),
                     ),
                     SizedBox(width: 8),
                     Text(isOnline ? '在线' : '离线',style: TextStyle(color: isOnline ? Colors.white : Colors.grey ,fontSize: 15)),
                     SizedBox(width: 8),
                     SizedBox(
-                      height: 16,
-                      width: 16,
-                      child: Image.asset('images/mine/My_next_btn.png'),
+                      height: 20,
+                      width: 20,
+                      child: Image.asset('images/mine/My_next_btn.png',color: isOnline ? Colors.white : Colors.grey),
                     ),
                   ]
                 ),

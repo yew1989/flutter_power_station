@@ -78,7 +78,7 @@ class Data {
         });
       }
     }
-    if(state == 'pushAndCancel'){
+    if(state == 'upgradeLog'){
       operationResult =  json['operationResult'];
       upgradeLog = UpdateTask.fromJson(json['upgradeLog']);
     }

@@ -99,7 +99,7 @@ class APIUpdate{
     
     HttpHelper.httpPOST(path, null, (map,_){
 
-      var list = UpdateTaskResp.fromJson(map,'pushAndCancel');
+      var list = UpdateTaskResp.fromJson(map,'upgradeLog');
       if(onSucc != null) onSucc(list.data.operationResult,_);
       
     }, onFail);
@@ -112,7 +112,7 @@ class APIUpdate{
     
     HttpHelper.httpPUT(path, null, (map,_){
 
-      var list = UpdateTaskResp.fromJson(map,'pushAndCancel');
+      var list = UpdateTaskResp.fromJson(map,'upgradeLog');
       if(onSucc != null) onSucc(list.data.operationResult,_);
       
     }, onFail);

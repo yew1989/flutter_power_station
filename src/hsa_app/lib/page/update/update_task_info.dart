@@ -131,12 +131,12 @@ class _UpdateTaskInfoPageState extends LifecycleState<UpdateTaskInfoPage> {
     APIUpdate.cancelUpgradeMission(
       upgradeMissionId : updateTask.deviceUpgradeMissionId,
       onSucc: (msg,_){
-        setState(() {
-          Navigator.pop(context);
-        });
+        if(msg){
+          showToast('成功取消升级任务！');
+        }
       } ,
       onFail: (msg){
-
+        showToast('取消升级任务失败！');
       }
     );
   }

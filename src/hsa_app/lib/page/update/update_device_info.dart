@@ -66,10 +66,15 @@ class _UpdateDeviceInfoPageState extends LifecycleState<UpdateDeviceInfoPage> {
       upgradeFileId : upgradeFileId,
       terminalAddress : terminalAddress,
       onSucc: (msg,_){
-        
+        if(msg){
+          showToast('成功添加升级任务！');
+          eventBird?.emit('TaskReady');
+        }else{
+          showToast('已有正在升级任务！');
+        }
       },
       onFail: (_){
-        
+        showToast('添加升级任务失败！');
       }
     );
   }
@@ -338,9 +343,8 @@ class _UpdateDeviceInfoPageState extends LifecycleState<UpdateDeviceInfoPage> {
                   showAlertViewDouble(
                     context,'确认升级','确认升级文件是否正确?',
                     () {
-                      _pushUpgradeFile(updateFile.upgradeFileId,deviceTerminal.terminalAddress);
                       setState(() {
-                        eventBird?.emit('TaskReady');
+                        _pushUpgradeFile(updateFile.upgradeFileId,deviceTerminal.terminalAddress);
                       });
                     }
                   );

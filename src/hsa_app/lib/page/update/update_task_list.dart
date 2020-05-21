@@ -163,7 +163,6 @@ class _UpdateTaskPageState extends State<UpdateTaskPage> {
         if(mounted) {
           setState(() {
             isLoadFinsh = true;
-            debugPrint(list.toString());
             if(list == null || list?.length == 0) {
               taskCompletedRefreshController.loadNoData();
             }

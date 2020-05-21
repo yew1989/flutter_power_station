@@ -306,15 +306,15 @@ class _UpdateStationListState extends State<UpdateStationList> {
                     SizedBox(height: 24,width: 24,
                       child: isOnline 
                       ? Image.asset('images/home/Home_online_icon.png')
-                      : Image.asset('images/home/Home_offline_icon.png'),
+                      : Image.asset('images/home/Home_offline_icon.png',color:Colors.grey),
                     ),
                     SizedBox(width: 8),
                     Text(isOnline ? '在线' : '离线',style: TextStyle(color: isOnline ?  Colors.white : Colors.grey ,fontSize: 15)),
                     SizedBox(width: 8),
                     SizedBox(
-                      height: 22,
-                      width: 22,
-                      child: Image.asset('images/mine/My_next_btn.png'),
+                      height: 20,
+                      width: 20,
+                      child: Image.asset('images/mine/My_next_btn.png',color: isOnline ? Colors.white : Colors.grey),
                     ),
                   ]
                 ),
