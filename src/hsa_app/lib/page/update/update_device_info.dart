@@ -247,7 +247,7 @@ class _UpdateDeviceInfoPageState extends LifecycleState<UpdateDeviceInfoPage> {
               borderRadius: BorderRadius.all(Radius.circular(8))
             ),
             splashColor: Colors.white,color: HexColor('6699ff'),
-            child: Text('选择文件',style: TextStyle(color: Colors.white,fontSize: 20),), 
+            child: Text(isChoosedFile ? '重新选择' : '选择文件',style: TextStyle(color: Colors.white,fontSize: 20),), 
             onPressed: () {  
               pushToPage(context, 
                 UpdateChooseFilePage(
