@@ -28,11 +28,11 @@ dependencies:
   shared_preferences: 0.5.6+3
   path_provider: 1.6.5
   # 播放器
-  flt_video_player: 0.0.4
+  flutter_ijkplayer: 0.3.5+1
   # 推送
   jpush_flutter: 0.0.13
   # 图表
-  syncfusion_flutter_charts: ^18.1.42
+  syncfusion_flutter_charts: 18.1.42
   # 统计
   lcfarm_flutter_umeng: 0.1.8
   # 状态管理

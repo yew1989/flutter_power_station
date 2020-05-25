@@ -5,7 +5,7 @@ import 'package:hsa_app/components/spinkit_indicator.dart';
 import 'package:hsa_app/config/app_config.dart';
 import 'package:hsa_app/service/umeng_analytics.dart';
 import 'package:hsa_app/theme/theme_gradient_background.dart';
-import 'package:flt_video_player/flt_video_player.dart';
+import 'package:flutter_ijkplayer/flutter_ijkplayer.dart';
 
 class LivePlayerPage extends StatefulWidget {
 
@@ -20,11 +20,9 @@ class LivePlayerPage extends StatefulWidget {
 
 class _LivePlayerPageState extends State<LivePlayerPage> {
 
-  int watingCnt = 45;
+  int watingCnt = 10;
 
   bool isFinished = false;
-
-  VideoPlayerController playerController;
 
   Timer timer;
 
@@ -36,23 +34,14 @@ class _LivePlayerPageState extends State<LivePlayerPage> {
 
   String stationName = '';
 
+  IjkMediaController ijkMediaController = IjkMediaController();
+
   void initUIData() {
     stationName = widget?.stationName ?? '';
     systemName = getSystemName();
-    watingCnt  = getWatinngTimeSecond();
     isFinished = false;
     coolDownCnt = watingCnt;
     loadingText = '直播准备中($watingCnt)';
-  }
-
-  // 获取等待时间
-  int getWatinngTimeSecond() {
-    if (TargetPlatform.iOS == AppConfig.getInstance().platform) {
-      return 15;
-    } else if (TargetPlatform.android == AppConfig.getInstance().platform) {
-      return 45;
-    }
-    return 45;
   }
 
     // 获取等待时间
@@ -64,7 +53,6 @@ class _LivePlayerPageState extends State<LivePlayerPage> {
     }
     return '未知';
   }
-
 
   @override
   void initState() {
@@ -80,7 +68,6 @@ class _LivePlayerPageState extends State<LivePlayerPage> {
     disposeVideoPlayer();
     super.dispose();
   }
-
 
   // 开启定时器
   void startTimer() async {
@@ -100,7 +87,7 @@ class _LivePlayerPageState extends State<LivePlayerPage> {
   }
 
   // 初始化播放器
-  void initVideoPlayers() {
+  void initVideoPlayers() async {
       final playUrl  = widget?.playUrl ?? '';
 
       debugPrint('📺直播流:' + playUrl);
@@ -112,29 +99,32 @@ class _LivePlayerPageState extends State<LivePlayerPage> {
         });
         return;
       }
-      playerController = VideoPlayerController.path(playUrl)
-        ..initialize().then((_) {
-          Future.delayed(Duration(seconds: watingCnt), () {
-            setState(() {
-              isFinished = true;
-            });
-          });
-          startTimer();
-        });
-    } 
 
+      ijkMediaController.setNetworkDataSource(playUrl);
+      ijkMediaController.setAutoPlay();
+      startTimer();
+
+      await Future.delayed(Duration(seconds: watingCnt));
+      if(!mounted) return;
+      ijkMediaController.play();
+      
+      setState(() {
+         isFinished = true;
+      });
+  }
+      
   void disposeVideoPlayer() {
     timer?.cancel();
-    playerController?.dispose();
+    ijkMediaController?.dispose();
   }
 
   // 播放器组件
   Widget playerWidget(String playUrl) {
     return Container(
       padding: EdgeInsets.symmetric(vertical: 10),
-        child: AspectRatio(aspectRatio: 4 / 3,child: isFinished == false ? 
-        SpinkitIndicator(title: loadingText, subTitle: '请稍后') 
-        : VideoPlayer(playerController)));
+        child: AspectRatio(aspectRatio: 4 / 3,child: 
+        isFinished ? IjkPlayer(mediaController: ijkMediaController) 
+        : SpinkitIndicator(title: loadingText, subTitle: '请稍后')));
   }
 
   @override
