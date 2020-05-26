@@ -5,7 +5,7 @@ import 'package:hsa_app/api/share_instance.dart';
 import 'package:hsa_app/page/framework/root_page.dart';
 import 'package:hsa_app/service/umeng_analytics.dart';
 import 'package:hsa_app/theme/theme_gradient_background.dart';
-import 'package:hsa_app/util/share.dart';
+import 'package:hsa_app/util/share_manager.dart';
 import 'package:ovprogresshud/progresshud.dart';
 import 'package:native_color/native_color.dart';
 

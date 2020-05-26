@@ -1,3 +1,4 @@
+import 'package:hsa_app/util/uuid.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ShareManager {
@@ -10,6 +11,8 @@ class ShareManager {
   String userPassword = '';
   // 用户账号名称
   String userName = '';
+  // UUID
+  String uuid = '';
 
   factory ShareManager() =>_getInstance();
   static ShareManager get instance => _getInstance();
@@ -25,7 +28,7 @@ class ShareManager {
   ShareManager._internal();
   
   static initConfig() async {
-    var token = await ShareManager().loadToken();
+    final token = await ShareManager().loadToken();
     ShareManager._getInstance().token = token;
   }
 
@@ -44,21 +47,22 @@ class ShareManager {
 
   Future<String> loadToken() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    var token = prefs.getString('Token') ?? '';
+    final token = prefs.getString('Token') ?? '';
     ShareManager.instance.token = token;
     return token;
   }
 
-  // 读写用户名称
+  // 写用户名称
   void saveUserName(String userName) async {
    ShareManager.instance.userName = userName;
    SharedPreferences prefs = await SharedPreferences.getInstance();
    await prefs.setString('UserName',userName);
   }
 
+  // 读用户名称
   Future<String> loadUserName() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    var userName = prefs.getString('UserName') ?? '';
+    final userName = prefs.getString('UserName') ?? '';
     ShareManager.instance.userName = userName;
     return userName;
   }
@@ -72,7 +76,7 @@ class ShareManager {
 
   Future<String> loadUserPassword() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    var password = prefs.getString('UserPassword') ?? '';
+    final password = prefs.getString('UserPassword') ?? '';
     ShareManager.instance.userPassword = userPassword;
     return password;
   }
@@ -87,12 +91,22 @@ class ShareManager {
   // 记住密码状态读取
   Future<bool> loadIsSavePassword() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    var isSavePassword = prefs.getBool('IsSavePassword') ?? false;
+    final isSavePassword = prefs.getBool('IsSavePassword') ?? false;
     ShareManager.instance.isSavePassword = isSavePassword;
     return isSavePassword;
   }
 
-
+  // UUID读取
+  Future<String> loadUUID() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    final uuid = prefs.getString('UUID') ?? '';
+    ShareManager.instance.uuid = uuid;
+    if(uuid.length > 0) return uuid;
+    final newUUID = UUID().create();
+    await prefs.setString('UUID', newUUID);
+    ShareManager.instance.uuid = newUUID;
+    return newUUID;
+  }
 
 
 }

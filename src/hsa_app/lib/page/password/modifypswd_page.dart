@@ -4,7 +4,7 @@ import 'package:hsa_app/config/app_theme.dart';
 import 'package:hsa_app/service/umeng_analytics.dart';
 import 'package:hsa_app/theme/theme_gradient_background.dart';
 import 'package:hsa_app/components/public_tool.dart';
-import 'package:hsa_app/util/share.dart';
+import 'package:hsa_app/util/share_manager.dart';
 import 'package:native_color/native_color.dart';
 
 class ModifyPswdPage extends StatefulWidget {

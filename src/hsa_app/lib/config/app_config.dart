@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:hsa_app/api/leancloud/leancloud_api.dart';
 import 'package:hsa_app/model/model/package.dart';
+import 'package:hsa_app/util/share_manager.dart';
 import 'package:package_info/package_info.dart';
 
 class AppConfig {
@@ -10,7 +11,8 @@ class AppConfig {
   String localDisplayVersionString    = '';
   int    localBuildVersion            = 0;
   String platform;
-  
+  String uuid;
+
   // 设备召测的时间间隔(默认值)
   int deviceQureyTimeInterval;
   // 电站概要页动画播放时间持续时间
@@ -26,6 +28,8 @@ class AppConfig {
     AppConfig.getInstance().deviceQureyTimeInterval = 5;
     AppConfig.getInstance().stationPageAnimationDuration = 5;
     AppConfig.getInstance().runtimePageAnimationDuration = 5;
+    AppConfig.getInstance().uuid = await ShareManager().loadUUID();
+    debugPrint('🆔 UUID:' + AppConfig.getInstance().uuid);
   }
 
   void localVersion() async {

@@ -11,12 +11,11 @@ import 'package:hsa_app/page/engineering/engineering_mode.dart';
 import 'package:hsa_app/page/login/login_page.dart';
 import 'package:hsa_app/page/search/search_page.dart';
 import 'package:hsa_app/page/password/modifypswd_page.dart';
-import 'package:hsa_app/page/update/update_root.dart';
 import 'package:hsa_app/service/push/push_api.dart';
 import 'package:hsa_app/service/umeng_analytics.dart';
 import 'package:hsa_app/theme/theme_gradient_background.dart';
 import 'package:hsa_app/components/public_tool.dart';
-import 'package:hsa_app/util/share.dart';
+import 'package:hsa_app/util/share_manager.dart';
 import 'package:native_color/native_color.dart';
 import 'package:url_launcher/url_launcher.dart';
 
