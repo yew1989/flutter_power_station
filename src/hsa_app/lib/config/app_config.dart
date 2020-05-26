@@ -1,5 +1,4 @@
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
 import 'package:hsa_app/api/leancloud/leancloud_api.dart';
 import 'package:hsa_app/model/model/package.dart';
 import 'package:package_info/package_info.dart';
@@ -10,7 +9,7 @@ class AppConfig {
   Package remotePackage = Package();
   String localDisplayVersionString    = '';
   int    localBuildVersion            = 0;
-  TargetPlatform platform;
+  String platform;
   
   // 设备召测的时间间隔(默认值)
   int deviceQureyTimeInterval;
@@ -23,7 +22,7 @@ class AppConfig {
     AppConfig.getInstance().env     = env ?? LeanCloudEnv.test;
     AppConfig.getInstance().remotePackage = Package();
     AppConfig.getInstance().localVersion();
-    AppConfig.getInstance().platform = defaultTargetPlatform;
+    AppConfig.getInstance().platform = defaultTargetPlatform == TargetPlatform.iOS ? 'iOS' : 'Android';
     AppConfig.getInstance().deviceQureyTimeInterval = 5;
     AppConfig.getInstance().stationPageAnimationDuration = 5;
     AppConfig.getInstance().runtimePageAnimationDuration = 5;

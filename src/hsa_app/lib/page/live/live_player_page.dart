@@ -38,27 +38,17 @@ class _LivePlayerPageState extends State<LivePlayerPage> {
 
   void initUIData() {
     stationName = widget?.stationName ?? '';
-    systemName = getSystemName();
+    systemName = AppConfig.getInstance().platform;
     isFinished = false;
     coolDownCnt = watingCnt;
     loadingText = '直播准备中($watingCnt)';
   }
 
-    // 获取等待时间
-  String getSystemName() {
-    if (TargetPlatform.iOS == AppConfig.getInstance().platform) {
-      return '苹果';
-    } else if (TargetPlatform.android == AppConfig.getInstance().platform) {
-      return '安卓';
-    }
-    return '未知';
-  }
-
   @override
   void initState() {
     UMengAnalyticsService.enterPage('实况直播');
-    initVideoPlayers();
     initUIData();
+    initVideoPlayers();
     super.initState();
   }
 
@@ -70,7 +60,7 @@ class _LivePlayerPageState extends State<LivePlayerPage> {
   }
 
   // 开启定时器
-  void startTimer() async {
+  void startDisplayTimer() async {
     timer = Timer.periodic(Duration(seconds: 1), (timer) {
       coolDownCnt--;
 
@@ -100,14 +90,12 @@ class _LivePlayerPageState extends State<LivePlayerPage> {
         return;
       }
 
-      ijkMediaController.setNetworkDataSource(playUrl);
       ijkMediaController.setAutoPlay();
-      startTimer();
-
+      ijkMediaController.setNetworkDataSource(playUrl,autoPlay: true);
+      startDisplayTimer();
       await Future.delayed(Duration(seconds: watingCnt));
       if(!mounted) return;
       ijkMediaController.play();
-      
       setState(() {
          isFinished = true;
       });
@@ -122,9 +110,9 @@ class _LivePlayerPageState extends State<LivePlayerPage> {
   Widget playerWidget(String playUrl) {
     return Container(
       padding: EdgeInsets.symmetric(vertical: 10),
-        child: AspectRatio(aspectRatio: 4 / 3,child: 
-        isFinished ? IjkPlayer(mediaController: ijkMediaController) 
-        : SpinkitIndicator(title: loadingText, subTitle: '请稍后')));
+      child: AspectRatio(aspectRatio: 4 / 3,
+      child: isFinished ? IjkPlayer(mediaController: ijkMediaController) 
+      : SpinkitIndicator(title: loadingText, subTitle: '请稍后')));
   }
 
   @override
