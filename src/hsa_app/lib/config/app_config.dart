@@ -1,12 +1,18 @@
+/*
+ * @Author: your name
+ * @Date: 2020-05-26 11:15:38
+ * @LastEditTime: 2020-05-27 16:49:22
+ * @LastEditors: your name
+ * @Description: In User Settings Edit
+ * @FilePath: /hsa_app/lib/config/app_config.dart
+ */ 
 import 'package:flutter/foundation.dart';
-import 'package:hsa_app/api/leancloud/leancloud_api.dart';
 import 'package:hsa_app/model/model/package.dart';
 import 'package:hsa_app/util/share_manager.dart';
 import 'package:package_info/package_info.dart';
 
 class AppConfig {
 
-  LeanCloudEnv env;
   Package remotePackage = Package();
   String localDisplayVersionString    = '';
   int    localBuildVersion            = 0;
@@ -20,8 +26,8 @@ class AppConfig {
   // 运行参数页动画播放时间持续时间
   int runtimePageAnimationDuration;
 
-  static initConfig(LeanCloudEnv env) async {
-    AppConfig.getInstance().env     = env ?? LeanCloudEnv.test;
+  static initConfig() async {
+
     AppConfig.getInstance().remotePackage = Package();
     AppConfig.getInstance().localVersion();
     AppConfig.getInstance().platform = defaultTargetPlatform == TargetPlatform.iOS ? 'iOS' : 'Android';

@@ -1,15 +1,15 @@
-import 'package:hsa_app/api/leancloud/leancloud_api.dart';
 import 'package:hsa_app/config/app_config.dart';
 import 'package:lcfarm_flutter_umeng/lcfarm_flutter_umeng.dart';
 
 class UMengAnalyticsService {
 
   static String getChannelName() {
-    var env = AppConfig.getInstance().env;
-    if(env == LeanCloudEnv.dev) return '开发';
-    if(env == LeanCloudEnv.test) return '测试';
-    if(env == LeanCloudEnv.product) return '生产';
-    return '未知';
+    // var env = AppConfig.getInstance().env;
+    // if(env == LeanCloudEnv.dev) return '开发';
+    // if(env == LeanCloudEnv.test) return '测试';
+    // if(env == LeanCloudEnv.product) return '生产';
+    // return '未知';
+    return '生产';
   }
 
   static void init() {

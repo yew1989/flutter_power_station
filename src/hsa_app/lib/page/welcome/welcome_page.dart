@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:hsa_app/api/leancloud/leancloud_api.dart';
 import 'package:hsa_app/config/app_config.dart';
 import 'package:hsa_app/model/model/package.dart';
 import 'package:hsa_app/page/login/login_page.dart';
@@ -75,7 +74,7 @@ class _WelcomePageState extends State<WelcomePage> with WidgetsBindingObserver {
 
   // 进入App
   void enterApp(BuildContext context) async {
-    await Future.delayed(Duration(milliseconds: 500));
+    await Future.delayed(Duration(milliseconds: 3));
     pushToPageAndKill(context,LoginPage());
   }
 
@@ -93,25 +92,29 @@ class _WelcomePageState extends State<WelcomePage> with WidgetsBindingObserver {
 
   // 检测是否是生产环境
   bool isProductionEnv() {
-    return LeanCloudEnv.product == AppConfig.getInstance().env;
+    // return LeanCloudEnv.product == AppConfig.getInstance().env;
+    return true;
   }
 
   // 获取版本管理信息
   void requestPackageInfo(BuildContext context) {
     // 获取版本信息
-    LeanCloudAPI.getPackageVersionInfo(AppConfig.getInstance().env,(Package pack, String msg) {
-      setState(() {
-        displayVersion   = pack?.displayVersion ?? '';
-        displayBuild     = pack?.displayBuild ?? '';
-      });
-      upgradeWorkFlow(context,pack);
-    }, (String msg) {
-      debugPrint(' ❌ 版本信息文件获取失败 ');
-      if(msg == '请求错误') {
-         Progresshud.showInfoWithStatus('请检查网络');
-         retryRequestPackageInfo(context);
-      }
-    });
+    // LeanCloudAPI.getPackageVersionInfo(AppConfig.getInstance().env,(Package pack, String msg) {
+    //   setState(() {
+    //     displayVersion   = pack?.displayVersion ?? '';
+    //     displayBuild     = pack?.displayBuild ?? '';
+    //   });
+    //   upgradeWorkFlow(context,pack);
+    // }, (String msg) {
+    //   debugPrint(' ❌ 版本信息文件获取失败 ');
+    //   if(msg == '请求错误') {
+    //      Progresshud.showInfoWithStatus('请检查网络');
+    //      retryRequestPackageInfo(context);
+    //   }
+    // });
+
+    // 直接进入APP
+    enterApp(context);
   }
 
   // 重试获取版本信息
@@ -136,7 +139,7 @@ class _WelcomePageState extends State<WelcomePage> with WidgetsBindingObserver {
   @override
   void initState() {
     super.initState();
-    DeviceInspector.inspectDevice(context);
+    // DeviceInspector.inspectDevice(context);
     requestPackageInfo(context);
     initUmengService();
     initJpush();
