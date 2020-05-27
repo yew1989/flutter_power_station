@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:hsa_app/api/operation_func_code/operation_manager.dart';
+import 'package:hsa_app/api/operation_helper.dart';
 import 'package:hsa_app/config/app_theme.dart';
 import 'package:hsa_app/page/update/update_root.dart';
 import 'package:hsa_app/theme/theme_gradient_background.dart';
@@ -100,7 +100,7 @@ class _EngineeringModePageState extends State<EngineeringModePage> {
               primary: false,
               children: [
                 SizedBox(height: 20,),
-                OperationManager.getInstance().haveRemoteUpgrade ?  itemTile('设备升级', 'images/update/Update.png', () =>  onTapUpdateStations(context)) : Container(),
+                OperationHelper.getInstance().haveRemoteUpgrade ?  itemTile('设备升级', 'images/update/Update.png', () =>  onTapUpdateStations(context)) : Container(),
                 // 分割线(最后一条)
                 SizedBox(height: 0.3,child: Container(color:Colors.white24)),
               ],
