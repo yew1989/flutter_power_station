@@ -4,7 +4,7 @@ import 'package:hsa_app/page/dialog/custom_dialog.dart';
 typedef DataPickerOnConfirmCallback(num item);
 
 
-void showNumberPicker(BuildContext context,DataPickerOnConfirmCallback onConfirm,{String title,int current,int max,int decimal}){
+void showNumberPicker(BuildContext context,DataPickerOnConfirmCallback onConfirm,{String title,int current,int max,int decimal,bool isShow,String type}){
   showDialog(
     context: context,
     barrierDismissible: false,
@@ -13,11 +13,13 @@ void showNumberPicker(BuildContext context,DataPickerOnConfirmCallback onConfirm
       current :current,
       max:max,
       decimal:decimal,
+      isShow:isShow,
+      type:type,
       onChanged: (value){
         if(onConfirm != null) onConfirm(value);
       },
-    )
-    );
+    ),
+  );
 }
 
 

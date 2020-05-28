@@ -3,8 +3,10 @@ import 'package:hsa_app/api/agent/agent_task.dart';
 import 'package:hsa_app/components/public_tool.dart';
 import 'package:hsa_app/model/model/all_model.dart';
 import 'package:hsa_app/page/dialog/control_model_dialog.dart';
+import 'package:hsa_app/page/dialog/device_control_dialog.dart';
 import 'package:hsa_app/page/dialog/power_control_dialog.dart';
 import 'package:hsa_app/page/more/more_page.dart';
+import 'package:hsa_app/util/share.dart';
 import 'package:ovprogresshud/progresshud.dart';
 
 class RunTimeOperationBoard extends StatefulWidget {
@@ -392,41 +394,34 @@ class _RunTimeOperationBoardState extends State<RunTimeOperationBoard> {
                                 children: <Widget>[
                                   // 设备控制
                                   Center(
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                    crossAxisAlignment: CrossAxisAlignment.center,
-                                    children: <Widget>[
-                                      Text('设备控制',style: TextStyle(color: Colors.white, fontSize: 15)),
-                                      SizedBox(
-                                        height: 14,
-                                        width: 14,
-                                        child: Image.asset('images/runtime/Time_list_icon.png'),
-                                      )
-                                    ],
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                      children: <Widget>[
+                                        Text('设备控制',style: TextStyle(color: Colors.white, fontSize: 15)),
+                                        SizedBox(
+                                          height: 14,
+                                          width: 14,
+                                          child: Image.asset('images/runtime/Time_list_icon.png'),
+                                        )
+                                      ],
+                                    ),
                                   ),
-                                ),
                                 
-                                GestureDetector(
-                                onTap: () {
-
-                                   Progresshud.showInfoWithStatus('功能未开放,尽请期待');
-                                   return;
-
-
-                                  // 暂时屏蔽该项功能
-                                  /*
-                                  showDialog(
-                                    context: context,
-                                    barrierDismissible: false,
-                                    builder: (_) => DeviceControlDialog((taskName){
-                                      if(widget.onSholdRequestRemoteCommand != null) {
-                                        widget.onSholdRequestRemoteCommand(taskName,null);
-                                      }
-                                  }));
-                                  */
-
-                                },
-                              ),
+                                  GestureDetector(
+                                    onTap: () async {
+                                      await ShareManager.instance.loadIsSaveEquipmentControl() ? 
+                                      showDialog(
+                                        context: context,
+                                        barrierDismissible: false,
+                                        builder: (_) => DeviceControlDialog((taskName){
+                                          if(widget.onSholdRequestRemoteCommand != null) {
+                                            widget.onSholdRequestRemoteCommand(taskName,null);
+                                          }
+                                      }))
+                                      :Progresshud.showInfoWithStatus('功能未开放,尽请期待');
+                                    },
+                                  ),
                                 ],
                               ),
                             ),

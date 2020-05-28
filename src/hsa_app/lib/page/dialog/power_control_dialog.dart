@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:hsa_app/api/operation_func_code/operation_manager.dart';
 import 'package:hsa_app/components/data_picker.dart';
+import 'package:hsa_app/util/share.dart';
 
 typedef PowControlDialogOnConfirmActivePower = void Function(num activePower);
 typedef PowControlDialogOnConfirmPowerFactor = void Function(num powerFactor);
@@ -31,16 +33,30 @@ class _PowerControlDialogWidgetState extends State<PowerControlDialogWidget> {
   int powerMax;
   int currentPower;
   double currentFactor;
+  bool editBox = false;
+  bool isShow = false;
   
 
   @override
   void initState() {
+    super.initState();
     powerMax = widget.powerMax ?? 0;
     powerMax = (powerMax * 1.2).toInt();
     currentPower = widget?.currentPower ?? 0;
     currentPower = currentPower > powerMax  ? powerMax : currentPower;
     currentFactor = widget?.currentFactor ?? 0.0;
-    super.initState();
+    init();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
+  void init() async {
+    this.editBox = OperationManager.getInstance().haveModifyPowerWithEditBox;
+    this.isShow = await ShareManager.instance.loadIsSaveEditBox();
+    setState(() {});
   }
 
   @override
@@ -51,6 +67,8 @@ class _PowerControlDialogWidgetState extends State<PowerControlDialogWidget> {
       currentFactor: currentFactor,
       onConfirmActivePower: widget.onConfirmActivePower,
       onConfirmPowerFactor: widget.onConfirmPowerFactor,
+      editBox: editBox,
+      isShow: isShow,
     );
   }
 }
@@ -60,6 +78,8 @@ class PowerControlDialog extends Dialog {
   final int powerMax;
   final int currentPower;
   final double currentFactor;
+  final bool editBox;
+  final bool isShow;
   
   final PowControlDialogOnConfirmActivePower onConfirmActivePower;
   final PowControlDialogOnConfirmPowerFactor onConfirmPowerFactor;
@@ -69,7 +89,9 @@ class PowerControlDialog extends Dialog {
       this.currentPower,
       this.currentFactor,
       this.onConfirmActivePower,
-      this.onConfirmPowerFactor});
+      this.onConfirmPowerFactor,
+      this.editBox,
+      this.isShow});
 
   // 功率因数调控
   Widget powerFactorTile(BuildContext context) {
@@ -90,16 +112,19 @@ class PowerControlDialog extends Dialog {
               ),
             ),
             GestureDetector(
-              onTap: () {
+              onTap: ()  async {
                 Navigator.of(context).pop();
+                
                 showNumberPicker(
                   context,  (num data) {
                     if (onConfirmPowerFactor != null) onConfirmPowerFactor(data);
                   },
-                  title: '请选择功率因数',
+                  title: '请'+(editBox ? '输入' : '选择')+'功率因数',
                   current : (currentFactor*100).toInt(),
                   max : 100,
                   decimal:2,
+                  type : 'powerFactor',
+                  isShow: editBox ? isShow : false,
                 );
               },
             ),
@@ -134,10 +159,12 @@ class PowerControlDialog extends Dialog {
                   context,  (num data) {
                     if (onConfirmActivePower != null) onConfirmActivePower(data);
                   },
-                  title: '请选择有功功率(kW)',
+                  title: '请'+(editBox ? '输入' : '选择')+'有功功率(kW)',
                   current : currentPower,
                   max : powerMax,
                   decimal:0,
+                  type : 'activePower',
+                  isShow: editBox ? isShow : false,
                 );
               },
             ),

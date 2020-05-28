@@ -11,6 +11,11 @@ class ShareManager {
   // 用户账号名称
   String userName = '';
 
+  //开启设备控制
+  bool equipmentControl = false;
+  //开启输入框调功
+  bool editBox = false;
+
   factory ShareManager() =>_getInstance();
   static ShareManager get instance => _getInstance();
   static ShareManager _getInstance() {
@@ -94,5 +99,34 @@ class ShareManager {
 
 
 
+  // 记住设备控制状态保存
+  void saveIsSaveEquipmentControl(bool equipmentControl) async{
+   ShareManager.instance.equipmentControl = equipmentControl;
+   SharedPreferences prefs = await SharedPreferences.getInstance();
+   await prefs.setBool('equipmentControl',equipmentControl);
+  }
+
+  // 记住设备控制状态读取
+  Future<bool> loadIsSaveEquipmentControl() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    var equipmentControl = prefs.getBool('equipmentControl') ?? false;
+    ShareManager.instance.equipmentControl = equipmentControl;
+    return equipmentControl;
+  }
+
+  // 记住开启输入框调功保存
+  void saveIsSaveEditBox(bool editBox) async{
+   ShareManager.instance.editBox = editBox;
+   SharedPreferences prefs = await SharedPreferences.getInstance();
+   await prefs.setBool('editBox',editBox);
+  }
+
+  // 记住开启输入框调功读取
+  Future<bool> loadIsSaveEditBox() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    var editBox = prefs.getBool('editBox') ?? false;
+    ShareManager.instance.editBox = editBox;
+    return editBox;
+  }
 
 }
