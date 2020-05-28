@@ -1,6 +1,5 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/services.dart';
-import 'package:hsa_app/api/leancloud/leancloud_api.dart';
 import 'package:hsa_app/config/app_config.dart';
 import 'package:syncfusion_flutter_core/core.dart';
 
@@ -8,7 +7,7 @@ import 'package:syncfusion_flutter_core/core.dart';
 class BootApp {
   static void boot(){
     // 生产环境
-    AppConfig.initConfig(LeanCloudEnv.product);
+    AppConfig.initConfig();
     // 注册 SyncfusionLicense
     SyncfusionLicense.registerLicense("NT8mJyc2IWhia31ifWN9Z2FoYmF8YGJ8ampqanNiYmlmamlmanMDHmhia2NnZWNmYGJqYBNiZWB9MDw+");
     // 外网连接尝试

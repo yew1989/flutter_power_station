@@ -94,9 +94,11 @@ class _UpdateTaskPageState extends State<UpdateTaskPage> {
       taskProcessingStates,
       AppConfig.getInstance().deviceQureyTimeInterval, 
       (updateTaskList) { 
-        setState(() {
-          this.taskProcessingList = updateTaskList;
-        });
+        if(mounted) {
+          setState(() {
+            this.taskProcessingList = updateTaskList;
+          });
+        }
       });
   }
 

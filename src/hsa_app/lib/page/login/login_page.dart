@@ -5,7 +5,7 @@ import 'package:hsa_app/api/share_instance.dart';
 import 'package:hsa_app/page/framework/root_page.dart';
 import 'package:hsa_app/service/umeng_analytics.dart';
 import 'package:hsa_app/theme/theme_gradient_background.dart';
-import 'package:hsa_app/util/share.dart';
+import 'package:hsa_app/util/share_manager.dart';
 import 'package:ovprogresshud/progresshud.dart';
 import 'package:native_color/native_color.dart';
 
@@ -86,9 +86,16 @@ class LoginPageState extends State<LoginPage> {
 
   }
 
+  double bottomPostion() {
+    final height = MediaQuery.of(context).size.height;
+    if(height <= 667.0) return 60;
+    if(height <= 736.0) return 90;
+    return 120;
+  }
+
   @override
   Widget build(BuildContext context) {
-
+    
     return ThemeGradientBackground(
       child: Scaffold(
         backgroundColor: Colors.transparent,
@@ -114,7 +121,7 @@ class LoginPageState extends State<LoginPage> {
 
           // 控件群 
           Positioned(
-            bottom: 122,
+            bottom: bottomPostion(),
             left: 0,
             right: 0,
             child: SingleChildScrollView(

@@ -6,7 +6,7 @@ import 'package:hsa_app/page/dialog/control_model_dialog.dart';
 import 'package:hsa_app/page/dialog/device_control_dialog.dart';
 import 'package:hsa_app/page/dialog/power_control_dialog.dart';
 import 'package:hsa_app/page/more/more_page.dart';
-import 'package:hsa_app/util/share.dart';
+import 'package:hsa_app/util/share_manager.dart';
 import 'package:ovprogresshud/progresshud.dart';
 
 class RunTimeOperationBoard extends StatefulWidget {

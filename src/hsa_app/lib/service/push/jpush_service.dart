@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:hsa_app/api/leancloud/leancloud_api.dart';
 import 'package:hsa_app/api/share_instance.dart';
-import 'package:hsa_app/config/app_config.dart';
 import 'package:hsa_app/util/device_inspector.dart';
 import 'package:jpush_flutter/jpush_flutter.dart';
 
@@ -19,7 +17,8 @@ class JpushService {
     }
 
     var jpush = JPush();
-    final isProduction = AppConfig.getInstance().env == LeanCloudEnv.product ? true : false;
+    // final isProduction = AppConfig.getInstance().env == LeanCloudEnv.product ? true : false;
+    final isProduction = false;
     
     jpush.setup(appKey: jpushAppKey, production: isProduction,debug: ! isProduction,channel: channelName);
     jpush.applyPushAuthority(NotificationSettingsIOS(sound: true,alert: true,badge: true));

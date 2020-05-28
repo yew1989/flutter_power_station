@@ -1,11 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:hsa_app/api/operation_func_code/operation_manager.dart';
+import 'package:hsa_app/api/operation_helper.dart';
 import 'package:hsa_app/config/app_theme.dart';
 import 'package:hsa_app/page/update/update_root.dart';
 import 'package:hsa_app/theme/theme_gradient_background.dart';
 import 'package:hsa_app/components/public_tool.dart';
-import 'package:hsa_app/util/share.dart';
+import 'package:hsa_app/util/share_manager.dart';
 
 
 class EngineeringModePage extends StatefulWidget {
@@ -32,12 +32,12 @@ class _EngineeringModePageState extends State<EngineeringModePage> {
   }
 
   void init() async {
-    if(OperationManager.getInstance().haveOpenEquipmentControl) {
+    if(OperationHelper.getInstance().haveOpenEquipmentControl) {
       this.equipmentControl = await ShareManager.instance.loadIsSaveEquipmentControl();
     }else{
       ShareManager.instance.saveIsSaveEquipmentControl(false);
     }
-    if(OperationManager.getInstance().haveModifyPowerWithEditBox) {
+    if(OperationHelper.getInstance().haveModifyPowerWithEditBox) {
       this.editBox = await ShareManager.instance.loadIsSaveEditBox();
     }else{
       ShareManager.instance.saveIsSaveEditBox(false);
@@ -221,11 +221,11 @@ class _EngineeringModePageState extends State<EngineeringModePage> {
               children: [
                 SizedBox(height: 20,),
                 //工程模式
-                OperationManager.getInstance().haveRemoteUpgrade ?  itemTile('设备升级', 'images/update/Update.png', () =>  onTapUpdateStations(context)) : Container(),
+                OperationHelper.getInstance().haveRemoteUpgrade ?  itemTile('设备升级', 'images/update/Update.png', () =>  onTapUpdateStations(context)) : Container(),
                 //开启设备控制
-                OperationManager.getInstance().haveOpenEquipmentControl ?  equipmentControlTile('开启设备控制', 'images/engineer/Equipment_control.png') : Container(),
+                OperationHelper.getInstance().haveOpenEquipmentControl ?  equipmentControlTile('开启设备控制', 'images/engineer/Equipment_control.png') : Container(),
                 //开启输入框调功
-                OperationManager.getInstance().haveModifyPowerWithEditBox ?  editBoxTile('开启输入框调功', 'images/engineer/Edit_box.png') : Container(),
+                OperationHelper.getInstance().haveModifyPowerWithEditBox ?  editBoxTile('开启输入框调功', 'images/engineer/Edit_box.png') : Container(),
                 // 分割线(最后一条)
                 SizedBox(height: 0.3,child: Container(color:Colors.white24)),
               ],

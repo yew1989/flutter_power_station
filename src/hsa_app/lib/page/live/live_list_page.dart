@@ -5,6 +5,7 @@ import 'package:hsa_app/model/model/all_model.dart';
 import 'package:hsa_app/page/live/live_player_page.dart';
 import 'package:hsa_app/service/umeng_analytics.dart';
 import 'package:hsa_app/theme/theme_gradient_background.dart';
+import 'package:hsa_app/util/device_inspector.dart';
 
 class LiveListPage extends StatefulWidget {
   
@@ -59,7 +60,9 @@ class _LiveListPageState extends State<LiveListPage> {
   Widget liveListTile(BuildContext context,int index){
 
     final liveStr = openLiveList[index].liveLinkName;
-    final liveUrl = openLiveList[index].m3u8Url;
+    final rtmpUrl = openLiveList[index].rtmpUrl ?? '';
+    final m3u8Url = openLiveList[index].m3u8Url ?? '';
+    final liveUrl =  rtmpUrl.length > 0 ? rtmpUrl : m3u8Url ;
 
     return Material(
       color: Colors.transparent,
@@ -98,6 +101,10 @@ class _LiveListPageState extends State<LiveListPage> {
 
   // 点击到播放器
   void onTapPlayerUrl(BuildContext context,String title,String playUrl,String stationName) async {
+    if(DeviceInfo.getInstance().isSimulator == true) {
+      showToast('模拟器不支持视频播放');
+      return;
+    }
     await Future.delayed(Duration(milliseconds: 500));
     pushToPage(context, LivePlayerPage(playUrl: playUrl,title: title,stationName: stationName));
   }

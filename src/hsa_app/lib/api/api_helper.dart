@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:hsa_app/api/share_instance.dart';
 import 'package:hsa_app/event/app_event.dart';
 import 'package:hsa_app/event/event_bird.dart';
-import 'package:hsa_app/util/share.dart';
+import 'package:hsa_app/util/share_manager.dart';
 
 // 失败回调
 typedef HttpFailCallback = void Function(String msg);

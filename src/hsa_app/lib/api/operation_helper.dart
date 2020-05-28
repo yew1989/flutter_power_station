@@ -1,22 +1,23 @@
-import 'package:hsa_app/api/operation_func_code/operation_func_code_data.dart';
+import 'package:hsa_app/model/model/all_model.dart';
 
-class OperationManager {
+// 权限获取逻辑处理封装类
+class OperationHelper {
 
-  OperationManager._();
-  static OperationManager _instance;
-  static OperationManager getInstance() {
+  OperationHelper._();
+  static OperationHelper _instance;
+  static OperationHelper getInstance() {
     if (_instance == null) {
-      _instance = OperationManager._();
-      _instance.data = OperationFuncCodeData();
+      _instance = OperationHelper._();
+      _instance.operation = Operation();
     }
     return _instance;
   }
-  OperationFuncCodeData data;
+  Operation operation;
 
   // 是否有某个功能的权限码权限
   bool _havePermission(String input) {
-    if(data.accountAllRolesContainedFuncCodes == null) return false;
-    for(final code in data.accountAllRolesContainedFuncCodes) {
+    if(operation.accountAllRolesContainedFuncCodes == null) return false;
+    for(final code in operation.accountAllRolesContainedFuncCodes) {
       if(code.compareTo(input) == 0) return true;
     }
     return false;
@@ -24,8 +25,8 @@ class OperationManager {
 
   // 是否有某个功能的权限码权限(带电站号)
   bool _havePermissionWithStation(String stationNo,String input) {
-     if(data.accountAllRolesContainedFuncCodes == null) return false;
-     final dict = data.hyStationContainedFuncCodeDictionary;
+     if(operation.accountAllRolesContainedFuncCodes == null) return false;
+     final dict = operation.hyStationContainedFuncCodeDictionary;
      if(dict != null) {
        for (String key in dict.keys) {
          final isHit = key.compareTo(stationNo) == 0; 
@@ -39,7 +40,7 @@ class OperationManager {
          }
        }
      }
-     for(final code in data.accountAllRolesContainedFuncCodes) {
+     for(final code in operation.accountAllRolesContainedFuncCodes) {
        if(code.compareTo(input) == 0) return true;
      }
      return false;
