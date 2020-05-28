@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:hsa_app/api/operation_func_code/operation_manager.dart';
+import 'package:hsa_app/api/operation_helper.dart';
 import 'package:hsa_app/components/data_picker.dart';
-import 'package:hsa_app/util/share.dart';
+import 'package:hsa_app/util/share_manager.dart';
 
 typedef PowControlDialogOnConfirmActivePower = void Function(num activePower);
 typedef PowControlDialogOnConfirmPowerFactor = void Function(num powerFactor);
@@ -54,7 +54,7 @@ class _PowerControlDialogWidgetState extends State<PowerControlDialogWidget> {
   }
 
   void init() async {
-    this.editBox = OperationManager.getInstance().haveModifyPowerWithEditBox;
+    this.editBox = OperationHelper.getInstance().haveModifyPowerWithEditBox;
     this.isShow = await ShareManager.instance.loadIsSaveEditBox();
     setState(() {});
   }
