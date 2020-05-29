@@ -570,6 +570,8 @@ class _RuntimePageState extends LifecycleState<RuntimePage> with TickerProviderS
 
   @override
   Widget build(BuildContext context) {
+
+    super.build(context);
     
     MediaQueryData mq = MediaQuery.of(context);
     final deviceWidth = mq.size.width;

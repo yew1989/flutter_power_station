@@ -1,6 +1,5 @@
 // 获取实时参数定时任务
 import 'dart:async';
-import 'package:flutter/material.dart';
 import 'package:hsa_app/api/agent/agent.dart';
 import 'package:hsa_app/api/apis/api_update.dart';
 import 'package:hsa_app/model/model/all_model.dart';
