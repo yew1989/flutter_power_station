@@ -22,9 +22,9 @@ typedef HttpSuccCallback = void Function(dynamic data, String msg);
 class HttpHelper {
 
   // 开启代理模式,允许抓包
-  static final isProxyModeOpen = false;
+  static final isProxyModeOpen = true;
   // 代理主机地址
-  static final proxyHost = '192.168.31.208:8888';
+  static final proxyHost = '192.168.31.8:8888';
   // 接受超时时间
   static final recvTimeOutSeconds = 10000;
   // 发送超时时间
@@ -104,24 +104,28 @@ class HttpHelper {
   }
 
   // POST 请求
-  static void httpPOST(String path, dynamic param, HttpSuccMapCallback onSucc,HttpFailCallback onFail ,{Map<String,dynamic> header}) async {
+  static void httpPOST(String path, dynamic param, HttpSuccMapCallback onSucc,HttpFailCallback onFail ,{Map<String,dynamic> header,bool jumpAuthChek}) async {
 
     // 网络检测
     final isReachable = await isReachablity();
     if (isReachable == false) {
       if (onFail != null) {
-        if(onFail != null)onFail('网络异常,请检查网络');
+        if(onFail != null) onFail('网络异常,请检查网络');
+        return;
+      }
+    }
+    
+    // 允许跳过校验
+    if(jumpAuthChek == null || jumpAuthChek == false) {
+        // Auth检测
+         if(ShareInstance.getInstance().auth.length == null || ShareInstance.getInstance().auth.length == 0) {
+         if(onFail != null) onFail('Auth为空,请先登录');
         return;
       }
     }
 
-    // Auth检测
-    if(ShareInstance.getInstance().auth.length == null || ShareInstance.getInstance().auth.length == 0) {
-      if(onFail != null) onFail('Auth为空,请先登录');
-      return;
-    }
-
     var headers = Map<String, dynamic> ();
+
     // Authorization 拼接
     if(ShareInstance.getInstance().auth.length > 0) {
       headers['Authorization'] = ShareInstance.getInstance().auth;

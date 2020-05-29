@@ -180,6 +180,7 @@ class CustomDialog  extends Dialog {
                   ),
                   onChanged:(String text){
                     _change = double.parse(text);
+                    debugPrint(_change.toString());
                   },
                 )
               ],

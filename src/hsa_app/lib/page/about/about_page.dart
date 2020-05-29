@@ -33,8 +33,8 @@ class _AboutPageState extends State<AboutPage> {
   Widget build(BuildContext context) {
 
     final isIphone5S = MediaQuery.of(context).size.width == 320.0 ? true : false;
-    final displayVersion = AppConfig.getInstance().remotePackage.displayVersion;
-    final displayBuild = AppConfig.getInstance().remotePackage.displayBuild;
+    final displayVersion = AppConfig.getInstance().localDisplayVersionString;
+    final displayBuild = AppConfig.getInstance().displayBuildVersion;
 
     return ThemeGradientBackground(
       child:Scaffold(

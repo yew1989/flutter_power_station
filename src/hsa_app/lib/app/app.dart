@@ -20,6 +20,7 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: '智能电站',
+      theme: ThemeData(primaryColor: Colors.white),
       debugShowCheckedModeBanner: false,
       navigatorObservers: [routeObserver],
       home: WelcomePage(),

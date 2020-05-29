@@ -45,7 +45,8 @@ typedef UpgradeFileListCallback = void Function(List<UpdateFile> upgradeFileList
 typedef UpgradeTaskListCallback = void Function(List<UpdateTask> upgradeTaskList);
 // 升级任务信息
 typedef UpgradeTaskInfoCallback = void Function(UpdateTask upgradeTaskInfo);
-
+// APP发布信息获取
+typedef PublishCallback = void Function(Publish publish);
 
 class API {
 

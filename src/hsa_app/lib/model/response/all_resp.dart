@@ -15,3 +15,4 @@ export 'package:hsa_app/model/response/update_file_type_resp.dart';
 export 'package:hsa_app/model/response/update_file_resp.dart';
 export 'package:hsa_app/model/response/update_task_resp.dart';
 export 'package:hsa_app/model/response/operation_resp.dart';
+export 'package:hsa_app/model/response/publish_resp.dart';

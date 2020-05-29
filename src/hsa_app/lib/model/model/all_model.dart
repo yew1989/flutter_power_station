@@ -19,3 +19,4 @@ export 'package:hsa_app/model/model/statistical_power.dart';
 export 'package:hsa_app/model/model/update_file.dart';
 export 'package:hsa_app/model/model/update_task.dart';
 export 'package:hsa_app/model/model/operation.dart';
+export 'package:hsa_app/model/model/publish.dart';

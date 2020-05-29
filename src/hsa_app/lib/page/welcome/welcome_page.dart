@@ -1,8 +1,9 @@
 import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:hsa_app/api/apis/api_publish.dart';
 import 'package:hsa_app/config/app_config.dart';
-import 'package:hsa_app/model/model/package.dart';
+import 'package:hsa_app/model/model/publish.dart';
 import 'package:hsa_app/page/login/login_page.dart';
 import 'package:hsa_app/service/push/jpush_service.dart';
 import 'package:hsa_app/service/umeng_analytics.dart';
@@ -25,36 +26,36 @@ class _WelcomePageState extends State<WelcomePage> with WidgetsBindingObserver {
   String displayBuild   = '';
 
   // 版本更新工作流
-  void upgradeWorkFlow(BuildContext context,Package package) {
-    if(package == null) {
+  void upgradeWorkFlow(BuildContext context,Publish publish) {
+    if(publish == null) {
       debugPrint(' ❌ 版本信息文件获取失败 Package 为空 ');
       Progresshud.showInfoWithStatus('版本信息文件获取失败');
       return;
     }
-    // 保存包管理信息
-    AppConfig.getInstance().remotePackage = package;
     // 本地版本比远程版本还新,进入App
-    if(isRemoteBiggerThanLocal() == false) {
+    if(isRemoteBiggerThanLocal(publish) == false) {
       enterApp(context);
       return;
     }
     // 强制更新
-    if(isForceUpdate() == true) {
-        VersionManager.showForceUpgradeDialog(context:context, 
-        title:AppConfig.getInstance().remotePackage.upgradeTitle, 
-        content:AppConfig.getInstance().remotePackage.upgradeInfo,
+    if(isForceUpdate(publish) == true) {
+        VersionManager.showForceUpgradeDialog(
+        context:context,
+        title:'发现新版本',
+        content:publish.updateDescription ?? '',
         onTapAction:(){
-          jumpToUpgradeUrl();
+          jumpToUpgradeUrl(publish);
           return;
         });
     }
     // 用户手动选择更新
     else {
-        VersionManager.showManualUpgradeDialog(context:context, 
-        title:AppConfig.getInstance().remotePackage.upgradeTitle, 
-        content:AppConfig.getInstance().remotePackage.upgradeInfo,
+        VersionManager.showManualUpgradeDialog(
+        context:context,
+        title:'发现新版本',
+        content:publish.updateDescription ?? '',
         onTapAction:(){
-          jumpToUpgradeUrl();
+          jumpToUpgradeUrl(publish);
           return;
         },
         onTapCancel: (){
@@ -65,10 +66,9 @@ class _WelcomePageState extends State<WelcomePage> with WidgetsBindingObserver {
   }
 
   // 跳转到URL
-  void jumpToUpgradeUrl() async {
+  void jumpToUpgradeUrl(Publish publish) async {
     await Future.delayed(Duration(milliseconds: 500));
-    final jumpUrl = isProductionEnv() ? AppConfig.getInstance().remotePackage.urlMarket
-    : AppConfig.getInstance().remotePackage.urlWeb;
+    final jumpUrl = publish?.installationPackageUrl ?? '';
     VersionManager.goToUpgradeWebUrl(jumpUrl);
   }
 
@@ -79,49 +79,40 @@ class _WelcomePageState extends State<WelcomePage> with WidgetsBindingObserver {
   }
 
   // 远程版本是否大于本地版本
-  bool isRemoteBiggerThanLocal() {
-    final remoteBuildVersion = AppConfig.getInstance().remotePackage.buildVersion;
+  bool isRemoteBiggerThanLocal(Publish publish) {
+    final remoteBuildVersion = publish?.publishVersion ?? 0;
     final loacalBuildVersion = AppConfig.getInstance().localBuildVersion;
     return remoteBuildVersion > loacalBuildVersion;
   }
 
   // 强制更新
-  bool isForceUpdate() {
-    return AppConfig.getInstance().remotePackage.isForced;
-  }
-
-  // 检测是否是生产环境
-  bool isProductionEnv() {
-    // return LeanCloudEnv.product == AppConfig.getInstance().env;
-    return true;
+  bool isForceUpdate(Publish publish) {
+    return publish?.isForceUpdate ?? false;
   }
 
   // 获取版本管理信息
-  void requestPackageInfo(BuildContext context) {
-    // 获取版本信息
-    // LeanCloudAPI.getPackageVersionInfo(AppConfig.getInstance().env,(Package pack, String msg) {
-    //   setState(() {
-    //     displayVersion   = pack?.displayVersion ?? '';
-    //     displayBuild     = pack?.displayBuild ?? '';
-    //   });
-    //   upgradeWorkFlow(context,pack);
-    // }, (String msg) {
-    //   debugPrint(' ❌ 版本信息文件获取失败 ');
-    //   if(msg == '请求错误') {
-    //      Progresshud.showInfoWithStatus('请检查网络');
-    //      retryRequestPackageInfo(context);
-    //   }
-    // });
+  void requestPublishInfo(BuildContext context) async {
 
-    // 直接进入APP
-    enterApp(context);
+    await Future.delayed(Duration(milliseconds: 5000));
+    
+    APIPublish.getMobileAppPublishInfo((publish) { 
+      if(!mounted) return;
+      setState(() {
+        this.displayVersion   =  publish?.displayVersionInfo ?? '';
+        this.displayBuild     = 'Build 20200529';
+      });
+      upgradeWorkFlow(context,publish);
+    }, (msg) { 
+      debugPrint(' ❌ 版本信息文件获取失败 ');
+      retryRequestPublishInfo(context);
+    });
   }
 
   // 重试获取版本信息
-  void retryRequestPackageInfo(BuildContext contex) async {
+  void retryRequestPublishInfo(BuildContext contex) async {
     debugPrint('🔥发起重试:获取版本信息...');
     await Future.delayed(Duration(seconds: 3));
-    requestPackageInfo(context);
+    requestPublishInfo(context);
   }
 
   // 初始化友盟统计
@@ -139,8 +130,8 @@ class _WelcomePageState extends State<WelcomePage> with WidgetsBindingObserver {
   @override
   void initState() {
     super.initState();
-    // DeviceInspector.inspectDevice(context);
-    requestPackageInfo(context);
+    DeviceInspector.inspectDevice();
+    requestPublishInfo(context);
     initUmengService();
     initJpush();
   }
@@ -202,7 +193,7 @@ class _WelcomePageState extends State<WelcomePage> with WidgetsBindingObserver {
                     left: 0,
                     right: 0,
                     child: Center(
-                        child: Text('Copyright @ fjlead 2019-2020',
+                        child: Text('Copyright @ fjlead 2020-2021',
                             style: TextStyle(
                                 color: Colors.white70, fontSize: 10)))),
               ],

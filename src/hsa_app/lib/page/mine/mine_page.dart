@@ -5,7 +5,6 @@ import 'package:hsa_app/api/apis/api_login.dart';
 import 'package:hsa_app/api/apis/api_operation.dart';
 import 'package:hsa_app/api/operation_helper.dart';
 import 'package:hsa_app/components/shawdow_widget.dart';
-import 'package:hsa_app/config/app_config.dart';
 import 'package:hsa_app/page/about/about_page.dart';
 import 'package:hsa_app/page/engineering/engineering_mode.dart';
 import 'package:hsa_app/page/login/login_page.dart';
@@ -127,9 +126,9 @@ class _MinePageState extends State<MinePage> {
 
 
   // SOS拨号器
-  void onTapSOSCall(BuildContext context) {
-    final sosPhone = AppConfig.getInstance().remotePackage?.phoneSOS ?? '';
-    onTapSoScall(sosPhone);
+  void onTapSOSCall(BuildContext context) async {
+    await Future.delayed(Duration(milliseconds: 250));
+    dial('13509384541');
   }
 
   // 登录界面
@@ -260,7 +259,7 @@ class _MinePageState extends State<MinePage> {
   }
 
   // 拨打电话
-  Future<bool> onTapSoScall(String phone) async {
+  Future<bool> dial(String phone) async {
     await Future.delayed(Duration(milliseconds: 250));
     var url = 'tel:';
     if (TargetPlatform.iOS == defaultTargetPlatform) {
