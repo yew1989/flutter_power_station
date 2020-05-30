@@ -44,13 +44,8 @@ class _HomeBannerState extends State<HomeBanner> {
           child: CachedNetworkImage(
             cacheManager: _baseCacheManager,
             imageUrl: img,
-            //placeholder: (context, url) => CircularProgressIndicator(),//动画效果
-            errorWidget: (context, url, error) => Icon(Icons.error),
+            errorWidget: (context, url, error) => Center(child:Text('虚位以待',style:TextStyle(color:Colors.white,fontSize:16))),
           ),
-          
-          
-          
-          //Image.network(img,fit: BoxFit.fill),
           onTap: () {
             if(link.length > 0) {
               pushToPage(context, WebViewPage('智能电站', link,description: '展位详情'));

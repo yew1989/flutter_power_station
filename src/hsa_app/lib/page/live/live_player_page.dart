@@ -12,8 +12,9 @@ class LivePlayerPage extends StatefulWidget {
   final String title;
   final String playUrl;
   final String stationName;
+  final String playUrlType;
 
-  const LivePlayerPage({Key key, this.playUrl, this.title, this.stationName}) : super(key: key);
+  const LivePlayerPage({Key key, this.playUrl, this.title, this.stationName, this.playUrlType}) : super(key: key);
   @override
   _LivePlayerPageState createState() => _LivePlayerPageState();
 }
@@ -138,16 +139,27 @@ class _LivePlayerPageState extends State<LivePlayerPage> {
         body: SafeArea(
           child: Container(
             padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-            child: Center(
+            child: Container(
               child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
+                playerWidget(playerUrl),
                 Text('$stationName',style: TextStyle(fontSize: 16,color: Colors.white)),
                 SizedBox(height: 10),
-                Text('通道:$systemName',style: TextStyle(fontSize: 16,color: Colors.white)),
+
+                Container(
+                  child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children:[
+                    Text('通道 :  $systemName',style: TextStyle(fontSize: 16,color: Colors.white)),
+                    SizedBox(width: 20),
+                    Text('类型 :  ${widget.playUrlType}',style: TextStyle(fontSize: 16,color: Colors.white))
+                    ],
+                )),
                 SizedBox(height: 10),
-                playerWidget(playerUrl),
+
               ],
             )),
           ),

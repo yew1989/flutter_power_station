@@ -63,6 +63,7 @@ class _LiveListPageState extends State<LiveListPage> {
     final rtmpUrl = openLiveList[index].rtmpUrl ?? '';
     final m3u8Url = openLiveList[index].m3u8Url ?? '';
     final liveUrl =  rtmpUrl.length > 0 ? rtmpUrl : m3u8Url ;
+    final liveUrlType =  rtmpUrl.length > 0 ? 'RTMP' : 'HLS' ;
 
     return Material(
       color: Colors.transparent,
@@ -93,19 +94,19 @@ class _LiveListPageState extends State<LiveListPage> {
               ),
             ),
           ),
-          onTap:() => onTapPlayerUrl(context, liveStr, liveUrl,widget?.stationName ?? ''),
+          onTap:() => onTapPlayerUrl(context, liveStr, liveUrl,widget?.stationName ?? '',liveUrlType),
         ),
       ),
     );
   }
 
   // 点击到播放器
-  void onTapPlayerUrl(BuildContext context,String title,String playUrl,String stationName) async {
+  void onTapPlayerUrl(BuildContext context,String title,String playUrl,String stationName,String playUrlType) async {
     if(DeviceInfo.getInstance().isSimulator == true) {
       showToast('模拟器不支持视频播放');
       return;
     }
     await Future.delayed(Duration(milliseconds: 500));
-    pushToPage(context, LivePlayerPage(playUrl: playUrl,title: title,stationName: stationName));
+    pushToPage(context, LivePlayerPage(playUrl: playUrl,title: title,stationName: stationName,playUrlType:playUrlType));
   }
 }
