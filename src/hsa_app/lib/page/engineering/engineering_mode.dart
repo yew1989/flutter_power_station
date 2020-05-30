@@ -125,6 +125,8 @@ class _EngineeringModePageState extends State<EngineeringModePage> {
                 ),
                 Switch(
                   value: editBox, 
+                  activeColor: Colors.white,
+                  inactiveThumbColor: Colors.grey,
                   onChanged: (bool value) {  
                     setState(() {
                       editBox = value;
@@ -174,6 +176,8 @@ class _EngineeringModePageState extends State<EngineeringModePage> {
                 ),
                 Switch(
                   value: equipmentControl, 
+                  activeColor: Colors.white,
+                  inactiveThumbColor: Colors.grey,
                   onChanged: (bool value) {  
                     setState(() {
                       equipmentControl = value;

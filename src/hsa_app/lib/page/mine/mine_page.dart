@@ -14,6 +14,7 @@ import 'package:hsa_app/service/push/push_api.dart';
 import 'package:hsa_app/service/umeng_analytics.dart';
 import 'package:hsa_app/theme/theme_gradient_background.dart';
 import 'package:hsa_app/components/public_tool.dart';
+import 'package:hsa_app/util/device_inspector.dart';
 import 'package:hsa_app/util/share_manager.dart';
 import 'package:native_color/native_color.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -261,6 +262,10 @@ class _MinePageState extends State<MinePage> {
   // 拨打电话
   Future<bool> dial(String phone) async {
     await Future.delayed(Duration(milliseconds: 250));
+    if(DeviceInfo.getInstance().isSimulator == true) {
+      showToast('模拟器不支持拨打电话');
+      return false;
+    }
     var url = 'tel:';
     if (TargetPlatform.iOS == defaultTargetPlatform) {
       url += '+86' + phone;
