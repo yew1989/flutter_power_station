@@ -16,7 +16,6 @@ class _AboutPageState extends State<AboutPage> {
   String desc2   = '2.远程控制:远程控制机组的开关机状态,远程控制旁通阀、主阀、清污机等智能设备;远程调控有功、无功。';
   String desc3   = '3.报警提醒:通过智能电站,第一时间将报警信息发送报给用户。';
 
-
   @override
   void initState() {
     UMengAnalyticsService.enterPage('关于');
@@ -32,18 +31,15 @@ class _AboutPageState extends State<AboutPage> {
   @override
   Widget build(BuildContext context) {
 
-    final isIphone5S = MediaQuery.of(context).size.width == 320.0 ? true : false;
-    final displayVersion = AppConfig.getInstance().localDisplayVersionString;
-    final displayBuild = AppConfig.getInstance().displayBuildVersion;
+    final isIphone5S      = MediaQuery.of(context).size.width == 320.0 ? true : false;
+    final displayVersion  = 'V' + AppConfig.getInstance().localDisplayVersionString;
+    final displayBuild    = AppConfig.getInstance().displayBuildVersion;
 
     return ThemeGradientBackground(
       child:Scaffold(
           backgroundColor: Colors.transparent,
-          appBar: AppBar(
-            backgroundColor: Colors.transparent,
-            elevation: 0,
-            centerTitle: true,
-            title: Text('关于智能电站',style: TextStyle(color: Colors.white,fontWeight: FontWeight.normal,fontSize: AppTheme().navigationAppBarFontSize)),
+          appBar: AppBar(backgroundColor: Colors.transparent,elevation: 0,centerTitle: true,
+          title: Text('关于智能电站',style: TextStyle(color: Colors.white,fontWeight: FontWeight.normal,fontSize: AppTheme().navigationAppBarFontSize)),
           ),
           body: SafeArea(
             child: Container(
@@ -53,10 +49,7 @@ class _AboutPageState extends State<AboutPage> {
                   ListView(
                   children: <Widget>[
                     SizedBox(height: isIphone5S ? 10 : 50),
-                    Center(child: SizedBox(
-                      height: 82,
-                      width: 82,
-                      child: Image.asset('images/about/about_icon.png'))),
+                    Center(child: SizedBox(height: 82,width: 82,child: Image.asset('images/about/about_icon.png'))),
                     SizedBox(height: 14),
                     Center(child: Text('$displayVersion',style: TextStyle(color: Colors.white70,fontSize: 10))),
                     SizedBox(height: 4),
@@ -75,10 +68,8 @@ class _AboutPageState extends State<AboutPage> {
                     Text(desc3,style: TextStyle(color: Colors.white54,fontSize: 13)),
                     ],
                   ),
-
                   Positioned(bottom: 8,left: 0,right: 0,child: Center(child: 
                   Text('Copyright @ fjlead 2019-2020',style: TextStyle(color: Colors.white70,fontSize: 10)))),
-
                 ],
 
               ),
