@@ -44,7 +44,7 @@ class _WelcomePageState extends State<WelcomePage> with WidgetsBindingObserver {
   }
 
   void showVersions() async {
-    await Future.delayed(Duration(milliseconds: 250));
+    await Future.delayed(Duration(milliseconds: 500));
     this.displayVersion   =  'V' + AppConfig.getInstance().localDisplayVersionString;
     this.displayBuild     =  AppConfig.getInstance().displayBuildVersion;
     setState(() {});

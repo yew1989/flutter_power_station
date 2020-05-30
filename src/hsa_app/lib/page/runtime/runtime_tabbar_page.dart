@@ -35,7 +35,7 @@ class _RuntimeTabbarPageState extends State<RuntimeTabbarPage> {
     currentIndex = widget?.selectIndex ?? 0;
     currentWaterTurbine = widget?.waterTurbines[currentIndex];
     pageLength = widget?.waterTurbines?.length ?? 0;
-    title = currentWaterTurbine?.deviceTerminal?.deviceName ?? '';
+    title = ( currentIndex + 1 ).toString() + '#' + '实时数据';
     pageController = PageController(initialPage: currentIndex);
     badgeName = (currentIndex + 1).toString() + '#';
     UMengAnalyticsService.enterPage('机组实时');
@@ -90,9 +90,9 @@ class _RuntimeTabbarPageState extends State<RuntimeTabbarPage> {
               onPageChanged: (int index) {
                 currentIndex = index;
                 currentWaterTurbine = widget?.waterTurbines[currentIndex];
-                badgeName = (currentIndex + 1).toString() + '#';
+                badgeName = ( currentIndex + 1 ).toString() + '#';
                 setState(() {
-                  title = currentWaterTurbine.deviceTerminal.deviceName;
+                  title = ( currentIndex + 1 ).toString() + '#' + '实时数据';
                 });
               },
             ),
